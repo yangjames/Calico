@@ -58,5 +58,13 @@ TEST(Pose3Test, ValueAssignmentAndMemoryConsistency) {
   EXPECT_EQ(rotation_ptr, pose.rotation().coeffs().data());
 }
 
+TEST(Pose3Test, IsApprox) {
+  const Pose3 pose1(Eigen::Quaterniond::UnitRandom(),
+                    Eigen::Vector3d::Random());
+  const Pose3 pose2 = pose1;
+
+  EXPECT_TRUE(pose1.isApprox(pose2));
+}
+
 } // namespace
 } // namespace calico

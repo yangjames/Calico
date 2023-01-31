@@ -17,7 +17,9 @@
 
 namespace calico::sensors {
 
-// ObservationId type for a camera measurement.
+// ObservationId type for a camera measurement. This object is hashable by
+// `absl::Hash` for use as a key in `absl::flat_hash_map` or
+// `absl::flat_hash_set`.
 struct ObservationId {
   int image_id;
   int model_id;

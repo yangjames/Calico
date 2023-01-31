@@ -24,6 +24,22 @@ absl::Status WorldModel::AddRigidBody(const RigidBody& rigidbody) {
   return absl::OkStatus();
 }
 
+absl::flat_hash_map<int, Landmark>& WorldModel::landmarks() {
+  return landmark_id_to_landmark_;
+}
+
+const absl::flat_hash_map<int, Landmark>& WorldModel::landmarks() const {
+  return landmark_id_to_landmark_;
+}
+
+absl::flat_hash_map<int, RigidBody>& WorldModel::rigidbodies() {
+  return rigidbody_id_to_rigidbody_;
+}
+
+const absl::flat_hash_map<int, RigidBody>& WorldModel::rigidbodies() const {
+  return rigidbody_id_to_rigidbody_;
+}
+
 int WorldModel::NumberOfLandmarks() const {
   return landmark_id_to_landmark_.size();
 }

@@ -45,6 +45,10 @@ class Pose3 {
     return t_;
   }
 
+  bool isApprox(const Pose3& pose) const {
+    return (pose.rotation().isApprox(q_) && pose.translation().isApprox(t_));
+  }
+
  private:
   Eigen::Quaterniond q_;
   Eigen::Vector3d t_;

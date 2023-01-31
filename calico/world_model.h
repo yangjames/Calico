@@ -14,9 +14,9 @@ namespace calico {
 // frame. For optimization problems, set `world_point_is_constant` to true
 // if it is a free parameter that needs to be estimated, false otherwise.
 struct Landmark {
-  Eigen::Vector3d world_point;
+  Eigen::Vector3d point;
   int id;
-  bool world_point_is_constant;
+  bool point_is_constant;
 };
 
 // `Rigidbody` object which represents a constellation of points on a rigid
@@ -50,6 +50,18 @@ class WorldModel {
   // Add a `RigidBody` object to the world model. Returns an InvalidArgument
   // status code if the rigid body id is not unique.
   absl::Status AddRigidBody(const RigidBody& rigidbody);
+
+  // Add internal parameters to a ceres problem. Any internal parameters set to
+  // constant are marked as such in the problem.
+  //absl::Status AddParametersToProblem(ceres::Problem& problem);
+
+  // Accessor for landmarks.
+  absl::flat_hash_map<int, Landmark>& landmarks();
+  const absl::flat_hash_map<int, Landmark>& landmarks() const;
+
+  // Accessor for rigid bodies.
+  absl::flat_hash_map<int, RigidBody>& rigidbodies();
+  const absl::flat_hash_map<int, RigidBody>& rigidbodies() const;
 
   // Get the number of landmarks currently in this world model.
   int NumberOfLandmarks() const;
