@@ -14,6 +14,7 @@
 #include "ceres/problem.h"
 #include "Eigen/Dense"
 
+
 namespace calico::sensors {
 
 // ObservationId type for a camera measurement.

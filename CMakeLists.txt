@@ -53,3 +53,27 @@ target_link_libraries(
 )
 add_test(CameraLibTest camera_lib_test)
 
+# Build world model library and tests.
+add_library(
+  world_model
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/world_model.cpp
+)
+target_link_libraries(
+  world_model
+  Eigen3::Eigen
+  absl::status
+  absl::statusor
+  absl::flat_hash_map
+  Ceres::ceres
+)
+add_executable(
+  world_model_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/world_model_test.cpp
+)
+target_link_libraries(
+  world_model_test
+  world_model
+  GTest::Main
+  gmock
+)
+add_test(WorldModelTest world_model_test)
