@@ -2,7 +2,7 @@
 
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
-
+#include "calico/optimization_utils.h"
 
 namespace calico {
 
@@ -22,6 +22,41 @@ absl::Status WorldModel::AddRigidBody(const RigidBody& rigidbody) {
   }
   rigidbody_id_to_rigidbody_[rigidbody.id] = rigidbody;
   return absl::OkStatus();
+}
+
+int WorldModel::AddParametersToProblem(ceres::Problem& problem) {
+  int num_parameters_added = 0;
+  // Add all landmarks to problem.
+  for (auto& [_, landmark] : landmark_id_to_landmark_) {
+    problem.AddParameterBlock(landmark.point.data(), landmark.point.size());
+    num_parameters_added += landmark.point.size();
+    // Set this landmark as constant if flagged.
+    if (landmark.point_is_constant) {
+      problem.SetParameterBlockConstant(landmark.point.data());
+    }
+  }
+  // Add all rigidbodies to problem.
+  for (auto& [_, rigidbody] : rigidbody_id_to_rigidbody_) {
+    for (auto& [_, point] : rigidbody.model_definition) {
+      problem.AddParameterBlock(point.data(), point.size());
+      num_parameters_added += point.size();
+    }
+    utils::AddPoseToProblem(problem, rigidbody.T_world_rigidbody);
+    num_parameters_added +=
+      rigidbody.T_world_rigidbody.rotation().coeffs().size() +
+      rigidbody.T_world_rigidbody.translation().size();
+    // Set this rigidbody's model definition as constant if flagged.
+    if (rigidbody.model_definition_is_constant) {
+      for (auto& [_, point] : rigidbody.model_definition) {
+        problem.SetParameterBlockConstant(point.data());
+      }
+    }
+    // Set this rigidbody's world pose constant if flagged.
+    if (rigidbody.world_pose_is_constant) {
+      utils::SetPoseConstantInProblem(problem, rigidbody.T_world_rigidbody);
+    }
+  }
+  return num_parameters_added;
 }
 
 absl::flat_hash_map<int, Landmark>& WorldModel::landmarks() {

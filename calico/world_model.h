@@ -2,9 +2,9 @@
 #define CALICO_WORLD_MODEL_H_
 
 #include "calico/typedefs.h"
-
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
+#include "ceres/problem.h"
 #include "Eigen/Dense"
 
 
@@ -52,8 +52,9 @@ class WorldModel {
   absl::Status AddRigidBody(const RigidBody& rigidbody);
 
   // Add internal parameters to a ceres problem. Any internal parameters set to
-  // constant are marked as such in the problem.
-  //absl::Status AddParametersToProblem(ceres::Problem& problem);
+  // constant are marked as such in the problem. Returns the total number of
+  // parameters added to the problem.
+  int AddParametersToProblem(ceres::Problem& problem);
 
   // Accessor for landmarks.
   absl::flat_hash_map<int, Landmark>& landmarks();
