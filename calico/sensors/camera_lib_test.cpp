@@ -2,8 +2,6 @@
 #include "calico/sensors/camera.h"
 #include "calico/sensors/camera_models.h"
 
-#include <ranges>
-
 #include "Eigen/Dense"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -54,7 +52,7 @@ INSTANTIATE_TEST_SUITE_P(
       return info.param.test_name;
     });
 
-
+// Camera class test.
 class CameraTest : public ::testing::Test {
  protected:
   static constexpr absl::string_view kCameraName = "camera";
