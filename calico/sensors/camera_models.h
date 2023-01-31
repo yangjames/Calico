@@ -1,5 +1,5 @@
-#ifndef CALICO_SENSORS_CAMERA_CAMERA_MODELS_H_
-#define CALICO_SENSORS_CAMERA_CAMERA_MODELS_H_
+#ifndef CALICO_SENSORS_CAMERA_MODELS_H_
+#define CALICO_SENSORS_CAMERA_MODELS_H_
 
 #include "calico/typedefs.h"
 
@@ -9,10 +9,11 @@
 #include "Eigen/Dense"
 
 
-namespace calico::sensors::camera {
+namespace calico::sensors {
 
 // Camera model types.
 enum class CameraIntrinsicsModel : int {
+  kNone,
   kPinhole,
   kOpenCv5,
   kOpenCv8,
@@ -41,14 +42,19 @@ class CameraModel {
       const Eigen::Vector2d& pixel) const = 0;
 
   // Getter for camera model type.
-  virtual CameraIntrinsicsModel GetType() const = 0;
+  virtual CameraIntrinsicsModel GetType() const  = 0;
 
   // Getter for the number of parameters for this camera model.
-  virtual int GetParameterSize() const = 0;
+  virtual int NumberOfParameters() const = 0;
 
+  // TODO(yangjames): This method should return an absl::StatusOr. Figure out
+  //                  to support this using unique_ptr's, or find macros that
+  //                  already implement this feature (i.e. ASSIGN_OR_RETURN).
   // Factory method for creating a camera model with `camera_model` type.
-  static absl::StatusOr<std::unique_ptr<CameraModel>> Create(
-      const CameraIntrinsicsModel camera_model);
+  // This method will return a nullptr if an unsupported CameraIntrinsicsModel
+  // is passed in.
+  static std::unique_ptr<CameraModel> Create(
+      CameraIntrinsicsModel camera_model);
 };
 
 // 5-parameter Brown-Conrady projection model as presented in OpenCV. This model
@@ -62,7 +68,9 @@ class OpenCv5Model : public CameraModel {
   static constexpr CameraIntrinsicsModel kModelType =
       CameraIntrinsicsModel::kOpenCv5;
 
+  OpenCv5Model() = default;
   ~OpenCv5Model() override = default;
+  OpenCv5Model& operator=(const OpenCv5Model&) = default;
 
   template <typename T>
   absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
@@ -115,10 +123,10 @@ class OpenCv5Model : public CameraModel {
     return kModelType;
   }
 
-  int GetParameterSize() const final {
+  int NumberOfParameters() const final {
     return kNumberOfParameters;
   }
 };
-} // namespace calico::sensors::camera
+} // namespace calico::sensors
 
-#endif // CALICO_SENSORS_CAMERA_CAMERA_MODELS_H_
+#endif // CALICO_SENSORS_CAMERA_MODELS_H_
