@@ -2,9 +2,11 @@
 #define CALICO_SENSORS_SENSOR_BASE_H_
 
 #include "calico/typedefs.h"
+#include "calico/world_model.h"
 
 #include "Eigen/Dense"
 
+#include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "ceres/problem.h"
@@ -45,14 +47,24 @@ class Sensor {
   // Setter/getter for intrinsics parameters.
   virtual absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) = 0;
   virtual const Eigen::VectorXd& GetIntrinsics() const = 0;
-  /*  
+
+  // Enable or disable extrinsics parameters.
+  virtual void EnableExtrinsicsParameters(bool enable) = 0;
+
+  // Enable or disable intrinsics.
+  virtual void EnableIntrinsicsParameters(bool enable) = 0;
+
   // Method for adding this sensor's calibration parameters to a problem.
-  virtual absl::Status AddParametersToProblem(
+  // Returns the number of parameters added.
+  virtual absl::StatusOr<int> AddParametersToProblem(
+      ceres::Problem& problem) = 0;
+
+  // Method for adding this sensor's residuals to a problem.
+  // TODO(yangjames): Replace sensorrig_trajectory with a BSpline.
+  virtual int AddResidualsToProblem(
       ceres::Problem& problem,
       absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
-      WorldModel& world_model);
-  */
-
+      WorldModel& world_model) = 0;
 };
 } // namespace calico::sensors
 

@@ -43,12 +43,41 @@ struct CameraMeasurement {
   double stamp;
 };
 
+// Image size
+struct ImageSize {
+  int width;
+  int height;
+};
+
+
 class Camera : public Sensor {
  public:
   explicit Camera() = default;
   Camera(const Camera&) = delete;
   Camera& operator=(const Camera&) = delete;
   ~Camera() = default;
+
+  // Add this camera's parameters to the ceres problem. Returns the number of
+  // parameters added to the problem, which should be intrinsics + extrinsics.
+  // If the camera model hasn't been set yet, it will return an invalid
+  // argument error.
+  absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
+
+  // Contribue this camera's residuals to the ceres problem.
+  int AddResidualsToProblem(
+      ceres::Problem & problem,
+      absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+      WorldModel& world_model) final;
+
+  /*
+  // Compute the projection of a world model through a kinematic chain. This
+  // method returns only valid synthetic measurements as would be observed by
+  // the actual sensor, complying with physicality such as features being in
+  // front of the camera and within image bounds.
+  std::vector<CameraMeasurement> Project(
+      const absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+      const WorldModel& world_model) const;
+  */
 
   // Setter/getter for name.
   void SetName(absl::string_view name) final;
@@ -61,6 +90,16 @@ class Camera : public Sensor {
   // Setter/getter for intrinsics parameters.
   absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
   const Eigen::VectorXd& GetIntrinsics() const final;
+
+  // Enable flags for intrinsics and extrinsics.
+  void EnableExtrinsicsParameters(bool enable) final;
+  void EnableIntrinsicsParameters(bool enable) final;
+
+  // Setter/getter for image size. This parameter gets used in the `Project`
+  // method which generates synthetic measurements within the bounds of the
+  // image dimensions if the 'apply_image_bounds` flag is set to true.
+  absl::Status SetImageSize(const ImageSize& image_size);
+  ImageSize GetImageSize() const;
 
   // Setter/getter for camera model.
   absl::Status SetCameraModel(CameraIntrinsicsModel camera_model);
@@ -93,8 +132,9 @@ class Camera : public Sensor {
 
  private:
   std::string name_;
-  int image_width_;
-  int image_height_;
+  bool intrinsics_enabled_;
+  bool extrinsics_enabled_;
+  ImageSize image_size_;
   std::unique_ptr<CameraModel> camera_model_;
   Pose3 T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;

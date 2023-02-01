@@ -19,6 +19,11 @@ MATCHER_P(EigenEq, expected_vector, "") {
   return (arg.isApprox(expected_vector));
 }
 
+MATCHER_P(ImageSizeEq, expected_image_size, "") {
+  return (arg.width == expected_image_size.width &&
+          arg.height == expected_image_size.height);
+}
+
 // Creation of camera models.
 struct CameraModelCreationTestCase {
   std::string test_name;
@@ -52,12 +57,11 @@ INSTANTIATE_TEST_SUITE_P(
       return info.param.test_name;
     });
 
-// Camera class test.
+// Test for camera class.
 class CameraTest : public ::testing::Test {
  protected:
   static constexpr absl::string_view kCameraName = "camera";
-  static constexpr int kImageWidth = 1280;
-  static constexpr int kImageHeight = 800;
+  const ImageSize kImageSize{ .width = 1280, .height = 800, };
   static constexpr CameraIntrinsicsModel kCameraModel =
       CameraIntrinsicsModel::kOpenCv5;
   const Pose3 kExtrinsics = Pose3(
@@ -94,6 +98,7 @@ TEST_F(CameraTest, SettersAndGetters) {
   EXPECT_EQ(camera_.GetCameraModel(), CameraIntrinsicsModel::kNone);
   EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(Pose3()));
   EXPECT_THAT(camera_.GetIntrinsics(), EigenEq(Eigen::VectorXd()));
+  EXPECT_THAT(camera_.GetImageSize(), ImageSizeEq(ImageSize()));
   // Post-assignment.
   camera_.SetName(kCameraName);
   EXPECT_EQ(camera_.SetCameraModel(kCameraModel).code(), absl::StatusCode::kOk);
@@ -101,6 +106,7 @@ TEST_F(CameraTest, SettersAndGetters) {
   const absl::Status set_intrinsics_status = camera_.SetIntrinsics(kIntrinsics);
   EXPECT_EQ(set_intrinsics_status.code(), absl::StatusCode::kOk)
     << set_intrinsics_status;
+  EXPECT_EQ(camera_.SetImageSize(kImageSize).code(), absl::StatusCode::kOk);
   EXPECT_EQ(camera_.GetName(), kCameraName);
   EXPECT_EQ(camera_.GetCameraModel(), kCameraModel);
   EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(kExtrinsics));
@@ -172,6 +178,17 @@ TEST_F(CameraTest, RemoveMultipleMeasurements) {
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
   EXPECT_EQ(camera_.RemoveMeasurementsById(ids).code(),
             absl::StatusCode::kInvalidArgument);
+}
+
+TEST_F(CameraTest, AddCalibrationParametersToProblem) {
+  EXPECT_EQ(camera_.SetCameraModel(kCameraModel).code(), absl::StatusCode::kOk);
+  EXPECT_EQ(camera_.SetIntrinsics(kIntrinsics).code(), absl::StatusCode::kOk);
+  camera_.SetExtrinsics(kExtrinsics);
+  ceres::Problem problem;
+  const absl::StatusOr<int> num_parameters =
+    camera_.AddParametersToProblem(problem);
+  ASSERT_EQ(num_parameters.status().code(), absl::StatusCode::kOk);
+  EXPECT_EQ(problem.NumParameters(), *num_parameters);
 }
 
 } // namespace

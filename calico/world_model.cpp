@@ -41,10 +41,8 @@ int WorldModel::AddParametersToProblem(ceres::Problem& problem) {
       problem.AddParameterBlock(point.data(), point.size());
       num_parameters_added += point.size();
     }
-    utils::AddPoseToProblem(problem, rigidbody.T_world_rigidbody);
-    num_parameters_added +=
-      rigidbody.T_world_rigidbody.rotation().coeffs().size() +
-      rigidbody.T_world_rigidbody.translation().size();
+    num_parameters_added += utils::AddPoseToProblem(
+        problem, rigidbody.T_world_rigidbody);
     // Set this rigidbody's model definition as constant if flagged.
     if (rigidbody.model_definition_is_constant) {
       for (auto& [_, point] : rigidbody.model_definition) {

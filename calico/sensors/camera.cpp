@@ -1,6 +1,35 @@
 #include "calico/sensors/camera.h"
 
+#include "calico/optimization_utils.h"
+
+
 namespace calico::sensors {
+
+absl::StatusOr<int> Camera::AddParametersToProblem(ceres::Problem& problem) {
+  int num_parameters_added = 0;
+  if (!camera_model_) {
+    return absl::FailedPreconditionError(
+        "Cannot add camera parameters. Camera model is not yet defined.");
+  }
+  problem.AddParameterBlock(intrinsics_.data(), intrinsics_.size());
+  num_parameters_added += intrinsics_.size();
+  num_parameters_added += utils::AddPoseToProblem(problem, T_sensorrig_sensor_);
+
+  if (!intrinsics_enabled_) {
+    problem.SetParameterBlockConstant(intrinsics_.data());
+  }
+  if (!extrinsics_enabled_) {
+    utils::SetPoseConstantInProblem(problem, T_sensorrig_sensor_);
+  }
+  return num_parameters_added;
+}
+
+int Camera::AddResidualsToProblem(
+    ceres::Problem& problem,
+    absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+    WorldModel& world_model) {
+  return 0;
+}
 
 void Camera::SetName(absl::string_view name) {
   name_ = name;
@@ -32,6 +61,28 @@ absl::Status Camera::SetIntrinsics(const Eigen::VectorXd& intrinsics) {
 
 const Eigen::VectorXd& Camera::GetIntrinsics() const {
   return intrinsics_;
+}
+
+void Camera::EnableExtrinsicsParameters(bool enable) {
+  extrinsics_enabled_ = enable;
+}
+
+void Camera::EnableIntrinsicsParameters(bool enable) {
+  intrinsics_enabled_ = enable;
+}
+
+absl::Status Camera::SetImageSize(const ImageSize& image_size) {
+  if (!(image_size.width > 0 && image_size.height > 0)) {
+    return absl::InvalidArgumentError(absl::StrCat(
+        "Invalid image size of width - ", image_size.width, ", height - ",
+        image_size.height, ". Width and height must be positive values."));
+  }
+  image_size_ = image_size;
+  return absl::OkStatus();
+}
+
+ImageSize Camera::GetImageSize() const {
+  return image_size_;
 }
 
 absl::Status Camera::SetCameraModel(CameraIntrinsicsModel camera_model) {
