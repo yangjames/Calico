@@ -16,7 +16,7 @@ glog (for Ceres solver): `sudo apt install libgoogle-glog-dev libgflags-dev`
 
 Eigen3: `sudo apt install libeigen3-dev`
 
-GTest: `sudo apt install libgtest-dev`
+GTest: `sudo apt install libgtest-dev libgmock-dev`
 
 Abseil: Built with `std=c++17`. See [Abseil install page](https://abseil.io/docs/cpp/quickstart-cmake#getting-the-abseil-code) for more details.
 ```
