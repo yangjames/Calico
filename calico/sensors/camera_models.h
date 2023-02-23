@@ -73,9 +73,9 @@ class OpenCv5Model : public CameraModel {
   OpenCv5Model& operator=(const OpenCv5Model&) = default;
 
   template <typename T>
-  absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
+  static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
       const Eigen::VectorX<T>& intrinsics,
-      const Eigen::Vector3<T>& point) const {
+      const Eigen::Vector3<T>& point) {
     if (point.z() <= T(0.0)) {
       return absl::InvalidArgumentError(
           "Camera point is behind the camera. Cannot project.");
@@ -97,13 +97,13 @@ class OpenCv5Model : public CameraModel {
     const T& p1 = intrinsics(5);
     const T& p2 = intrinsics(6);
     const T& k3 = intrinsics(7);
-    const T s = 1 + r2*(k1 + r2*(k2 + r2*k3));
+    const T s = T(1.0) + r2 * (k1 + r2 * (k2 + r2 * k3));
     Eigen::Vector2<T> projection(x, y);
     // Apply radial distortion.
     projection *= s;
     // Apply tangential distortion.
-    projection.x() += T(2.0)*p1*x*y + p2*(r2 + T(2.0)*x*x);
-    projection.y() += T(2.0)*p2*x*y + p1*(r2 + T(2.0)*y*y);
+    projection.x() += T(2.0) * p1 * x * y + p2 * (r2 + T(2.0) * x * x);
+    projection.y() += T(2.0) * p2 * x * y + p1 * (r2 + T(2.0) * y * y);
     // Apply pinhole parameters.
     projection *= f;
     projection.x() += cx;
@@ -127,6 +127,17 @@ class OpenCv5Model : public CameraModel {
     return kNumberOfParameters;
   }
 };
+
+template <typename T>
+absl::StatusOr<Eigen::Vector2<T>> CameraModel::ProjectPoint(
+    const Eigen::VectorX<T>& intrinsics,
+    const Eigen::Vector3<T>& point) const {
+  if (const auto derived = dynamic_cast<const OpenCv5Model*>(this)) {
+    return derived->ProjectPoint(intrinsics, point);
+  }
+  return absl::InvalidArgumentError(absl::StrCat(
+      "Camera model ", this->GetType(), " not supported."));
+}
 } // namespace calico::sensors
 
 #endif // CALICO_SENSORS_CAMERA_MODELS_H_
