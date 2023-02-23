@@ -61,7 +61,7 @@ class Sensor {
 
   // Method for adding this sensor's residuals to a problem.
   // TODO(yangjames): Replace sensorrig_trajectory with a BSpline.
-  virtual int AddResidualsToProblem(
+  virtual absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem& problem,
       absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
       WorldModel& world_model) = 0;

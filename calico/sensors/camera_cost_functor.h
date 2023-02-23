@@ -2,6 +2,7 @@
 #define CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
 
 #include "calico/sensors/camera_models.h"
+#include "ceres/dynamic_autodiff_cost_function.h"
 
 namespace calico::sensors {
 
@@ -31,10 +32,53 @@ enum class CameraParameterIndices : int {
 // how the camera model is initialized.
 class CameraCostFunctor {
  public:
+  static constexpr int kCameraResidualSize = 2;
   explicit CameraCostFunctor(const CameraIntrinsicsModel camera_model,
                              const Eigen::Vector2d& pixel)
     : pixel_(pixel) {
     camera_model_ = CameraModel::Create(camera_model);
+  }
+
+  // Convenience function for creating a camera cost function.
+  static ceres::CostFunction* CreateCostFunction(
+      const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
+      Eigen::VectorXd& intrinsics, Pose3& extrinsics,
+      Eigen::Vector3d& t_model_point, Pose3& T_world_model,
+      Pose3& T_world_sensorrig, std::vector<double*>& parameters) {
+    auto* cost_function =
+      new ceres::DynamicAutoDiffCostFunction<CameraCostFunctor>(
+          new CameraCostFunctor(camera_model, pixel));
+    // intrinsics
+    parameters.push_back(intrinsics.data());
+    cost_function->AddParameterBlock(intrinsics.size());
+    // extrinsics rotation q_sensrorig_camera
+    parameters.push_back(extrinsics.rotation().coeffs().data());
+    cost_function->AddParameterBlock(extrinsics.rotation().coeffs().size());
+    // extrinsics translation t_sensorrig_camera
+    parameters.push_back(extrinsics.translation().data());
+    cost_function->AddParameterBlock(extrinsics.translation().size());
+    // model point position t_model_point
+    parameters.push_back(t_model_point.data());
+    cost_function->AddParameterBlock(t_model_point.size());
+    // model world pose rotation q_world_model
+    Eigen::Quaterniond& q_world_model = T_world_model.rotation();
+    parameters.push_back(q_world_model.coeffs().data());
+    cost_function->AddParameterBlock(q_world_model.coeffs().size());
+    // model world pose translation t_world_model
+    Eigen::Vector3d& t_world_model = T_world_model.translation();
+    parameters.push_back(t_world_model.data());
+    cost_function->AddParameterBlock(t_world_model.size());
+    // TODO(yangjames): Replace this with B-Spline coefficients.
+    // q_world_sensorrig
+    parameters.push_back(T_world_sensorrig.rotation().coeffs().data());
+    cost_function->AddParameterBlock(
+        T_world_sensorrig.rotation().coeffs().size());
+    // t_world_sensorrig
+    parameters.push_back(T_world_sensorrig.translation().data());
+    cost_function->AddParameterBlock(T_world_sensorrig.translation().size());
+    // Residual
+    cost_function->SetNumResiduals(kCameraResidualSize);
+    return cost_function;
   }
 
   // Parameters to the cost function:
@@ -49,6 +93,8 @@ class CameraCostFunctor {
   //     sensorrig frame.
   //   q_world_model:
   //     Rotation from world frame to model frame as a quaternion.
+  //   t_model_point:
+  //     Position of the point in the model resolved int he model frame.
   //   t_world_model:
   //     Position of model relative to world origin resolved in the world frame.
   //   q_world_sensorrig:
@@ -57,31 +103,38 @@ class CameraCostFunctor {
   //     Position of sensorrig relative to world origin resolved in the world
   //     frame.
   template <typename T>
-  bool operator()(const T* const parameters, T* residuals) {
+  bool operator()(T const* const* parameters, T* residual) {
     // Parse intrinsics.
     const T* intrinsics_ptr =
       static_cast<const T*>(&(parameters[static_cast<int>(
           CameraParameterIndices::kIntrinsicsIndex)][0]));
-    const int parameter_size = camera_model_->GetParameterSize();
-    const Eigen::VectorN<T> intrinsics = Eigen::Map<const Eigen::VectorN<T>>(
+    const int parameter_size = camera_model_->NumberOfParameters();
+    const Eigen::VectorX<T> intrinsics = Eigen::Map<const Eigen::VectorX<T>>(
         intrinsics_ptr, parameter_size);
     // Parse extrinsics.
     const Eigen::Map<const Eigen::Quaternion<T>> q_sensorrig_camera(
-        &(parameters[static_cast<int>(kExtrinsicsRotationIndex)][0]));
+        &(parameters[static_cast<int>(
+            CameraParameterIndices::kExtrinsicsRotationIndex)][0]));
     const Eigen::Map<const Eigen::Vector3<T>> t_sensorrig_camera(
-        &(parameters[static_cast<int>(kExtrinsicsTranslationIndex)][0]));
+        &(parameters[static_cast<int>(
+            CameraParameterIndices::kExtrinsicsTranslationIndex)][0]));
     // Parse model point and model pose resolved in the world frame.
     const Eigen::Map<const Eigen::Vector3<T>> t_model_point(
-        &(parameters[static_cast<int>(kModelPointIndex)][0]));
+        &(parameters[static_cast<int>(
+            CameraParameterIndices::kModelPointIndex)][0]));
     const Eigen::Map<const Eigen::Quaternion<T>> q_world_model(
-        &(parameters[static_cast<int>(kModelRotationIndex)][0]));
+        &(parameters[static_cast<int>(
+            CameraParameterIndices::kModelRotationIndex)][0]));
     const Eigen::Map<const Eigen::Vector3<T>> t_world_model(
-        &(parameters[static_cast<int>(kModelTranslationIndex)][0]));
+        &(parameters[static_cast<int>(
+            CameraParameterIndices::kModelTranslationIndex)][0]));
     // Parse sensor rig pose resolved in the world frame.
     const Eigen::Map<const Eigen::Quaternion<T>> q_world_sensorrig(
-        &(parameters[static_cast<int>(kSensorRigRotationIndex)][0]));
+        &(parameters[static_cast<int>(
+            CameraParameterIndices::kSensorRigRotationIndex)][0]));
     const Eigen::Map<const Eigen::Vector3<T>> t_world_sensorrig(
-        &(parameters[static_cast<int>(kSensorRigTranslationIndex)][0]));
+        &(parameters[static_cast<int>(
+            CameraParameterIndices::kSensorRigTranslationIndex)][0]));
     // Resolve the model point in the camera frame.
     const Eigen::Vector3<T> t_world_camera =
         t_world_sensorrig + q_world_sensorrig * t_sensorrig_camera;
@@ -107,7 +160,7 @@ class CameraCostFunctor {
  private:
   Eigen::Vector2d pixel_;
   std::unique_ptr<CameraModel> camera_model_;
-}
+};
 } // namespace calico::sensors
 
 #endif // CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_

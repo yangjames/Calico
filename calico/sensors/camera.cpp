@@ -1,5 +1,6 @@
 #include "calico/sensors/camera.h"
 
+#include "calico/sensors/camera_cost_functor.h"
 #include "calico/optimization_utils.h"
 
 
@@ -24,11 +25,36 @@ absl::StatusOr<int> Camera::AddParametersToProblem(ceres::Problem& problem) {
   return num_parameters_added;
 }
 
-int Camera::AddResidualsToProblem(
+absl::StatusOr<int> Camera::AddResidualsToProblem(
     ceres::Problem& problem,
     absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
     WorldModel& world_model) {
-  return 0;
+  int num_residuals_added = 0;
+  for (const auto& [observation_id, measurement] : id_to_measurement_) {
+    const int rigidbody_id = observation_id.model_id;
+    if (!world_model.rigidbodies().contains(rigidbody_id)) {
+      return absl::FailedPreconditionError(absl::StrCat(
+          "Attempted to create cost function from an observation for a "
+          "rigidbody with id ", rigidbody_id, " that does not exist in "
+          "the world model."));
+    }
+    // Get the right rigidbody reference from the world model.
+    RigidBody& rigidbody_ref = world_model.rigidbodies().at(rigidbody_id);
+    Eigen::Vector3d& t_model_point =
+      rigidbody_ref.model_definition.at(observation_id.feature_id);
+    Pose3& T_world_sensorrig = sensorrig_trajectory.at(observation_id.image_id);
+    // Construct a cost function and supply parameters for this residual.
+    std::vector<double*> parameters;
+    ceres::CostFunction* cost_function =
+        CameraCostFunctor::CreateCostFunction(
+            measurement.pixel, camera_model_->GetType(), intrinsics_,
+            T_sensorrig_sensor_, t_model_point, rigidbody_ref.T_world_rigidbody,
+            T_world_sensorrig, parameters);
+    const auto residual_block_id = problem.AddResidualBlock(
+        cost_function, /*loss_function=*/nullptr, parameters);
+    num_residuals_added += 1;
+  }
+  return num_residuals_added;
 }
 
 void Camera::SetName(absl::string_view name) {

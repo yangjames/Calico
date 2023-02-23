@@ -8,7 +8,7 @@ namespace calico::utils {
 
 // Convenience function for adding a Pose3 type to a ceres problem with
 // correct parameterization and manifold specification.
-int AddPoseToProblem(ceres::Problem& problem, Pose3& pose) {
+inline int AddPoseToProblem(ceres::Problem& problem, Pose3& pose) {
   int num_parameters_added = 0;
   problem.AddParameterBlock(pose.translation().data(),
                             pose.translation().size());
@@ -20,7 +20,7 @@ int AddPoseToProblem(ceres::Problem& problem, Pose3& pose) {
   return num_parameters_added;
 }
 
-void SetPoseConstantInProblem(ceres::Problem& problem, Pose3& pose) {
+inline void SetPoseConstantInProblem(ceres::Problem& problem, Pose3& pose) {
   problem.SetParameterBlockConstant(pose.translation().data());
   problem.SetParameterBlockConstant(pose.rotation().coeffs().data());
 }

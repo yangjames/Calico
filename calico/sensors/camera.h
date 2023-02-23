@@ -49,7 +49,6 @@ struct ImageSize {
   int height;
 };
 
-
 class Camera : public Sensor {
  public:
   explicit Camera() = default;
@@ -64,7 +63,7 @@ class Camera : public Sensor {
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
 
   // Contribue this camera's residuals to the ceres problem.
-  int AddResidualsToProblem(
+  absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem & problem,
       absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
       WorldModel& world_model) final;

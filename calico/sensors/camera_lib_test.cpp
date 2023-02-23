@@ -1,5 +1,6 @@
 #include "calico/typedefs.h"
 #include "calico/sensors/camera.h"
+#include "calico/sensors/camera_cost_functor.h"
 #include "calico/sensors/camera_models.h"
 
 #include "Eigen/Dense"
@@ -23,6 +24,52 @@ MATCHER_P(ImageSizeEq, expected_image_size, "") {
   return (arg.width == expected_image_size.width &&
           arg.height == expected_image_size.height);
 }
+
+// Test the creation of camera cost functions and convenience functions.
+struct CameraCostFunctionCreationTestCase {
+  std::string test_name;
+  CameraIntrinsicsModel camera_model;
+  Eigen::Vector2d pixel;
+  Eigen::VectorXd intrinsics;
+  Pose3 extrinsics;
+  Eigen::Vector3d t_model_point;
+  Pose3 T_world_model;
+  Pose3 T_world_sensorrig;
+};
+using CameraCostFunctionCreationTest =
+  ::testing::TestWithParam<CameraCostFunctionCreationTestCase>;
+
+TEST_P(CameraCostFunctionCreationTest, Instantiation) {
+  CameraCostFunctionCreationTestCase test_case = GetParam();
+  std::vector<double*> parameters;
+  auto* cost_function =
+    CameraCostFunctor::CreateCostFunction(
+        test_case.pixel, test_case.camera_model, test_case.intrinsics,
+        test_case.extrinsics, test_case.t_model_point, test_case.T_world_model,
+        test_case.T_world_sensorrig, parameters);
+  ASSERT_NE(cost_function, nullptr);
+  delete cost_function;
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    CameraCostFunctionCreationTests, CameraCostFunctionCreationTest,
+    testing::ValuesIn<CameraCostFunctionCreationTestCase>({
+        {
+          "OpenCv5",
+          CameraIntrinsicsModel::kOpenCv5,
+          Eigen::Vector2d::Random(),
+          Eigen::VectorXd::Random(OpenCv5Model::kNumberOfParameters),
+          Pose3(),
+          Eigen::Vector3d::Random(),
+          Pose3(),
+          Pose3(),
+        },
+      }),
+    [](const testing::TestParamInfo
+        <CameraCostFunctionCreationTest::ParamType>& info) {
+      return info.param.test_name;
+    });
+
 
 // Creation of camera models.
 struct CameraModelCreationTestCase {
@@ -58,10 +105,10 @@ INSTANTIATE_TEST_SUITE_P(
     });
 
 // Test for camera class.
-class CameraTest : public ::testing::Test {
+class CameraContainerTest : public ::testing::Test {
  protected:
   static constexpr absl::string_view kCameraName = "camera";
-  const ImageSize kImageSize{ .width = 1280, .height = 800, };
+  const ImageSize kImageSize { .width = 1280, .height = 800, };
   static constexpr CameraIntrinsicsModel kCameraModel =
       CameraIntrinsicsModel::kOpenCv5;
   const Pose3 kExtrinsics = Pose3(
@@ -92,7 +139,7 @@ class CameraTest : public ::testing::Test {
   std::vector<CameraMeasurement> measurements_;
 };
 
-TEST_F(CameraTest, SettersAndGetters) {
+TEST_F(CameraContainerTest, SettersAndGetters) {
   // Pre-assignment.
   EXPECT_THAT(camera_.GetName(), ::testing::IsEmpty());
   EXPECT_EQ(camera_.GetCameraModel(), CameraIntrinsicsModel::kNone);
@@ -113,7 +160,7 @@ TEST_F(CameraTest, SettersAndGetters) {
   EXPECT_THAT(camera_.GetIntrinsics(), EigenEq(kIntrinsics));
 }
 
-TEST_F(CameraTest, AddSingleMeasurementOnlyUniqueAllowed) {
+TEST_F(CameraContainerTest, AddSingleMeasurementOnlyUniqueAllowed) {
   const CameraMeasurement measurement{
     .pixel = Eigen::Vector2d::Random(),
     .id = {.image_id = 0, .model_id = 1, .feature_id = 2},
@@ -129,7 +176,7 @@ TEST_F(CameraTest, AddSingleMeasurementOnlyUniqueAllowed) {
   EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
 }
 
-TEST_F(CameraTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
+TEST_F(CameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   std::vector<CameraMeasurement> measurements = measurements_;
   camera_.ClearMeasurements();
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
@@ -150,7 +197,7 @@ TEST_F(CameraTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size() - 1);
 }
 
-TEST_F(CameraTest, RemoveMeasurement) {
+TEST_F(CameraContainerTest, RemoveMeasurement) {
   const CameraMeasurement measurement{};
   camera_.ClearMeasurements();
   EXPECT_EQ(camera_.AddMeasurement(measurement).code(), absl::StatusCode::kOk);
@@ -162,7 +209,7 @@ TEST_F(CameraTest, RemoveMeasurement) {
             absl::StatusCode::kInvalidArgument);
 }
 
-TEST_F(CameraTest, RemoveMultipleMeasurements) {
+TEST_F(CameraContainerTest, RemoveMultipleMeasurements) {
   std::vector<CameraMeasurement> measurements = measurements_;
   camera_.ClearMeasurements();
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
@@ -180,7 +227,7 @@ TEST_F(CameraTest, RemoveMultipleMeasurements) {
             absl::StatusCode::kInvalidArgument);
 }
 
-TEST_F(CameraTest, AddCalibrationParametersToProblem) {
+TEST_F(CameraContainerTest, AddCalibrationParametersToProblem) {
   EXPECT_EQ(camera_.SetCameraModel(kCameraModel).code(), absl::StatusCode::kOk);
   EXPECT_EQ(camera_.SetIntrinsics(kIntrinsics).code(), absl::StatusCode::kOk);
   camera_.SetExtrinsics(kExtrinsics);
@@ -190,6 +237,19 @@ TEST_F(CameraTest, AddCalibrationParametersToProblem) {
   ASSERT_EQ(num_parameters.status().code(), absl::StatusCode::kOk);
   EXPECT_EQ(problem.NumParameters(), *num_parameters);
 }
+  /*
+class CameraOptimizationTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    
+  }
 
+  Camera camera_;
+};
+
+TEST_F(CameraOptimizationTest, PerfectDataYieldsPerfectResiduals) {
+  
+}
+  */
 } // namespace
 } // namespace calico::sensors

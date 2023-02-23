@@ -27,32 +27,6 @@ target_link_libraries(
 )
 add_test(TypeDefsTest typedefs_test)
 
-# Build camera library and tests.
-add_library(
-  camera_lib
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
-)
-target_link_libraries(
-  camera_lib
-  Eigen3::Eigen
-  absl::status
-  absl::statusor
-  absl::flat_hash_map
-  Ceres::ceres
-)
-add_executable(
-  camera_lib_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_lib_test.cpp
-)
-target_link_libraries(
-  camera_lib_test
-  camera_lib
-  GTest::Main
-  gmock
-)
-add_test(CameraLibTest camera_lib_test)
-
 # Build world model library and tests.
 add_library(
   world_model
@@ -77,3 +51,31 @@ target_link_libraries(
   gmock
 )
 add_test(WorldModelTest world_model_test)
+
+# Build camera library and tests.
+add_library(
+  camera_lib
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
+)
+target_link_libraries(
+  camera_lib
+  Eigen3::Eigen
+  absl::status
+  absl::statusor
+  absl::flat_hash_map
+  Ceres::ceres
+  world_model
+)
+add_executable(
+  camera_lib_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_lib_test.cpp
+)
+target_link_libraries(
+  camera_lib_test
+  camera_lib
+  GTest::Main
+  gmock
+)
+add_test(CameraLibTest camera_lib_test)
+
