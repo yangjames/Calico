@@ -25,86 +25,6 @@ MATCHER_P(ImageSizeEq, expected_image_size, "") {
           arg.height == expected_image_size.height);
 }
 
-// Test the creation of camera cost functions and convenience functions.
-struct CameraCostFunctionCreationTestCase {
-  std::string test_name;
-  CameraIntrinsicsModel camera_model;
-  Eigen::Vector2d pixel;
-  Eigen::VectorXd intrinsics;
-  Pose3 extrinsics;
-  Eigen::Vector3d t_model_point;
-  Pose3 T_world_model;
-  Pose3 T_world_sensorrig;
-};
-using CameraCostFunctionCreationTest =
-  ::testing::TestWithParam<CameraCostFunctionCreationTestCase>;
-
-TEST_P(CameraCostFunctionCreationTest, Instantiation) {
-  CameraCostFunctionCreationTestCase test_case = GetParam();
-  std::vector<double*> parameters;
-  auto* cost_function =
-    CameraCostFunctor::CreateCostFunction(
-        test_case.pixel, test_case.camera_model, test_case.intrinsics,
-        test_case.extrinsics, test_case.t_model_point, test_case.T_world_model,
-        test_case.T_world_sensorrig, parameters);
-  ASSERT_NE(cost_function, nullptr);
-  delete cost_function;
-}
-
-INSTANTIATE_TEST_SUITE_P(
-    CameraCostFunctionCreationTests, CameraCostFunctionCreationTest,
-    testing::ValuesIn<CameraCostFunctionCreationTestCase>({
-        {
-          "OpenCv5",
-          CameraIntrinsicsModel::kOpenCv5,
-          Eigen::Vector2d::Random(),
-          Eigen::VectorXd::Random(OpenCv5Model::kNumberOfParameters),
-          Pose3(),
-          Eigen::Vector3d::Random(),
-          Pose3(),
-          Pose3(),
-        },
-      }),
-    [](const testing::TestParamInfo
-        <CameraCostFunctionCreationTest::ParamType>& info) {
-      return info.param.test_name;
-    });
-
-
-// Creation of camera models.
-struct CameraModelCreationTestCase {
-  std::string test_name;
-  CameraIntrinsicsModel camera_model;
-  int parameter_size;
-};
-
-using CameraModelCreationTest =
-    ::testing::TestWithParam<CameraModelCreationTestCase>;
-
-TEST_P(CameraModelCreationTest, TestModelGetters) {
-  const CameraModelCreationTestCase& test_case = GetParam();
-  const auto camera_model =
-      CameraModel::Create(test_case.camera_model);
-  EXPECT_NE(camera_model, nullptr);
-  EXPECT_EQ(camera_model->GetType(), test_case.camera_model);
-  EXPECT_EQ(camera_model->NumberOfParameters(),
-            test_case.parameter_size);
-}
-
-INSTANTIATE_TEST_SUITE_P(
-    CameraModelCreationTests, CameraModelCreationTest,
-    testing::ValuesIn<CameraModelCreationTestCase>({
-        {
-          "OpenCv5",
-          CameraIntrinsicsModel::kOpenCv5,
-          OpenCv5Model::kNumberOfParameters
-        },
-      }),
-    [](const testing::TestParamInfo<CameraModelCreationTest::ParamType>& info) {
-      return info.param.test_name;
-    });
-
-// Test for camera class.
 class CameraContainerTest : public ::testing::Test {
  protected:
   static constexpr absl::string_view kCameraName = "camera";
@@ -237,19 +157,6 @@ TEST_F(CameraContainerTest, AddCalibrationParametersToProblem) {
   ASSERT_EQ(num_parameters.status().code(), absl::StatusCode::kOk);
   EXPECT_EQ(problem.NumParameters(), *num_parameters);
 }
-  /*
-class CameraOptimizationTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    
-  }
 
-  Camera camera_;
-};
-
-TEST_F(CameraOptimizationTest, PerfectDataYieldsPerfectResiduals) {
-  
-}
-  */
 } // namespace
 } // namespace calico::sensors

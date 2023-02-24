@@ -8,6 +8,39 @@
 namespace calico::sensors {
 namespace {
 
+// Creation of camera models.
+struct CameraModelCreationTestCase {
+  std::string test_name;
+  CameraIntrinsicsModel camera_model;
+  int parameter_size;
+};
+
+using CameraModelCreationTest =
+    ::testing::TestWithParam<CameraModelCreationTestCase>;
+
+TEST_P(CameraModelCreationTest, TestModelGetters) {
+  const CameraModelCreationTestCase& test_case = GetParam();
+  const auto camera_model =
+      CameraModel::Create(test_case.camera_model);
+  EXPECT_NE(camera_model, nullptr);
+  EXPECT_EQ(camera_model->GetType(), test_case.camera_model);
+  EXPECT_EQ(camera_model->NumberOfParameters(),
+            test_case.parameter_size);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    CameraModelCreationTests, CameraModelCreationTest,
+    testing::ValuesIn<CameraModelCreationTestCase>({
+        {
+          "OpenCv5",
+          CameraIntrinsicsModel::kOpenCv5,
+          OpenCv5Model::kNumberOfParameters
+        },
+      }),
+    [](const testing::TestParamInfo<CameraModelCreationTest::ParamType>& info) {
+      return info.param.test_name;
+    });
+
 class CameraModelTest : public ::testing::Test {
  protected:
   static constexpr double kSamplePlaneWidth = 1.5;

@@ -53,24 +53,11 @@ target_link_libraries(
 add_test(WorldModelTest world_model_test)
 
 # Build camera library and tests.
-add_executable(
-  camera_models_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models_test.cpp
-)
-target_link_libraries(
-  camera_models_test
-  absl::status
-  absl::statusor
-  Eigen3::Eigen
-  GTest::Main
-  gmock
-)
-add_test(CameraModelsTest camera_models_test)
-
 add_library(
   camera_lib
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.cpp
 )
 target_link_libraries(
   camera_lib
@@ -81,12 +68,37 @@ target_link_libraries(
   Ceres::ceres
   world_model
 )
+
 add_executable(
-  camera_lib_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_lib_test.cpp
+  camera_models_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models_test.cpp
 )
 target_link_libraries(
-  camera_lib_test
+  camera_models_test
+  camera_lib
+  GTest::Main
+  gmock
+)
+add_test(CameraModelsTest camera_models_test)
+
+add_executable(
+  camera_cost_functor_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor_test.cpp
+)
+target_link_libraries(
+  camera_cost_functor_test
+  camera_lib
+  GTest::Main
+  gmock
+)
+add_test(CameraCostFunctorTest camera_cost_functor_test)
+
+add_executable(
+  camera_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_test.cpp
+)
+target_link_libraries(
+  camera_test
   camera_lib
   GTest::Main
   gmock
