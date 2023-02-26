@@ -45,6 +45,27 @@ class Pose3 {
     return t_;
   }
 
+  Pose3 operator*(const Pose3& T_b_a) const {
+    // this = T_c_b
+    const Eigen::Quaterniond& q_c_b = this->rotation();
+    const Eigen::Quaterniond& q_b_a = T_b_a.rotation();
+    const Eigen::Vector3d& t_c_b = this->translation();
+    const Eigen::Vector3d& t_b_a = T_b_a.translation();
+    const Eigen::Quaterniond q_c_a = q_c_b * q_b_a;
+    const Eigen::Vector3d t_c_a = q_c_b * t_b_a + t_c_b;
+    return Pose3(q_c_a, t_c_a);
+  }
+
+  Eigen::Vector3d operator*(const Eigen::Vector3d& p) const {
+    return this->rotation()*p + this->translation();
+  }
+
+  Pose3 inverse() const {
+    const Eigen::Quaterniond q_inv = this->rotation().conjugate();
+    const Eigen::Vector3d t_inv = -(q_inv * this->translation());
+    return Pose3(q_inv, t_inv);
+  }
+
   bool isApprox(const Pose3& pose) const {
     return (pose.rotation().isApprox(q_) && pose.translation().isApprox(t_));
   }

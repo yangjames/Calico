@@ -13,6 +13,7 @@ namespace calico {
 // `Landmark` object which represents a unique 3d point resolved in the world
 // frame. For optimization problems, set `world_point_is_constant` to true
 // if it is a free parameter that needs to be estimated, false otherwise.
+constexpr int kLandmarkFrameId = -1;
 struct Landmark {
   Eigen::Vector3d point;
   int id;

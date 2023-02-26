@@ -36,7 +36,7 @@ class CameraModel {
   // Unproject a pixel and return the corresponding metric plane point. In order
   // to get the unprojected point in pixel space, apply the pinhole paraeters to
   // the unprojectd results.
-  // Top level call invokes the derived calss's implementation.
+  // Top level call invokes the derived class's implementation.
   template <typename T>
   absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
       const Eigen::VectorX<T>& intrinsics,

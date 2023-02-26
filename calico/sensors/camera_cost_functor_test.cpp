@@ -53,19 +53,5 @@ INSTANTIATE_TEST_SUITE_P(
       return info.param.test_name;
     });
 
-  /*
-class CameraOptimizationTest : public ::testing::Test {
- protected:
-  void SetUp() override {
-    
-  }
-
-  Camera camera_;
-};
-
-TEST_F(CameraOptimizationTest, PerfectDataYieldsPerfectResiduals) {
-  
-}
-  */
 } // namespace
 } // namespace calico::sensors

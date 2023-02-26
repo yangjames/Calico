@@ -40,7 +40,6 @@ struct ObservationId {
 struct CameraMeasurement {
   Eigen::Vector2d pixel;
   ObservationId id;
-  double stamp;
 };
 
 // Image size
@@ -68,7 +67,6 @@ class Camera : public Sensor {
       absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
       WorldModel& world_model) final;
 
-  /*
   // Compute the projection of a world model through a kinematic chain. This
   // method returns only valid synthetic measurements as would be observed by
   // the actual sensor, complying with physicality such as features being in
@@ -76,7 +74,6 @@ class Camera : public Sensor {
   std::vector<CameraMeasurement> Project(
       const absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
       const WorldModel& world_model) const;
-  */
 
   // Setter/getter for name.
   void SetName(absl::string_view name) final;
@@ -101,8 +98,8 @@ class Camera : public Sensor {
   ImageSize GetImageSize() const;
 
   // Setter/getter for camera model.
-  absl::Status SetCameraModel(CameraIntrinsicsModel camera_model);
-  CameraIntrinsicsModel GetCameraModel() const;
+  absl::Status SetModel(CameraIntrinsicsModel camera_model);
+  CameraIntrinsicsModel GetModel() const;
 
   // Add a camera measurement to the measurement list. Returns an error if the
   // measurement's id is duplicated without adding.

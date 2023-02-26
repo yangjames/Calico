@@ -45,7 +45,7 @@ class CameraModelTest : public ::testing::Test {
  protected:
   static constexpr double kSamplePlaneWidth = 1.5;
   static constexpr double kSamplePlaneHeight = 1.5;
-  static constexpr double kDelta = 0.25;
+  static constexpr double kDelta = 0.025;
   static constexpr int kNumXPoints = static_cast<int>(kSamplePlaneWidth / kDelta) + 1;
   static constexpr int kNumYPoints = static_cast<int>(kSamplePlaneHeight / kDelta) + 1;
   Eigen::Matrix3d R_world_camera;

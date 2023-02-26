@@ -57,6 +57,42 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
   return num_residuals_added;
 }
 
+std::vector<CameraMeasurement> Camera::Project(
+    const absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+    const WorldModel& world_model) const {
+  std::vector<CameraMeasurement> measurements;
+  // Generate data for every pose in the trajectory.
+  // TODO: When replacing with splines, add a field for specifying timestamps.
+  for (const auto& [pose_id, T_world_sensorrig] : sensorrig_trajectory) {
+    const Pose3 T_camera_world =
+        (T_world_sensorrig * T_sensorrig_sensor_).inverse();
+    // Project all landmarks.
+    for (const auto& [landmark_id, landmark] : world_model.landmarks()) {
+      const Eigen::Vector3d point_camera = T_camera_world * landmark.point;
+      if (point_camera.z() <= 0) {
+        continue;
+      }
+      const absl::StatusOr<Eigen::Vector2d> projection =
+          camera_model_->ProjectPoint(intrinsics_, point_camera);
+      measurements.push_back(
+          {*projection, {pose_id, kLandmarkFrameId, landmark_id}});
+    }
+    // Project all rigid bodies.
+    for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
+      const Pose3 T_camera_rigidbody =
+          T_camera_world * rigidbody.T_world_rigidbody;
+      for (const auto& [point_id, point] : rigidbody.model_definition) {
+        const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
+        const absl::StatusOr<Eigen::Vector2d> projection =
+          camera_model_->ProjectPoint(intrinsics_, point_camera);
+        measurements.push_back(
+            {*projection, {pose_id, rigidbody_id, point_id}});
+      }
+    }
+  }
+  return measurements;
+}
+
 void Camera::SetName(absl::string_view name) {
   name_ = name;
 }
@@ -111,8 +147,9 @@ ImageSize Camera::GetImageSize() const {
   return image_size_;
 }
 
-absl::Status Camera::SetCameraModel(CameraIntrinsicsModel camera_model) {
+absl::Status Camera::SetModel(CameraIntrinsicsModel camera_model) {
   camera_model_ = CameraModel::Create(camera_model);
+  intrinsics_ = Eigen::VectorXd::Zero(camera_model_->NumberOfParameters());
   if (camera_model_) {
     return absl::OkStatus();
   }
@@ -121,7 +158,7 @@ absl::Status Camera::SetCameraModel(CameraIntrinsicsModel camera_model) {
       ". It is likely not yet implemented."));
 }
 
-CameraIntrinsicsModel Camera::GetCameraModel() const {
+CameraIntrinsicsModel Camera::GetModel() const {
   return camera_model_ ?
     camera_model_->GetType() : CameraIntrinsicsModel::kNone;
 }

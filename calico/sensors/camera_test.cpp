@@ -62,20 +62,20 @@ class CameraContainerTest : public ::testing::Test {
 TEST_F(CameraContainerTest, SettersAndGetters) {
   // Pre-assignment.
   EXPECT_THAT(camera_.GetName(), ::testing::IsEmpty());
-  EXPECT_EQ(camera_.GetCameraModel(), CameraIntrinsicsModel::kNone);
+  EXPECT_EQ(camera_.GetModel(), CameraIntrinsicsModel::kNone);
   EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(Pose3()));
   EXPECT_THAT(camera_.GetIntrinsics(), EigenEq(Eigen::VectorXd()));
   EXPECT_THAT(camera_.GetImageSize(), ImageSizeEq(ImageSize()));
   // Post-assignment.
   camera_.SetName(kCameraName);
-  EXPECT_EQ(camera_.SetCameraModel(kCameraModel).code(), absl::StatusCode::kOk);
+  EXPECT_EQ(camera_.SetModel(kCameraModel).code(), absl::StatusCode::kOk);
   camera_.SetExtrinsics(kExtrinsics);
   const absl::Status set_intrinsics_status = camera_.SetIntrinsics(kIntrinsics);
   EXPECT_EQ(set_intrinsics_status.code(), absl::StatusCode::kOk)
     << set_intrinsics_status;
   EXPECT_EQ(camera_.SetImageSize(kImageSize).code(), absl::StatusCode::kOk);
   EXPECT_EQ(camera_.GetName(), kCameraName);
-  EXPECT_EQ(camera_.GetCameraModel(), kCameraModel);
+  EXPECT_EQ(camera_.GetModel(), kCameraModel);
   EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(kExtrinsics));
   EXPECT_THAT(camera_.GetIntrinsics(), EigenEq(kIntrinsics));
 }
@@ -84,7 +84,6 @@ TEST_F(CameraContainerTest, AddSingleMeasurementOnlyUniqueAllowed) {
   const CameraMeasurement measurement{
     .pixel = Eigen::Vector2d::Random(),
     .id = {.image_id = 0, .model_id = 1, .feature_id = 2},
-    .stamp = 123.456
   };
   camera_.ClearMeasurements();
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
@@ -148,7 +147,7 @@ TEST_F(CameraContainerTest, RemoveMultipleMeasurements) {
 }
 
 TEST_F(CameraContainerTest, AddCalibrationParametersToProblem) {
-  EXPECT_EQ(camera_.SetCameraModel(kCameraModel).code(), absl::StatusCode::kOk);
+  EXPECT_EQ(camera_.SetModel(kCameraModel).code(), absl::StatusCode::kOk);
   EXPECT_EQ(camera_.SetIntrinsics(kIntrinsics).code(), absl::StatusCode::kOk);
   camera_.SetExtrinsics(kExtrinsics);
   ceres::Problem problem;

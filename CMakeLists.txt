@@ -54,13 +54,13 @@ add_test(WorldModelTest world_model_test)
 
 # Build camera library and tests.
 add_library(
-  camera_lib
+  camera
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.cpp
 )
 target_link_libraries(
-  camera_lib
+  camera
   Eigen3::Eigen
   absl::status
   absl::statusor
@@ -75,7 +75,7 @@ add_executable(
 )
 target_link_libraries(
   camera_models_test
-  camera_lib
+  camera
   GTest::Main
   gmock
 )
@@ -87,7 +87,7 @@ add_executable(
 )
 target_link_libraries(
   camera_cost_functor_test
-  camera_lib
+  camera
   GTest::Main
   gmock
 )
@@ -99,8 +99,33 @@ add_executable(
 )
 target_link_libraries(
   camera_test
-  camera_lib
+  camera
   GTest::Main
   gmock
 )
-add_test(CameraLibTest camera_lib_test)
+add_test(CameraLibTest camera_test)
+
+# Build batch optimizer and tests.
+add_library(
+  batch_optimizer
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer.cpp
+)
+target_link_libraries(
+  batch_optimizer
+  camera
+  world_model
+)
+
+add_executable(
+  batch_optimizer_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer_test.cpp
+)
+target_link_libraries(
+  batch_optimizer_test
+  camera
+  world_model
+  batch_optimizer
+  GTest::Main
+  gmock
+)
+add_test(BatchOptimizerTest batch_optimizer_test)
