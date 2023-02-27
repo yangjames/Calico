@@ -1,3 +1,4 @@
+#include "calico/matchers.h"
 #include "calico/typedefs.h"
 #include "calico/sensors/camera.h"
 #include "calico/sensors/camera_cost_functor.h"
@@ -10,20 +11,6 @@
 
 namespace calico::sensors {
 namespace {
-
-MATCHER_P(PoseEq, expected_pose, "") {
-  return (arg.rotation().isApprox(expected_pose.rotation()) &&
-          arg.translation().isApprox(expected_pose.translation()));
-}
-
-MATCHER_P(EigenEq, expected_vector, "") {
-  return (arg.isApprox(expected_vector));
-}
-
-MATCHER_P(ImageSizeEq, expected_image_size, "") {
-  return (arg.width == expected_image_size.width &&
-          arg.height == expected_image_size.height);
-}
 
 class CameraContainerTest : public ::testing::Test {
  protected:

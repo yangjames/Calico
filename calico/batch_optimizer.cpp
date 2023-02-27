@@ -22,7 +22,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
   // Add world model and trajectory to problem.
   int num_parameters = 0;
   int num_residuals = 0;
-  //world_model_.AddParametersToProblem(problem);
+  num_parameters += world_model_.AddParametersToProblem(problem);
   for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
     const auto num_parameters_added = sensor->AddParametersToProblem(problem);
     if (!num_parameters_added.status().ok()) {
@@ -37,6 +37,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
     num_residuals += *num_residuals_added;
   }
   // Run solver.
+  // TODO: Make optimizer options configurable
   ceres::Solver::Options options;
   options.linear_solver_type = ceres::DENSE_SCHUR;
   options.preconditioner_type = ceres::JACOBI;

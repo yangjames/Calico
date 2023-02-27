@@ -1,7 +1,10 @@
 #ifndef CALICO_TYPEDEFS_H_
 #define CALICO_TYPEDEFS_H_
 
+#include <iostream>
+
 #include "Eigen/Dense"
+
 
 namespace Eigen {
 
@@ -68,6 +71,13 @@ class Pose3 {
 
   bool isApprox(const Pose3& pose) const {
     return (pose.rotation().isApprox(q_) && pose.translation().isApprox(t_));
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, const Pose3& pose) {
+    os
+      << "q: " << pose.rotation().coeffs().transpose() <<
+      ", t: " << pose.translation().transpose();
+    return os;
   }
 
  private:
