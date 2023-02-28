@@ -3,7 +3,9 @@
 
 #include "calico/typedefs.h"
 
+#include "absl/status/statusor.h"
 #include "Eigen/Dense"
+
 
 namespace calico {
 
@@ -15,16 +17,14 @@ class BSpline {
  public:
 
   // Define a container for an `N`-DOF B-spline with type `T`.
-  explicit BSpline() = default;
   ~BSpline() = default;
 
   // Fits an N-DOF uniform B-spline fitted to given timestamps
   // and N-dimensional data. User also specifies the spline order and the knot
   // frequency of the spline.
-  absl::Status FitSplineToData(const Eigen::VectorX<T>& time_s,
-                               const std::vector<Eigen::Vector<T,N>>& data,
-                               int spline_order,
-                               double knot_frequency_hz);
+  absl::Status FitToData(const Eigen::VectorX<T>& time,
+                         const std::vector<Eigen::Vector<T,N>>& data,
+                         int spline_order, double knot_frequency);
 
   // Interpolate the spline at given times for the given derivative. If no
   // derivative is specified, it defaults to direct interpolation.
@@ -47,7 +47,7 @@ class BSpline {
   int spline_order_;
   double knot_frequency_;
   std::vector<Eigen::Vector<T,N>> data_;
-  std::vector<T> time_;
+  Eigen::VectorX<T> time_;
 
   // Derived properties of the spline.
   int spline_degree_;
@@ -57,10 +57,13 @@ class BSpline {
   int num_valid_segments_;
   std::vector<T> knots_;
   std::vector<T> valid_knots_;
+  Eigen::MatrixX<T> derivative_coeffs_;
+  std::vector<Eigen::MatrixX<T>> Mi_;
+  Eigen::MatrixX<T> control_points_;
 
   // Convenience function for computing the power rule coefficients. These
   // coefficients are used when computing derivatives of the spline.
-  void ComputePowerRuleCoeffients();
+  void ComputePowerRuleCoefficients();
 
   // Convenience function for computing a knot vector.
   void ComputeKnotVector();
@@ -97,9 +100,7 @@ class BSpline {
       double knot_frequency);
 };
 
-#include "calico/bspline.hpp"
-
 } // namespace calico
 
-
+#include "calico/bspline.hpp"
 #endif // CALICO_BSPLINE_H_

@@ -28,6 +28,21 @@ target_link_libraries(
 )
 add_test(TypeDefsTest typedefs_test)
 
+# Build spline test.
+add_executable(
+  bspline_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/bspline_test.cpp
+)
+target_link_libraries(
+  bspline_test
+  Eigen3::Eigen
+  absl::status
+  absl::statusor
+  GTest::Main
+  gmock
+)
+add_test(BSplineTest bspline_test)
+
 # Build world model library and tests.
 add_library(
   world_model

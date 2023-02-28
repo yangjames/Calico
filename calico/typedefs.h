@@ -9,13 +9,19 @@
 namespace Eigen {
 
 template <typename T>
-using Vector2 = Matrix<T,2,1>;
+using Vector2 = Matrix<T, 2, 1>;
 
 template <typename T>
-using Vector3 = Matrix<T,3,1>;
+using Vector3 = Matrix<T, 3, 1>;
 
 template <typename T>
-using VectorX = Matrix<T,Dynamic,1>;
+using VectorX = Matrix<T, Dynamic, 1>;
+
+template <typename T>
+using MatrixX = Matrix<T, Dynamic, Dynamic>;
+
+template <typename T, int N>
+using Vector = Matrix<T, N, 1>;
 
 } // namespace Eigen
 

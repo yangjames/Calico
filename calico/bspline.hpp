@@ -1,20 +1,16 @@
 #include <algorithm>
 
+#include "calico/statusor_macros.h"
+
+
 namespace calico {
 
 template <typename T, int N>
-BSpline<T,N>::BSpline() {}
-
-template <typename T, int N>
-BSpline<T,N>::FitSplineToData(const Eigen::VectorX<T>& time,
-                              const std::vector<Eigen::Vector<T,N>>& data,
-                              int spline_order,
-                              double knot_frequency) {
-  const absl::Status status =
-    CheckDataForSplineFit(time, data, spline_order, knot_frequency);
-  if (!status.ok()) {
-    return status;
-  }
+absl::Status BSpline<T, N>::FitToData(
+    const Eigen::VectorX<T>& time, const std::vector<Eigen::Vector<T,N>>& data,
+    int spline_order, double knot_frequency) {
+  RETURN_IF_ERROR(
+      CheckDataForSplineFit(time, data, spline_order, knot_frequency));
   time_ = time;
   data_ = data;
   spline_order_ = spline_order;
@@ -26,10 +22,21 @@ BSpline<T,N>::FitSplineToData(const Eigen::VectorX<T>& time,
   ComputeBasisMatrices();
   // Fit the spline.
   FitSpline();
+  return absl::OkStatus();
 }
 
+template <typename T, int N>
+absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<T, N>::Interpolate(
+    const Eigen::VectorX<T>& times, int derivative) const {
+  if (derivative < 0 || derivative > spline_degree_) {
+    return absl::InvalidArgumentError("Invalid derivative for interpolation.");
+  }
+  return std::vector<Eigen::Vector<T, N>>{};
+}
+
+
 template<typename T, int N>
-void BSpline<T,N>::ComputePowerRuleCoefficients() {
+void BSpline<T, N>::ComputePowerRuleCoefficients() {
   // Resize the matrix and initialize to zeros
   derivative_coeffs_.resize(spline_degree_, spline_order_);
   derivative_coeffs_.setZero();
@@ -48,7 +55,7 @@ void BSpline<T,N>::ComputePowerRuleCoefficients() {
 
 template <typename T, int N>
 void BSpline<T,N>::ComputeKnotVector() {
-  const T duration = time_.back() - time_.front();
+  const T duration = (time_.tail(1) - time_.head(1))(0);
   const T dt = 1.0 / knot_frequency_;
 
   num_knots_ = 1 + ceil(duration * knot_frequency_) + 2 * spline_degree_;
@@ -58,7 +65,7 @@ void BSpline<T,N>::ComputeKnotVector() {
   knots_.resize(num_knots_);
   valid_knots_.resize(num_valid_knots_);
   for (int i = -spline_degree_; i < num_knots_ - spline_degree_; ++i) {
-    const T knot_value = time_.front() + dt * i;
+    const T knot_value = time_.head(1)(0) + dt * i;
     knots_[i + spline_degree_] = knot_value;
 
     int valid_knot_index = i;
@@ -70,7 +77,7 @@ void BSpline<T,N>::ComputeKnotVector() {
 
 template <typename T, int N>
 void BSpline<T,N>::ComputeBasisMatrices() {
-  num_valid_segments_ = n_knots_ - 2 * spline_order_ + 1;
+  num_valid_segments_ = num_knots_ - 2 * spline_order_ + 1;
   Mi_.resize(num_valid_segments_);
   for (int i = 0; i < num_valid_segments_; ++i) {
     Mi_[i] = M(spline_order_, i + spline_degree_);
@@ -139,7 +146,7 @@ void BSpline<T,N>::FitSpline() {
   X.setZero();
   for (int j = 0; j < num_data; j++) {
     const T t = time_[j];
-    const int spline_index = -1;
+    int spline_index = -1;
 
     if (t == valid_knots_.back()) {
       spline_index = num_valid_segments_ - 1;
@@ -156,7 +163,7 @@ void BSpline<T,N>::FitSpline() {
     const T ti = knots_[knot_index];
     const T tii = knots_[knot_index + 1];
     // Construct U vector
-    Eigen::RowVectorX<T> U(spline_order_);
+    Eigen::VectorX<T> U(spline_order_);
     U.setOnes();
     const T u = (t - ti) / (tii - ti);
     for (int i = 1; i < spline_order_; ++i) {
@@ -164,7 +171,7 @@ void BSpline<T,N>::FitSpline() {
     }
     // Construct U*M
     Eigen::MatrixX<T> M = Mi_[spline_index];
-    Eigen::MatrixX<T> UM = U * M;
+    Eigen::MatrixX<T> UM = U.transpose() * M;
     X.block(j, spline_index, UM.rows(), UM.cols()) = UM;
   }
 
@@ -180,14 +187,12 @@ void BSpline<T,N>::FitSpline() {
   control_points_ = XtX.colPivHouseholderQr().solve(Xtd).transpose();
 }
 
-
 template<typename T, int N>
 absl::Status BSpline<T,N>::CheckDataForSplineFit(
-    const Eigen::VectorX<T>& time,
-    const std::vector<Eigen::Vector<T,N>>& data, int spline_order,
-    double knot_frequency) {
+    const Eigen::VectorX<T>& time, const std::vector<Eigen::Vector<T, N>>& data,
+    int spline_order, double knot_frequency) {
   // Assert that data and time are properly sized
-  if (time.empty()) {
+  if (!time.size()) {
     return absl::InvalidArgumentError("Attempted to fit data on empty time vector.");
   }
   if (data.empty()) {
@@ -197,9 +202,10 @@ absl::Status BSpline<T,N>::CheckDataForSplineFit(
     return absl::InvalidArgumentError("Data and time vectors are not the same size.");
   }
   // Check that time is strictly increasing
-  const auto time_iterator = std::adjacent_find(time.begin(), time.end(), std::greater<T>());
-  if (time_iterator != time.end()) {
-    return absl::InvalidArgumentError("Time vector is not monotonically increasing.");
+  for (int i = 1; i < time.size(); ++i) {
+    if (time(i - 1) >= time(i)) {
+      return absl::InvalidArgumentError("Time vector is not monotonically increasing.");
+    }
   }
   // Check that spline order is greater than 2
   if (spline_order < 2) {
@@ -212,7 +218,5 @@ absl::Status BSpline<T,N>::CheckDataForSplineFit(
   }
   return absl::OkStatus();
 }
-
-
 
 } // namespace calico

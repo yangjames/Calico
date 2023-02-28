@@ -40,6 +40,10 @@ MATCHER_P(ImageSizeEq, expected_image_size, "") {
           arg.height == expected_image_size.height);
 }
 
+MATCHER_P(StatusIs, status, "") {
+  return arg.status().code() == status;
+}
+
 
 } // namespace calico
 #endif // CALICO_MATCHERS_H_
