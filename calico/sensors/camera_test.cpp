@@ -1,9 +1,9 @@
+#include "calico/sensors/camera.h"
+
 #include "calico/matchers.h"
 #include "calico/typedefs.h"
-#include "calico/sensors/camera.h"
 #include "calico/sensors/camera_cost_functor.h"
 #include "calico/sensors/camera_models.h"
-
 #include "Eigen/Dense"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -55,12 +55,10 @@ TEST_F(CameraContainerTest, SettersAndGetters) {
   EXPECT_THAT(camera_.GetImageSize(), ImageSizeEq(ImageSize()));
   // Post-assignment.
   camera_.SetName(kCameraName);
-  EXPECT_EQ(camera_.SetModel(kCameraModel).code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_.SetModel(kCameraModel));
   camera_.SetExtrinsics(kExtrinsics);
-  const absl::Status set_intrinsics_status = camera_.SetIntrinsics(kIntrinsics);
-  EXPECT_EQ(set_intrinsics_status.code(), absl::StatusCode::kOk)
-    << set_intrinsics_status;
-  EXPECT_EQ(camera_.SetImageSize(kImageSize).code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_.SetIntrinsics(kIntrinsics));
+  EXPECT_OK(camera_.SetImageSize(kImageSize));
   EXPECT_EQ(camera_.GetName(), kCameraName);
   EXPECT_EQ(camera_.GetModel(), kCameraModel);
   EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(kExtrinsics));
@@ -74,7 +72,7 @@ TEST_F(CameraContainerTest, AddSingleMeasurementOnlyUniqueAllowed) {
   };
   camera_.ClearMeasurements();
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-  EXPECT_EQ(camera_.AddMeasurement(measurement).code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_.AddMeasurement(measurement));
   EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
   // Add the same measurement and expect an error.
   EXPECT_EQ(camera_.AddMeasurement(measurement).code(),
@@ -106,10 +104,9 @@ TEST_F(CameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
 TEST_F(CameraContainerTest, RemoveMeasurement) {
   const CameraMeasurement measurement{};
   camera_.ClearMeasurements();
-  EXPECT_EQ(camera_.AddMeasurement(measurement).code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_.AddMeasurement(measurement));
   EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
-  EXPECT_EQ(camera_.RemoveMeasurementById(measurement.id).code(),
-            absl::StatusCode::kOk);
+  EXPECT_OK(camera_.RemoveMeasurementById(measurement.id));
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
   EXPECT_EQ(camera_.RemoveMeasurementById(measurement.id).code(),
             absl::StatusCode::kInvalidArgument);
@@ -119,29 +116,27 @@ TEST_F(CameraContainerTest, RemoveMultipleMeasurements) {
   std::vector<CameraMeasurement> measurements = measurements_;
   camera_.ClearMeasurements();
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-  EXPECT_EQ(camera_.AddMeasurements(measurements).code(),
-            absl::StatusCode::kOk);
+  EXPECT_OK(camera_.AddMeasurements(measurements));
   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size());
 
   std::vector<ObservationId> ids;
   for (const auto& measurement : measurements) {
     ids.push_back(measurement.id);
   }
-  EXPECT_EQ(camera_.RemoveMeasurementsById(ids).code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_.RemoveMeasurementsById(ids));
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
   EXPECT_EQ(camera_.RemoveMeasurementsById(ids).code(),
             absl::StatusCode::kInvalidArgument);
 }
 
 TEST_F(CameraContainerTest, AddCalibrationParametersToProblem) {
-  EXPECT_EQ(camera_.SetModel(kCameraModel).code(), absl::StatusCode::kOk);
-  EXPECT_EQ(camera_.SetIntrinsics(kIntrinsics).code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_.SetModel(kCameraModel));
+  EXPECT_OK(camera_.SetIntrinsics(kIntrinsics));
   camera_.SetExtrinsics(kExtrinsics);
   ceres::Problem problem;
-  const absl::StatusOr<int> num_parameters =
-    camera_.AddParametersToProblem(problem);
-  ASSERT_EQ(num_parameters.status().code(), absl::StatusCode::kOk);
-  EXPECT_EQ(problem.NumParameters(), *num_parameters);
+  ASSERT_OK_AND_ASSIGN(const int num_parameters,
+                       camera_.AddParametersToProblem(problem));
+  EXPECT_EQ(problem.NumParameters(), num_parameters);
 }
 
 } // namespace

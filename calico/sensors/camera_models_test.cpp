@@ -1,5 +1,6 @@
 #include "calico/sensors/camera_models.h"
 
+#include "calico/matchers.h"
 #include "Eigen/Dense"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -80,18 +81,16 @@ TEST_F(CameraModelTest, OpenCv5ModelProjectionAndUnprojection) {
     const Eigen::Vector3d t_camera_point =
       R_world_camera.transpose() * (t_world_point - t_world_camera);
     // Forward projection.
-    absl::StatusOr<Eigen::Vector2d> pixel =
-      OpenCv5Model::ProjectPoint(intrinsics, t_camera_point);
-    ASSERT_EQ(pixel.status().code(), absl::StatusCode::kOk);
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector2d pixel,
+        OpenCv5Model::ProjectPoint(intrinsics, t_camera_point));
     // Invert forward projection.
-    absl::StatusOr<Eigen::Vector3d> unprojected_point =
-      OpenCv5Model::UnprojectPixel(intrinsics, *pixel);
-    ASSERT_EQ(unprojected_point.status().code(), absl::StatusCode::kOk);
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
+        OpenCv5Model::UnprojectPixel(intrinsics, pixel));
     // Compare results.
     const Eigen::Vector3d t_camera_point_metric =
       t_camera_point / t_camera_point.z();
-    EXPECT_TRUE(t_camera_point_metric.isApprox(
-        *unprojected_point, kSmallError));
+    EXPECT_THAT(t_camera_point_metric, EigenIsApprox(
+        unprojected_point, kSmallError));
   }
 }
 

@@ -1,5 +1,6 @@
 #include "calico/typedefs.h"
 
+#include "calico/matchers.h"
 #include "gtest/gtest.h"
 
 namespace calico {
@@ -63,7 +64,7 @@ TEST(Pose3Test, IsApprox) {
                     Eigen::Vector3d::Random());
   const Pose3 pose2 = pose1;
 
-  EXPECT_TRUE(pose1.isApprox(pose2));
+  EXPECT_THAT(pose1, PoseEq(pose2));
 }
 
 } // namespace

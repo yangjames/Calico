@@ -9,7 +9,7 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(GTest REQUIRED)
 find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
-
+enable_testing()
 # Add top level include directory.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -24,6 +24,7 @@ target_link_libraries(
   typedefs_test
   Eigen3::Eigen
   GTest::Main
+  gmock
 )
 add_test(TypeDefsTest typedefs_test)
 

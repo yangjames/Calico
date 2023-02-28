@@ -100,20 +100,12 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
 
   // Ground truth cameras to be used for synthetic measurement generation.
   sensors::Camera true_camera_left;
-  const auto set_true_left_model_status =
-      true_camera_left.SetModel(kCameraModel);
-  EXPECT_EQ(set_true_left_model_status.code(), absl::StatusCode::kOk);
-  const auto set_true_left_intrinsics_status =
-      true_camera_left.SetIntrinsics(true_intrinsics);
-  EXPECT_EQ(set_true_left_intrinsics_status.code(), absl::StatusCode::kOk);
+  EXPECT_OK(true_camera_left.SetModel(kCameraModel));
+  EXPECT_OK(true_camera_left.SetIntrinsics(true_intrinsics));
   true_camera_left.SetExtrinsics(true_extrinsics_left);
   sensors::Camera true_camera_right;
-  const auto set_true_right_model_status =
-      true_camera_right.SetModel(kCameraModel);
-  EXPECT_EQ(set_true_right_model_status.code(), absl::StatusCode::kOk);
-  const auto set_true_right_intrinsics_status =
-      true_camera_right.SetIntrinsics(true_intrinsics);
-  EXPECT_EQ(set_true_right_intrinsics_status.code(), absl::StatusCode::kOk);
+  EXPECT_OK(true_camera_right.SetModel(kCameraModel));
+  EXPECT_OK(true_camera_right.SetIntrinsics(true_intrinsics));
   true_camera_right.SetExtrinsics(true_extrinsics_right);
 
   // World model consisting of a single planar object.
@@ -125,8 +117,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
     planar_target.model_definition[i] = t_world_points[i];
   }
   WorldModel world_model;
-  const auto add_rigidbody_status = world_model.AddRigidBody(planar_target);
-  EXPECT_EQ(add_rigidbody_status.code(), absl::StatusCode::kOk);
+  EXPECT_OK(world_model.AddRigidBody(planar_target));
 
   // Generate measurements.
   const auto measurements_left =
@@ -141,29 +132,19 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   
   sensors::Camera* camera_left = new sensors::Camera();
   camera_left->SetName("Left");
-  const auto set_left_model_status = camera_left->SetModel(kCameraModel);
-  EXPECT_EQ(set_left_model_status.code(), absl::StatusCode::kOk);
-  const auto set_left_intrinsics_status =
-    camera_left->SetIntrinsics(initial_intrinsics);
-  EXPECT_EQ(set_left_intrinsics_status.code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_left->SetModel(kCameraModel));
+  EXPECT_OK(camera_left->SetIntrinsics(initial_intrinsics));
   camera_left->EnableExtrinsicsParameters(false);
   camera_left->EnableIntrinsicsParameters(true);
-  const auto set_left_measurements_status =
-      camera_left->AddMeasurements(measurements_left);
-  EXPECT_EQ(set_left_measurements_status.code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_left->AddMeasurements(measurements_left));
   sensors::Camera* camera_right = new sensors::Camera();
   camera_right->SetName("Right");
-  const auto set_right_model_status = camera_right->SetModel(kCameraModel);
-  EXPECT_EQ(set_right_model_status.code(), absl::StatusCode::kOk);
-  const auto set_right_intrinsics_status =
-      camera_right->SetIntrinsics(initial_intrinsics);
-  EXPECT_EQ(set_right_intrinsics_status.code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_right->SetModel(kCameraModel));
+  EXPECT_OK(camera_right->SetIntrinsics(initial_intrinsics));
   camera_right->SetExtrinsics(initial_extrinsics);
   camera_right->EnableExtrinsicsParameters(true);
   camera_right->EnableIntrinsicsParameters(true);
-  const auto set_right_measurements_status =
-      camera_right->AddMeasurements(measurements_right);
-  EXPECT_EQ(set_right_measurements_status.code(), absl::StatusCode::kOk);
+  EXPECT_OK(camera_right->AddMeasurements(measurements_right));
 
   // Construct optimization problem and optimize.
   BatchOptimizer optimizer;
@@ -171,17 +152,16 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   optimizer.AddSensor(camera_right);
   optimizer.AddWorldModel(world_model);
   optimizer.AddTrajectory(trajectory_world_sensorrig);
-  const auto summary = optimizer.Optimize();
-  EXPECT_EQ(summary.status().code(), absl::StatusCode::kOk);
+  ASSERT_OK_AND_ASSIGN(const auto summary, optimizer.Optimize());
 
   // Expect near perfect calibration results due to perfect data.
   constexpr double kSmallNumber = 1e-9;
-  EXPECT_EQ((*summary).termination_type, ceres::CONVERGENCE);
-  EXPECT_LT((*summary).final_cost, kSmallNumber);
-  EXPECT_TRUE(true_intrinsics.isApprox(camera_left->GetIntrinsics(),
-                                       kSmallNumber));
-  EXPECT_TRUE(true_intrinsics.isApprox(camera_right->GetIntrinsics(),
-                                       kSmallNumber));
+  EXPECT_EQ(summary.termination_type, ceres::CONVERGENCE);
+  EXPECT_LT(summary.final_cost, kSmallNumber);
+  EXPECT_THAT(true_intrinsics, EigenIsApprox(camera_left->GetIntrinsics(),
+                                             kSmallNumber));
+  EXPECT_THAT(true_intrinsics, EigenIsApprox(camera_right->GetIntrinsics(),
+                                             kSmallNumber));
   EXPECT_THAT(true_extrinsics_right, PoseIsApprox(camera_right->GetExtrinsics(),
                                                   kSmallNumber));
 }

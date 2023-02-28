@@ -1,5 +1,7 @@
 #include "calico/batch_optimizer.h"
 
+#include "calico/statusor_macros.h"
+
 
 namespace calico {
 
@@ -24,17 +26,12 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
   int num_residuals = 0;
   num_parameters += world_model_.AddParametersToProblem(problem);
   for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
-    const auto num_parameters_added = sensor->AddParametersToProblem(problem);
-    if (!num_parameters_added.status().ok()) {
-      return num_parameters_added.status();
-    }
-    num_parameters += *num_parameters_added;
-    const auto num_residuals_added = sensor->AddResidualsToProblem(
-        problem, trajectory_world_body_, world_model_);
-    if (!num_residuals_added.status().ok()) {
-      return num_residuals_added.status();
-    }
-    num_residuals += *num_residuals_added;
+    ASSIGN_OR_RETURN(const auto num_parameters_added,
+                     sensor->AddParametersToProblem(problem));
+    num_parameters += num_parameters_added;
+    ASSIGN_OR_RETURN(const auto num_residuals_added,
+        sensor->AddResidualsToProblem(problem, trajectory_world_body_, world_model_));
+    num_residuals += num_residuals_added;
   }
   // Run solver.
   // TODO: Make optimizer options configurable
