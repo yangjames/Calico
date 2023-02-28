@@ -7,7 +7,7 @@ namespace calico {
 
 template <typename T, int N>
 absl::Status BSpline<T, N>::FitToData(
-    const Eigen::VectorX<T>& time, const std::vector<Eigen::Vector<T,N>>& data,
+    const std::vector<T>& time, const std::vector<Eigen::Vector<T,N>>& data,
     int spline_order, double knot_frequency) {
   RETURN_IF_ERROR(
       CheckDataForSplineFit(time, data, spline_order, knot_frequency));
@@ -27,10 +27,11 @@ absl::Status BSpline<T, N>::FitToData(
 
 template <typename T, int N>
 absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<T, N>::Interpolate(
-    const Eigen::VectorX<T>& times, int derivative) const {
+    const std::vector<T>& times, int derivative) const {
   if (derivative < 0 || derivative > spline_degree_) {
     return absl::InvalidArgumentError("Invalid derivative for interpolation.");
   }
+
   return std::vector<Eigen::Vector<T, N>>{};
 }
 
@@ -55,7 +56,7 @@ void BSpline<T, N>::ComputePowerRuleCoefficients() {
 
 template <typename T, int N>
 void BSpline<T,N>::ComputeKnotVector() {
-  const T duration = (time_.tail(1) - time_.head(1))(0);
+  const T duration = time_.back() - time_.front();
   const T dt = 1.0 / knot_frequency_;
 
   num_knots_ = 1 + ceil(duration * knot_frequency_) + 2 * spline_degree_;
@@ -65,7 +66,7 @@ void BSpline<T,N>::ComputeKnotVector() {
   knots_.resize(num_knots_);
   valid_knots_.resize(num_valid_knots_);
   for (int i = -spline_degree_; i < num_knots_ - spline_degree_; ++i) {
-    const T knot_value = time_.head(1)(0) + dt * i;
+    const T knot_value = time_.front() + dt * i;
     knots_[i + spline_degree_] = knot_value;
 
     int valid_knot_index = i;
@@ -189,7 +190,7 @@ void BSpline<T,N>::FitSpline() {
 
 template<typename T, int N>
 absl::Status BSpline<T,N>::CheckDataForSplineFit(
-    const Eigen::VectorX<T>& time, const std::vector<Eigen::Vector<T, N>>& data,
+    const std::vector<T>& time, const std::vector<Eigen::Vector<T, N>>& data,
     int spline_order, double knot_frequency) {
   // Assert that data and time are properly sized
   if (!time.size()) {
@@ -202,10 +203,9 @@ absl::Status BSpline<T,N>::CheckDataForSplineFit(
     return absl::InvalidArgumentError("Data and time vectors are not the same size.");
   }
   // Check that time is strictly increasing
-  for (int i = 1; i < time.size(); ++i) {
-    if (time(i - 1) >= time(i)) {
-      return absl::InvalidArgumentError("Time vector is not monotonically increasing.");
-    }
+  auto iter = std::adjacent_find(time_.begin(), time_.end(), std::greater<T>());
+  if (iter != time_.end()) {
+    return absl::InvalidArgumentError("Time vector is not monotonically increasing.");
   }
   // Check that spline order is greater than 2
   if (spline_order < 2) {

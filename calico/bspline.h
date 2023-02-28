@@ -22,14 +22,14 @@ class BSpline {
   // Fits an N-DOF uniform B-spline fitted to given timestamps
   // and N-dimensional data. User also specifies the spline order and the knot
   // frequency of the spline.
-  absl::Status FitToData(const Eigen::VectorX<T>& time,
+  absl::Status FitToData(const std::vector<T>& time,
                          const std::vector<Eigen::Vector<T,N>>& data,
                          int spline_order, double knot_frequency);
 
   // Interpolate the spline at given times for the given derivative. If no
   // derivative is specified, it defaults to direct interpolation.
   absl::StatusOr<std::vector<Eigen::Vector<T,N>>>
-  Interpolate(const Eigen::VectorX<T>& times, int derivative = 0) const;
+  Interpolate(const std::vector<T>& times, int derivative = 0) const;
 
   // Returns the number of control points in the spline.
   int NumberOfControlPoints() const;
@@ -47,7 +47,7 @@ class BSpline {
   int spline_order_;
   double knot_frequency_;
   std::vector<Eigen::Vector<T,N>> data_;
-  Eigen::VectorX<T> time_;
+  std::vector<T> time_;
 
   // Derived properties of the spline.
   int spline_degree_;
@@ -95,7 +95,7 @@ class BSpline {
 
   // Check that inputs provided for spline fit are valid.
   absl::Status CheckDataForSplineFit(
-      const Eigen::VectorX<T>& time,
+      const std::vector<T>& time,
       const std::vector<Eigen::Vector<T,N>>& data, int spline_order,
       double knot_frequency);
 };

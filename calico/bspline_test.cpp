@@ -11,7 +11,7 @@ class BSplineTest : public ::testing::Test {
  protected:
   static constexpr int kNumPoints = 101;
   static constexpr double kDt = 0.1;
-  Eigen::VectorXd time;
+  std::vector<double> time;
   std::vector<Eigen::Vector3d> data;
 
   void SetUp() override {
@@ -21,22 +21,31 @@ class BSplineTest : public ::testing::Test {
       double t = kDt * i;
       double ct = std::cos(t);
       Eigen::Vector3d v(ct, ct, ct);
-      time(i) = t;
+      time[i] = t;
       data[i] = v;
     }
   }
 };
 
-TEST_F(BSplineTest, InvalidDerivative) {
+TEST_F(BSplineTest, InvalidDerivatives) {
   constexpr int kSplineOrder = 6;
   constexpr int kKnotFrequency = 5;
   BSpline<double, 3> spline;
   EXPECT_OK(spline.FitToData(time, data, kSplineOrder, kKnotFrequency));
-  Eigen::VectorXd interp_time(1);
-  interp_time(0) = 0;
+  std::vector<double> interp_time{0};
   EXPECT_THAT(spline.Interpolate(interp_time, -1),
               StatusIs(absl::StatusCode::kInvalidArgument));
   EXPECT_THAT(spline.Interpolate(interp_time, kSplineOrder),
+              StatusIs(absl::StatusCode::kInvalidArgument));
+}
+
+TEST_F(BSplineTest, InvalidInterpolationTime) {
+  constexpr int kSplineOrder = 6;
+  constexpr int kKnotFrequency = 5;
+  BSpline<double, 3> spline;
+  EXPECT_OK(spline.FitToData(time, data, kSplineOrder, kKnotFrequency));
+  std::vector<double> interp_time{-1};
+  EXPECT_THAT(spline.Interpolate(interp_time, -1),
               StatusIs(absl::StatusCode::kInvalidArgument));
 }
 
