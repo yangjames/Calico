@@ -61,6 +61,14 @@ class BSpline {
   std::vector<Eigen::MatrixX<T>> Mi_;
   Eigen::MatrixX<T> control_points_;
 
+  // Convenience function for getting the index of the active control point for
+  // a queried time.
+  int GetControlPointIndex(T query_time) const;
+
+  // Convenience function for getting the basis matrix for a specific spline
+  // index and derivative.
+  Eigen::MatrixX<T> GetBasisMatrix(int spline_idx, int derivative) const;
+
   // Convenience function for computing the power rule coefficients. These
   // coefficients are used when computing derivatives of the spline.
   void ComputePowerRuleCoefficients();

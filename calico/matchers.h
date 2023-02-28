@@ -27,11 +27,13 @@ MATCHER_P(PoseEq, expected_pose, "") {
 
 // Matcher for an Eigen vector with double precision floating point tolerance.
 MATCHER_P(EigenEq, expected_vector, "") {
+  *result_listener << arg.transpose() << " vs. " << expected_vector.transpose();
   return (arg.isApprox(expected_vector));
 }
 
 // Matcher for an Eigen vector with given tolerance.
 MATCHER_P2(EigenIsApprox, expected_vector, tolerance, "") {
+  *result_listener << arg.transpose() << " vs. " << expected_vector.transpose();
   return (arg.isApprox(expected_vector, tolerance));
 }
 

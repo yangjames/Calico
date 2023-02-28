@@ -32,9 +32,71 @@ absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<T, N>::Interpolate(
     return absl::InvalidArgumentError("Invalid derivative for interpolation.");
   }
 
-  return std::vector<Eigen::Vector<T, N>>{};
+  for (const T& t : times) {
+    if (t < valid_knots_.front() || t > valid_knots_.back()) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Cannot interpolate ", t, ". Value is not within valid knots."));
+    }
+  }
+
+  int num_interp = times.size();
+  std::vector<Eigen::Vector<T, N>> y(num_interp);
+  for (int j = 0; j < num_interp; ++j) {
+    const int spline_idx = GetControlPointIndex(times[j]);
+    const int knot_idx = spline_idx + spline_degree_;
+    const Eigen::MatrixX<T> M = GetBasisMatrix(spline_idx, derivative);
+
+    const T& ti = knots_[knot_idx];
+    const T& tii = knots_[knot_idx + 1];
+    const T dt = tii - ti;
+    const T dt_inv = T(1.0) / dt;
+
+    T dnu_dtn = T(1.0);
+    for (int i = 0; i < derivative; ++i) {
+      dnu_dtn *= dt_inv;
+    }
+
+    const T u = (times[j] - ti) * dt_inv;
+    Eigen::Matrix<T, 1, Eigen::Dynamic> U(spline_order_ - derivative);
+    U.setOnes();
+    for (int i = 1; i < spline_order_ - derivative; ++i) {
+      U(i) = u * U(i - 1);
+    }
+    const Eigen::MatrixX<T> deriv_coeffs =
+      derivative_coeffs_.block(derivative, derivative, 1,
+                               spline_order_ - derivative);
+    U = (U.array() * derivative_coeffs_
+         .block(derivative, derivative, 1, spline_order_ - derivative)
+         .array()) * dnu_dtn;
+    const Eigen::MatrixX<T> V =
+        control_points_.block(
+             0, spline_idx, N, knot_idx - spline_idx + 1).transpose();
+    y[j] = (U * M * V).transpose();
+  }
+  return y;
 }
 
+template<typename T, int N>
+int BSpline<T, N>::GetControlPointIndex(T query_time) const {
+  int spline_idx = -1;
+  if (query_time == valid_knots_.back()) {
+    spline_idx = valid_knots_.size() - 2;
+  }
+  else if (query_time < valid_knots_.back()) {
+    auto lower =
+      std::upper_bound(valid_knots_.begin(), valid_knots_.end(), query_time);
+    spline_idx = lower - valid_knots_.begin() - 1;
+  }
+  return spline_idx;
+}
+
+template<typename T, int N>
+Eigen::MatrixX<T> BSpline<T,N>::GetBasisMatrix(
+    int spline_idx, int derivative) const {
+  int height_M = spline_order_ - derivative;
+  int width_M = spline_order_;
+  return Mi_[spline_idx].block(derivative, 0, height_M, width_M);
+}
 
 template<typename T, int N>
 void BSpline<T, N>::ComputePowerRuleCoefficients() {
