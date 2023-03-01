@@ -1,13 +1,20 @@
 #include <algorithm>
 
 #include "calico/statusor_macros.h"
-
+#include "ceres/problem.h"
 
 namespace calico {
 
-template <typename T, int N>
-absl::Status BSpline<T, N>::FitToData(
-    const std::vector<T>& time, const std::vector<Eigen::Vector<T,N>>& data,
+template <int N>
+int BSpline<N>::AddParametersToProblem(ceres::Problem& problem) {
+  for (Eigen::Vector<double, N>& control_point : control_points_) {
+    problem.AddParameterBlock(control_point.data(), N);
+  }
+}
+
+template <int N>
+absl::Status BSpline<N>::FitToData(
+    const std::vector<double>& time, const std::vector<Eigen::Vector<double,N>>& data,
     int spline_order, double knot_frequency) {
   RETURN_IF_ERROR(
       CheckDataForSplineFit(time, data, spline_order, knot_frequency));
@@ -25,59 +32,60 @@ absl::Status BSpline<T, N>::FitToData(
   return absl::OkStatus();
 }
 
-template <typename T, int N>
-absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<T, N>::Interpolate(
-    const std::vector<T>& times, int derivative) const {
+template <int N>
+absl::StatusOr<std::vector<Eigen::Vector<double, N>>> BSpline<N>::Interpolate(
+    const std::vector<double>& times, int derivative) const {
   if (derivative < 0 || derivative > spline_degree_) {
     return absl::InvalidArgumentError("Invalid derivative for interpolation.");
   }
-
-  for (const T& t : times) {
+  for (const double& t : times) {
     if (t < valid_knots_.front() || t > valid_knots_.back()) {
       return absl::InvalidArgumentError(absl::StrCat(
           "Cannot interpolate ", t, ". Value is not within valid knots."));
     }
   }
-
   int num_interp = times.size();
-  std::vector<Eigen::Vector<T, N>> y(num_interp);
-  for (int j = 0; j < num_interp; ++j) {
-    const int spline_idx = GetControlPointIndex(times[j]);
+  std::vector<Eigen::Vector<double, N>> y(num_interp);
+  for (int i = 0; i < num_interp; ++i) {
+    const int spline_idx = GetControlPointIndex(times[i]);
     const int knot_idx = spline_idx + spline_degree_;
-    const Eigen::MatrixX<T> M = GetBasisMatrix(spline_idx, derivative);
-
-    const T& ti = knots_[knot_idx];
-    const T& tii = knots_[knot_idx + 1];
-    const T dt = tii - ti;
-    const T dt_inv = T(1.0) / dt;
-
-    T dnu_dtn = T(1.0);
-    for (int i = 0; i < derivative; ++i) {
+    // Compute u.
+    const double& ti = knots_[knot_idx];
+    const double& tii = knots_[knot_idx + 1];
+    const double dt = tii - ti;
+    const double dt_inv = 1.0 / dt;
+    const double u = (times[i] - ti) * dt_inv;
+    // Derivative of u with respect to t raised to n'th derivative power per
+    // chain rule.
+    double dnu_dtn = 1.0;
+    for (int j = 0; j < derivative; ++j) {
       dnu_dtn *= dt_inv;
     }
-
-    const T u = (times[j] - ti) * dt_inv;
-    Eigen::Matrix<T, 1, Eigen::Dynamic> U(spline_order_ - derivative);
+    // Construct U vector
+    Eigen::Matrix<double, 1, Eigen::Dynamic> U(spline_order_);
     U.setOnes();
-    for (int i = 1; i < spline_order_ - derivative; ++i) {
-      U(i) = u * U(i - 1);
+    for (int j = derivative + 1; j <  spline_order_; ++j) {
+      U(j) = u * U(j - 1);
     }
-    const Eigen::MatrixX<T> deriv_coeffs =
-      derivative_coeffs_.block(derivative, derivative, 1,
-                               spline_order_ - derivative);
-    U = (U.array() * derivative_coeffs_
-         .block(derivative, derivative, 1, spline_order_ - derivative)
-         .array()) * dnu_dtn;
-    const Eigen::MatrixX<T> V =
-        control_points_.block(
-             0, spline_idx, N, knot_idx - spline_idx + 1).transpose();
-    y[j] = (U * M * V).transpose();
+    U = U.array() * derivative_coeffs_.row(derivative).array() * dnu_dtn;
+    // Manually multiply here: y = U*M*V, V = control points.This is necessary
+    // because control points are stored as N-dimensional vectors rather than
+    // one giant NxM matrix in order to make it easier to index into for cost
+    // function construction.
+    const Eigen::MatrixXd UM = U*Mi_[spline_idx];
+    y[i].setZero();
+    for (int j = 0; j < spline_order_; ++j) {
+      const int control_point_idx = spline_idx + j;
+      y[i].x() += control_points_[control_point_idx].x() * UM(j);
+      y[i].y() += control_points_[control_point_idx].y() * UM(j);
+      y[i].z() += control_points_[control_point_idx].z() * UM(j);
+    }
   }
   return y;
 }
 
-template<typename T, int N>
-int BSpline<T, N>::GetControlPointIndex(T query_time) const {
+template<int N>
+int BSpline<N>::GetControlPointIndex(double query_time) const {
   int spline_idx = -1;
   if (query_time == valid_knots_.back()) {
     spline_idx = valid_knots_.size() - 2;
@@ -90,16 +98,8 @@ int BSpline<T, N>::GetControlPointIndex(T query_time) const {
   return spline_idx;
 }
 
-template<typename T, int N>
-Eigen::MatrixX<T> BSpline<T,N>::GetBasisMatrix(
-    int spline_idx, int derivative) const {
-  int height_M = spline_order_ - derivative;
-  int width_M = spline_order_;
-  return Mi_[spline_idx].block(derivative, 0, height_M, width_M);
-}
-
-template<typename T, int N>
-void BSpline<T, N>::ComputePowerRuleCoefficients() {
+template<int N>
+void BSpline<N>::ComputePowerRuleCoefficients() {
   // Resize the matrix and initialize to zeros
   derivative_coeffs_.resize(spline_degree_, spline_order_);
   derivative_coeffs_.setZero();
@@ -107,7 +107,7 @@ void BSpline<T, N>::ComputePowerRuleCoefficients() {
   // Populate each coefficient
   for (int deriv = 0; deriv < spline_degree_; ++deriv) {
     for (int order = deriv; order < spline_order_; ++order) {
-      T pwr = 1;
+      double pwr = 1.0;
       for (int k = order-deriv; k < order; ++k) {
         pwr *= (k + 1);
       }
@@ -116,63 +116,61 @@ void BSpline<T, N>::ComputePowerRuleCoefficients() {
   }
 }
 
-template <typename T, int N>
-void BSpline<T,N>::ComputeKnotVector() {
-  const T duration = time_.back() - time_.front();
-  const T dt = 1.0 / knot_frequency_;
+template <int N>
+void BSpline<N>::ComputeKnotVector() {
+  const double duration = time_.back() - time_.front();
+  const double dt = 1.0 / knot_frequency_;
+  const int num_valid_knots = 1 + std::ceil(duration * knot_frequency_);
+  const int num_knots = num_valid_knots + 2 * spline_degree_;
 
-  num_knots_ = 1 + ceil(duration * knot_frequency_) + 2 * spline_degree_;
-  num_control_points_ = num_knots_ - spline_order_;
-  num_valid_knots_ = num_knots_ - 2 * spline_degree_;
-
-  knots_.resize(num_knots_);
-  valid_knots_.resize(num_valid_knots_);
-  for (int i = -spline_degree_; i < num_knots_ - spline_degree_; ++i) {
-    const T knot_value = time_.front() + dt * i;
+  knots_.resize(num_knots);
+  valid_knots_.resize(num_valid_knots);
+  for (int i = -spline_degree_; i < num_knots - spline_degree_; ++i) {
+    const double knot_value = time_.front() + dt * i;
     knots_[i + spline_degree_] = knot_value;
 
     int valid_knot_index = i;
-    if (valid_knot_index > -1 && valid_knot_index < num_valid_knots_) {
+    if (valid_knot_index > -1 && valid_knot_index < num_valid_knots) {
       valid_knots_[valid_knot_index] = knot_value;
     }
   }
 }
 
-template <typename T, int N>
-void BSpline<T,N>::ComputeBasisMatrices() {
-  num_valid_segments_ = num_knots_ - 2 * spline_order_ + 1;
-  Mi_.resize(num_valid_segments_);
-  for (int i = 0; i < num_valid_segments_; ++i) {
+template <int N>
+void BSpline<N>::ComputeBasisMatrices() {
+  const int num_valid_segments = valid_knots_.size() - 1;
+  Mi_.resize(num_valid_segments);
+  for (int i = 0; i < num_valid_segments; ++i) {
     Mi_[i] = M(spline_order_, i + spline_degree_);
   }
 }
 
-template<typename T, int N>
-Eigen::MatrixX<T> BSpline<T,N>::M(int k, int i) {
-  Eigen::MatrixX<T> M_k;
+template<int N>
+Eigen::MatrixXd BSpline<N>::M(int k, int i) {
+  Eigen::MatrixXd M_k;
   if (k == 1) {
     M_k.resize(k, k);
     M_k(0, 0) = k;
     return M_k;
   }
 
-  Eigen::MatrixX<T> M_km1 = M(k - 1, i);
-  int num_rows = M_km1.rows();
-  int num_cols = M_km1.cols();
-  Eigen::MatrixX<T> M1(num_rows + 1, num_cols), M2(num_rows + 1, num_cols);
+  Eigen::MatrixXd M_km1 = M(k - 1, i);
+  const int num_rows = M_km1.rows();
+  const int num_cols = M_km1.cols();
+  Eigen::MatrixXd M1(num_rows + 1, num_cols), M2(num_rows + 1, num_cols);
   M1.setZero();
   M2.setZero();
   M1.block(0, 0, num_rows, num_cols) = M_km1;
   M2.block(1, 0, num_rows, num_cols) = M_km1;
 
-  Eigen::MatrixX<T> A(k - 1,k);
-  Eigen::MatrixX<T> B(k - 1,k);
+  Eigen::MatrixXd A(k - 1,k);
+  Eigen::MatrixXd B(k - 1,k);
   A.setZero();
   B.setZero();
   for (int index = 0; index < k - 1; ++index) {
     int j = i - k + 2 + index;
-    T d0 = d_0(k, i, j);
-    T d1 = d_1(k, i, j);
+    const double d0 = d_0(k, i, j);
+    const double d1 = d_1(k, i, j);
     A(index, index)   = 1.0 - d0;
     A(index, index + 1) = d0;
     B(index, index)   = -d1;
@@ -182,37 +180,38 @@ Eigen::MatrixX<T> BSpline<T,N>::M(int k, int i) {
   return M_k;
 }
 
-template <typename T, int N>
-T BSpline<T,N>::d_0(int k, int i, int j) {
-  T den = knots_[j + k - 1] - knots_[j];
+template <int N>
+double BSpline<N>::d_0(int k, int i, int j) {
+  const double den = knots_[j + k - 1] - knots_[j];
   if (den <= 0.0) {
     return 0.0;
   }
-  T num = knots_[i] - knots_[j];
+  const double num = knots_[i] - knots_[j];
   return num / den;
 }
 
-template <typename T, int N>
-T BSpline<T,N>::d_1(int k, int i, int j) {
-  T den = knots_[j + k - 1] - knots_[j];
+template <int N>
+double BSpline<N>::d_1(int k, int i, int j) {
+  const double den = knots_[j + k - 1] - knots_[j];
   if (den <= 0.0) {
     return 0.0;
   }
-  T num = knots_[i+1] - knots_[i];
+  const double num = knots_[i+1] - knots_[i];
   return num / den;
 }
 
-template <typename T, int N>
-void BSpline<T,N>::FitSpline() {
+template <int N>
+void BSpline<N>::FitSpline() {
   const int num_data = time_.size();
-  Eigen::MatrixX<T> X(num_data, num_control_points_);
+  int num_control_points = knots_.size() - spline_order_;
+  Eigen::MatrixXd X(num_data, num_control_points);
   X.setZero();
   for (int j = 0; j < num_data; j++) {
-    const T t = time_[j];
+    const double t = time_[j];
     int spline_index = -1;
 
     if (t == valid_knots_.back()) {
-      spline_index = num_valid_segments_ - 1;
+      spline_index = Mi_.size() - 1;
     }
     else if (t == valid_knots_.front()) {
       spline_index = 0;
@@ -223,36 +222,41 @@ void BSpline<T,N>::FitSpline() {
     }
     const int knot_index = spline_index + spline_degree_;
     // Grab the intermediate knot values
-    const T ti = knots_[knot_index];
-    const T tii = knots_[knot_index + 1];
+    const double ti = knots_[knot_index];
+    const double tii = knots_[knot_index + 1];
     // Construct U vector
-    Eigen::VectorX<T> U(spline_order_);
+    Eigen::VectorXd U(spline_order_);
     U.setOnes();
-    const T u = (t - ti) / (tii - ti);
+    const double u = (t - ti) / (tii - ti);
     for (int i = 1; i < spline_order_; ++i) {
       U(i) = u * U(i - 1);
     }
     // Construct U*M
-    Eigen::MatrixX<T> M = Mi_[spline_index];
-    Eigen::MatrixX<T> UM = U.transpose() * M;
+    Eigen::MatrixXd M = Mi_[spline_index];
+    Eigen::MatrixXd UM = U.transpose() * M;
     X.block(j, spline_index, UM.rows(), UM.cols()) = UM;
   }
 
-  Eigen::Matrix<T,Eigen::Dynamic,N> data(num_data, N);
+  Eigen::Matrix<double,Eigen::Dynamic,N> data(num_data, N);
   for (int i = 0; i < num_data; ++i) {
     data.row(i) = data_[i].transpose();
   }
   // TODO(yangjames): X is highly sparse, and X'X is banded, symmetric, positive
   // definite. Figure out how to sparsify the solve step for control_points_ as
   // this gets very expensive with more knots.
-  Eigen::MatrixX<T> XtX = X.transpose() * X;
-  Eigen::MatrixX<T> Xtd = X.transpose() * data;
-  control_points_ = XtX.colPivHouseholderQr().solve(Xtd).transpose();
+  const Eigen::MatrixXd XtX = X.transpose() * X;
+  const Eigen::MatrixXd Xtd = X.transpose() * data;
+  Eigen::MatrixXd control_points =
+      XtX.colPivHouseholderQr().solve(Xtd).transpose();
+  for (int i = 0; i < control_points.cols(); ++i) {
+    control_points_.push_back(control_points.col(i));
+  }
 }
 
-template<typename T, int N>
-absl::Status BSpline<T,N>::CheckDataForSplineFit(
-    const std::vector<T>& time, const std::vector<Eigen::Vector<T, N>>& data,
+template<int N>
+absl::Status BSpline<N>::CheckDataForSplineFit(
+    const std::vector<double>& time,
+    const std::vector<Eigen::Vector<double, N>>& data,
     int spline_order, double knot_frequency) {
   // Assert that data and time are properly sized
   if (!time.size()) {
@@ -265,7 +269,7 @@ absl::Status BSpline<T,N>::CheckDataForSplineFit(
     return absl::InvalidArgumentError("Data and time vectors are not the same size.");
   }
   // Check that time is strictly increasing
-  auto iter = std::adjacent_find(time_.begin(), time_.end(), std::greater<T>());
+  auto iter = std::adjacent_find(time_.begin(), time_.end(), std::greater<double>());
   if (iter != time_.end()) {
     return absl::InvalidArgumentError("Time vector is not monotonically increasing.");
   }

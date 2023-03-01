@@ -32,7 +32,7 @@ class BSplineTest : public ::testing::Test {
 };
 
 TEST_F(BSplineTest, InvalidDerivatives) {
-  BSpline<double, 3> spline;
+  BSpline<3> spline;
   EXPECT_OK(spline.FitToData(time, data, kSplineOrder, kKnotFrequency));
   std::vector<double> interp_time{0};
   EXPECT_THAT(spline.Interpolate(interp_time, -1),
@@ -42,7 +42,7 @@ TEST_F(BSplineTest, InvalidDerivatives) {
 }
 
 TEST_F(BSplineTest, InvalidInterpolationTime) {
-  BSpline<double, 3> spline;
+  BSpline<3> spline;
   EXPECT_OK(spline.FitToData(time, data, kSplineOrder, kKnotFrequency));
   std::vector<double> interp_time{-1};
   EXPECT_THAT(spline.Interpolate(interp_time, -1),
@@ -61,7 +61,7 @@ TEST_F(BSplineTest, InterpolationPrecision1DOF) {
     interp_times[i] = dt * i;
   }
   
-  BSpline<double, 3> spline;
+  BSpline<3> spline;
   EXPECT_OK(spline.FitToData(time, data, kSplineOrder, kKnotFrequency));
 
   // Check first three derivatives.

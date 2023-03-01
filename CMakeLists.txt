@@ -3,6 +3,7 @@ project (Calico)
 
 # std=c++17 or higher required for Abseil.
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 # Load dependencies.
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
@@ -10,6 +11,7 @@ find_package(GTest REQUIRED)
 find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
 enable_testing()
+
 # Add top level include directory.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
