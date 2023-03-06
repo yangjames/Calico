@@ -11,12 +11,12 @@ namespace {
 
 class BatchOptimizerTest : public ::testing::Test {
  protected:
-  absl::flat_hash_map<double, Pose3> trajectory_world_sensorrig;
+  absl::flat_hash_map<double, Pose3> poses_world_sensorrig;
   std::vector<Eigen::Vector3d> t_world_points;
 
   void SetUp() override {
     DefaultSyntheticTest testing_fixture;
-    trajectory_world_sensorrig = testing_fixture.TrajectoryAsMap();
+    poses_world_sensorrig = testing_fixture.TrajectoryAsMap();
     t_world_points = testing_fixture.WorldPoints();
   }
 };
@@ -60,6 +60,9 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   WorldModel world_model;
   EXPECT_OK(world_model.AddRigidBody(planar_target));
 
+  // Sensorrig trajectory
+  Trajectory trajectory_world_sensorrig;
+  trajectory_world_sensorrig.trajectory() = poses_world_sensorrig;
   // Generate measurements.
   const auto measurements_left =
       true_camera_left.Project(trajectory_world_sensorrig, world_model);

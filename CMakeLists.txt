@@ -103,11 +103,12 @@ add_library(
 )
 target_link_libraries(
   camera
-  Eigen3::Eigen
   absl::status
   absl::statusor
   absl::flat_hash_map
   Ceres::ceres
+  Eigen3::Eigen
+  trajectory
   world_model
 )
 

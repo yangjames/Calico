@@ -14,8 +14,7 @@ void BatchOptimizer::AddWorldModel(const WorldModel& world_model) {
   world_model_ = world_model;
 }
 
-void BatchOptimizer::AddTrajectory(
-    const absl::flat_hash_map<double, Pose3>& trajectory_world_body) {
+void BatchOptimizer::AddTrajectory(const Trajectory& trajectory_world_body) {
   trajectory_world_body_ = trajectory_world_body;
 }
 

@@ -1,15 +1,14 @@
 #ifndef CALICO_SENSORS_SENSOR_BASE_H_
 #define CALICO_SENSORS_SENSOR_BASE_H_
 
-#include "calico/typedefs.h"
-#include "calico/world_model.h"
-
-#include "Eigen/Dense"
-
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "calico/trajectory.h"
+#include "calico/typedefs.h"
+#include "calico/world_model.h"
 #include "ceres/problem.h"
+#include "Eigen/Dense"
 
 
 namespace calico::sensors {
@@ -63,7 +62,7 @@ class Sensor {
   // TODO(yangjames): Replace sensorrig_trajectory with a BSpline.
   virtual absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem& problem,
-      absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
+      Trajectory& sensorrig_trajectory,
       WorldModel& world_model) = 0;
 };
 } // namespace calico::sensors

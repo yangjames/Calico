@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 
+#include "absl/container/flat_hash_map.h"
+#include "absl/status/status.h"
+#include "absl/strings/string_view.h"
 #include "calico/sensors/sensor_base.h"
 #include "calico/sensors/camera_models.h"
 #include "calico/trajectory.h"
 #include "calico/typedefs.h"
-#include "absl/container/flat_hash_map.h"
-#include "absl/status/status.h"
-#include "absl/strings/string_view.h"
 #include "ceres/problem.h"
 #include "Eigen/Dense"
 
@@ -67,7 +67,7 @@ class Camera : public Sensor {
   // Contribue this camera's residuals to the ceres problem.
   absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem & problem,
-      absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
+      Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
 
   // Compute the project of a world model through a kinematic chain. This
@@ -84,7 +84,7 @@ class Camera : public Sensor {
   // the actual sensor, complying with physicality such as features being in
   // front of the camera and within image bounds.
   std::vector<CameraMeasurement> Project(
-      const absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
+      const Trajectory& sensorrig_trajectory,
       const WorldModel& world_model) const;
 
   // Setter/getter for name.

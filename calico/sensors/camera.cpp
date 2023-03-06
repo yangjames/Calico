@@ -27,7 +27,7 @@ absl::StatusOr<int> Camera::AddParametersToProblem(ceres::Problem& problem) {
 
 absl::StatusOr<int> Camera::AddResidualsToProblem(
     ceres::Problem& problem,
-    absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
+    Trajectory& sensorrig_trajectory,
     WorldModel& world_model) {
   int num_residuals_added = 0;
   for (const auto& [observation_id, measurement] : id_to_measurement_) {
@@ -41,8 +41,9 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
     // Get the right rigidbody reference from the world model.
     RigidBody& rigidbody_ref = world_model.rigidbodies().at(rigidbody_id);
     Eigen::Vector3d& t_model_point =
-      rigidbody_ref.model_definition.at(observation_id.feature_id);
-    Pose3& T_world_sensorrig = sensorrig_trajectory.at(observation_id.stamp);
+        rigidbody_ref.model_definition.at(observation_id.feature_id);
+    Pose3& T_world_sensorrig =
+        sensorrig_trajectory.trajectory().at(observation_id.stamp);
     // Construct a cost function and supply parameters for this residual.
     std::vector<double*> parameters;
     ceres::CostFunction* cost_function =
@@ -58,13 +59,14 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
 }
 
 std::vector<CameraMeasurement> Camera::Project(
-    const absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
+    const Trajectory& sensorrig_trajectory,
     const WorldModel& world_model) const {
   std::vector<CameraMeasurement> measurements;
   // Generate data for every pose in the trajectory.
   // TODO: When replacing with splines, add a field for specifying timestamps.
   int image_id = 0;
-  for (const auto& [stamp, T_world_sensorrig] : sensorrig_trajectory) {
+  for (const auto& [stamp, T_world_sensorrig] :
+           sensorrig_trajectory.trajectory()) {
     const Pose3 T_camera_world =
         (T_world_sensorrig * T_sensorrig_sensor_).inverse();
     // Project all landmarks.
