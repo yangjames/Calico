@@ -17,13 +17,13 @@ class BatchOptimizer {
   void AddSensor(sensors::Sensor* sensor);
   void AddWorldModel(const WorldModel& world_model);
   void AddTrajectory(
-      const absl::flat_hash_map<int, Pose3>& trajectory_world_body);
+      const absl::flat_hash_map<double, Pose3>& trajectory_world_body);
   absl::StatusOr<ceres::Solver::Summary> Optimize();
 
  private:
   std::vector<std::unique_ptr<sensors::Sensor>> sensors_;
   WorldModel world_model_;
-  absl::flat_hash_map<int, Pose3> trajectory_world_body_;
+  absl::flat_hash_map<double, Pose3> trajectory_world_body_;
 };
 
 } // namespace calico

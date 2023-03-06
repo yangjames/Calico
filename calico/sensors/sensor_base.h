@@ -63,7 +63,7 @@ class Sensor {
   // TODO(yangjames): Replace sensorrig_trajectory with a BSpline.
   virtual absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem& problem,
-      absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+      absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
       WorldModel& world_model) = 0;
 };
 } // namespace calico::sensors

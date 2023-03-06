@@ -1,13 +1,13 @@
 #ifndef CALICO_SENSORS_CAMERA_H_
 #define CALICO_SENSORS_CAMERA_H_
 
-#include "calico/typedefs.h"
-#include "calico/sensors/sensor_base.h"
-#include "calico/sensors/camera_models.h"
-
 #include <string>
 #include <vector>
 
+#include "calico/sensors/sensor_base.h"
+#include "calico/sensors/camera_models.h"
+#include "calico/trajectory.h"
+#include "calico/typedefs.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
@@ -21,16 +21,19 @@ namespace calico::sensors {
 // `absl::Hash` for use as a key in `absl::flat_hash_map` or
 // `absl::flat_hash_set`.
 struct ObservationId {
+  double stamp;
   int image_id;
   int model_id;
   int feature_id;
 
   template <typename H>
   friend H AbslHashValue(H h, const ObservationId& id) {
-    return H::combine(std::move(h), id.image_id, id.model_id, id.feature_id);
+    return H::combine(std::move(h), id.stamp, id.image_id, id.model_id,
+                      id.feature_id);
   }
   friend bool operator==(const ObservationId& lhs, const ObservationId& rhs) {
-    return (lhs.image_id == rhs.image_id &&
+    return (lhs.stamp == rhs.stamp &&
+            lhs.image_id == rhs.image_id &&
             lhs.model_id == rhs.model_id &&
             lhs.feature_id == rhs.feature_id);
   }
@@ -64,15 +67,24 @@ class Camera : public Sensor {
   // Contribue this camera's residuals to the ceres problem.
   absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem & problem,
-      absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+      absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
       WorldModel& world_model) final;
+
+  // Compute the project of a world model through a kinematic chain. This
+  // method returns only valid synthetic measurements as would be observed by
+  // the actual sensor, complying with physicality such as features being in
+  // front of the camera and within image bounds.
+  std::vector<CameraMeasurement> Project(
+      const std::vector<double>& interp_times,
+      const Trajectory& sensorrig_trajectory,
+      const WorldModel& world_model) const;
 
   // Compute the projection of a world model through a kinematic chain. This
   // method returns only valid synthetic measurements as would be observed by
   // the actual sensor, complying with physicality such as features being in
   // front of the camera and within image bounds.
   std::vector<CameraMeasurement> Project(
-      const absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+      const absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
       const WorldModel& world_model) const;
 
   // Setter/getter for name.

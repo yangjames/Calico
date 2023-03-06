@@ -32,6 +32,7 @@ class CameraContainerTest : public ::testing::Test {
         for (int feature_id = 0; feature_id < kNumFeatures; ++feature_id) {
           measurements_.push_back(CameraMeasurement{
               .id = {
+                .stamp = static_cast<double>(image_id),
                 .image_id = image_id,
                 .model_id = model_id,
                 .feature_id = feature_id
@@ -89,6 +90,7 @@ TEST_F(CameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size());
   const CameraMeasurement redundant_measurement {
     .id = {
+      .stamp = 0,
       .image_id = 0,
       .model_id = 0,
       .feature_id = 0

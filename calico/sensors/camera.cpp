@@ -27,7 +27,7 @@ absl::StatusOr<int> Camera::AddParametersToProblem(ceres::Problem& problem) {
 
 absl::StatusOr<int> Camera::AddResidualsToProblem(
     ceres::Problem& problem,
-    absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+    absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
     WorldModel& world_model) {
   int num_residuals_added = 0;
   for (const auto& [observation_id, measurement] : id_to_measurement_) {
@@ -42,7 +42,7 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
     RigidBody& rigidbody_ref = world_model.rigidbodies().at(rigidbody_id);
     Eigen::Vector3d& t_model_point =
       rigidbody_ref.model_definition.at(observation_id.feature_id);
-    Pose3& T_world_sensorrig = sensorrig_trajectory.at(observation_id.image_id);
+    Pose3& T_world_sensorrig = sensorrig_trajectory.at(observation_id.stamp);
     // Construct a cost function and supply parameters for this residual.
     std::vector<double*> parameters;
     ceres::CostFunction* cost_function =
@@ -58,12 +58,13 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
 }
 
 std::vector<CameraMeasurement> Camera::Project(
-    const absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+    const absl::flat_hash_map<double, Pose3>& sensorrig_trajectory,
     const WorldModel& world_model) const {
   std::vector<CameraMeasurement> measurements;
   // Generate data for every pose in the trajectory.
   // TODO: When replacing with splines, add a field for specifying timestamps.
-  for (const auto& [pose_id, T_world_sensorrig] : sensorrig_trajectory) {
+  int image_id = 0;
+  for (const auto& [stamp, T_world_sensorrig] : sensorrig_trajectory) {
     const Pose3 T_camera_world =
         (T_world_sensorrig * T_sensorrig_sensor_).inverse();
     // Project all landmarks.
@@ -75,7 +76,7 @@ std::vector<CameraMeasurement> Camera::Project(
       const absl::StatusOr<Eigen::Vector2d> projection =
           camera_model_->ProjectPoint(intrinsics_, point_camera);
       measurements.push_back(
-          {*projection, {pose_id, kLandmarkFrameId, landmark_id}});
+          {*projection, {stamp, image_id, kLandmarkFrameId, landmark_id}});
     }
     // Project all rigid bodies.
     for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
@@ -86,9 +87,10 @@ std::vector<CameraMeasurement> Camera::Project(
         const absl::StatusOr<Eigen::Vector2d> projection =
           camera_model_->ProjectPoint(intrinsics_, point_camera);
         measurements.push_back(
-            {*projection, {pose_id, rigidbody_id, point_id}});
+            {*projection, {stamp, image_id, rigidbody_id, point_id}});
       }
     }
+    ++image_id;
   }
   return measurements;
 }

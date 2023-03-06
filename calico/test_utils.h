@@ -21,7 +21,6 @@ class DefaultSyntheticTest {
         {0.0, kAngleAmplitude, 0.0, -kAngleAmplitude, 0.0};
     std::vector<double> position_displacements =
       {0.0, kPosAmplitude, 0.0, -kPosAmplitude, 0.0};
-
     // Excitation per axis.
     std::vector<double> interpolation_times(kNumSamplesPerSegment);
     const double dt_interpolation =
@@ -68,18 +67,35 @@ class DefaultSyntheticTest {
       trajectory_key_values_.push_back(stamp);
     }
     std::sort(trajectory_key_values_.begin(), trajectory_key_values_.end());
+
+    // Construct planar points.
+    for (int i = 0; i < kNumXPoints; ++i) {
+      for (int j = 0; j < kNumYPoints; ++j) {
+        const double x = i * kDelta - kSamplePlaneWidth / 2.0;
+        const double y = j * kDelta - kSamplePlaneHeight / 2.0;;
+        t_world_points_.push_back(Eigen::Vector3d(x, y, 0.0));
+      }
+    }
   }
 
+  // Getter for trajectory as a timestamp-to-pose hash map.
   const absl::flat_hash_map<double, Pose3>& TrajectoryAsMap() const {
     return trajectory_world_sensorrig_;
   }
+
+  // Convenience getter for timestamps.
   const std::vector<double>& TrajectoryMapKeys() const {
     return trajectory_key_values_;
+  }
+
+  const std::vector<Eigen::Vector3d>& WorldPoints() const {
+    return t_world_points_;
   }
 
  private:
   absl::flat_hash_map<double, Pose3> trajectory_world_sensorrig_;
   std::vector<double> trajectory_key_values_;
+  std::vector<Eigen::Vector3d> t_world_points_;
 
   static constexpr double kDeg2Rad = M_PI / 180.0;
   // Sensor rig trajectory specs.
@@ -87,7 +103,15 @@ class DefaultSyntheticTest {
   static constexpr double kPosAmplitude = 0.5;
   static constexpr double kAngleAmplitude = 30 * kDeg2Rad;
   static constexpr double kSegmentDuration = 1.0;
-
+  // Planar points specs.
+  static constexpr double kSamplePlaneWidth = 1.5;
+  static constexpr double kSamplePlaneHeight = 1.5;
+  static constexpr double kDelta = 0.3;
+  static constexpr int kNumXPoints =
+      static_cast<int>(kSamplePlaneWidth / kDelta) + 1;
+  static constexpr int kNumYPoints =
+      static_cast<int>(kSamplePlaneHeight / kDelta) + 1;
+  std::vector<Eigen::Vector3d> t_world_points;
 };
 } // namespace
 
