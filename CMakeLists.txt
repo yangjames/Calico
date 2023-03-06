@@ -45,6 +45,30 @@ target_link_libraries(
 )
 add_test(BSplineTest bspline_test)
 
+# Build trajectory library and tests.
+add_library(
+  trajectory
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory.cpp
+)
+target_link_libraries(
+  trajectory
+  Eigen3::Eigen
+  absl::status
+  absl::statusor
+  absl::flat_hash_map
+  Ceres::ceres
+)
+add_executable(
+  trajectory_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory_test.cpp
+  )
+target_link_libraries(
+  trajectory_test
+  trajectory
+  GTest::Main
+  gmock
+)
+
 # Build world model library and tests.
 add_library(
   world_model
