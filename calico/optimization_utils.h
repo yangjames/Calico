@@ -4,6 +4,7 @@
 #include "calico/typedefs.h"
 #include "ceres/ceres.h"
 
+
 namespace calico::utils {
 
 // Convenience function for adding a Pose3 type to a ceres problem with
