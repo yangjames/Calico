@@ -10,12 +10,14 @@ int BSpline<N>::AddParametersToProblem(ceres::Problem& problem) {
   for (Eigen::Vector<double, N>& control_point : control_points_) {
     problem.AddParameterBlock(control_point.data(), N);
   }
+  return N * control_points_.size();
 }
 
 template <int N>
 absl::Status BSpline<N>::FitToData(
-    const std::vector<double>& time, const std::vector<Eigen::Vector<double,N>>& data,
-    int spline_order, double knot_frequency) {
+    const std::vector<double>& time,
+    const std::vector<Eigen::Vector<double,N>>& data, int spline_order,
+    double knot_frequency) {
   RETURN_IF_ERROR(
       CheckDataForSplineFit(time, data, spline_order, knot_frequency));
   time_ = time;
@@ -128,7 +130,6 @@ void BSpline<N>::ComputeKnotVector() {
   for (int i = -spline_degree_; i < num_knots - spline_degree_; ++i) {
     const double knot_value = time_.front() + dt * i;
     knots_[i + spline_degree_] = knot_value;
-
     int valid_knot_index = i;
     if (valid_knot_index > -1 && valid_knot_index < num_valid_knots) {
       valid_knots_[valid_knot_index] = knot_value;
@@ -171,9 +172,9 @@ Eigen::MatrixXd BSpline<N>::M(int k, int i) {
     int j = i - k + 2 + index;
     const double d0 = d_0(k, i, j);
     const double d1 = d_1(k, i, j);
-    A(index, index)   = 1.0 - d0;
+    A(index, index) = 1.0 - d0;
     A(index, index + 1) = d0;
-    B(index, index)   = -d1;
+    B(index, index) = -d1;
     B(index, index + 1) = d1;
   }
   M_k = M1 * A + M2 * B;
@@ -242,8 +243,8 @@ void BSpline<N>::FitSpline() {
     data.row(i) = data_[i].transpose();
   }
   // TODO(yangjames): X is highly sparse, and X'X is banded, symmetric, positive
-  // definite. Figure out how to sparsify the solve step for control_points_ as
-  // this gets very expensive with more knots.
+  // definite. Figure out how to sparsify the solve step for the control points
+  // as this gets very expensive with more knots.
   const Eigen::MatrixXd XtX = X.transpose() * X;
   const Eigen::MatrixXd Xtd = X.transpose() * data;
   Eigen::MatrixXd control_points =

@@ -10,6 +10,14 @@
 
 namespace calico {
 
+template <typename T>
+struct SplineSegment {
+  std::vector<T*> position_control_points;
+  std::vector<T*> rotation_control_points;
+  T t0;
+  T t1;
+};
+
 // Generic N-DOF spline fitter. This class implements the following paper:
 // "General Matrix Representations for B-Splines", K. Qin.
 // https://xiaoxingchen.github.io/2020/03/02/bspline_in_so3/general_matrix_representation_for_bsplines.pdf
@@ -35,16 +43,13 @@ class BSpline {
   absl::StatusOr<std::vector<Eigen::Vector<double,N>>>
   Interpolate(const std::vector<double>& times, int derivative = 0) const;
 
-  // Returns the number of control points in the spline.
-  int NumberOfControlPoints() const;
+  // Getter for knot vector.
+  const std::vector<double>& knots() const { return knots_; }
 
-  // Returns the degree of the spline, i.e. SplineOrder() - 1. For example, if
-  // the spline is defined as `y(t) = a0 + a1*t + a2*t^2`, spline degree is 2
-  // which is the highest degree of time,.
-  int SplineDegree() const;
-
-  // Returns the spline order.
-  int SplineOrder() const;
+  // Getter for control points.
+  const std::vector<Eigen::Vector<double, N>>& control_points() const {
+    return control_points_;
+  }
 
  private:
   // Data/parameters for fitting spline.

@@ -14,6 +14,7 @@ class DefaultSyntheticTest {
     // Create position and orientation setpoints through which we will smoothly
     // interpolate.
     const Eigen::Quaterniond q_world_sensorrig0(
+        Eigen::AngleAxisd(M_PI, Eigen::Vector3d::UnitZ()) *
         Eigen::AngleAxisd(M_PI, Eigen::Vector3d::UnitX()));
     const Eigen::Vector3d t_world_sensorrig0 =
       Eigen::Vector3d(0.0, 0.0, 1.0);
