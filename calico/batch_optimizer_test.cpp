@@ -11,7 +11,7 @@ namespace {
 
 class BatchOptimizerTest : public ::testing::Test {
  protected:
-  absl::flat_hash_map<double, Pose3> poses_world_sensorrig;
+  absl::flat_hash_map<double, Pose3d> poses_world_sensorrig;
   std::vector<Eigen::Vector3d> t_world_points;
 
   void SetUp() override {
@@ -30,8 +30,8 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   Eigen::VectorXd true_intrinsics(sensors::OpenCv5Model::kNumberOfParameters);
   true_intrinsics <<
     785, 640, 400, -3.149e-1, 1.069e-1, 1.616e-4, 1.141e-4, -1.853e-2;
-  Pose3 true_extrinsics_left;
-  Pose3 true_extrinsics_right;
+  Pose3d true_extrinsics_left;
+  Pose3d true_extrinsics_right;
   true_extrinsics_right.rotation() =
       Eigen::Quaterniond(
           Eigen::AngleAxisd(
@@ -72,7 +72,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   // Create optimization cameras.
   Eigen::VectorXd initial_intrinsics = 1.01 * true_intrinsics;
   initial_intrinsics.tail(5).setZero();
-  const Pose3 initial_extrinsics = true_extrinsics_right;
+  const Pose3d initial_extrinsics = true_extrinsics_right;
   
   sensors::Camera* camera_left = new sensors::Camera();
   camera_left->SetName("Left");

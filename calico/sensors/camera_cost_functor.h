@@ -2,11 +2,11 @@
 #define CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
 
 #include "calico/sensors/camera_models.h"
+#include "calico/trajectory.h"
 #include "ceres/cost_function.h"
 
 
 namespace calico::sensors {
-
 
 // Enum listing the positions of parameters for a camera cost function.
 enum class CameraParameterIndices : int {
@@ -24,9 +24,14 @@ enum class CameraParameterIndices : int {
   kModelPointIndex = 3,
   kModelRotationIndex = 4,
   kModelTranslationIndex = 5,
-  // Pose of the sensor rig for a given measurement.
-  kSensorRigRotationIndex = 6,
-  kSensorRigTranslationIndex = 7,
+  // Starting index of the rotation and position control points of the
+  // associated spline segment. The rotation and position are represented
+  // as two independent 3-DOF B-splines, each spline containing
+  // Trajectory::kSplineOrder control points for a total of
+  // 2 * 3 * Trajectory::kSplineOrder parameters. For example, if our trajectory
+  // is a 6th order spline, there are 12 total control points for a total of 36
+  // total parameters.
+  kSensorRigPoseSplineControlPointsIndex = 6,
 };
 
 // Generic auto-differentiation camera cost functor. Residuals will be based on
@@ -34,15 +39,17 @@ enum class CameraParameterIndices : int {
 class CameraCostFunctor {
  public:
   static constexpr int kCameraResidualSize = 2;
-  explicit CameraCostFunctor(const CameraIntrinsicsModel camera_model,
-                             const Eigen::Vector2d& pixel);
+  explicit CameraCostFunctor(
+      const CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
+      double stamp, const TrajectorySegment<double>& sp_T_world_sensorrig);
 
   // Convenience function for creating a camera cost function.
   static ceres::CostFunction* CreateCostFunction(
       const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
-      Eigen::VectorXd& intrinsics, Pose3& extrinsics,
-      Eigen::Vector3d& t_model_point, Pose3& T_world_model,
-      Pose3& T_world_sensorrig, std::vector<double*>& parameters);
+      Eigen::VectorXd& intrinsics, Pose3d& extrinsics,
+      Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
+      TrajectorySegment<double>& sp_T_world_sensorrig, double stamp,
+      std::vector<double*>& parameters);
 
   // Parameters to the cost function:
   //   intrinsics:
@@ -60,11 +67,10 @@ class CameraCostFunctor {
   //     Position of the point in the model resolved int he model frame.
   //   t_world_model:
   //     Position of model relative to world origin resolved in the world frame.
-  //   q_world_sensorrig:
-  //     Rotation from world frame to sensorrig frame.
-  //   t_world_sensorrig:
-  //     Position of sensorrig relative to world origin resolved in the world
-  //     frame.
+  //   cp0_rot thorugh cp5_rot:
+  //     Rotation spline control points for this particular spline segment.
+  //   cp0_pos through cp5_pos:
+  //     Position spline control points for this particular spline segment.
   template <typename T>
   bool operator()(T const* const* parameters, T* residual) {
     // Parse intrinsics.
@@ -91,22 +97,34 @@ class CameraCostFunctor {
     const Eigen::Map<const Eigen::Vector3<T>> t_world_model(
         &(parameters[static_cast<int>(
             CameraParameterIndices::kModelTranslationIndex)][0]));
-    // Parse sensor rig pose resolved in the world frame.
-    const Eigen::Map<const Eigen::Quaternion<T>> q_world_sensorrig(
-        &(parameters[static_cast<int>(
-            CameraParameterIndices::kSensorRigRotationIndex)][0]));
-    const Eigen::Map<const Eigen::Vector3<T>> t_world_sensorrig(
-        &(parameters[static_cast<int>(
-            CameraParameterIndices::kSensorRigTranslationIndex)][0]));
+    // Parse sensor rig rotation spline resolved in the world frame.
+    std::vector<Eigen::Vector3<T>> position_control_points(
+        Trajectory::kSplineOrder);
+    std::vector<Eigen::Vector3<T>> rotation_control_points(
+        Trajectory::kSplineOrder);
+    for (int i = 0; i < Trajectory::kSplineOrder; ++i) {
+      const int rot_idx = static_cast<int>(
+          CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex) + i;
+      const int pos_idx = rot_idx + Trajectory::kSplineOrder;
+      rotation_control_points[i] =
+          Eigen::Map<const Eigen::Vector3<T>>(&(parameters[rot_idx][0]));
+      position_control_points[i] =
+          Eigen::Map<const Eigen::Vector3<T>>(&(parameters[pos_idx][0]));
+    }
+    const TrajectorySegment<T> sp_T_world_sensorrig {
+      .rotation_control_points = rotation_control_points,
+      .position_control_points = position_control_points,
+      .knot0 = T(knot0_),
+      .knot1 = T(knot1_),
+      .basis_matrix = basis_matrix_.template cast<T>(),
+    };
+    const Pose3<T> T_world_sensorrig = sp_T_world_sensorrig.Evaluate(T(stamp_));
     // Resolve the model point in the camera frame.
-    const Eigen::Vector3<T> t_world_camera =
-        t_world_sensorrig + q_world_sensorrig * t_sensorrig_camera;
-    const Eigen::Quaternion<T> q_world_camera =
-        q_world_sensorrig * q_sensorrig_camera;
-    const Eigen::Vector3<T> t_world_point =
-        t_world_model + q_world_model * t_model_point;
-    const Eigen::Vector3<T> t_camera_point =
-        q_world_camera.conjugate() * (t_world_point - t_world_camera);
+    const Pose3<T> T_sensorrig_camera(q_sensorrig_camera, t_sensorrig_camera);
+    const Pose3<T> T_world_camera = T_world_sensorrig * T_sensorrig_camera;
+    const Pose3<T> T_world_model(q_world_model, t_world_model);
+    const Pose3<T> T_camera_model = T_world_camera.inverse() * T_world_model;
+    const Eigen::Vector3<T> t_camera_point = T_camera_model * t_model_point;
     // Project the point through the camera model.
     const absl::StatusOr<Eigen::Vector2<T>> projection =
         camera_model_->ProjectPoint(intrinsics, t_camera_point);
@@ -123,6 +141,10 @@ class CameraCostFunctor {
  private:
   Eigen::Vector2d pixel_;
   std::unique_ptr<CameraModel> camera_model_;
+  double stamp_;
+  Eigen::MatrixXd basis_matrix_;
+  double knot0_;
+  double knot1_;
 };
 } // namespace calico::sensors
 

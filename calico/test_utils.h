@@ -47,7 +47,7 @@ class DefaultSyntheticTest {
           const Eigen::Quaterniond q_world_sensorrig =
               q_world_sensorrig0 * q_sensorrig0_sensorrig;
           trajectory_world_sensorrig_[current_time] =
-              Pose3(q_world_sensorrig, t_world_sensorrig0);
+              Pose3d(q_world_sensorrig, t_world_sensorrig0);
           current_time += dt_actual;
         }
       }
@@ -59,7 +59,7 @@ class DefaultSyntheticTest {
         for (const double& interp_time : interpolation_times) {
           const double pos = dpos * interp_time + pos0;
           trajectory_world_sensorrig_[current_time] =
-              Pose3(q_world_sensorrig0, axis * pos + t_world_sensorrig0);
+              Pose3d(q_world_sensorrig0, axis * pos + t_world_sensorrig0);
           current_time += dt_actual;
         }
       }
@@ -80,7 +80,7 @@ class DefaultSyntheticTest {
   }
 
   // Getter for trajectory as a timestamp-to-pose hash map.
-  const absl::flat_hash_map<double, Pose3>& TrajectoryAsMap() const {
+  const absl::flat_hash_map<double, Pose3d>& TrajectoryAsMap() const {
     return trajectory_world_sensorrig_;
   }
 
@@ -94,7 +94,7 @@ class DefaultSyntheticTest {
   }
 
  private:
-  absl::flat_hash_map<double, Pose3> trajectory_world_sensorrig_;
+  absl::flat_hash_map<double, Pose3d> trajectory_world_sensorrig_;
   std::vector<double> trajectory_key_values_;
   std::vector<Eigen::Vector3d> t_world_points_;
 

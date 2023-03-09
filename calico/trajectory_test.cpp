@@ -11,7 +11,7 @@ namespace {
 
 class TrajectoryTest : public ::testing::Test {
  protected:
-  absl::flat_hash_map<double, Pose3> trajectory_world_sensorrig;
+  absl::flat_hash_map<double, Pose3d> trajectory_world_sensorrig;
   std::vector<double> trajectory_key_values;
   void SetUp() override {
     DefaultSyntheticTest test_fixture;
@@ -20,9 +20,17 @@ class TrajectoryTest : public ::testing::Test {
   }
 };
 
-TEST_F(TrajectoryTest, AddPosesWorks) {
+TEST_F(TrajectoryTest, SplineFitAndInterpolation) {
   Trajectory trajectory;
   EXPECT_OK(trajectory.AddPoses(trajectory_world_sensorrig));
+  ASSERT_OK_AND_ASSIGN(const std::vector<Pose3d> interpolated_poses,
+                       trajectory.Interpolate(trajectory_key_values));
+  for (int i = 0; i < trajectory_key_values.size(); ++i) {
+    const double stamp = trajectory_key_values.at(i);
+    const Pose3d expected_pose = trajectory_world_sensorrig.at(stamp);
+    const Pose3d actual_pose = interpolated_poses.at(i);
+    EXPECT_THAT(actual_pose, PoseEq(expected_pose));
+  }
 }
 
 TEST_F(TrajectoryTest, TrajectorySetterAndGetter) {

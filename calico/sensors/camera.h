@@ -92,8 +92,8 @@ class Camera : public Sensor {
   const std::string& GetName() const final;
 
   // Setter/getter for extrinsics parameters.
-  void SetExtrinsics(const Pose3& T_sensorrig_sensor) final;
-  const Pose3& GetExtrinsics() const final;
+  void SetExtrinsics(const Pose3d& T_sensorrig_sensor) final;
+  const Pose3d& GetExtrinsics() const final;
 
   // Setter/getter for intrinsics parameters.
   absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
@@ -144,7 +144,7 @@ class Camera : public Sensor {
   bool extrinsics_enabled_;
   ImageSize image_size_;
   std::unique_ptr<CameraModel> camera_model_;
-  Pose3 T_sensorrig_sensor_;
+  Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   absl::flat_hash_map<ObservationId, CameraMeasurement> id_to_measurement_;
 };

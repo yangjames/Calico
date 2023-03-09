@@ -40,8 +40,8 @@ class Sensor {
   virtual const std::string& GetName() const = 0;
 
   // Setter/getter for extrinsics parameters.
-  virtual void SetExtrinsics(const Pose3& T_sensorrig_sensor) = 0;
-  virtual const Pose3& GetExtrinsics() const = 0;
+  virtual void SetExtrinsics(const Pose3d& T_sensorrig_sensor) = 0;
+  virtual const Pose3d& GetExtrinsics() const = 0;
 
   // Setter/getter for intrinsics parameters.
   virtual absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) = 0;
@@ -59,7 +59,6 @@ class Sensor {
       ceres::Problem& problem) = 0;
 
   // Method for adding this sensor's residuals to a problem.
-  // TODO(yangjames): Replace sensorrig_trajectory with a BSpline.
   virtual absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem& problem,
       Trajectory& sensorrig_trajectory,

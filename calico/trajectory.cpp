@@ -11,21 +11,21 @@
 namespace calico {
 
 absl::Status Trajectory::AddPoses(
-    const absl::flat_hash_map<double, Pose3>& poses_world_body) {
+    const absl::flat_hash_map<double, Pose3d>& poses_world_body) {
   pose_id_to_pose_world_body_ = poses_world_body;
   return FitSpline(poses_world_body);
 }
 
-const absl::flat_hash_map<double, Pose3>& Trajectory::trajectory() const {
+const absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() const {
   return pose_id_to_pose_world_body_;
 }
 
-absl::flat_hash_map<double, Pose3>& Trajectory::trajectory() {
+absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() {
   return pose_id_to_pose_world_body_;
 }
 
 absl::Status Trajectory::FitSpline(
-    const absl::flat_hash_map<double, Pose3>& poses_world_sensorrig) {
+    const absl::flat_hash_map<double, Pose3d>& poses_world_sensorrig) {
   // Grab all sorted timestamps from the map.
   std::vector<double> stamps;
   for (const auto& [stamp, _] : poses_world_sensorrig) {
@@ -38,7 +38,7 @@ absl::Status Trajectory::FitSpline(
   std::vector<Eigen::Vector3d> t_world_sensorrig(num_poses);
   int i = 0;
   for (const auto& stamp : stamps) {
-    const Pose3& T_world_sensorrig = poses_world_sensorrig.at(stamp);
+    const Pose3d& T_world_sensorrig = poses_world_sensorrig.at(stamp);
     Eigen::AngleAxisd vec(T_world_sensorrig.rotation());
     phi_world_sensorrig[i] = vec.axis() * vec.angle();
     t_world_sensorrig[i] = T_world_sensorrig.translation();
@@ -68,17 +68,34 @@ void Trajectory::UnwrapPhaseLogMap(std::vector<Eigen::Vector3d>& phi) {
   }
 }
 
-
 int Trajectory::AddParametersToProblem(ceres::Problem& problem) {
+  /*
   int num_parameters = 0;
   for (auto& [pose_id, pose] : pose_id_to_pose_world_body_) {
     num_parameters += utils::AddPoseToProblem(problem, pose);
   }
-  /*
+  */
   int num_parameters = phi_world_sensorrig_.AddParametersToProblem(problem);
   num_parameters += t_world_sensorrig_.AddParametersToProblem(problem);
-  */
   return num_parameters;
+}
+
+absl::StatusOr<std::vector<Pose3d>>
+Trajectory::Interpolate(const std::vector<double>& interp_times) {
+  std::vector<Eigen::Vector3d> phi_interp;
+  ASSIGN_OR_RETURN(phi_interp, phi_world_sensorrig_.Interpolate(interp_times));
+  std::vector<Eigen::Vector3d> pos_interp;
+  ASSIGN_OR_RETURN(pos_interp, t_world_sensorrig_.Interpolate(interp_times));
+  std::vector<Pose3d> interpolated_poses(interp_times.size());
+  for (int i = 0; i < interp_times.size(); ++i) {
+    const Eigen::Vector3d& pos = pos_interp[i];
+    const Eigen::Vector3d& phi = phi_interp[i];
+    Eigen::Vector4d q;
+    ceres::AngleAxisToQuaternion(phi.data(), q.data());
+    const Eigen::Quaterniond rot(q(0), q(1), q(2), q(3));
+    interpolated_poses[i] = Pose3d(rot, pos);
+  }
+  return interpolated_poses;
 }
 
 void Trajectory::WriteToFile(absl::string_view fname) const {

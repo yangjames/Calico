@@ -42,7 +42,7 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
     RigidBody& rigidbody_ref = world_model.rigidbodies().at(rigidbody_id);
     Eigen::Vector3d& t_model_point =
         rigidbody_ref.model_definition.at(observation_id.feature_id);
-    Pose3& T_world_sensorrig =
+    Pose3d& T_world_sensorrig =
         sensorrig_trajectory.trajectory().at(observation_id.stamp);
     // Construct a cost function and supply parameters for this residual.
     std::vector<double*> parameters;
@@ -67,7 +67,7 @@ std::vector<CameraMeasurement> Camera::Project(
   int image_id = 0;
   for (const auto& [stamp, T_world_sensorrig] :
            sensorrig_trajectory.trajectory()) {
-    const Pose3 T_camera_world =
+    const Pose3d T_camera_world =
         (T_world_sensorrig * T_sensorrig_sensor_).inverse();
     // Project all landmarks.
     for (const auto& [landmark_id, landmark] : world_model.landmarks()) {
@@ -82,7 +82,7 @@ std::vector<CameraMeasurement> Camera::Project(
     }
     // Project all rigid bodies.
     for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
-      const Pose3 T_camera_rigidbody =
+      const Pose3d T_camera_rigidbody =
           T_camera_world * rigidbody.T_world_rigidbody;
       for (const auto& [point_id, point] : rigidbody.model_definition) {
         const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
@@ -102,11 +102,11 @@ void Camera::SetName(absl::string_view name) {
 }
 const std::string& Camera::GetName() const { return name_; }
 
-void Camera::SetExtrinsics(const Pose3& T_sensorrig_sensor) {
+void Camera::SetExtrinsics(const Pose3d& T_sensorrig_sensor) {
   T_sensorrig_sensor_ = T_sensorrig_sensor;
 }
     
-const Pose3& Camera::GetExtrinsics() const {
+const Pose3d& Camera::GetExtrinsics() const {
   return T_sensorrig_sensor_;
 }
 

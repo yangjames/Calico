@@ -9,15 +9,23 @@ namespace calico::sensors {
 namespace {
 
 // Test the creation of camera cost functions and convenience functions.
+class CameraCostFunctionCreationFixture : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    DefaultSyntheticTest synthetic_test;
+    synthetic_test
+  }
+};
+
 struct CameraCostFunctionCreationTestCase {
   std::string test_name;
   CameraIntrinsicsModel camera_model;
   Eigen::Vector2d pixel;
   Eigen::VectorXd intrinsics;
-  Pose3 extrinsics;
+  Pose3d extrinsics;
   Eigen::Vector3d t_model_point;
-  Pose3 T_world_model;
-  Pose3 T_world_sensorrig;
+  Pose3d T_world_model;
+  Pose3d T_world_sensorrig;
 };
 using CameraCostFunctionCreationTest =
   ::testing::TestWithParam<CameraCostFunctionCreationTestCase>;
@@ -42,10 +50,10 @@ INSTANTIATE_TEST_SUITE_P(
           CameraIntrinsicsModel::kOpenCv5,
           Eigen::Vector2d::Random(),
           Eigen::VectorXd::Random(OpenCv5Model::kNumberOfParameters),
-          Pose3(),
+          Pose3d(),
           Eigen::Vector3d::Random(),
-          Pose3(),
-          Pose3(),
+          Pose3d(),
+          Pose3d(),
         },
       }),
     [](const testing::TestParamInfo

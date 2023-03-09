@@ -18,7 +18,7 @@ class CameraContainerTest : public ::testing::Test {
   const ImageSize kImageSize { .width = 1280, .height = 800, };
   static constexpr CameraIntrinsicsModel kCameraModel =
       CameraIntrinsicsModel::kOpenCv5;
-  const Pose3 kExtrinsics = Pose3(
+  const Pose3d kExtrinsics = Pose3d(
       Eigen::Quaterniond::UnitRandom(), Eigen::Vector3d::Random());
   const Eigen::VectorXd kIntrinsics =
       Eigen::VectorXd::Random(OpenCv5Model::kNumberOfParameters);
@@ -51,7 +51,7 @@ TEST_F(CameraContainerTest, SettersAndGetters) {
   // Pre-assignment.
   EXPECT_THAT(camera_.GetName(), ::testing::IsEmpty());
   EXPECT_EQ(camera_.GetModel(), CameraIntrinsicsModel::kNone);
-  EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(Pose3()));
+  EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(Pose3d()));
   EXPECT_THAT(camera_.GetIntrinsics(), EigenEq(Eigen::VectorXd()));
   EXPECT_THAT(camera_.GetImageSize(), ImageSizeEq(ImageSize()));
   // Post-assignment.
