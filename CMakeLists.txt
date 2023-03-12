@@ -159,9 +159,6 @@ target_link_libraries(
   world_model
 )
 
-
-
-
 add_executable(
   camera_test
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_test.cpp
