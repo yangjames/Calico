@@ -42,20 +42,60 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
     RigidBody& rigidbody_ref = world_model.rigidbodies().at(rigidbody_id);
     Eigen::Vector3d& t_model_point =
         rigidbody_ref.model_definition.at(observation_id.feature_id);
-    Pose3d& T_world_sensorrig =
-        sensorrig_trajectory.trajectory().at(observation_id.stamp);
     // Construct a cost function and supply parameters for this residual.
     std::vector<double*> parameters;
     ceres::CostFunction* cost_function =
         CameraCostFunctor::CreateCostFunction(
             measurement.pixel, camera_model_->GetType(), intrinsics_,
             T_sensorrig_sensor_, t_model_point, rigidbody_ref.T_world_rigidbody,
-            T_world_sensorrig, parameters);
+            sensorrig_trajectory, observation_id.stamp, parameters);
     const auto residual_block_id = problem.AddResidualBlock(
         cost_function, /*loss_function=*/nullptr, parameters);
     num_residuals_added += 1;
   }
   return num_residuals_added;
+}
+
+absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
+    const std::vector<double>& interp_times,
+    const Trajectory& sensorrig_trajectory,
+    const WorldModel& world_model) const {
+  std::vector<Pose3d> poses_world_sensorrig;
+  ASSIGN_OR_RETURN(poses_world_sensorrig,
+                   sensorrig_trajectory.Interpolate(interp_times));
+  std::vector<CameraMeasurement> measurements;
+  int image_id = 0;
+  for (int i = 0; i < interp_times.size(); ++i) {
+    const Pose3d& T_world_sensorrig = poses_world_sensorrig.at(i);
+    const double& stamp = interp_times.at(i);
+    const Pose3d T_camera_world =
+        (T_world_sensorrig * T_sensorrig_sensor_).inverse();
+    // Project all landmarks.
+    for (const auto& [landmark_id, landmark] : world_model.landmarks()) {
+      const Eigen::Vector3d point_camera = T_camera_world * landmark.point;
+      if (point_camera.z() <= 0) {
+        continue;
+      }
+      const absl::StatusOr<Eigen::Vector2d> projection =
+          camera_model_->ProjectPoint(intrinsics_, point_camera);
+      measurements.push_back(
+          {*projection, {stamp, image_id, kLandmarkFrameId, landmark_id}});
+    }
+    // Project all rigid bodies.
+    for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
+      const Pose3d T_camera_rigidbody =
+          T_camera_world * rigidbody.T_world_rigidbody;
+      for (const auto& [point_id, point] : rigidbody.model_definition) {
+        const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
+        const absl::StatusOr<Eigen::Vector2d> projection =
+          camera_model_->ProjectPoint(intrinsics_, point_camera);
+        measurements.push_back(
+            {*projection, {stamp, image_id, rigidbody_id, point_id}});
+      }
+    }
+    ++image_id;
+  }
+  return measurements;
 }
 
 std::vector<CameraMeasurement> Camera::Project(

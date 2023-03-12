@@ -74,7 +74,7 @@ class Camera : public Sensor {
   // method returns only valid synthetic measurements as would be observed by
   // the actual sensor, complying with physicality such as features being in
   // front of the camera and within image bounds.
-  std::vector<CameraMeasurement> Project(
+  absl::StatusOr<std::vector<CameraMeasurement>> Project(
       const std::vector<double>& interp_times,
       const Trajectory& sensorrig_trajectory,
       const WorldModel& world_model) const;

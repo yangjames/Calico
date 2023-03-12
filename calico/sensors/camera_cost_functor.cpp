@@ -7,24 +7,27 @@ namespace calico::sensors {
 
 CameraCostFunctor::CameraCostFunctor(
     const CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
-    double stamp, const TrajectorySegment<double>& sp_T_world_sensorrig)
-  : pixel_(pixel), stamp_(stamp) {
+    double stamp, const Trajectory& trajectory_world_sensorrig)
+  : pixel_(pixel) {
   camera_model_ = CameraModel::Create(camera_model);
-  basis_matrix_ = sp_T_world_sensorrig.basis_matrix;
-  knot0_ = sp_T_world_sensorrig.knot0;
-  knot1_ = sp_T_world_sensorrig.knot1;
+  const int spline_index = trajectory_world_sensorrig.spline()
+      .GetControlPointIndex(stamp);
+  const int knot_index = trajectory_world_sensorrig.spline()
+      .GetKnotIndexFromControlPointIndex(spline_index);
+  trajectory_evaluation_params_
+      = trajectory_world_sensorrig.GetEvaluationParams(stamp);
 }
 
 ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
     const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
     Eigen::VectorXd& intrinsics, Pose3d& extrinsics,
     Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
-    TrajectorySegment<double>& sp_T_world_sensorrig, double stamp,
+    Trajectory& trajectory_world_sensorrig, double stamp,
     std::vector<double*>& parameters) {
   auto* cost_function =
       new ceres::DynamicAutoDiffCostFunction<CameraCostFunctor>(
           new CameraCostFunctor(camera_model, pixel, stamp,
-                                sp_T_world_sensorrig));
+                                trajectory_world_sensorrig));
   // intrinsics
   parameters.push_back(intrinsics.data());
   cost_function->AddParameterBlock(intrinsics.size());
@@ -45,17 +48,11 @@ ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
   Eigen::Vector3d& t_world_model = T_world_model.translation();
   parameters.push_back(t_world_model.data());
   cost_function->AddParameterBlock(t_world_model.size());
-  // sp_T_world_sensorrig
-  for (Eigen::Vector3d& rotation_control_point :
-           sp_T_world_sensorrig.rotation_control_points) {
-    parameters.push_back(rotation_control_point.data());
-    cost_function->AddParameterBlock(rotation_control_point.size());
-  }
-  for (Eigen::Vector3d& position_control_point :
-           sp_T_world_sensorrig.position_control_points) {
-    parameters.push_back(position_control_point.data());
-    cost_function->AddParameterBlock(position_control_point.size());
-  }
+  // trajectory spline control points.
+  parameters.push_back(
+      trajectory_world_sensorrig.spline().control_points().data());
+  cost_function->AddParameterBlock(
+      trajectory_world_sensorrig.spline().control_points().size());
   // Residual
   cost_function->SetNumResiduals(kCameraResidualSize);
   return cost_function;

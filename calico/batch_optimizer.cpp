@@ -40,7 +40,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
   options.linear_solver_type = ceres::DENSE_SCHUR;
   options.preconditioner_type = ceres::JACOBI;
   options.minimizer_progress_to_stdout = true;
-  options.num_threads = 1;
+  options.num_threads = 4;
   options.max_num_iterations = 50;
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);

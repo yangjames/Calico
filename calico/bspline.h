@@ -48,10 +48,10 @@ class BSpline {
   std::vector<T>& knots() { return knots_; }
 
   // Setter/getter for control points.
-  const std::vector<Eigen::Vector<T, N>>& control_points() const {
+  const Eigen::MatrixXd& control_points() const {
     return control_points_;
   }
-  std::vector<Eigen::Vector<T, N>>& control_points() {
+  Eigen::MatrixXd& control_points() {
     return control_points_;
   }
 
@@ -64,7 +64,7 @@ class BSpline {
   }
 
   static Eigen::Vector<T, N> Evaluate(
-      const std::vector<Eigen::Vector<T, N>>& control_points_set, T knot0,
+      const Eigen::Ref<const Eigen::MatrixX<T>>& control_points_set, T knot0,
       T knot1, const Eigen::MatrixX<T>& basis_matrix, T stamp, int derivative);
 
  private:
@@ -80,7 +80,7 @@ class BSpline {
   std::vector<T> valid_knots_;
   Eigen::MatrixXd derivative_coeffs_;
   std::vector<Eigen::MatrixXd> Mi_;
-  std::vector<Eigen::Vector<T, N>> control_points_;
+  Eigen::MatrixXd control_points_; // num_control_pointsxN matrix.
 
 
   // Convenience function for computing a knot vector.

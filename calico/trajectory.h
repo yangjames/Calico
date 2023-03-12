@@ -11,13 +11,14 @@
 
 namespace calico {
 
-template <typename T>
-struct TrajectorySegment {
-  T knot0;
-  T knot1;
-  Eigen::MatrixX<T> basis_matrix;
-  std::vector<const T*> rotation_control_points;
-  std::vector<const T*> position_control_points;
+struct TrajectoryEvaluationParams {
+  int knot_index;
+  int spline_index;
+  int num_control_points;
+  double knot0;
+  double knot1;
+  double stamp;
+  Eigen::MatrixXd basis_matrix;
 };
 
 class Trajectory {
@@ -35,55 +36,23 @@ class Trajectory {
   // parameters added to the problem.
   int AddParametersToProblem(ceres::Problem& problem);
 
+  // Setter/getter for the spline.
+  const BSpline<6>& spline() const { return spline_pose_world_body_; }
+  BSpline<6>& spline() { return spline_pose_world_body_; }
+
   // Setter/getter for the internal map between timestamp and pose.
   const absl::flat_hash_map<double, Pose3d>& trajectory() const;
   absl::flat_hash_map<double, Pose3d>& trajectory();
 
-  // Getter for a spline segment object associated with a specific timestamp.
-  TrajectorySegment<double> GetTrajectorySegment(double stamp) const;
+  // Get the parameters needed to evaluate the spline for a given timestamp.
+  TrajectoryEvaluationParams GetEvaluationParams(double stamp) const;
 
   // Interpolate the trajectory at given timestamps.
   absl::StatusOr<std::vector<Pose3d>>
-  Interpolate(const std::vector<double>& interp_times);
+  Interpolate(const std::vector<double>& interp_times) const;
 
   // Dump the trajectory to binary.
-  void WriteToFile(absl::string_view fname) const;
-
-  // Evaluate a trajectory segment at a given timestamp and derivative order.
-  template <typename T>
-  static absl::StatusOr<Eigen::Vector<T, 6>> Evaluate(
-      const TrajectorySegment<T> segment, T stamp, int derivative) {
-    int num_points = segment.rotation_control_points.size();
-    if (num_points != segment.position_control_points.size()) {
-      return absl::InvalidArgumentError("Rotation control points and position "
-                                        "control points have different sizes.");
-    }
-    if ((segment.basis_matrix.rows() != num_points) ||
-        (segment.basis_matrix.cols() != num_points)) {
-      return absl::InvalidArgumentError(absl::StrCat(
-          "Invalid basis matrix size. Expected ", num_points, "x", num_points,
-          ", got ", segment.basis_matrix.rows(), "x",
-          segment.basis_matrix.cols()));
-    }
-    std::vector<Eigen::Vector3<T>> rotation_control_points(num_points);
-    std::vector<Eigen::Vector3<T>> position_control_points(num_points);
-    for (int i = 0; i < rotation_control_points.size(); ++i) {
-      rotation_control_points[i] =
-          Eigen::Map<const Eigen::Vector3<T>>(segment.rotation_control_points.at(i));
-      position_control_points[i] =
-          Eigen::Map<const Eigen::Vector3<T>>(segment.position_control_points.at(i));
-    }
-    const T& knot0 = segment.knot0;
-    const T& knot1 = segment.knot1;
-    const Eigen::MatrixX<T>& basis_matrix = segment.basis_matrix;
-    const Eigen::Vector3<T> phi = BSpline<3, T>::Evaluate(
-        rotation_control_points, knot0, knot1, basis_matrix, stamp, derivative);
-    const Eigen::Vector3<T> pos = BSpline<3, T>::Evaluate(
-       position_control_points, knot0, knot1, basis_matrix, stamp, derivative);
-    Eigen::Vector<T, 6> evaluation_vector;
-    evaluation_vector << phi, pos;
-    return evaluation_vector;
-  }
+  // void WriteToFile(absl::string_view fname) const;
 
   // Convert a 6-DOF vector to Pose3 type. First three elements of the vector
   // are expected to be an SO(3) log map vector, and the last three are the
@@ -106,8 +75,7 @@ class Trajectory {
 
  private:
   absl::flat_hash_map<double, Pose3d> pose_id_to_pose_world_body_;
-  BSpline<3> phi_world_sensorrig_;
-  BSpline<3> t_world_sensorrig_;
+  BSpline<6> spline_pose_world_body_;
 
   // Fit a 6-DOF spline through a set of stamped poses.
   absl::Status FitSpline(

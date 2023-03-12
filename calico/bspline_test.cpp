@@ -49,7 +49,7 @@ TEST_F(BSplineTest, InvalidInterpolationTime) {
               StatusIs(absl::StatusCode::kInvalidArgument));
 }
 
-TEST_F(BSplineTest, InterpolationPrecision1DOF) {
+TEST_F(BSplineTest, InterpolationPrecision3DOF) {
   constexpr int kNumInterpPoints = 201;
   constexpr double kSmallValueD0 = 1e-6;
   constexpr double kSmallValueD1 = 1e-5;

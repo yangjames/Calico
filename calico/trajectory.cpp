@@ -17,9 +17,7 @@ absl::Status Trajectory::AddPoses(
 }
 
 int Trajectory::AddParametersToProblem(ceres::Problem& problem) {
-  int num_parameters = phi_world_sensorrig_.AddParametersToProblem(problem);
-  num_parameters += t_world_sensorrig_.AddParametersToProblem(problem);
-  return num_parameters;
+  return spline_pose_world_body_.AddParametersToProblem(problem);
 }
 
 const absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() const {
@@ -30,54 +28,58 @@ absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() {
   return pose_id_to_pose_world_body_;
 }
 
-TrajectorySegment<double> Trajectory::GetTrajectorySegment(double stamp) const {
-  const int control_point_idx = phi_world_sensorrig_.GetControlPointIndex(stamp);
+TrajectoryEvaluationParams Trajectory::GetEvaluationParams(double stamp) const {
+  const int control_point_idx =
+      spline_pose_world_body_.GetControlPointIndex(stamp);
   const int knot_idx =
-      phi_world_sensorrig_.GetKnotIndexFromControlPointIndex(control_point_idx);
-  TrajectorySegment<double> segment;
-  segment.knot0 = phi_world_sensorrig_.knots()[knot_idx];
-  segment.knot1 = phi_world_sensorrig_.knots()[knot_idx + 1];
-  segment.basis_matrix = phi_world_sensorrig_.basis_matrices()[control_point_idx];
-  segment.rotation_control_points.resize(kSplineOrder);
-  segment.position_control_points.resize(kSplineOrder);
-  for (int i = 0; i < kSplineOrder; ++i) {
-    segment.rotation_control_points[i] =
-        phi_world_sensorrig_.control_points()[control_point_idx + i].data();
-    segment.position_control_points[i] =
-        t_world_sensorrig_.control_points()[control_point_idx + i].data();
-  }
-  return segment;
+      spline_pose_world_body_.GetKnotIndexFromControlPointIndex(
+          control_point_idx);
+  const int num_control_points =
+      spline_pose_world_body_.control_points().rows();
+  return TrajectoryEvaluationParams {
+    .knot_index = knot_idx,
+    .spline_index = control_point_idx,
+    .num_control_points = num_control_points,
+    .knot0 = spline_pose_world_body_.knots()[knot_idx],
+    .knot1 = spline_pose_world_body_.knots()[knot_idx + 1],
+    .stamp = stamp,
+    .basis_matrix =
+        spline_pose_world_body_.basis_matrices()[control_point_idx],
+  };
 }
 
 absl::Status Trajectory::FitSpline(
-    const absl::flat_hash_map<double, Pose3d>& poses_world_sensorrig) {
+    const absl::flat_hash_map<double, Pose3d>& poses_world_body) {
   // Grab all sorted timestamps from the map.
   std::vector<double> stamps;
-  for (const auto& [stamp, _] : poses_world_sensorrig) {
+  for (const auto& [stamp, _] : poses_world_body) {
     stamps.push_back(stamp);
   }
   std::sort(stamps.begin(), stamps.end());
   // Convert each pose into two 3-vectors, rotation and position.
-  const int num_poses = poses_world_sensorrig.size();
-  std::vector<Eigen::Vector3d> phi_world_sensorrig(num_poses);
-  std::vector<Eigen::Vector3d> t_world_sensorrig(num_poses);
+  const int num_poses = poses_world_body.size();
+  std::vector<Eigen::Vector3d> phi_world_body(num_poses);
+  std::vector<Eigen::Vector3d> t_world_body(num_poses);
   int i = 0;
   for (const auto& stamp : stamps) {
-    const Pose3d& T_world_sensorrig = poses_world_sensorrig.at(stamp);
-    Eigen::AngleAxisd vec(T_world_sensorrig.rotation());
-    phi_world_sensorrig[i] = vec.axis() * vec.angle();
-    t_world_sensorrig[i] = T_world_sensorrig.translation();
+    const Pose3d& T_world_body = poses_world_body.at(stamp);
+    Eigen::AngleAxisd vec(T_world_body.rotation());
+    phi_world_body[i] = vec.axis() * vec.angle();
+    t_world_body[i] = T_world_body.translation();
     ++i;
   }
-  UnwrapPhaseLogMap(phi_world_sensorrig);
+  UnwrapPhaseLogMap(phi_world_body);
 
-  RETURN_IF_ERROR(phi_world_sensorrig_.FitToData(
-      stamps, phi_world_sensorrig, kSplineOrder, kKnotFrequency));
-  RETURN_IF_ERROR(t_world_sensorrig_.FitToData(
-      stamps, t_world_sensorrig, kSplineOrder, kKnotFrequency));
+  std::vector<Eigen::Vector<double, 6>> pose_world_body(num_poses);
+  for (int i = 0; i < pose_world_body.size(); ++i) {
+    pose_world_body[i].head(3) = phi_world_body[i];
+    pose_world_body[i].tail(3) = t_world_body[i];
+  }
+
+  RETURN_IF_ERROR(spline_pose_world_body_.FitToData(
+      stamps, pose_world_body, kSplineOrder, kKnotFrequency));
   return absl::OkStatus();
 }
-
 
 void Trajectory::UnwrapPhaseLogMap(std::vector<Eigen::Vector3d>& phi) {
   for (int i = 1; i < phi.size(); ++i) {
@@ -94,42 +96,36 @@ void Trajectory::UnwrapPhaseLogMap(std::vector<Eigen::Vector3d>& phi) {
 }
 
 absl::StatusOr<std::vector<Pose3d>>
-Trajectory::Interpolate(const std::vector<double>& interp_times) {
-  std::vector<Eigen::Vector3d> phi_interp;
-  ASSIGN_OR_RETURN(phi_interp, phi_world_sensorrig_.Interpolate(interp_times));
-  std::vector<Eigen::Vector3d> pos_interp;
-  ASSIGN_OR_RETURN(pos_interp, t_world_sensorrig_.Interpolate(interp_times));
+Trajectory::Interpolate(const std::vector<double>& interp_times) const {
+  std::vector<Eigen::Vector<double, 6>> pose_vectors_interp;
+  ASSIGN_OR_RETURN(pose_vectors_interp,
+                   spline_pose_world_body_.Interpolate(interp_times));
   std::vector<Pose3d> interpolated_poses(interp_times.size());
   for (int i = 0; i < interp_times.size(); ++i) {
-    const Eigen::Vector3d& pos = pos_interp[i];
-    const Eigen::Vector3d& phi = phi_interp[i];
-    Eigen::Vector4d q;
-    ceres::AngleAxisToQuaternion(phi.data(), q.data());
-    const Eigen::Quaterniond rot(q(0), q(1), q(2), q(3));
-    interpolated_poses[i] = Pose3d(rot, pos);
+    interpolated_poses[i] = VectorToPose3(pose_vectors_interp[i]);
   }
   return interpolated_poses;
 }
 
-void Trajectory::WriteToFile(absl::string_view fname) const {
-  std::ofstream file(std::string(fname), std::ios::out | std::ios::binary);
-  file.write((char*)&kSplineOrder, sizeof(int));
-  file.write((char*)&kKnotFrequency, sizeof(double));
-  for (const auto& spline :
-           std::vector{phi_world_sensorrig_, t_world_sensorrig_}) {
-    const auto& control_points = spline.control_points();
-    const auto& knots = spline.knots();
-    const int num_control_points = control_points.size();
-    const int num_knots = knots.size();
-    file.write((char*)&num_control_points, sizeof(int));
-    file.write((char*)&num_knots, sizeof(int));
-    for (const auto& control_point : control_points) {
-      file.write((char*) control_point.data(), sizeof(double)*3);
-    }
-    for (const auto& knot : knots) {
-      file.write((char*) &knot, sizeof(double));
-    }
-  }
-}
+// void Trajectory::WriteToFile(absl::string_view fname) const {
+//   std::ofstream file(std::string(fname), std::ios::out | std::ios::binary);
+//   file.write((char*)&kSplineOrder, sizeof(int));
+//   file.write((char*)&kKnotFrequency, sizeof(double));
+//   for (const auto& spline :
+//            std::vector{phi_world_body_, t_world_body_}) {
+//     const auto& control_points = spline.control_points();
+//     const auto& knots = spline.knots();
+//     const int num_control_points = control_points.size();
+//     const int num_knots = knots.size();
+//     file.write((char*)&num_control_points, sizeof(int));
+//     file.write((char*)&num_knots, sizeof(int));
+//     for (const auto& control_point : control_points) {
+//       file.write((char*) control_point.data(), sizeof(double)*3);
+//     }
+//     for (const auto& knot : knots) {
+//       file.write((char*) &knot, sizeof(double));
+//     }
+//   }
+// }
 
 } // namespace calico

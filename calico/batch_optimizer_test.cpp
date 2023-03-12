@@ -62,7 +62,8 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
 
   // Sensorrig trajectory
   Trajectory trajectory_world_sensorrig;
-  trajectory_world_sensorrig.trajectory() = poses_world_sensorrig;
+  ASSERT_OK(trajectory_world_sensorrig.AddPoses(poses_world_sensorrig));
+  //trajectory_world_sensorrig.trajectory() = poses_world_sensorrig;
   // Generate measurements.
   const auto measurements_left =
       true_camera_left.Project(trajectory_world_sensorrig, world_model);

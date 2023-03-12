@@ -8,10 +8,8 @@ namespace calico {
 
 template <int N, typename T>
 int BSpline<N, T>::AddParametersToProblem(ceres::Problem& problem) {
-  for (Eigen::Vector<T, N>& control_point : control_points_) {
-    problem.AddParameterBlock(control_point.data(), N);
-  }
-  return N * control_points_.size();
+  problem.AddParameterBlock(control_points_.data(), control_points_.size());
+  return control_points_.size();
 }
 
 template <int N, typename T>
@@ -36,8 +34,8 @@ absl::Status BSpline<N, T>::FitToData(
 
 template<int N, typename T>
 Eigen::Vector<T, N> BSpline<N, T>::Evaluate(
-    const std::vector<Eigen::Vector<T, N>>& control_points_set, T knot0, T knot1,
-    const Eigen::MatrixX<T>& basis_matrix, T stamp, int derivative) {
+    const Eigen::Ref<const Eigen::MatrixX<T>>& control_points_set, T knot0,
+    T knot1, const Eigen::MatrixX<T>& basis_matrix, T stamp, int derivative) {
   // Compute u.
   const T dt = knot1 - knot0;
   const T dt_inv = static_cast<T>(1.0) / dt;
@@ -49,10 +47,11 @@ Eigen::Vector<T, N> BSpline<N, T>::Evaluate(
     dnu_dtn *= dt_inv;
   }
   // Construct U vector.
-  Eigen::Matrix<T, 1, Eigen::Dynamic> derivative_coeffs(control_points_set.size());
+  Eigen::Matrix<T, 1, Eigen::Dynamic> derivative_coeffs(
+      control_points_set.rows());
   derivative_coeffs.setOnes();
   derivative_coeffs.head(derivative).setZero();
-  Eigen::Matrix<T, 1, Eigen::Dynamic> U(control_points_set.size());
+  Eigen::Matrix<T, 1, Eigen::Dynamic> U(control_points_set.rows());
   U.setOnes();
   for (int i = derivative; i < derivative_coeffs.size(); ++i) {
     T coeff = static_cast<T>(1.0);
@@ -63,18 +62,8 @@ Eigen::Vector<T, N> BSpline<N, T>::Evaluate(
     U(i) = (i > derivative) ? (u * U(i-1)) : U(i);
   }
   U = U.array() * derivative_coeffs.array() * dnu_dtn;
-  // Manually multiply here: y = U*M*V, V = control points.This is necessary
-  // because control points are stored as N-dimensional vectors rather than
-  // one giant NxM matrix in order to make it easier to index into for cost
-  // function construction.
-  const Eigen::MatrixX<T> UM = U * basis_matrix;
-  Eigen::Vector<T, N> y(T(0.0), T(0.0), T(0.0));
-  for (int i = 0; i < control_points_set.size(); ++i) {
-    y.x() += control_points_set[i].x() * UM(i);
-    y.y() += control_points_set[i].y() * UM(i);
-    y.z() += control_points_set[i].z() * UM(i);
-  }
-  return y;
+  // Evaluate spline.
+  return (U * basis_matrix * control_points_set).transpose();
 }
 
 template <int N, typename T>
@@ -94,10 +83,9 @@ absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<N, T>::Interpolate(
   for (int i = 0; i < num_interp; ++i) {
     const int spline_idx = GetControlPointIndex(times[i]);
     const int knot_idx = GetKnotIndexFromControlPointIndex(spline_idx);
-    const std::vector<Eigen::Vector<T, N>> control_points_set(
-        control_points_.begin() + spline_idx,
-        control_points_.begin() + spline_idx + spline_order_);
-    y[i] = Evaluate(control_points_set, knots_[knot_idx], knots_[knot_idx + 1],
+    const Eigen::MatrixX<T> control_points =
+        control_points_.block(spline_idx, 0, spline_order_, N);
+    y[i] = Evaluate(control_points, knots_[knot_idx], knots_[knot_idx + 1],
                     Mi_[spline_idx], times[i], derivative);
   }
   return y;
@@ -252,11 +240,8 @@ void BSpline<N, T>::FitSpline() {
   // as this gets very expensive with more knots.
   const Eigen::MatrixX<T> XtX = X.transpose() * X;
   const Eigen::MatrixX<T> Xtd = X.transpose() * data;
-  Eigen::MatrixX<T> control_points =
-      XtX.colPivHouseholderQr().solve(Xtd).transpose();
-  for (int i = 0; i < control_points.cols(); ++i) {
-    control_points_.push_back(control_points.col(i));
-  }
+  control_points_ =
+      XtX.colPivHouseholderQr().solve(Xtd);
 }
 
 template <int N, typename T>
