@@ -45,5 +45,21 @@ TEST_F(TrajectoryTest, TrajectorySetterAndGetter) {
   }
 }
 
+TEST_F(TrajectoryTest, TrajectorySegmentEvaluation) {
+  Trajectory trajectory;
+  EXPECT_OK(trajectory.AddPoses(trajectory_world_sensorrig));
+  for (int i = 0; i < trajectory_key_values.size(); ++i) {
+    const double& stamp = trajectory_key_values.at(i);
+    const TrajectorySegment<double> segment =
+        trajectory.GetTrajectorySegment(stamp);
+    Eigen::Vector<double, 6> pose_vector;
+    ASSERT_OK_AND_ASSIGN(pose_vector, Trajectory::Evaluate(
+        segment, stamp, /*derivative=*/0));
+    const Pose3d actual_pose = Trajectory::VectorToPose3(pose_vector);
+    const Pose3d expected_pose = trajectory_world_sensorrig.at(stamp);
+    EXPECT_THAT(actual_pose, PoseEq(expected_pose));
+  }
+}
+
 } // namespace
 } // namespace calico

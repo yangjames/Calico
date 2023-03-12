@@ -16,12 +16,37 @@ absl::Status Trajectory::AddPoses(
   return FitSpline(poses_world_body);
 }
 
+int Trajectory::AddParametersToProblem(ceres::Problem& problem) {
+  int num_parameters = phi_world_sensorrig_.AddParametersToProblem(problem);
+  num_parameters += t_world_sensorrig_.AddParametersToProblem(problem);
+  return num_parameters;
+}
+
 const absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() const {
   return pose_id_to_pose_world_body_;
 }
 
 absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() {
   return pose_id_to_pose_world_body_;
+}
+
+TrajectorySegment<double> Trajectory::GetTrajectorySegment(double stamp) const {
+  const int control_point_idx = phi_world_sensorrig_.GetControlPointIndex(stamp);
+  const int knot_idx =
+      phi_world_sensorrig_.GetKnotIndexFromControlPointIndex(control_point_idx);
+  TrajectorySegment<double> segment;
+  segment.knot0 = phi_world_sensorrig_.knots()[knot_idx];
+  segment.knot1 = phi_world_sensorrig_.knots()[knot_idx + 1];
+  segment.basis_matrix = phi_world_sensorrig_.basis_matrices()[control_point_idx];
+  segment.rotation_control_points.resize(kSplineOrder);
+  segment.position_control_points.resize(kSplineOrder);
+  for (int i = 0; i < kSplineOrder; ++i) {
+    segment.rotation_control_points[i] =
+        phi_world_sensorrig_.control_points()[control_point_idx + i].data();
+    segment.position_control_points[i] =
+        t_world_sensorrig_.control_points()[control_point_idx + i].data();
+  }
+  return segment;
 }
 
 absl::Status Trajectory::FitSpline(
@@ -66,18 +91,6 @@ void Trajectory::UnwrapPhaseLogMap(std::vector<Eigen::Vector3d>& phi) {
                           (2.0 * M_PI * theta));
     phi[i] *= (1.0 + 2.0 * M_PI * k / theta);
   }
-}
-
-int Trajectory::AddParametersToProblem(ceres::Problem& problem) {
-  /*
-  int num_parameters = 0;
-  for (auto& [pose_id, pose] : pose_id_to_pose_world_body_) {
-    num_parameters += utils::AddPoseToProblem(problem, pose);
-  }
-  */
-  int num_parameters = phi_world_sensorrig_.AddParametersToProblem(problem);
-  num_parameters += t_world_sensorrig_.AddParametersToProblem(problem);
-  return num_parameters;
 }
 
 absl::StatusOr<std::vector<Pose3d>>
