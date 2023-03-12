@@ -5,20 +5,29 @@
 
 namespace calico::sensors {
 
-CameraCostFunctor::CameraCostFunctor(const CameraIntrinsicsModel camera_model,
-                                     const Eigen::Vector2d& pixel)
+CameraCostFunctor::CameraCostFunctor(
+    const CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
+    double stamp, const Trajectory& trajectory_world_sensorrig)
   : pixel_(pixel) {
   camera_model_ = CameraModel::Create(camera_model);
+  const int spline_index = trajectory_world_sensorrig.spline()
+      .GetControlPointIndex(stamp);
+  const int knot_index = trajectory_world_sensorrig.spline()
+      .GetKnotIndexFromControlPointIndex(spline_index);
+  trajectory_evaluation_params_
+      = trajectory_world_sensorrig.GetEvaluationParams(stamp);
 }
 
 ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
     const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
-    Eigen::VectorXd& intrinsics, Pose3& extrinsics,
-    Eigen::Vector3d& t_model_point, Pose3& T_world_model,
-    Pose3& T_world_sensorrig, std::vector<double*>& parameters) {
+    Eigen::VectorXd& intrinsics, Pose3d& extrinsics,
+    Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
+    Trajectory& trajectory_world_sensorrig, double stamp,
+    std::vector<double*>& parameters) {
   auto* cost_function =
-    new ceres::DynamicAutoDiffCostFunction<CameraCostFunctor>(
-        new CameraCostFunctor(camera_model, pixel));
+      new ceres::DynamicAutoDiffCostFunction<CameraCostFunctor>(
+          new CameraCostFunctor(camera_model, pixel, stamp,
+                                trajectory_world_sensorrig));
   // intrinsics
   parameters.push_back(intrinsics.data());
   cost_function->AddParameterBlock(intrinsics.size());
@@ -39,14 +48,11 @@ ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
   Eigen::Vector3d& t_world_model = T_world_model.translation();
   parameters.push_back(t_world_model.data());
   cost_function->AddParameterBlock(t_world_model.size());
-  // TODO(yangjames): Replace this with B-Spline coefficients.
-  // q_world_sensorrig
-  parameters.push_back(T_world_sensorrig.rotation().coeffs().data());
+  // trajectory spline control points.
+  parameters.push_back(
+      trajectory_world_sensorrig.spline().control_points().data());
   cost_function->AddParameterBlock(
-      T_world_sensorrig.rotation().coeffs().size());
-  // t_world_sensorrig
-  parameters.push_back(T_world_sensorrig.translation().data());
-  cost_function->AddParameterBlock(T_world_sensorrig.translation().size());
+      trajectory_world_sensorrig.spline().control_points().size());
   // Residual
   cost_function->SetNumResiduals(kCameraResidualSize);
   return cost_function;

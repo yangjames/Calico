@@ -1,5 +1,6 @@
 #include "calico/sensors/camera_cost_functor.h"
 
+#include "calico/test_utils.h"
 #include "Eigen/Dense"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -8,30 +9,45 @@
 namespace calico::sensors {
 namespace {
 
-// Test the creation of camera cost functions and convenience functions.
 struct CameraCostFunctionCreationTestCase {
   std::string test_name;
   CameraIntrinsicsModel camera_model;
   Eigen::Vector2d pixel;
   Eigen::VectorXd intrinsics;
-  Pose3 extrinsics;
+  Pose3d extrinsics;
   Eigen::Vector3d t_model_point;
-  Pose3 T_world_model;
-  Pose3 T_world_sensorrig;
+  Pose3d T_world_model;
 };
-using CameraCostFunctionCreationTest =
-  ::testing::TestWithParam<CameraCostFunctionCreationTestCase>;
+
+// Test the creation of camera cost functions and convenience functions.
+class CameraCostFunctionCreationTest :
+    public ::testing::TestWithParam<CameraCostFunctionCreationTestCase> {
+ protected:
+  void SetUp() override {
+    DefaultSyntheticTest synthetic_test;
+    absl::flat_hash_map<double, Pose3d> poses_world_sensorrig =
+      synthetic_test.TrajectoryAsMap();
+    timestamps = synthetic_test.TrajectoryMapKeys();
+    ASSERT_OK(trajectory_world_sensorrig.AddPoses(poses_world_sensorrig));
+  }
+  std::vector<double> timestamps;
+  Trajectory trajectory_world_sensorrig;
+};
 
 TEST_P(CameraCostFunctionCreationTest, Instantiation) {
   CameraCostFunctionCreationTestCase test_case = GetParam();
   std::vector<double*> parameters;
-  auto* cost_function =
-    CameraCostFunctor::CreateCostFunction(
-        test_case.pixel, test_case.camera_model, test_case.intrinsics,
-        test_case.extrinsics, test_case.t_model_point, test_case.T_world_model,
-        test_case.T_world_sensorrig, parameters);
-  ASSERT_NE(cost_function, nullptr);
-  delete cost_function;
+  for (const auto& stamp : timestamps) {
+    TrajectoryEvaluationParams segment =
+        trajectory_world_sensorrig.GetEvaluationParams(stamp);
+    auto* cost_function =
+        CameraCostFunctor::CreateCostFunction(
+            test_case.pixel, test_case.camera_model, test_case.intrinsics,
+            test_case.extrinsics, test_case.t_model_point, test_case.T_world_model,
+            trajectory_world_sensorrig, stamp, parameters);
+    ASSERT_NE(cost_function, nullptr);
+    delete cost_function;
+  }
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -42,10 +58,9 @@ INSTANTIATE_TEST_SUITE_P(
           CameraIntrinsicsModel::kOpenCv5,
           Eigen::Vector2d::Random(),
           Eigen::VectorXd::Random(OpenCv5Model::kNumberOfParameters),
-          Pose3(),
+          Pose3d(),
           Eigen::Vector3d::Random(),
-          Pose3(),
-          Pose3(),
+          Pose3d(),
         },
       }),
     [](const testing::TestParamInfo

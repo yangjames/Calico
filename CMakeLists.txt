@@ -3,6 +3,7 @@ project (Calico)
 
 # std=c++17 or higher required for Abseil.
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 # Load dependencies.
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
@@ -10,6 +11,7 @@ find_package(GTest REQUIRED)
 find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
 enable_testing()
+
 # Add top level include directory.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -27,6 +29,45 @@ target_link_libraries(
   gmock
 )
 add_test(TypeDefsTest typedefs_test)
+
+# Build spline test.
+add_executable(
+  bspline_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/bspline_test.cpp
+)
+target_link_libraries(
+  bspline_test
+  Eigen3::Eigen
+  absl::status
+  absl::statusor
+  GTest::Main
+  gmock
+)
+add_test(BSplineTest bspline_test)
+
+# Build trajectory library and tests.
+add_library(
+  trajectory
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory.cpp
+)
+target_link_libraries(
+  trajectory
+  Eigen3::Eigen
+  absl::status
+  absl::statusor
+  absl::flat_hash_map
+  Ceres::ceres
+)
+add_executable(
+  trajectory_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory_test.cpp
+  )
+target_link_libraries(
+  trajectory_test
+  trajectory
+  GTest::Main
+  gmock
+)
 
 # Build world model library and tests.
 add_library(
@@ -55,6 +96,53 @@ add_test(WorldModelTest world_model_test)
 
 # Build camera library and tests.
 add_library(
+  camera_models
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
+)
+target_link_libraries(
+  camera_models
+  absl::statusor
+  Eigen3::Eigen
+)
+add_executable(
+  camera_models_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models_test.cpp
+)
+target_link_libraries(
+  camera_models_test
+  camera_models
+  GTest::Main
+  gmock
+)
+add_test(CameraModelsTest camera_models_test)
+
+add_library(
+  camera_cost_functor
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.cpp
+)
+target_link_libraries(
+  camera_cost_functor
+  camera_models
+#   absl::status
+#   absl::statusor
+#   absl::flat_hash_map
+#   Ceres::ceres
+#   Eigen3::Eigen
+  trajectory
+)
+add_executable(
+  camera_cost_functor_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor_test.cpp
+)
+target_link_libraries(
+  camera_cost_functor_test
+  camera_cost_functor
+  GTest::Main
+  gmock
+)
+add_test(CameraCostFunctorTest camera_cost_functor_test)
+
+add_library(
   camera
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
@@ -62,37 +150,14 @@ add_library(
 )
 target_link_libraries(
   camera
-  Eigen3::Eigen
   absl::status
   absl::statusor
   absl::flat_hash_map
   Ceres::ceres
+  Eigen3::Eigen
+  trajectory
   world_model
 )
-
-add_executable(
-  camera_models_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models_test.cpp
-)
-target_link_libraries(
-  camera_models_test
-  camera
-  GTest::Main
-  gmock
-)
-add_test(CameraModelsTest camera_models_test)
-
-add_executable(
-  camera_cost_functor_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor_test.cpp
-)
-target_link_libraries(
-  camera_cost_functor_test
-  camera
-  GTest::Main
-  gmock
-)
-add_test(CameraCostFunctorTest camera_cost_functor_test)
 
 add_executable(
   camera_test

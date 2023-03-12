@@ -31,7 +31,7 @@ struct Landmark {
 struct RigidBody {
   // Maps feature id to its 3d point definition resolved in the rigid body frame
   absl::flat_hash_map<int, Eigen::Vector3d> model_definition;
-  Pose3 T_world_rigidbody;
+  Pose3d T_world_rigidbody;
   int id;
   bool world_pose_is_constant;
   bool model_definition_is_constant;

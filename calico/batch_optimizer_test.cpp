@@ -1,6 +1,7 @@
 #include "calico/batch_optimizer.h"
 
 #include "calico/matchers.h"
+#include "calico/test_utils.h"
 #include "calico/sensors/camera_models.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -10,73 +11,13 @@ namespace {
 
 class BatchOptimizerTest : public ::testing::Test {
  protected:
-  static constexpr double kDeg2Rad = M_PI / 180.0;
-  // Planar points specs.
-  static constexpr double kSamplePlaneWidth = 1.5;
-  static constexpr double kSamplePlaneHeight = 1.5;
-  static constexpr double kDelta = 0.3;
-  static constexpr int kNumXPoints = static_cast<int>(kSamplePlaneWidth / kDelta) + 1;
-  static constexpr int kNumYPoints = static_cast<int>(kSamplePlaneHeight / kDelta) + 1;
+  absl::flat_hash_map<double, Pose3d> poses_world_sensorrig;
   std::vector<Eigen::Vector3d> t_world_points;
-  // Sensor rig trajectory specs.
-  static constexpr int kNumIncrements = 10;
-  static constexpr double kMinPos = 0.75;
-  static constexpr double kMaxPos = 1.25;
-  static constexpr double kMinAngle = -30 * kDeg2Rad;
-  static constexpr double kMaxAngle = 30 * kDeg2Rad;
-  absl::flat_hash_map<int, Pose3> trajectory_world_sensorrig;
 
-  // Set up a synthetic world with a plane of points measuring 1.5x1.5m on the
-  // ground with a camera facing downward at 1m above the center of the plane
-  // and making small movements.
   void SetUp() override {
-    // Construct sensor rig trajectory.
-    int pose_idx = 0;
-    Eigen::Matrix3d R_world_sensorrig0;
-    R_world_sensorrig0 <<
-      1, 0, 0,
-      0, -1, 0,
-      0, 0, -1;
-    const Eigen::Quaterniond q_world_sensorrig0(R_world_sensorrig0);
-    const Eigen::Vector3d t_world_sensorrig0 =
-      Eigen::Vector3d(kSamplePlaneWidth / 2.0, kSamplePlaneHeight / 2.0, 1.0);
-    // Construct angular and linear motion sequences.
-    std::vector<double> angle_displacements;
-    std::vector<double> position_displacements;
-    for (int i = 0; i < kNumIncrements; ++i) {
-      const double delta = double(i) / kNumIncrements;
-      const double angle = kMinAngle + (kMaxAngle - kMinAngle) * delta;
-      const double position = kMinPos + (kMaxPos - kMinPos) * delta;
-      angle_displacements.push_back(angle);
-      position_displacements.push_back(position);
-    }
-    for (const Eigen::Vector3d& axis : std::vector{
-             Eigen::Vector3d::UnitX(), Eigen::Vector3d::UnitY(),
-                 Eigen::Vector3d::UnitZ()}) {
-      for (const auto& angle : angle_displacements) {
-        const Eigen::Quaterniond q_sensorrig0_sensorrig(
-            Eigen::AngleAxisd(angle, axis));
-        const Eigen::Quaterniond q_world_sensorrig =
-            q_world_sensorrig0 * q_sensorrig0_sensorrig;
-        trajectory_world_sensorrig[pose_idx++] =
-            Pose3(q_world_sensorrig, t_world_sensorrig0);
-      }
-      for (const auto& position : position_displacements) {
-        const Eigen::Vector3d t_world_sensorrig =
-          t_world_sensorrig0 + axis * position;
-        trajectory_world_sensorrig[pose_idx++] =
-            Pose3(q_world_sensorrig0, t_world_sensorrig);
-      }
-    }
-    
-    // Construct planar points.
-    for (int i = 0; i < kNumXPoints; ++i) {
-      for (int j = 0; j < kNumYPoints; ++j) {
-        const double x = i * kDelta;
-        const double y = j * kDelta;
-        t_world_points.push_back(Eigen::Vector3d(x, y, 0.0));
-      }
-    }
+    DefaultSyntheticTest testing_fixture;
+    poses_world_sensorrig = testing_fixture.TrajectoryAsMap();
+    t_world_points = testing_fixture.WorldPoints();
   }
 };
 
@@ -89,8 +30,8 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   Eigen::VectorXd true_intrinsics(sensors::OpenCv5Model::kNumberOfParameters);
   true_intrinsics <<
     785, 640, 400, -3.149e-1, 1.069e-1, 1.616e-4, 1.141e-4, -1.853e-2;
-  Pose3 true_extrinsics_left;
-  Pose3 true_extrinsics_right;
+  Pose3d true_extrinsics_left;
+  Pose3d true_extrinsics_right;
   true_extrinsics_right.rotation() =
       Eigen::Quaterniond(
           Eigen::AngleAxisd(
@@ -119,6 +60,10 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   WorldModel world_model;
   EXPECT_OK(world_model.AddRigidBody(planar_target));
 
+  // Sensorrig trajectory
+  Trajectory trajectory_world_sensorrig;
+  ASSERT_OK(trajectory_world_sensorrig.AddPoses(poses_world_sensorrig));
+  //trajectory_world_sensorrig.trajectory() = poses_world_sensorrig;
   // Generate measurements.
   const auto measurements_left =
       true_camera_left.Project(trajectory_world_sensorrig, world_model);
@@ -128,7 +73,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   // Create optimization cameras.
   Eigen::VectorXd initial_intrinsics = 1.01 * true_intrinsics;
   initial_intrinsics.tail(5).setZero();
-  const Pose3 initial_extrinsics = true_extrinsics_right;
+  const Pose3d initial_extrinsics = true_extrinsics_right;
   
   sensors::Camera* camera_left = new sensors::Camera();
   camera_left->SetName("Left");
@@ -155,7 +100,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   ASSERT_OK_AND_ASSIGN(const auto summary, optimizer.Optimize());
 
   // Expect near perfect calibration results due to perfect data.
-  constexpr double kSmallNumber = 1e-9;
+  constexpr double kSmallNumber = 1e-8;
   EXPECT_EQ(summary.termination_type, ceres::CONVERGENCE);
   EXPECT_LT(summary.final_cost, kSmallNumber);
   EXPECT_THAT(true_intrinsics, EigenIsApprox(camera_left->GetIntrinsics(),

@@ -1,15 +1,14 @@
 #ifndef CALICO_SENSORS_SENSOR_BASE_H_
 #define CALICO_SENSORS_SENSOR_BASE_H_
 
-#include "calico/typedefs.h"
-#include "calico/world_model.h"
-
-#include "Eigen/Dense"
-
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "calico/trajectory.h"
+#include "calico/typedefs.h"
+#include "calico/world_model.h"
 #include "ceres/problem.h"
+#include "Eigen/Dense"
 
 
 namespace calico::sensors {
@@ -41,8 +40,8 @@ class Sensor {
   virtual const std::string& GetName() const = 0;
 
   // Setter/getter for extrinsics parameters.
-  virtual void SetExtrinsics(const Pose3& T_sensorrig_sensor) = 0;
-  virtual const Pose3& GetExtrinsics() const = 0;
+  virtual void SetExtrinsics(const Pose3d& T_sensorrig_sensor) = 0;
+  virtual const Pose3d& GetExtrinsics() const = 0;
 
   // Setter/getter for intrinsics parameters.
   virtual absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) = 0;
@@ -60,10 +59,9 @@ class Sensor {
       ceres::Problem& problem) = 0;
 
   // Method for adding this sensor's residuals to a problem.
-  // TODO(yangjames): Replace sensorrig_trajectory with a BSpline.
   virtual absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem& problem,
-      absl::flat_hash_map<int, Pose3>& sensorrig_trajectory,
+      Trajectory& sensorrig_trajectory,
       WorldModel& world_model) = 0;
 };
 } // namespace calico::sensors

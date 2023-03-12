@@ -34,8 +34,8 @@ class WorldModelTest : public ::testing::Test {
           {0, Eigen::Vector3d::Random()},
           {1, Eigen::Vector3d::Random()}
         },
-        .T_world_rigidbody = Pose3(Eigen::Quaterniond::UnitRandom(),
-                                   Eigen::Vector3d::Random()),
+        .T_world_rigidbody = Pose3d(Eigen::Quaterniond::UnitRandom(),
+                                    Eigen::Vector3d::Random()),
         .id = 0
       }
     },
@@ -44,8 +44,8 @@ class WorldModelTest : public ::testing::Test {
           {2, Eigen::Vector3d::Random()},
           {3, Eigen::Vector3d::Random()}
         },
-        .T_world_rigidbody = Pose3(Eigen::Quaterniond::UnitRandom(),
-                                   Eigen::Vector3d::Random()),
+        .T_world_rigidbody = Pose3d(Eigen::Quaterniond::UnitRandom(),
+                                    Eigen::Vector3d::Random()),
         .id = 1
       }
     },
