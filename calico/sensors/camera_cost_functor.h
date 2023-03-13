@@ -1,7 +1,6 @@
 #ifndef CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
 #define CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
 
-#include "calico/profiler.h"
 #include "calico/sensors/camera_models.h"
 #include "calico/trajectory.h"
 #include "ceres/cost_function.h"
@@ -70,8 +69,6 @@ class CameraCostFunctor {
   template <typename T>
   bool operator()(T const* const* parameters, T* residual) {
     // Parse intrinsics.
-    // Profiler total_profiler;
-    // Profiler profiler;
     const T* intrinsics_ptr =
       static_cast<const T*>(&(parameters[static_cast<int>(
           CameraParameterIndices::kIntrinsicsIndex)][0]));
@@ -104,14 +101,10 @@ class CameraCostFunctor {
     const Eigen::Ref<const Eigen::MatrixX<T>> control_points =
         all_control_points.block(trajectory_evaluation_params_.spline_index, 0,
                                  Trajectory::kSplineOrder, 6);
-    // profiler.Toc("Parsing all parameters");
-    // profiler.Tic();
     const Eigen::MatrixX<T> basis_matrix =
         trajectory_evaluation_params_.basis_matrices[0].template cast<T>();
-    const Eigen::Vector<T, 6> pose_vector = (basis_matrix * control_points).transpose();
-    // profiler.Toc("Evaluating spline");
-    //const Pose3<T> T_world_sensorrig = Trajectory::VectorToPose3(pose_vector);
-    // profiler.Tic();
+    const Eigen::Vector<T, 6> pose_vector =
+        (basis_matrix * control_points).transpose();
     T q_world_sensorrig_array[4];
     ceres::AngleAxisToQuaternion(pose_vector.data(), q_world_sensorrig_array);
     const Eigen::Quaternion<T> q_sensorrig_world(
@@ -127,20 +120,9 @@ class CameraCostFunctor {
         q_world_model.inverse() * (t_world_camera - t_world_model);
     const Eigen::Vector3<T> t_camera_point =
         q_camera_model * (t_model_point - t_model_camera);
-    // profiler.Toc("Resolving model point in camera frame");
-    /*
-    const Pose3<T> T_sensorrig_camera(q_sensorrig_camera, t_sensorrig_camera);
-    const Pose3<T> T_world_camera = T_world_sensorrig * T_sensorrig_camera;
-    const Pose3<T> T_world_model(q_world_model, t_world_model);
-    const Pose3<T> T_camera_model = T_world_camera.inverse() * T_world_model;
-    const Eigen::Vector3<T> t_camera_point = T_camera_model * t_model_point;
-    */
     // Project the point through the camera model.
-    // profiler.Tic();
     const absl::StatusOr<Eigen::Vector2<T>> projection =
         camera_model_->ProjectPoint(intrinsics, t_camera_point);
-    // profiler.Toc("Residual evaluation");
-    // total_profiler.Toc("Total elapsed time for this evaluation");
     // Assign the residual, or return boolean indicating success/failure.
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector2<T>> error(residual);
