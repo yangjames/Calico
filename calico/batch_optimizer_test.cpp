@@ -109,6 +109,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
                                              kSmallNumber));
   EXPECT_THAT(true_extrinsics_right, PoseIsApprox(camera_right->GetExtrinsics(),
                                                   kSmallNumber));
+  std::cout << summary.FullReport() << std::endl;
 }
 
 } // namespace

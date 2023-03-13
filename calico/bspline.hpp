@@ -35,7 +35,8 @@ absl::Status BSpline<N, T>::FitToData(
 template<int N, typename T>
 Eigen::Vector<T, N> BSpline<N, T>::Evaluate(
     const Eigen::Ref<const Eigen::MatrixX<T>>& control_points_set, T knot0,
-    T knot1, const Eigen::MatrixX<T>& basis_matrix, T stamp, int derivative) {
+    T knot1, const Eigen::MatrixX<T>& basis_matrix, T stamp,
+    int derivative) {
   // Compute u.
   const T dt = knot1 - knot0;
   const T dt_inv = static_cast<T>(1.0) / dt;
@@ -83,6 +84,7 @@ absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<N, T>::Interpolate(
   for (int i = 0; i < num_interp; ++i) {
     const int spline_idx = GetControlPointIndex(times[i]);
     const int knot_idx = GetKnotIndexFromControlPointIndex(spline_idx);
+    const Eigen::MatrixX<T> UM = GetSplineBasis(spline_idx, times[i], derivative);
     const Eigen::MatrixX<T> control_points =
         control_points_.block(spline_idx, 0, spline_order_, N);
     y[i] = Evaluate(control_points, knots_[knot_idx], knots_[knot_idx + 1],
@@ -90,6 +92,42 @@ absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<N, T>::Interpolate(
   }
   return y;
 }
+
+template <int N, typename T>
+Eigen::MatrixX<T> BSpline<N, T>::GetSplineBasis(
+    int spline_idx, T stamp, int derivative) const {
+  // Compute u.
+  const int knot_idx = GetKnotIndexFromControlPointIndex(spline_idx);
+  const T& knot0 = knots_.at(knot_idx);
+  const T& knot1 = knots_.at(knot_idx + 1);
+  const T dt = knot1 - knot0;
+  const T dt_inv = static_cast<T>(1.0) / dt;
+  const T u = (stamp - knot0) * dt_inv;
+  // Derivative of u with respect to t raised to n'th derivative power per
+  // chain rule.
+  T dnu_dtn = static_cast<T>(1.0);
+  for (int j = 0; j < derivative; ++j) {
+    dnu_dtn *= dt_inv;
+  }
+  // Construct U vector.
+  Eigen::Matrix<T, 1, Eigen::Dynamic> derivative_coeffs(spline_order_);
+  derivative_coeffs.setOnes();
+  derivative_coeffs.head(derivative).setZero();
+  Eigen::Matrix<T, 1, Eigen::Dynamic> U(spline_order_);
+  U.setOnes();
+  for (int i = derivative; i < derivative_coeffs.size(); ++i) {
+    T coeff = static_cast<T>(1.0);
+    for (int j = i - derivative; j < i; ++j) {
+      coeff *= (j + 1);
+    }
+    derivative_coeffs(i) = coeff;
+    U(i) = (i > derivative) ? (u * U(i-1)) : U(i);
+  }
+  U = U.array() * derivative_coeffs.array() * dnu_dtn;
+  const Eigen::MatrixX<T>& basis_matrix = Mi_.at(spline_idx);
+  return U * basis_matrix;
+}
+
 
 template <int N, typename T>
 int BSpline<N, T>::GetControlPointIndex(T query_time) const {
