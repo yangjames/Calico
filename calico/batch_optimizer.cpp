@@ -37,7 +37,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
   // Run solver.
   // TODO: Make optimizer options configurable
   ceres::Solver::Options options;
-  options.linear_solver_type = ceres::DENSE_SCHUR;
+  options.linear_solver_type = ceres::DENSE_NORMAL_CHOLESKY;
   options.preconditioner_type = ceres::JACOBI;
   options.minimizer_progress_to_stdout = true;
   options.num_threads = 4;
