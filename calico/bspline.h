@@ -43,6 +43,16 @@ class BSpline {
   absl::StatusOr<std::vector<Eigen::Vector<T,N>>>
   Interpolate(const std::vector<T>& times, int derivative = 0) const;
 
+  // TODO(yangjames): Description
+  Eigen::MatrixX<T>
+  GetSplineBasis(int spline_idx, T stamp, int derivative) const;
+
+
+  static Eigen::Vector<T, N> Evaluate(
+      const Eigen::Ref<const Eigen::MatrixX<T>>& control_points_set, T knot0,
+      T knot1, const Eigen::MatrixX<T>& basis_matrix, T stamp, int derivative);
+
+
   // Setter/getter for knot vector.
   const std::vector<T>& knots() const { return knots_; }
   std::vector<T>& knots() { return knots_; }
@@ -62,10 +72,6 @@ class BSpline {
   std::vector<Eigen::MatrixX<T>>& basis_matrices() {
     return Mi_;
   }
-
-  static Eigen::Vector<T, N> Evaluate(
-      const Eigen::Ref<const Eigen::MatrixX<T>>& control_points_set, T knot0,
-      T knot1, const Eigen::MatrixX<T>& basis_matrix, T stamp, int derivative);
 
  private:
   // Data/parameters for fitting spline.

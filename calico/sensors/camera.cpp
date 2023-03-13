@@ -44,6 +44,7 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
         rigidbody_ref.model_definition.at(observation_id.feature_id);
     // Construct a cost function and supply parameters for this residual.
     std::vector<double*> parameters;
+
     ceres::CostFunction* cost_function =
         CameraCostFunctor::CreateCostFunction(
             measurement.pixel, camera_model_->GetType(), intrinsics_,
