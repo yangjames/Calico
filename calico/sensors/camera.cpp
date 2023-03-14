@@ -15,12 +15,16 @@ absl::StatusOr<int> Camera::AddParametersToProblem(ceres::Problem& problem) {
   problem.AddParameterBlock(intrinsics_.data(), intrinsics_.size());
   num_parameters_added += intrinsics_.size();
   num_parameters_added += utils::AddPoseToProblem(problem, T_sensorrig_sensor_);
-
+  problem.AddParameterBlock(&latency_, 1);
+  ++num_parameters_added;
   if (!intrinsics_enabled_) {
     problem.SetParameterBlockConstant(intrinsics_.data());
   }
   if (!extrinsics_enabled_) {
     utils::SetPoseConstantInProblem(problem, T_sensorrig_sensor_);
+  }
+  if (!latency_enabled_) {
+    problem.SetParameterBlockConstant(&latency_);
   }
   return num_parameters_added;
 }
@@ -48,8 +52,9 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
     ceres::CostFunction* cost_function =
         CameraCostFunctor::CreateCostFunction(
             measurement.pixel, camera_model_->GetType(), intrinsics_,
-            T_sensorrig_sensor_, t_model_point, rigidbody_ref.T_world_rigidbody,
-            sensorrig_trajectory, observation_id.stamp, parameters);
+            T_sensorrig_sensor_, latency_, t_model_point,
+            rigidbody_ref.T_world_rigidbody, sensorrig_trajectory,
+            observation_id.stamp, parameters);
     const auto residual_block_id = problem.AddResidualBlock(
         cost_function, /*loss_function=*/nullptr, parameters);
     num_residuals_added += 1;
@@ -79,8 +84,13 @@ absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
       }
       const absl::StatusOr<Eigen::Vector2d> projection =
           camera_model_->ProjectPoint(intrinsics_, point_camera);
-      measurements.push_back(
-          {*projection, {stamp, image_id, kLandmarkFrameId, landmark_id}});
+      measurements.push_back({
+          *projection, {
+            stamp + latency_,
+            image_id,
+            kLandmarkFrameId,
+            landmark_id
+          }});
     }
     // Project all rigid bodies.
     for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
@@ -90,8 +100,13 @@ absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
         const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
         const absl::StatusOr<Eigen::Vector2d> projection =
           camera_model_->ProjectPoint(intrinsics_, point_camera);
-        measurements.push_back(
-            {*projection, {stamp, image_id, rigidbody_id, point_id}});
+        measurements.push_back({
+            *projection, {
+              stamp + latency_,
+              image_id,
+              rigidbody_id,
+              point_id
+            }});
       }
     }
     ++image_id;
@@ -99,43 +114,13 @@ absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
   return measurements;
 }
 
-std::vector<CameraMeasurement> Camera::Project(
-    const Trajectory& sensorrig_trajectory,
-    const WorldModel& world_model) const {
-  std::vector<CameraMeasurement> measurements;
-  // Generate data for every pose in the trajectory.
-  // TODO: When replacing with splines, add a field for specifying timestamps.
-  int image_id = 0;
-  for (const auto& [stamp, T_world_sensorrig] :
-           sensorrig_trajectory.trajectory()) {
-    const Pose3d T_camera_world =
-        (T_world_sensorrig * T_sensorrig_sensor_).inverse();
-    // Project all landmarks.
-    for (const auto& [landmark_id, landmark] : world_model.landmarks()) {
-      const Eigen::Vector3d point_camera = T_camera_world * landmark.point;
-      if (point_camera.z() <= 0) {
-        continue;
-      }
-      const absl::StatusOr<Eigen::Vector2d> projection =
-          camera_model_->ProjectPoint(intrinsics_, point_camera);
-      measurements.push_back(
-          {*projection, {stamp, image_id, kLandmarkFrameId, landmark_id}});
-    }
-    // Project all rigid bodies.
-    for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
-      const Pose3d T_camera_rigidbody =
-          T_camera_world * rigidbody.T_world_rigidbody;
-      for (const auto& [point_id, point] : rigidbody.model_definition) {
-        const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
-        const absl::StatusOr<Eigen::Vector2d> projection =
-          camera_model_->ProjectPoint(intrinsics_, point_camera);
-        measurements.push_back(
-            {*projection, {stamp, image_id, rigidbody_id, point_id}});
-      }
-    }
-    ++image_id;
-  }
-  return measurements;
+absl::Status Camera::SetLatency(double latency) {
+  latency_ = latency;
+  return absl::OkStatus();
+}
+
+double Camera::GetLatency() const {
+  return latency_;
 }
 
 void Camera::SetName(absl::string_view name) {
@@ -170,12 +155,16 @@ const Eigen::VectorXd& Camera::GetIntrinsics() const {
   return intrinsics_;
 }
 
-void Camera::EnableExtrinsicsParameters(bool enable) {
+void Camera::EnableExtrinsicsEstimation(bool enable) {
   extrinsics_enabled_ = enable;
 }
 
-void Camera::EnableIntrinsicsParameters(bool enable) {
+void Camera::EnableIntrinsicsEstimation(bool enable) {
   intrinsics_enabled_ = enable;
+}
+
+void Camera::EnableLatencyEstimation(bool enable) {
+  latency_enabled_ = enable;
 }
 
 absl::Status Camera::SetImageSize(const ImageSize& image_size) {

@@ -58,6 +58,27 @@ class Camera : public Sensor {
   Camera& operator=(const Camera&) = delete;
   ~Camera() = default;
 
+  // Setter/getter for name.
+  void SetName(absl::string_view name) final;
+  const std::string& GetName() const final;
+
+  // Setter/getter for extrinsics parameters.
+  void SetExtrinsics(const Pose3d& T_sensorrig_sensor) final;
+  const Pose3d& GetExtrinsics() const final;
+
+  // Setter/getter for intrinsics parameters.
+  absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
+  const Eigen::VectorXd& GetIntrinsics() const final;
+
+  // Setter/getter for sensor latency.
+  absl::Status SetLatency(double latency) final;
+  double GetLatency() const final;
+
+  // Enable flags for intrinsics, extrinsics, and latency.
+  void EnableExtrinsicsEstimation(bool enable) final;
+  void EnableIntrinsicsEstimation(bool enable) final;
+  void EnableLatencyEstimation(bool enable) final;
+
   // Add this camera's parameters to the ceres problem. Returns the number of
   // parameters added to the problem, which should be intrinsics + extrinsics.
   // If the camera model hasn't been set yet, it will return an invalid
@@ -78,30 +99,6 @@ class Camera : public Sensor {
       const std::vector<double>& interp_times,
       const Trajectory& sensorrig_trajectory,
       const WorldModel& world_model) const;
-
-  // Compute the projection of a world model through a kinematic chain. This
-  // method returns only valid synthetic measurements as would be observed by
-  // the actual sensor, complying with physicality such as features being in
-  // front of the camera and within image bounds.
-  std::vector<CameraMeasurement> Project(
-      const Trajectory& sensorrig_trajectory,
-      const WorldModel& world_model) const;
-
-  // Setter/getter for name.
-  void SetName(absl::string_view name) final;
-  const std::string& GetName() const final;
-
-  // Setter/getter for extrinsics parameters.
-  void SetExtrinsics(const Pose3d& T_sensorrig_sensor) final;
-  const Pose3d& GetExtrinsics() const final;
-
-  // Setter/getter for intrinsics parameters.
-  absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
-  const Eigen::VectorXd& GetIntrinsics() const final;
-
-  // Enable flags for intrinsics and extrinsics.
-  void EnableExtrinsicsParameters(bool enable) final;
-  void EnableIntrinsicsParameters(bool enable) final;
 
   // Setter/getter for image size. This parameter gets used in the `Project`
   // method which generates synthetic measurements within the bounds of the
@@ -142,10 +139,12 @@ class Camera : public Sensor {
   std::string name_;
   bool intrinsics_enabled_;
   bool extrinsics_enabled_;
+  bool latency_enabled_;
   ImageSize image_size_;
   std::unique_ptr<CameraModel> camera_model_;
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
+  double latency_;
   absl::flat_hash_map<ObservationId, CameraMeasurement> id_to_measurement_;
 };
 

@@ -31,17 +31,19 @@ absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() {
 TrajectoryEvaluationParams Trajectory::GetEvaluationParams(double stamp) const {
   const int control_point_idx =
       spline_pose_world_body_.GetControlPointIndex(stamp);
-  std::vector<Eigen::MatrixXd> basis_matrices(kSplineOrder - 1);
-  for (int i = 0; i < basis_matrices.size(); ++i) {
-    basis_matrices[i] = spline_pose_world_body_.GetSplineBasis(
-        control_point_idx, stamp, /*derivative=*/i);
-  }
+  const int knot_idx =
+      spline_pose_world_body_.GetKnotIndexFromControlPointIndex(
+          control_point_idx);
   const int num_control_points =
       spline_pose_world_body_.control_points().rows();
   return TrajectoryEvaluationParams {
     .spline_index = control_point_idx,
+    .knot0 = spline_pose_world_body_.knots().at(knot_idx),
+    .knot1 = spline_pose_world_body_.knots().at(knot_idx + 1),
+    .stamp = stamp,
     .num_control_points = num_control_points,
-    .basis_matrices = basis_matrices,
+    .basis_matrix =
+        spline_pose_world_body_.basis_matrices().at(control_point_idx),
   };
 }
 

@@ -13,11 +13,13 @@ class BatchOptimizerTest : public ::testing::Test {
  protected:
   absl::flat_hash_map<double, Pose3d> poses_world_sensorrig;
   std::vector<Eigen::Vector3d> t_world_points;
+  std::vector<double> stamps;
 
   void SetUp() override {
     DefaultSyntheticTest testing_fixture;
     poses_world_sensorrig = testing_fixture.TrajectoryAsMap();
     t_world_points = testing_fixture.WorldPoints();
+    stamps = testing_fixture.TrajectoryMapKeys();
   }
 };
 
@@ -27,6 +29,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
       sensors::CameraIntrinsicsModel::kOpenCv5;
   constexpr double kStereoRotationAngle = 5.0 * M_PI / 180.0;
   constexpr double kStereoBaseline = 0.08;
+  constexpr double kLatency = 0.01;
   Eigen::VectorXd true_intrinsics(sensors::OpenCv5Model::kNumberOfParameters);
   true_intrinsics <<
     785, 640, 400, -3.149e-1, 1.069e-1, 1.616e-4, 1.141e-4, -1.853e-2;
@@ -48,6 +51,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   EXPECT_OK(true_camera_right.SetModel(kCameraModel));
   EXPECT_OK(true_camera_right.SetIntrinsics(true_intrinsics));
   true_camera_right.SetExtrinsics(true_extrinsics_right);
+  EXPECT_OK(true_camera_right.SetLatency(kLatency));
 
   // World model consisting of a single planar object.
   RigidBody planar_target{
@@ -63,12 +67,15 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   // Sensorrig trajectory
   Trajectory trajectory_world_sensorrig;
   ASSERT_OK(trajectory_world_sensorrig.AddPoses(poses_world_sensorrig));
-  //trajectory_world_sensorrig.trajectory() = poses_world_sensorrig;
+
   // Generate measurements.
-  const auto measurements_left =
-      true_camera_left.Project(trajectory_world_sensorrig, world_model);
-  const auto measurements_right =
-      true_camera_right.Project(trajectory_world_sensorrig, world_model);
+  std::vector<sensors::CameraMeasurement> measurements_left, measurements_right;
+  ASSERT_OK_AND_ASSIGN(measurements_left,
+      true_camera_left.Project(stamps, trajectory_world_sensorrig,
+                               world_model));
+  ASSERT_OK_AND_ASSIGN(measurements_right,
+      true_camera_right.Project(stamps, trajectory_world_sensorrig,
+                                world_model));
 
   // Create optimization cameras.
   Eigen::VectorXd initial_intrinsics = 1.01 * true_intrinsics;
@@ -79,16 +86,18 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
   camera_left->SetName("Left");
   EXPECT_OK(camera_left->SetModel(kCameraModel));
   EXPECT_OK(camera_left->SetIntrinsics(initial_intrinsics));
-  camera_left->EnableExtrinsicsParameters(false);
-  camera_left->EnableIntrinsicsParameters(true);
+  camera_left->EnableExtrinsicsEstimation(false);
+  camera_left->EnableIntrinsicsEstimation(true);
+  camera_left->EnableLatencyEstimation(false);
   EXPECT_OK(camera_left->AddMeasurements(measurements_left));
   sensors::Camera* camera_right = new sensors::Camera();
   camera_right->SetName("Right");
   EXPECT_OK(camera_right->SetModel(kCameraModel));
   EXPECT_OK(camera_right->SetIntrinsics(initial_intrinsics));
   camera_right->SetExtrinsics(initial_extrinsics);
-  camera_right->EnableExtrinsicsParameters(true);
-  camera_right->EnableIntrinsicsParameters(true);
+  camera_right->EnableExtrinsicsEstimation(true);
+  camera_right->EnableIntrinsicsEstimation(true);
+  camera_right->EnableLatencyEstimation(true);
   EXPECT_OK(camera_right->AddMeasurements(measurements_right));
 
   // Construct optimization problem and optimize.
@@ -109,6 +118,7 @@ TEST_F(BatchOptimizerTest, OpenCv5ToyStereoCalibration) {
                                              kSmallNumber));
   EXPECT_THAT(true_extrinsics_right, PoseIsApprox(camera_right->GetExtrinsics(),
                                                   kSmallNumber));
+  EXPECT_NEAR(kLatency, camera_right->GetLatency(), kSmallNumber);
   std::cout << summary.FullReport() << std::endl;
 }
 
