@@ -15,18 +15,20 @@ enum class CameraParameterIndices : int {
   // Extrinsic parameters of the camera relative to its sensor rig.
   kExtrinsicsRotationIndex = 1,
   kExtrinsicsTranslationIndex = 2,
+  // Camera latency.
+  kLatencyIndex = 3,
   // Parameters related to some detected "model" object in the world:
   //   1. The point resolved in the model frame.
   //   2. The rotation portion of the model pose resolved in the world
   //      frame.
   //   3. The translation portion of the model pose resolved in the world
   //      frame.
-  kModelPointIndex = 3,
-  kModelRotationIndex = 4,
-  kModelTranslationIndex = 5,
+  kModelPointIndex = 4,
+  kModelRotationIndex = 5,
+  kModelTranslationIndex = 6,
   // Rotation and position control points of the entire trajectory spline as an
   // Nx6 matrix.
-  kSensorRigPoseSplineControlPointsIndex = 6,
+  kSensorRigPoseSplineControlPointsIndex = 7,
 };
 
 // Generic auto-differentiation camera cost functor. Residuals will be based on
@@ -41,7 +43,7 @@ class CameraCostFunctor {
   // Convenience function for creating a camera cost function.
   static ceres::CostFunction* CreateCostFunction(
       const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
-      Eigen::VectorXd& intrinsics, Pose3d& extrinsics,
+      Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
       Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
       Trajectory& trajectory_world_sensorrig, double stamp,
       std::vector<double*>& parameters);
@@ -56,6 +58,8 @@ class CameraCostFunctor {
   //   t_sensorrig_camera:
   //     Position of camera relative to sensorrig origin resolved in the
   //     sensorrig frame.
+  //   latency:
+  //     Sensor latency in seconds.
   //   q_world_model:
   //     Rotation from world frame to model frame as a quaternion.
   //   t_model_point:
@@ -82,6 +86,9 @@ class CameraCostFunctor {
     const Eigen::Map<const Eigen::Vector3<T>> t_sensorrig_camera(
         &(parameters[static_cast<int>(
             CameraParameterIndices::kExtrinsicsTranslationIndex)][0]));
+    // Parse latency.
+    const T latency =
+        parameters[static_cast<int>(CameraParameterIndices::kLatencyIndex)][0];
     // Parse model point and model pose resolved in the world frame.
     const Eigen::Map<const Eigen::Vector3<T>> t_model_point(
         &(parameters[static_cast<int>(
@@ -102,9 +109,14 @@ class CameraCostFunctor {
         all_control_points.block(trajectory_evaluation_params_.spline_index, 0,
                                  Trajectory::kSplineOrder, 6);
     const Eigen::MatrixX<T> basis_matrix =
-        trajectory_evaluation_params_.basis_matrices[0].template cast<T>();
+        trajectory_evaluation_params_.basis_matrix.template cast<T>();
+    const T knot0 = static_cast<T>(trajectory_evaluation_params_.knot0);
+    const T knot1 = static_cast<T>(trajectory_evaluation_params_.knot1);
+    const T stamp =
+        static_cast<T>(trajectory_evaluation_params_.stamp) - latency;
     const Eigen::Vector<T, 6> pose_vector =
-        (basis_matrix * control_points).transpose();
+      BSpline<Trajectory::kSplineOrder, T>::Evaluate(
+          control_points, knot0, knot1, basis_matrix, stamp, 0);
     T q_world_sensorrig_array[4];
     ceres::AngleAxisToQuaternion(pose_vector.data(), q_world_sensorrig_array);
     const Eigen::Quaternion<T> q_sensorrig_world(

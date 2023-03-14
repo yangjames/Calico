@@ -47,11 +47,18 @@ class Sensor {
   virtual absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) = 0;
   virtual const Eigen::VectorXd& GetIntrinsics() const = 0;
 
-  // Enable or disable extrinsics parameters.
-  virtual void EnableExtrinsicsParameters(bool enable) = 0;
+  // Setter/getter for sensor latency.
+  virtual absl::Status SetLatency(double latency) = 0;
+  virtual double GetLatency() const = 0;
 
-  // Enable or disable intrinsics.
-  virtual void EnableIntrinsicsParameters(bool enable) = 0;
+  // Enable or disable extrinsics estimation.
+  virtual void EnableExtrinsicsEstimation(bool enable) = 0;
+
+  // Enable or disable intrinsics estimation.
+  virtual void EnableIntrinsicsEstimation(bool enable) = 0;
+
+  // Enable or disable latency estimation.
+  virtual void EnableLatencyEstimation(bool enable) = 0;
 
   // Method for adding this sensor's calibration parameters to a problem.
   // Returns the number of parameters added.

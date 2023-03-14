@@ -20,7 +20,7 @@ CameraCostFunctor::CameraCostFunctor(
 
 ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
     const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
-    Eigen::VectorXd& intrinsics, Pose3d& extrinsics,
+    Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
     Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
     Trajectory& trajectory_world_sensorrig, double stamp,
     std::vector<double*>& parameters) {
@@ -37,6 +37,9 @@ ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
   // extrinsics translation t_sensorrig_camera
   parameters.push_back(extrinsics.translation().data());
   cost_function->AddParameterBlock(extrinsics.translation().size());
+  // latency
+  parameters.push_back(&latency);
+  cost_function->AddParameterBlock(1);
   // model point position t_model_point
   parameters.push_back(t_model_point.data());
   cost_function->AddParameterBlock(t_model_point.size());

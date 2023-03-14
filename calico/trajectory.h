@@ -13,10 +13,11 @@ namespace calico {
 
 struct TrajectoryEvaluationParams {
   int spline_index;
+  double knot0;
+  double knot1;
+  double stamp;
   int num_control_points;
-  // Basis matrix prefix for a given derivative such that
-  // y = basis_matrices[derivative] * control_points
-  std::vector<Eigen::MatrixXd> basis_matrices;
+  Eigen::MatrixXd basis_matrix;
 };
 
 class Trajectory {
