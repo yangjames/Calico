@@ -17,21 +17,22 @@
 
 namespace calico::sensors {
 
-// ObservationId type for a camera measurement. This object is hashable by
+// CameraObservationId type for a camera measurement. This object is hashable by
 // `absl::Hash` for use as a key in `absl::flat_hash_map` or
 // `absl::flat_hash_set`.
-struct ObservationId {
+struct CameraObservationId {
   double stamp;
   int image_id;
   int model_id;
   int feature_id;
 
   template <typename H>
-  friend H AbslHashValue(H h, const ObservationId& id) {
+  friend H AbslHashValue(H h, const CameraObservationId& id) {
     return H::combine(std::move(h), id.stamp, id.image_id, id.model_id,
                       id.feature_id);
   }
-  friend bool operator==(const ObservationId& lhs, const ObservationId& rhs) {
+  friend bool operator==(const CameraObservationId& lhs,
+                         const CameraObservationId& rhs) {
     return (lhs.stamp == rhs.stamp &&
             lhs.image_id == rhs.image_id &&
             lhs.model_id == rhs.model_id &&
@@ -42,7 +43,7 @@ struct ObservationId {
 // Camera measurement type.
 struct CameraMeasurement {
   Eigen::Vector2d pixel;
-  ObservationId id;
+  CameraObservationId id;
 };
 
 // Image size
@@ -122,12 +123,13 @@ class Camera : public Sensor {
 
   // Remove a measurement with a specific observation id. Returns an error if
   // the id was not associated with a measurement.
-  absl::Status RemoveMeasurementById(const ObservationId& id);
+  absl::Status RemoveMeasurementById(const CameraObservationId& id);
 
   // Remove multiple measurements by their observation ids. Returns an error if
   // it attempts to remove an id that was not associated with a measurement.
   // This method will remove the entire vector, but skip invalid entries.
-  absl::Status RemoveMeasurementsById(const std::vector<ObservationId>& ids);
+  absl::Status RemoveMeasurementsById(
+      const std::vector<CameraObservationId>& ids);
 
   // Clear all measurements.
   void ClearMeasurements();
@@ -145,7 +147,8 @@ class Camera : public Sensor {
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   double latency_;
-  absl::flat_hash_map<ObservationId, CameraMeasurement> id_to_measurement_;
+  absl::flat_hash_map<CameraObservationId, CameraMeasurement>
+      id_to_measurement_;
 };
 
 } // namespace calico::sensors

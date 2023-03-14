@@ -121,7 +121,7 @@ TEST_F(CameraContainerTest, RemoveMultipleMeasurements) {
   EXPECT_OK(camera_.AddMeasurements(measurements));
   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size());
 
-  std::vector<ObservationId> ids;
+  std::vector<CameraObservationId> ids;
   for (const auto& measurement : measurements) {
     ids.push_back(measurement.id);
   }

@@ -224,7 +224,7 @@ absl::Status Camera::AddMeasurements(
   return absl::InvalidArgumentError(message);
 }
 
-absl::Status Camera::RemoveMeasurementById(const ObservationId& id) {
+absl::Status Camera::RemoveMeasurementById(const CameraObservationId& id) {
   if (id_to_measurement_.erase(id)) {
     return absl::OkStatus();
   }
@@ -235,7 +235,7 @@ absl::Status Camera::RemoveMeasurementById(const ObservationId& id) {
 }
 
 absl::Status Camera::RemoveMeasurementsById(
-    const std::vector<ObservationId>& ids) {
+    const std::vector<CameraObservationId>& ids) {
   std::string message;
   for (const auto& id : ids) {
     absl::Status status = RemoveMeasurementById(id);

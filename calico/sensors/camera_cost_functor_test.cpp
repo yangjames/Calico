@@ -15,6 +15,7 @@ struct CameraCostFunctionCreationTestCase {
   Eigen::Vector2d pixel;
   Eigen::VectorXd intrinsics;
   Pose3d extrinsics;
+  double latency;
   Eigen::Vector3d t_model_point;
   Pose3d T_world_model;
 };
@@ -43,8 +44,9 @@ TEST_P(CameraCostFunctionCreationTest, Instantiation) {
     auto* cost_function =
         CameraCostFunctor::CreateCostFunction(
             test_case.pixel, test_case.camera_model, test_case.intrinsics,
-            test_case.extrinsics, test_case.t_model_point, test_case.T_world_model,
-            trajectory_world_sensorrig, stamp, parameters);
+            test_case.extrinsics, test_case.latency, test_case.t_model_point,
+            test_case.T_world_model, trajectory_world_sensorrig, stamp,
+            parameters);
     ASSERT_NE(cost_function, nullptr);
     delete cost_function;
   }
@@ -59,6 +61,7 @@ INSTANTIATE_TEST_SUITE_P(
           Eigen::Vector2d::Random(),
           Eigen::VectorXd::Random(OpenCv5Model::kNumberOfParameters),
           Pose3d(),
+          5,
           Eigen::Vector3d::Random(),
           Pose3d(),
         },
