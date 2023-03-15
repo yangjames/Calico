@@ -116,6 +116,51 @@ target_link_libraries(
 )
 add_test(GyroscopeModelsTest gyroscope_models_test)
 
+add_library(
+  gyroscope_cost_functor
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_cost_functor.cpp
+)
+target_link_libraries(
+  gyroscope_cost_functor
+  gyroscope_models
+  trajectory
+)
+add_executable(
+  gyroscope_cost_functor_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_cost_functor_test.cpp
+)
+target_link_libraries(
+  gyroscope_cost_functor_test
+  gyroscope_cost_functor
+  GTest::Main
+  gmock
+)
+add_test(GyroscopeCostFunctorTest gyroscope_cost_functor_test)
+
+# add_library(
+#   gyroscope
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope.cpp
+# )
+# target_link_libraries(
+#   gyroscope
+#   gyroscope_models
+#   trajectory
+#   world_model
+# )
+
+# add_executable(
+#   gyroscope_test
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_test.cpp
+# )
+# target_link_libraries(
+#   gyroscope_test
+#   gyroscope
+#   GTest::Main
+#   gmock
+# )
+# add_test(GyroscopeLibTest gyroscope_test)
+  
+
 # Build camera library and tests.
 add_library(
   camera_models
@@ -145,11 +190,6 @@ add_library(
 target_link_libraries(
   camera_cost_functor
   camera_models
-#   absl::status
-#   absl::statusor
-#   absl::flat_hash_map
-#   Ceres::ceres
-#   Eigen3::Eigen
   trajectory
 )
 add_executable(
@@ -167,16 +207,16 @@ add_test(CameraCostFunctorTest camera_cost_functor_test)
 add_library(
   camera
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.cpp
 )
 target_link_libraries(
   camera
-  absl::status
-  absl::statusor
-  absl::flat_hash_map
-  Ceres::ceres
-  Eigen3::Eigen
+  camera_models
+  camera_cost_functor
+  # absl::status
+  # absl::statusor
+  # absl::flat_hash_map
+  # Ceres::ceres
+  # Eigen3::Eigen
   trajectory
   world_model
 )
