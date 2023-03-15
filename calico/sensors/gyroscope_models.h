@@ -14,7 +14,7 @@ namespace calico::sensors {
 // Gyroscope model types.
 enum class GyroscopeIntrinsicsModel : int {
   kNone,
-  kScale,
+  kScaleOnly,
   kScaleAndBias,
   kVectorNav,
 };
@@ -30,6 +30,13 @@ class GyroscopeModel {
   absl::StatusOr<Eigen::Vector3<T>> Project(
       const Eigen::VectorX<T>& intrinsics,
       const Eigen::Vector3<T>& omega_sensor_world) const;
+
+  // Invert the intrinsics model to get an angular velocity vector.
+  // Top level call invokes the derived class's implementation.
+  template <typename T>
+  absl::StatusOr<Eigen::Vector3<T>> Unproject(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& measurement) const;
 
   // Getter for gyroscope model type.
   virtual GyroscopeIntrinsicsModel GetType() const  = 0;
@@ -48,21 +55,82 @@ class GyroscopeModel {
 };
 
 // 1-parameter scale-only intrinsics model.
-class ScaleModel : public GyroscopeModel {
+class ScaleOnlyModel : public GyroscopeModel {
  public:
-  static constexpr int kNumberOfParameters = 8;
+  static constexpr int kNumberOfParameters = 1;
   static constexpr GyroscopeIntrinsicsModel kModelType =
-      GyroscopeIntrinsicsModel::kScale;
+      GyroscopeIntrinsicsModel::kScaleOnly;
 
-  ScaleModel() = default;
-  ~ScaleModel() override = default;
-  ScaleModel& operator=(const ScaleModel&) = default;
+  ScaleOnlyModel() = default;
+  ~ScaleOnlyModel() override = default;
+  ScaleOnlyModel& operator=(const ScaleOnlyModel&) = default;
 
   template <typename T>
-  static absl::StatusOr<Eigen::Vector2<T>> Project(
+  static absl::StatusOr<Eigen::Vector3<T>> Project(
       const Eigen::VectorX<T>& intrinsics,
       const Eigen::Vector3<T>& omega_sensor_world) {
-    return Eigen::Vector3<T>();
+    const T& scale = intrinsics(0);
+    return scale * omega_sensor_world;
+  }
+
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector3<T>> Unproject(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& measurement) {
+    const T& inv_scale = static_cast<T>(1.0) / intrinsics(0);
+    return inv_scale * measurement;
+  }
+
+  GyroscopeIntrinsicsModel GetType() const final {
+    return kModelType;
+  }
+
+  int NumberOfParameters() const final {
+    return kNumberOfParameters;
+  }
+};
+
+// 4-parameter scale + bias intrinsics model.
+// Parameter order:
+//   [s, bx, by, bz]
+class ScaleAndBiasModel : public GyroscopeModel {
+ public:
+  static constexpr int kNumberOfParameters = 4;
+  static constexpr GyroscopeIntrinsicsModel kModelType =
+      GyroscopeIntrinsicsModel::kScaleAndBias;
+
+  ScaleAndBiasModel() = default;
+  ~ScaleAndBiasModel() override = default;
+  ScaleAndBiasModel& operator=(const ScaleAndBiasModel&) = default;
+
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector3<T>> Project(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& omega_sensor_world) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Invalid gyroscope intrinsics size. Expected ", kNumberOfParameters,
+          ", got ", intrinsics.size()));
+    }
+    const T& scale = intrinsics(0);
+    const Eigen::Ref<const Eigen::Vector3<T>> bias =
+        intrinsics.segment(1, 3);
+    return scale * omega_sensor_world + bias;
+  }
+
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector3<T>> Unproject(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& measurement) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Invalid gyroscope intrinsics size. Expected ", kNumberOfParameters,
+          ", got ", intrinsics.size()));
+    }
+    const T& inv_scale = static_cast<T>(1.0) / intrinsics(0);
+    const Eigen::Ref<const Eigen::Vector3<T>> bias =
+        intrinsics.segment(1, 3);
+    return inv_scale * (measurement - bias);
   }
 
   GyroscopeIntrinsicsModel GetType() const final {
@@ -77,9 +145,12 @@ class ScaleModel : public GyroscopeModel {
 template <typename T>
 absl::StatusOr<Eigen::Vector3<T>> GyroscopeModel::Project(
     const Eigen::VectorX<T>& intrinsics,
-    const Eigen::Vector3<T>& point) const {
-  if (const auto derived = dynamic_cast<const ScaleModel*>(this)) {
-    return derived->ProjectPoint(intrinsics, point);
+    const Eigen::Vector3<T>& omega_sensor_world) const {
+  if (const auto derived = dynamic_cast<const ScaleOnlyModel*>(this)) {
+    return derived->Project(intrinsics, omega_sensor_world);
+  }
+  if (const auto derived = dynamic_cast<const ScaleAndBiasModel*>(this)) {
+    return derived->Project(intrinsics, omega_sensor_world);
   }
   return absl::InvalidArgumentError(absl::StrCat(
       "Project for gyroscope model ", this->GetType(), " not supported."));
@@ -88,9 +159,12 @@ absl::StatusOr<Eigen::Vector3<T>> GyroscopeModel::Project(
 template <typename T>
 absl::StatusOr<Eigen::Vector3<T>> GyroscopeModel::Unproject(
     const Eigen::VectorX<T>& intrinsics,
-    const Eigen::Vector3<T>& omega_sensor_world) const {
-  if (const auto derived = dynamic_cast<const ScaleModel*>(this)) {
-    return derived->Unproject(intrinsics, omega_sensor_world);
+    const Eigen::Vector3<T>& measurement) const {
+  if (const auto derived = dynamic_cast<const ScaleOnlyModel*>(this)) {
+    return derived->Unproject(intrinsics, measurement);
+  }
+  if (const auto derived = dynamic_cast<const ScaleAndBiasModel*>(this)) {
+    return derived->Unproject(intrinsics, measurement);
   }
   return absl::InvalidArgumentError(absl::StrCat(
       "Unproject for gyroscope model ", this->GetType(), " not supported."));
