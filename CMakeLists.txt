@@ -94,6 +94,28 @@ target_link_libraries(
 )
 add_test(WorldModelTest world_model_test)
 
+# Build gyroscope library and tests.
+add_library(
+  gyroscope_models
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_models.cpp
+)
+target_link_libraries(
+  gyroscope_models
+  absl::statusor
+  Eigen3::Eigen
+)
+add_executable(
+  gyroscope_models_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_models_test.cpp
+  )
+target_link_libraries(
+  gyroscope_models_test
+  gyroscope_models
+  GTest::Main
+  gmock
+)
+add_test(GyroscopeModelsTest gyroscope_models_test)
+
 # Build camera library and tests.
 add_library(
   camera_models
