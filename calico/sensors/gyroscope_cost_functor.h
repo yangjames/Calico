@@ -1,6 +1,7 @@
 #ifndef CALICO_SENSORS_GYROSCOPE_COST_FUNCTOR_H_
 #define CALICO_SENSORS_GYROSCOPE_COST_FUNCTOR_H_
 
+#include "calico/geometry.h"
 #include "calico/sensors/gyroscope_models.h"
 #include "calico/trajectory.h"
 #include "ceres/cost_function.h"
@@ -99,38 +100,18 @@ class GyroscopeCostFunctor {
         BSpline<Trajectory::kSplineOrder, T>::Evaluate(
             control_points, knot0, knot1, basis_matrix, stamp,
             /*derivative=*/1);
-    // Compute the axis-angle manifold Jacobian (resolved in the sensor frame).
-    const Eigen::Vector3<T> phi = -pose_vector.head(3);
-    const T theta_sq = phi.squaredNorm();
-    Eigen::Matrix3<T> J;
-    J.setIdentity();
-    if (theta_sq != T(0.0)) {
-      const T theta = sqrt(theta_sq);
-      const T theta_fo = theta_sq * theta_sq;
-      T c1, c2;
-      // If small angle, compute the first 3 terms of the Taylor expansion.
-      if (abs(theta) < static_cast<T>(1e-7)) {
-        c1 = static_cast<T>(0.5) - theta_sq * static_cast<T>(1.0 / 24.0) +
-          theta_fo * static_cast<T>(1.0 / 720.0);
-        c2 = static_cast<T>(1.0 / 6.0) - theta_sq * static_cast<T>(1.0 / 120.0) +
-          theta_fo * static_cast<T>(1.0 / 5040.0);
-      } else {
-        const T inv_theta_sq = static_cast<T>(1.0) / theta_sq;
-        c1 = (static_cast<T>(1.0) - cos(theta)) * inv_theta_sq;
-        c2 = (static_cast<T>(1.0) - sin(theta) / theta) * inv_theta_sq;
-      }
-      Eigen::Matrix3<T> phi_x = skew(phi);
-      J += c1 * phi_x + c2 * phi_x * phi_x;
-    }
-    // Compute the angular velocity of the sensor resolved in the sensor frame.
+    // Compute the angular velocity of the gyroscope.
     // TODO(yangjames): Also evaluate acceleration for g-sensitivity
     //                  calculations.
-    const Eigen::Vector3<T> phi_dot = -pose_dot_vector.head(3);
-    const Eigen::Vector3<T> omega_sensor_world =
-        q_sensorrig_gyroscope.inverse() * J * phi_dot;
+    const Eigen::Vector3<T> phi_sensorrig_world = -pose_vector.head(3);
+    const Eigen::Vector3<T> phi_dot_sensorrig_world = -pose_dot_vector.head(3);
+    const Eigen::Vector3<T> omega_sensorrig_world =
+        ComputeAngularVelocity(phi_sensorrig_world, phi_dot_sensorrig_world);
+    const Eigen::Vector3<T> omega_gyroscope_world =
+        q_sensorrig_gyroscope.inverse() * omega_sensorrig_world;
     // Project the sensor angular velocity through the gyroscope model.
     const absl::StatusOr<Eigen::Vector3<T>> projection =
-      gyroscope_model_->Project(intrinsics, omega_sensor_world);
+        gyroscope_model_->Project(intrinsics, omega_gyroscope_world);
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector3<T>> error(residual);
       const Eigen::Vector3<T> measurement = measurement_.template cast<T>();
@@ -138,19 +119,6 @@ class GyroscopeCostFunctor {
       return true;
     }
     return false;
-  }
-
-  template <typename T>
-  Eigen::Matrix3<T> skew(const Eigen::Vector3<T>& v) {
-    Eigen::Matrix3<T> V;
-    V.setZero();
-    V(0, 1) = -v.z();
-    V(1, 0) = v.z();
-    V(0, 2) = v.y();
-    V(2, 0) = -v.y();
-    V(1, 2) = -v.x();
-    V(2, 1) = v.x();
-    return V;
   }
 
  private:

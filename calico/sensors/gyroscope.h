@@ -18,16 +18,16 @@
 namespace calico::sensors {
 
 // Gyroscope observation id.
-struct GyroObservationId {
+struct GyroscopeObservationId {
   double stamp;
   int sequence;
 
   template <typename H>
-  friend H AbslHashValue(H h, const GyroObservationId& id) {
+  friend H AbslHashValue(H h, const GyroscopeObservationId& id) {
     return H::combine(std::move(h), id.stamp, id.sequence);
   }
-  friend bool operator==(const GyroObservationId& lhs,
-                         const GyroObservationId& rhs) {
+  friend bool operator==(const GyroscopeObservationId& lhs,
+                         const GyroscopeObservationId& rhs) {
     return (lhs.stamp == rhs.stamp &&
             lhs.sequence == rhs.sequence);
   }
@@ -36,7 +36,7 @@ struct GyroObservationId {
 // Gyroscope measurement type.
 struct GyroscopeMeasurement {
   Eigen::Vector3d measurement;
-  GryoObservationId id;
+  GyroscopeObservationId id;
 };
 
 
@@ -101,13 +101,13 @@ class Gyroscope : public Sensor {
 
   // Remove a measurement with a specific observation id. Returns an error if
   // the id was not associated with a measurement.
-  absl::Status RemoveMeasurementById(GyroObservationId id);
+  absl::Status RemoveMeasurementById(const GyroscopeObservationId& id);
 
   // Remove multiple measurements by their observation ids. Returns an error if
   // it attempts to remove an id that was not associated with a measurement.
   // This method will remove the entire vector, but skip invalid entries.
   absl::Status RemoveMeasurementsById(
-      const std::vector<GyroObservationId>& ids);
+      const std::vector<GyroscopeObservationId>& ids);
 
   // Clear all measurements.
   void ClearMeasurements();
@@ -124,7 +124,7 @@ class Gyroscope : public Sensor {
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   double latency_;
-  absl::flat_hash_map<GyroObservationId, GyroscopeMeasurement>
+  absl::flat_hash_map<GyroscopeObservationId, GyroscopeMeasurement>
       id_to_measurement_;
 };
 
