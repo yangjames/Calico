@@ -137,28 +137,29 @@ target_link_libraries(
 )
 add_test(GyroscopeCostFunctorTest gyroscope_cost_functor_test)
 
-# add_library(
-#   gyroscope
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope.cpp
-# )
-# target_link_libraries(
-#   gyroscope
-#   gyroscope_models
-#   trajectory
-#   world_model
-# )
+add_library(
+  gyroscope
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope.cpp
+)
+target_link_libraries(
+  gyroscope
+  gyroscope_cost_functor
+  gyroscope_models
+  trajectory
+  world_model
+)
 
-# add_executable(
-#   gyroscope_test
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_test.cpp
-# )
-# target_link_libraries(
-#   gyroscope_test
-#   gyroscope
-#   GTest::Main
-#   gmock
-# )
-# add_test(GyroscopeLibTest gyroscope_test)
+add_executable(
+  gyroscope_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_test.cpp
+)
+target_link_libraries(
+  gyroscope_test
+  gyroscope
+  GTest::Main
+  gmock
+)
+add_test(GyroscopeLibTest gyroscope_test)
   
 
 # Build camera library and tests.
