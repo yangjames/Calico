@@ -16,7 +16,6 @@ absl::StatusOr<int> Gyroscope::AddParametersToProblem(ceres::Problem& problem) {
   problem.AddParameterBlock(intrinsics_.data(), intrinsics_.size());
   num_parameters_added += intrinsics_.size();
   num_parameters_added += utils::AddPoseToProblem(problem, T_sensorrig_sensor_);
-  problem.SetParameterBlockConstant(T_sensorrig_sensor_.translation().data());
   problem.AddParameterBlock(&latency_, 1);
   ++num_parameters_added;
   if (!intrinsics_enabled_) {

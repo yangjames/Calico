@@ -18,6 +18,26 @@ TEST(GeometryTest, TestSkewMatrix) {
   EXPECT_THAT(actual_cross_1_2, EigenEq(expected_cross_1_2));
 }
 
+TEST(GeometryTest, TestiSkew) {
+  const Eigen::Vector3d expected_v = Eigen::Vector3d::Random();
+  const Eigen::Vector3d actual_v = iSkew(Skew(expected_v));
+  EXPECT_THAT(actual_v, EigenEq(expected_v));
+}
+
+TEST(GeometryTest, TestSO3) {
+  // Test small angles.
+  constexpr double kSmallNumber = 1e-7;
+  const double dtheta = 1e-12;
+  for (int i = 0; i < 10; ++i) {
+    Eigen::Vector3d axis = Eigen::Vector3d::Random();
+    axis.normalize();
+    const double theta = pow(10, i) * dtheta;
+    const Eigen::Vector3d expected_phi = theta * axis;
+    const Eigen::Vector3d actual_phi = LnSO3(ExpSO3(expected_phi));
+    const Eigen::Vector3d error = actual_phi - expected_phi;
+    EXPECT_LT(error.norm(), kSmallNumber);
+  }
+}
 
 // Compare ComputeAngularVelocity against numerical differentiation.
 TEST(GeometryTest, TestComputeAngularVelocity) {
