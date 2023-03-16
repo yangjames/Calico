@@ -21,12 +21,10 @@ using CameraModelCreationTest =
 
 TEST_P(CameraModelCreationTest, TestModelGetters) {
   const CameraModelCreationTestCase& test_case = GetParam();
-  const auto camera_model =
-      CameraModel::Create(test_case.camera_model);
+  const auto camera_model = CameraModel::Create(test_case.camera_model);
   EXPECT_NE(camera_model, nullptr);
   EXPECT_EQ(camera_model->GetType(), test_case.camera_model);
-  EXPECT_EQ(camera_model->NumberOfParameters(),
-            test_case.parameter_size);
+  EXPECT_EQ(camera_model->NumberOfParameters(), test_case.parameter_size);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -47,8 +45,10 @@ class CameraModelTest : public ::testing::Test {
   static constexpr double kSamplePlaneWidth = 1.5;
   static constexpr double kSamplePlaneHeight = 1.5;
   static constexpr double kDelta = 0.025;
-  static constexpr int kNumXPoints = static_cast<int>(kSamplePlaneWidth / kDelta) + 1;
-  static constexpr int kNumYPoints = static_cast<int>(kSamplePlaneHeight / kDelta) + 1;
+  static constexpr int kNumXPoints =
+      static_cast<int>(kSamplePlaneWidth / kDelta) + 1;
+  static constexpr int kNumYPoints =
+      static_cast<int>(kSamplePlaneHeight / kDelta) + 1;
   Eigen::Matrix3d R_world_camera;
   Eigen::Vector3d t_world_camera;
   std::vector<Eigen::Vector3d> t_world_points;

@@ -15,7 +15,7 @@ enum class CameraParameterIndices : int {
   // Extrinsic parameters of the camera relative to its sensor rig.
   kExtrinsicsRotationIndex = 1,
   kExtrinsicsTranslationIndex = 2,
-  // Camera latency.
+  // Sensor latency.
   kLatencyIndex = 3,
   // Parameters related to some detected "model" object in the world:
   //   1. The point resolved in the model frame.
@@ -37,7 +37,7 @@ class CameraCostFunctor {
  public:
   static constexpr int kCameraResidualSize = 2;
   explicit CameraCostFunctor(
-      const CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
+      CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
       double stamp, const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a camera cost function.
@@ -66,10 +66,8 @@ class CameraCostFunctor {
   //     Position of the point in the model resolved int he model frame.
   //   t_world_model:
   //     Position of model relative to world origin resolved in the world frame.
-  //   cp0_rot thorugh cp5_rot:
-  //     Rotation spline control points for this particular spline segment.
-  //   cp0_pos through cp5_pos:
-  //     Position spline control points for this particular spline segment.
+  //   control_points:
+  //     Control points for the entire pose trajectory.
   template <typename T>
   bool operator()(T const* const* parameters, T* residual) {
     // Parse intrinsics.
@@ -99,7 +97,7 @@ class CameraCostFunctor {
     const Eigen::Map<const Eigen::Vector3<T>> t_world_model(
         &(parameters[static_cast<int>(
             CameraParameterIndices::kModelTranslationIndex)][0]));
-    // Parse sensor rig rotation spline resolved in the world frame.
+    // Parse sensor rig spline resolved in the world frame.
     const int num_control_points = trajectory_evaluation_params_.num_control_points;
     const Eigen::Map<const Eigen::MatrixX<T>> all_control_points(
         &(parameters[static_cast<int>(
@@ -114,6 +112,7 @@ class CameraCostFunctor {
     const T knot1 = static_cast<T>(trajectory_evaluation_params_.knot1);
     const T stamp =
         static_cast<T>(trajectory_evaluation_params_.stamp) - latency;
+    // Evaluate the pose.
     const Eigen::Vector<T, 6> pose_vector =
       BSpline<Trajectory::kSplineOrder, T>::Evaluate(
           control_points, knot0, knot1, basis_matrix, stamp, 0);

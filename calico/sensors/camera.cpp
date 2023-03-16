@@ -257,4 +257,4 @@ int Camera::NumberOfMeasurements() const {
   return id_to_measurement_.size();
 }
 
-} // namespace calico::sensors::camera
+} // namespace calico::sensors

@@ -6,14 +6,10 @@
 namespace calico::sensors {
 
 CameraCostFunctor::CameraCostFunctor(
-    const CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
+    CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
     double stamp, const Trajectory& trajectory_world_sensorrig)
   : pixel_(pixel) {
   camera_model_ = CameraModel::Create(camera_model);
-  const int spline_index = trajectory_world_sensorrig.spline()
-      .GetControlPointIndex(stamp);
-  const int knot_index = trajectory_world_sensorrig.spline()
-      .GetKnotIndexFromControlPointIndex(spline_index);
   trajectory_evaluation_params_
       = trajectory_world_sensorrig.GetEvaluationParams(stamp);
 }
