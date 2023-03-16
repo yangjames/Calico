@@ -69,6 +69,19 @@ target_link_libraries(
   gmock
 )
 
+# Geometry test.
+add_executable(
+  geometry_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/geometry_test.cpp
+  )
+target_link_libraries(
+  geometry_test
+  trajectory
+  Eigen3::Eigen
+  GTest::Main
+  gmock
+)
+
 # Build world model library and tests.
 add_library(
   world_model

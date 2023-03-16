@@ -76,7 +76,7 @@ class GyroscopeCostFunctor {
         parameters[static_cast<int>(
             GyroscopeParameterIndices::kLatencyIndex)][0];
     // Parse sensor rig spline resolved in the world frame.
-    const int num_control_points =
+    const int& num_control_points =
         trajectory_evaluation_params_.num_control_points;
     const Eigen::Map<const Eigen::MatrixX<T>> all_control_points(
         &(parameters[static_cast<int>(
