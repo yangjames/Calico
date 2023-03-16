@@ -98,7 +98,8 @@ class CameraCostFunctor {
         &(parameters[static_cast<int>(
             CameraParameterIndices::kModelTranslationIndex)][0]));
     // Parse sensor rig spline resolved in the world frame.
-    const int num_control_points = trajectory_evaluation_params_.num_control_points;
+    const int num_control_points =
+        trajectory_evaluation_params_.num_control_points;
     const Eigen::Map<const Eigen::MatrixX<T>> all_control_points(
         &(parameters[static_cast<int>(
             CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex)][0]),
@@ -116,11 +117,12 @@ class CameraCostFunctor {
     const Eigen::Vector<T, 6> pose_vector =
       BSpline<Trajectory::kSplineOrder, T>::Evaluate(
           control_points, knot0, knot1, basis_matrix, stamp, 0);
-    T q_world_sensorrig_array[4];
-    ceres::AngleAxisToQuaternion(pose_vector.data(), q_world_sensorrig_array);
+    const Eigen::Vector3<T> phi_sensorrig_world = -pose_vector.head(3);
+    T q_sensorrig_world_array[4];
+    ceres::AngleAxisToQuaternion(phi_sensorrig_world.data(), q_sensorrig_world_array);
     const Eigen::Quaternion<T> q_sensorrig_world(
-        -q_world_sensorrig_array[0], q_world_sensorrig_array[1],
-        q_world_sensorrig_array[2], q_world_sensorrig_array[3]);
+        q_sensorrig_world_array[0], q_sensorrig_world_array[1],
+        q_sensorrig_world_array[2], q_sensorrig_world_array[3]);
     const Eigen::Vector3<T> t_world_sensorrig(pose_vector.data() + 3);
     // Resolve the model point in the camera frame.
     const Eigen::Quaternion<T> q_camera_model =

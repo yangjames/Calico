@@ -10,12 +10,12 @@ void BatchOptimizer::AddSensor(
   sensors_.push_back(std::unique_ptr<sensors::Sensor>(sensor));
 }
 
-void BatchOptimizer::AddWorldModel(const WorldModel& world_model) {
-  world_model_ = world_model;
+void BatchOptimizer::AddWorldModel(WorldModel* world_model) {
+  world_model_ = std::unique_ptr<WorldModel>(world_model);
 }
 
-void BatchOptimizer::AddTrajectory(const Trajectory& trajectory_world_body) {
-  trajectory_world_body_ = trajectory_world_body;
+void BatchOptimizer::AddTrajectory(Trajectory* trajectory_world_body) {
+  trajectory_world_body_ = std::unique_ptr<Trajectory>(trajectory_world_body);
 }
 
 absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
@@ -23,15 +23,15 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
   int num_residuals = 0;
   ceres::Problem problem;
   // Add world model and trajectory to problem.
-  num_parameters += world_model_.AddParametersToProblem(problem);
-  num_parameters += trajectory_world_body_.AddParametersToProblem(problem);
+  num_parameters += world_model_->AddParametersToProblem(problem);
+  num_parameters += trajectory_world_body_->AddParametersToProblem(problem);
   for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
     ASSIGN_OR_RETURN(const auto num_parameters_added,
                      sensor->AddParametersToProblem(problem));
     num_parameters += num_parameters_added;
     ASSIGN_OR_RETURN(const auto num_residuals_added,
-        sensor->AddResidualsToProblem(problem, trajectory_world_body_,
-                                      world_model_));
+        sensor->AddResidualsToProblem(problem, *trajectory_world_body_,
+                                      *world_model_));
     num_residuals += num_residuals_added;
   }
   // Run solver.

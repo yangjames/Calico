@@ -16,6 +16,7 @@ absl::StatusOr<int> Gyroscope::AddParametersToProblem(ceres::Problem& problem) {
   problem.AddParameterBlock(intrinsics_.data(), intrinsics_.size());
   num_parameters_added += intrinsics_.size();
   num_parameters_added += utils::AddPoseToProblem(problem, T_sensorrig_sensor_);
+  problem.SetParameterBlockConstant(T_sensorrig_sensor_.translation().data());
   problem.AddParameterBlock(&latency_, 1);
   ++num_parameters_added;
   if (!intrinsics_enabled_) {
@@ -45,7 +46,7 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
             observation_id.stamp, parameters);
     const auto residual_block_id = problem.AddResidualBlock(
         cost_function, /*loss_function=*/nullptr, parameters);
-    num_residuals_added += 1;
+    ++num_residuals_added;
   }
   return num_residuals_added;
 }
@@ -53,29 +54,28 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
 absl::StatusOr<std::vector<GyroscopeMeasurement>> Gyroscope::Project(
     const std::vector<double>& interp_times,
     const Trajectory& sensorrig_trajectory) const {
-  // std::vector<Eigen::Vector<double, 6>> pose_vectors;
-  // ASSIGN_OR_RETURN(pose_vectors, sensorrig_trajectory.spline().Interpolate(
-  //     interp_times, /*derivative=*/0));
-  // std::vector<Eigen::Vector<double, 6>> pose_dot_vectors;
-  // ASSIGN_OR_RETURN(pose_dot_vectors, sensorrig_trajectory.spline().Interpolate(
-  //     interp_times, /*derivative=*/1));
-  // std::vector<GyroscopeMeasurement> measurements(interp_times.size());
-  // for (int i = 0; i < interp_times.size(); ++i) {
-  //   const Eigen::Vector3d phi_sensorrig_world = -pose_vectors.at(i).head(3);
-  //   const Eigen::Vector3d phi_dot_sensorrig_world =
-  //       -pose_dot_vectors.at(i).head(3);
-  //   ASSIGN_OR_RETURN(const Eigen::Vector3d omega_sensorrig_world,
-  //       ComputeAngularVelocity(phi_sensorrig_world, phi_dot_sensorrig_world));
-  //   const Eigen::Vector3d omega_gyroscope_world =
-  //       T_sensorrig_sensor_.rotation().inverse() * omega_sensorrig_world;
-  //   const double& stamp = interp_times.at(i);
-  //   Eigen::Vector3d projection;
-  //   ASSIGN_OR_RETURN(projection, gyroscope_model_->Project(
-  //       intrinsics_, omega_gyroscope_world));
-  //   measurements[i] = GyroscopeMeasurement{projection, {stamp + latency_, i}};
-  // }
-  // return measurements;
-  return std::vector<GyroscopeMeasurement>{};
+  std::vector<Eigen::Vector<double, 6>> pose_vectors;
+  ASSIGN_OR_RETURN(pose_vectors, sensorrig_trajectory.spline().Interpolate(
+      interp_times, /*derivative=*/0));
+  std::vector<Eigen::Vector<double, 6>> pose_dot_vectors;
+  ASSIGN_OR_RETURN(pose_dot_vectors, sensorrig_trajectory.spline().Interpolate(
+      interp_times, /*derivative=*/1));
+  std::vector<GyroscopeMeasurement> measurements(interp_times.size());
+  for (int i = 0; i < interp_times.size(); ++i) {
+    const Eigen::Vector3d phi_sensorrig_world = -pose_vectors.at(i).head(3);
+    const Eigen::Vector3d phi_dot_sensorrig_world =
+        -pose_dot_vectors.at(i).head(3);
+    const Eigen::Vector3d omega_sensorrig_world =
+        ComputeAngularVelocity(phi_sensorrig_world, phi_dot_sensorrig_world);
+    const Eigen::Vector3d omega_gyroscope_world =
+        T_sensorrig_sensor_.rotation().inverse() * omega_sensorrig_world;
+    const double& stamp = interp_times.at(i);
+    Eigen::Vector3d projection;
+    ASSIGN_OR_RETURN(projection, gyroscope_model_->Project(
+        intrinsics_, omega_gyroscope_world));
+    measurements[i] = GyroscopeMeasurement{projection, {stamp + latency_, i}};
+  }
+  return measurements;
 }
 
 absl::Status Gyroscope::SetLatency(double latency) {

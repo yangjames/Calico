@@ -20,7 +20,7 @@ enum class GyroscopeParameterIndices : int {
   kLatencyIndex = 3,
   // Rotation and position control points of the entire trajectory spline as an
   // Nx6 matrix.
-  kSensorRigPoseSplineControlPointsIndex = 7,
+  kSensorRigPoseSplineControlPointsIndex = 4
 };
 
 // Generic auto-differentiation gyroscope cost functor. Residuals will be based on

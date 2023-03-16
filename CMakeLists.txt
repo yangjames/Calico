@@ -256,6 +256,7 @@ add_library(
 target_link_libraries(
   batch_optimizer
   camera
+  gyroscope
   world_model
 )
 
