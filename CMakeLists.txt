@@ -81,6 +81,7 @@ target_link_libraries(
   GTest::Main
   gmock
 )
+add_test(GeometryTest geometry_test)
 
 # Build world model library and tests.
 add_library(
