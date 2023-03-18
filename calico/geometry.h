@@ -1,6 +1,7 @@
 #ifndef CALICO_GEOMETRY_H_
 #define CALICO_GEOMETRY_H_
 
+#include <iostream>
 #include "Eigen/Dense"
 
 
@@ -40,13 +41,13 @@ inline T SmallAngleSin(const T theta) {
                    (T(1.0 / 120.0) - theta_sq * T(1.0 / 5040.0))));
 }
 
-// Fourth order Taylor expansion of 1 - cos(theta).
+// Fourth order Taylor expansion of cos(theta).
 template <typename T>
-inline T SmallAngleOneMinusCos(const T theta) {
+inline T SmallAngleCos(const T theta) {
   const T theta_sq = theta * theta;
-  return theta_sq * (T(0.5) - theta_sq *
-                     (T(1.0 / 24.0) + theta_sq *
-                      (T(1.0/720.0) - theta_sq * T(1.0 / 40320.0))));
+  return T(1.0) - theta_sq * (T(0.5) - theta_sq *
+                              (T(1.0 / 24.0) + theta_sq *
+                               (T(1.0/720.0) - theta_sq * T(1.0 / 40320.0))));
 }
 
 // Convert axis-angle to rotation matrix.
@@ -57,18 +58,19 @@ inline Eigen::Matrix3<T> ExpSO3(const Eigen::Vector3<T>& phi) {
   if (theta == T(0)) {
     return Eigen::Matrix3<T>::Identity();
   }
-  T sin_term, cos_term;
+  T sin_theta, one_m_cos_theta;
   if (theta < kSmallAngle) {
-    sin_term = SmallAngleSin(theta);
-    cos_term = SmallAngleOneMinusCos(theta);
+    sin_theta = SmallAngleSin(theta);
+    one_m_cos_theta = T(1.0) - SmallAngleCos(theta);
   } else {
-    sin_term = sin(theta);
-    cos_term = T(1.0) - cos(theta);
+    sin_theta = sin(theta);
+    one_m_cos_theta = T(1.0) - cos(theta);
   }
   const Eigen::Vector3<T> phi_hat = phi / theta;
   const Eigen::Matrix3<T> Phi = Skew(phi_hat);
   Eigen::Matrix3<T> R =
-      Eigen::Matrix3<T>::Identity() + sin_term * Phi + cos_term * Phi * Phi;
+      Eigen::Matrix3<T>::Identity() + sin_theta * Phi +
+      one_m_cos_theta * Phi * Phi;
   return R;
 }
 
@@ -88,12 +90,12 @@ inline Eigen::Vector3<T> LnSO3(const Eigen::Matrix3<T>& R) {
 
   if (cos_theta >= kInvSqrt2) {
     const T theta = asin(sin_theta);
-    const T sin_term = theta < kSmallAngle ? SmallAngleSin(theta) : sin(theta);
-    phi *= (theta / sin_term);
+    const T sin_theta = theta < kSmallAngle ? SmallAngleSin(theta) : sin(theta);
+    phi *= (theta / sin_theta);
   } else if (cos_theta > -kInvSqrt2) {
     const T theta = acos(cos_theta);
-    const T sin_term = theta < kSmallAngle ? SmallAngleSin(theta) : sin(theta);
-    phi *= (theta / sin_term);
+    const T sin_theta = theta < kSmallAngle ? SmallAngleSin(theta) : sin(theta);
+    phi *= (theta / sin_theta);
   } else {
     const Eigen::Vector3<T> diag = R.diagonal().array() - cos_theta;
     const T dx2 = diag.x() * diag.x();
@@ -122,40 +124,91 @@ inline Eigen::Vector3<T> LnSO3(const Eigen::Matrix3<T>& R) {
   return phi;
 }
 
-
-// Compute the angular velocity of a rigid body. Current orientation `phi`
-// is an axis-angle vector such that `angle = phi.norm()`. `phi_dot` is the time
-// derivative of `phi`. This method will use these two quantities to transform
-// the axis-angle rate vector via the appopriate SO(3) manifold Jacobian.
+// Compute the manifold Jacobian matrix of the Rodrigues formula, i.e.:
+//  R(phi) = exp([phi]_x) = I + sin(theta)/theta * [phi]_x +
+//                      (1-cos(theta))/theta^2 * ([phi]_x)^2
+//  d(exp[phi]_x)/dphi = I + (1-cos(theta))/theta^2 * ([phi]_x) +
+//                           (theta-sin(theta))/theta^3 * ([phi]_x)^2
 template <typename T>
-inline Eigen::Vector3<T> ComputeAngularVelocity(const Eigen::Vector3<T>& phi,
-                                                const Eigen::Vector3<T>& phi_dot) {
+inline Eigen::Matrix3<T> ExpSO3Jacobian(
+    const Eigen::Vector3<T>& phi) {
   const T theta_sq = phi.squaredNorm();
   Eigen::Matrix3<T> J;
   J.setIdentity();
-  if (theta_sq != static_cast<T>(0.0)) {
-    const T theta = sqrt(theta_sq);
-    const T theta_fo = theta_sq * theta_sq;
-    T c1, c2;
-    // If small angle, compute the first 3 terms of the Taylor expansion.
-    if (abs(theta) < static_cast<T>(1e-7)) {
-      c1 = static_cast<T>(0.5) - theta_sq * static_cast<T>(1.0 / 24.0) +
-        theta_fo * static_cast<T>(1.0 / 720.0);
-      c2 = static_cast<T>(1.0 / 6.0) - theta_sq * static_cast<T>(1.0 / 120.0) +
-        theta_fo * static_cast<T>(1.0 / 5040.0);
-    } else {
-      const T inv_theta_sq = static_cast<T>(1.0) / theta_sq;
-      c1 = (static_cast<T>(1.0) - cos(theta)) * inv_theta_sq;
-      c2 = (static_cast<T>(1.0) - sin(theta) / theta) * inv_theta_sq;
-    }
-    Eigen::Matrix3<T> phi_x = Skew(phi);
-    J += c1 * phi_x + c2 * phi_x * phi_x;
+  if (theta_sq == static_cast<T>(0.0)) {
+    return J;
   }
-  const Eigen::Vector3<T> omega = J * phi_dot;
-  return omega;
+  const T theta = sqrt(theta_sq);
+  T one_m_cos_theta, sin_theta;
+  if (theta < T(1e-7)) {
+    sin_theta = SmallAngleSin(theta);
+    one_m_cos_theta = T(1.0) - SmallAngleCos(theta);
+  } else {
+    sin_theta = sin(theta);
+    one_m_cos_theta = T(1.0) - cos(theta);
+  }
+  const T inv_theta = T(1.0) / theta;
+  const Eigen::Vector3<T> phi_hat = inv_theta * phi;
+  const Eigen::Matrix3<T> phi_hat_x = Skew(phi_hat);
+  J += inv_theta * (one_m_cos_theta * phi_hat_x +
+                    (theta - sin_theta) * phi_hat_x * phi_hat_x);
+  return J;
 }
 
-                           
+// Compute the manifold Hessian matrix of the Rodrigues formula, i.e.:
+//  R(phi) = exp([phi]_x) = I + sin(theta)/theta * [phi]_x +
+//                      (1-cos(theta))/theta^2 * ([phi]_x)^2
+//  H = d^2(exp[phi]_x)/dphi^2
+template <typename T>
+inline std::vector<Eigen::Matrix3<T>> ExpSO3Hessian(
+    const Eigen::Vector3<T>& phi) {
+  const std::vector<Eigen::Matrix3<T>> G = {
+    Skew(Eigen::Vector3<T>(1, 0, 0)), Skew(Eigen::Vector3<T>(0, 1, 0)),
+    Skew(Eigen::Vector3<T>(0, 0, 1))
+  };
+  std::vector<Eigen::Matrix3<T>> H(3);
+  std::fill(H.begin(), H.end(), Eigen::Matrix3<T>::Zero());
+  const T theta_sq = phi.squaredNorm();
+  if (theta_sq == T(0.0)) {
+    return H;
+  }
+  const T theta = sqrt(theta_sq);
+  T ct, st;
+  if (theta < T(1e-7)) {
+    ct = SmallAngleCos(theta);
+    st = SmallAngleSin(theta);
+  } else {
+    ct = cos(theta);
+    st = sin(theta);
+  }
+  const T inv_theta = T(1.0) / theta;
+  const T inv_theta_sq = inv_theta * inv_theta;
+  const Eigen::Vector3<T> phi_hat = inv_theta * phi;
+  const Eigen::Matrix3<T> phi_hat_x = Skew(phi_hat);
+  const T c0 = ct - st * inv_theta;
+  const T c1 = (T(1.0) - ct) * inv_theta_sq;
+  const T c2 = T(3.0) * inv_theta_sq * st - inv_theta * (ct - T(2.0));
+  const T c3 = inv_theta_sq * (theta - st);
+  for (int i = 0; i < 3; ++i) {
+    H[i] = (c0 * phi_hat(i)) * phi_hat_x + c1 * G[i] +
+        (c2 * phi_hat(i)) * (phi_hat_x * phi_hat_x) +
+        c3 * (G[i] * phi_hat_x + phi_hat_x * G[i]);
+  }
+  return H;
+}
+
+// Compute the time derivative of the Rodrigues formula manifold Jacobian.
+template <typename T>
+inline Eigen::Matrix3<T> ExpSO3JacobianDot(
+    const Eigen::Vector3<T>& phi, const Eigen::Vector3<T>& phi_dot) {
+  const std::vector<Eigen::Matrix3<T>> H = ExpSO3Hessian(phi);
+  Eigen::Matrix3<T> Jdot;
+  for (int i = 0; i < H.size(); ++i) {
+    Jdot.col(i) = H.at(i) * phi_dot;
+  }
+  return Jdot;
+}
+
 } // namespace calico
 
 #endif // CALICO_GEOMETRY_H_

@@ -41,7 +41,7 @@ class DefaultSyntheticTest {
         const double& theta1 = angle_displacements[i];
         const double dtheta = theta1 - theta0;
         for (const double& interp_time : interpolation_times) {
-          const double theta =    dtheta * interp_time + theta0;
+          const double theta = dtheta * interp_time + theta0;
           const Eigen::Quaterniond q_sensorrig0_sensorrig(
               Eigen::AngleAxisd(theta, axis));
           const Eigen::Quaterniond q_world_sensorrig =
@@ -103,7 +103,7 @@ class DefaultSyntheticTest {
   static constexpr int kNumSamplesPerSegment = 10;
   static constexpr double kPosAmplitude = 0.5;
   static constexpr double kAngleAmplitude = 30 * kDeg2Rad;
-  static constexpr double kSegmentDuration = 1.0;
+  static constexpr double kSegmentDuration = 0.75;
   // Planar points specs.
   static constexpr double kSamplePlaneWidth = 1.5;
   static constexpr double kSamplePlaneHeight = 1.5;
