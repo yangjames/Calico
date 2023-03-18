@@ -175,6 +175,72 @@ target_link_libraries(
 )
 add_test(GyroscopeLibTest gyroscope_test)
   
+# Build accelerometer library and tests.
+add_library(
+  accelerometer_models
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models.cpp
+)
+target_link_libraries(
+  accelerometer_models
+  absl::statusor
+  Eigen3::Eigen
+)
+add_executable(
+  accelerometer_models_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models_test.cpp
+  )
+target_link_libraries(
+  accelerometer_models_test
+  accelerometer_models
+  GTest::Main
+  gmock
+)
+add_test(AccelerometerModelsTest accelerometer_models_test)
+
+add_library(
+  accelerometer_cost_functor
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor.cpp
+)
+target_link_libraries(
+  accelerometer_cost_functor
+  accelerometer_models
+  trajectory
+)
+add_executable(
+  accelerometer_cost_functor_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor_test.cpp
+)
+target_link_libraries(
+  accelerometer_cost_functor_test
+  accelerometer_cost_functor
+  GTest::Main
+  gmock
+)
+add_test(AccelerometerCostFunctorTest accelerometer_cost_functor_test)
+
+# add_library(
+#   accelerometer
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.cpp
+# )
+# target_link_libraries(
+#   accelerometer
+#   accelerometer_cost_functor
+#   accelerometer_models
+#   trajectory
+#   world_model
+# )
+
+# add_executable(
+#   accelerometer_test
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_test.cpp
+# )
+# target_link_libraries(
+#   accelerometer_test
+#   accelerometer
+#   GTest::Main
+#   gmock
+# )
+# add_test(AccelerometerLibTest accelerometer_test)
 
 # Build camera library and tests.
 add_library(
