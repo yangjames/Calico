@@ -218,29 +218,29 @@ target_link_libraries(
 )
 add_test(AccelerometerCostFunctorTest accelerometer_cost_functor_test)
 
-# add_library(
-#   accelerometer
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.cpp
-# )
-# target_link_libraries(
-#   accelerometer
-#   accelerometer_cost_functor
-#   accelerometer_models
-#   trajectory
-#   world_model
-# )
+add_library(
+  accelerometer
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.cpp
+)
+target_link_libraries(
+  accelerometer
+  accelerometer_cost_functor
+  accelerometer_models
+  trajectory
+  world_model
+)
 
-# add_executable(
-#   accelerometer_test
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_test.cpp
-# )
-# target_link_libraries(
-#   accelerometer_test
-#   accelerometer
-#   GTest::Main
-#   gmock
-# )
-# add_test(AccelerometerLibTest accelerometer_test)
+add_executable(
+  accelerometer_test
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_test.cpp
+)
+target_link_libraries(
+  accelerometer_test
+  accelerometer
+  GTest::Main
+  gmock
+)
+add_test(AccelerometerLibTest accelerometer_test)
 
 # Build camera library and tests.
 add_library(
