@@ -7,7 +7,6 @@
 
 namespace calico {
 
-
 // Convert a 3-vector to a skew-symmetric cross-product matrix.
 template <typename T>
 inline Eigen::Matrix3<T> Skew(const Eigen::Vector3<T>& v) {
@@ -163,9 +162,11 @@ template <typename T>
 inline std::vector<Eigen::Matrix3<T>> ExpSO3Hessian(
     const Eigen::Vector3<T>& phi) {
   const std::vector<Eigen::Matrix3<T>> G = {
-    Skew(Eigen::Vector3<T>(1, 0, 0)), Skew(Eigen::Vector3<T>(0, 1, 0)),
-    Skew(Eigen::Vector3<T>(0, 0, 1))
+    Skew(Eigen::Vector3<T>(T(1), T(0), T(0))),
+    Skew(Eigen::Vector3<T>(T(0), T(1), T(0))),
+    Skew(Eigen::Vector3<T>(T(0), T(0), T(1)))
   };
+
   std::vector<Eigen::Matrix3<T>> H(3);
   std::fill(H.begin(), H.end(), Eigen::Matrix3<T>::Zero());
   const T theta_sq = phi.squaredNorm();

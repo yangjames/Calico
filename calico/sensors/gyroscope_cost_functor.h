@@ -105,8 +105,8 @@ class GyroscopeCostFunctor {
     //                  calculations.
     const Eigen::Vector3<T> phi_sensorrig_world = -pose_vector.head(3);
     const Eigen::Vector3<T> phi_dot_sensorrig_world = -pose_dot_vector.head(3);
-    const Eigen::Vector3<T> omega_sensorrig_world =
-        ComputeAngularVelocity(phi_sensorrig_world, phi_dot_sensorrig_world);
+    const Eigen::Matrix3<T> J = ExpSO3Jacobian(phi_sensorrig_world);
+    const Eigen::Vector3<T> omega_sensorrig_world = J * phi_dot_sensorrig_world;
     const Eigen::Vector3<T> omega_gyroscope_world =
         q_sensorrig_gyroscope.inverse() * omega_sensorrig_world;
     // Project the sensor angular velocity through the gyroscope model.
