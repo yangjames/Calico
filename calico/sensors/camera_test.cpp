@@ -14,7 +14,7 @@ namespace {
 
 class CameraContainerTest : public ::testing::Test {
  protected:
-  static constexpr absl::string_view kCameraName = "camera";
+  const std::string kCameraName = "camera";
   const ImageSize kImageSize { .width = 1280, .height = 800, };
   static constexpr CameraIntrinsicsModel kCameraModel =
       CameraIntrinsicsModel::kOpenCv5;

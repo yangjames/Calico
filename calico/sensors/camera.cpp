@@ -123,7 +123,7 @@ double Camera::GetLatency() const {
   return latency_;
 }
 
-void Camera::SetName(absl::string_view name) {
+void Camera::SetName(const std::string& name) {
   name_ = name;
 }
 const std::string& Camera::GetName() const { return name_; }

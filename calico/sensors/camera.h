@@ -60,7 +60,7 @@ class Camera : public Sensor {
   ~Camera() = default;
 
   // Setter/getter for name.
-  void SetName(absl::string_view name) final;
+  void SetName(const std::string& name) final;
   const std::string& GetName() const final;
 
   // Setter/getter for extrinsics parameters.

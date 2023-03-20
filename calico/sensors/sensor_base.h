@@ -13,21 +13,6 @@
 
 namespace calico::sensors {
 
-// Types of loss functions.
-enum class LossFunctionType {
-  kNone,
-  kHuber,
-  kCauchy,
-};
-
-// Optimization options for a sensor.
-struct SensorOptimizationOptions {
-  LossFunctionType loss_function_type;
-  double loss_function_scale;
-  bool intrinsics_fixed;
-  bool extrinsics_fixed;
-};
-
 // Base class for sensors. For the sake of readability, we make this a purely
 // virtual class, so setters and getters must be implemented at the derived
 // class level.
@@ -36,7 +21,7 @@ class Sensor {
   virtual ~Sensor() = default;
 
   // Setter/getter for name.
-  virtual void SetName(absl::string_view name) = 0;
+  virtual void SetName(const std::string& name) = 0;
   virtual const std::string& GetName() const = 0;
 
   // Setter/getter for extrinsics parameters.
