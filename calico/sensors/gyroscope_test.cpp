@@ -141,7 +141,7 @@ TEST_P(GyroscopeTest, AddCalibrationParametersToProblem) {
 
 TEST_P(GyroscopeTest, AnalyticallyVsNumericallyDiffedKinematicsMatch) {
   constexpr double kSmallError = 1e-5;
-  const Pose3d T_sensorrig_gyro(Eigen::Quaterniond::Identity(),
+  const Pose3d T_sensorrig_gyro(Eigen::Quaterniond::UnitRandom(),
                                 Eigen::Vector3d::Zero());
   const Eigen::Matrix3d R_sensorrig_gyro =
       T_sensorrig_gyro.rotation().toRotationMatrix();
