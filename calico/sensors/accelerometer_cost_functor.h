@@ -113,26 +113,25 @@ class AccelerometerCostFunctor {
     const Eigen::Vector3<T> phi_sensorrig_world = -pose_vector.head(3);
     const Eigen::Vector3<T> phi_dot_sensorrig_world = -pose_dot_vector.head(3);
     const Eigen::Vector3<T> phi_ddot_sensorrig_world = -pose_ddot_vector.head(3);
+    const Eigen::Vector3<T> ddt_world_sensorrig = pose_ddot_vector.tail(3);
     T q_sensorrig_world_array[4];
     ceres::AngleAxisToQuaternion(phi_sensorrig_world.data(),
                                  q_sensorrig_world_array);
     const Eigen::Quaternion<T> q_sensorrig_world(
         q_sensorrig_world_array[0], q_sensorrig_world_array[1],
         q_sensorrig_world_array[2], q_sensorrig_world_array[3]);
-    const Eigen::Ref<const Eigen::Vector3<T>> ddt_world_sensorrig =
-        pose_ddot_vector.tail(3);
-    const Eigen::Matrix3<T> J = ExpSO3Jacobian(phi_sensorrig_world);
-    const Eigen::Vector3<T> omega_sensorrig_world = J * phi_dot_sensorrig_world;
-    const Eigen::Vector3<T> omega_accelerometer_world =
-        q_sensorrig_accelerometer.inverse() * omega_sensorrig_world;
-    const Eigen::Matrix3<T> Jdot = ExpSO3JacobianDot(phi_sensorrig_world,
-                                                     phi_dot_sensorrig_world);
+
+    const Eigen::Matrix3<T> J_sensorrig_world =
+        ExpSO3Jacobian(phi_sensorrig_world);
+    const Eigen::Matrix3<T> J_dot_sensorrig_world =
+        ExpSO3JacobianDot(phi_sensorrig_world, phi_dot_sensorrig_world);
+    const Eigen::Vector3<T> omega_sensorrig_world =
+        J_sensorrig_world * phi_dot_sensorrig_world;
     const Eigen::Vector3<T> alpha_sensorrig_world =
-        Jdot * phi_dot_sensorrig_world + J * phi_ddot_sensorrig_world;
-    const Eigen::Vector3<T> alpha_accelerometer_world =
-        q_sensorrig_accelerometer.inverse() * alpha_sensorrig_world;
-    const Eigen::Matrix3<T> Alpha = Skew(alpha_accelerometer_world);
-    const Eigen::Matrix3<T> Omega = Skew(omega_accelerometer_world);
+        J_dot_sensorrig_world * phi_dot_sensorrig_world +
+        J_sensorrig_world * phi_ddot_sensorrig_world;
+    const Eigen::Matrix3<T> Alpha = -Skew(alpha_sensorrig_world);
+    const Eigen::Matrix3<T> Omega = -Skew(omega_sensorrig_world);
     const Eigen::Vector3<T> ddt_accelerometer_world_accelerometer =
         q_sensorrig_accelerometer.inverse() *
         (q_sensorrig_world * (ddt_world_sensorrig - gravity) +

@@ -80,25 +80,21 @@ absl::StatusOr<std::vector<AccelerometerMeasurement>> Accelerometer::Project(
         q_sensorrig_world_array[2], q_sensorrig_world_array[3]);
     const Eigen::Vector3d ddt_world_sensorrig = pose_ddot_vectors.at(i).tail(3);
     const Eigen::Matrix3d J = ExpSO3Jacobian(phi_sensorrig_world);
-    const Eigen::Vector3d omega_sensorrig_world = J * phi_dot_sensorrig_world;
-    const Eigen::Vector3d omega_accelerometer_world =
-        T_sensorrig_sensor_.rotation().inverse() * omega_sensorrig_world;
     const Eigen::Matrix3d Jdot = ExpSO3JacobianDot(phi_sensorrig_world,
                                                    phi_dot_sensorrig_world);
+    const Eigen::Vector3d omega_sensorrig_world = J * phi_dot_sensorrig_world;
     const Eigen::Vector3d alpha_sensorrig_world =
         Jdot * phi_dot_sensorrig_world + J * phi_ddot_sensorrig_world;
-    const Eigen::Vector3d alpha_accelerometer_world =
-        T_sensorrig_sensor_.rotation().inverse() * alpha_sensorrig_world;
-    const Eigen::Matrix3d Alpha = Skew(alpha_accelerometer_world);
-    const Eigen::Matrix3d Omega = Skew(omega_accelerometer_world);
+    const Eigen::Matrix3d Alpha = -Skew(alpha_sensorrig_world);
+    const Eigen::Matrix3d Omega = -Skew(omega_sensorrig_world);
     const Eigen::Vector3d ddt_accelerometer_world_accelerometer =
-        T_sensorrig_sensor_.rotation().inverse() *
-        (q_sensorrig_world * (ddt_world_sensorrig - world_model.gravity()) +
-        (Omega * Omega + Alpha) * T_sensorrig_sensor_.translation());
+        T_sensorrig_sensor_.rotation().inverse() * (
+            q_sensorrig_world * (ddt_world_sensorrig - world_model.gravity()) +
+            (Omega * Omega + Alpha) * T_sensorrig_sensor_.translation());
     const double& stamp = interp_times.at(i);
     Eigen::Vector3d projection;
     ASSIGN_OR_RETURN(projection, accelerometer_model_->Project(
-        intrinsics_, omega_accelerometer_world));
+        intrinsics_, ddt_accelerometer_world_accelerometer));
     measurements[i] = AccelerometerMeasurement{
         projection, {stamp + latency_, i}};
   }
