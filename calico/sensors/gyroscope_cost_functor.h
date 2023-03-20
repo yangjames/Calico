@@ -108,7 +108,7 @@ class GyroscopeCostFunctor {
     const Eigen::Matrix3<T> J = ExpSO3Jacobian(phi_sensorrig_world);
     const Eigen::Vector3<T> omega_sensorrig_world = J * phi_dot_sensorrig_world;
     const Eigen::Vector3<T> omega_gyroscope_world =
-        q_sensorrig_gyroscope.inverse() * omega_sensorrig_world;
+        -(q_sensorrig_gyroscope.inverse() * omega_sensorrig_world);
     // Project the sensor angular velocity through the gyroscope model.
     const absl::StatusOr<Eigen::Vector3<T>> projection =
         gyroscope_model_->Project(intrinsics, omega_gyroscope_world);

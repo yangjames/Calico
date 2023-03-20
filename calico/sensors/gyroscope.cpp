@@ -67,7 +67,7 @@ absl::StatusOr<std::vector<GyroscopeMeasurement>> Gyroscope::Project(
     const Eigen::Matrix3d J = ExpSO3Jacobian(phi_sensorrig_world);
     const Eigen::Vector3d omega_sensorrig_world = J * phi_dot_sensorrig_world;
     const Eigen::Vector3d omega_gyroscope_world =
-        T_sensorrig_sensor_.rotation().inverse() * omega_sensorrig_world;
+        -(T_sensorrig_sensor_.rotation().inverse() * omega_sensorrig_world);
     const double& stamp = interp_times.at(i);
     Eigen::Vector3d projection;
     ASSIGN_OR_RETURN(projection, gyroscope_model_->Project(

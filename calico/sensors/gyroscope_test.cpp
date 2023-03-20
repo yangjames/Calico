@@ -1,5 +1,6 @@
 #include "calico/sensors/gyroscope.h"
 
+#include "calico/geometry.h"
 #include "calico/matchers.h"
 #include "calico/test_utils.h"
 #include "calico/typedefs.h"
@@ -138,6 +139,58 @@ TEST_P(GyroscopeTest, AddCalibrationParametersToProblem) {
   EXPECT_EQ(problem.NumParameters(), num_parameters);
 }
 
+TEST_P(GyroscopeTest, AnalyticallyVsNumericallyDiffedKinematicsMatch) {
+  constexpr double kSmallError = 1e-5;
+  const Pose3d T_sensorrig_gyro(Eigen::Quaterniond::Identity(),
+                                Eigen::Vector3d::Zero());
+  const Eigen::Matrix3d R_sensorrig_gyro =
+      T_sensorrig_gyro.rotation().toRotationMatrix();
+  const Eigen::Vector3d t_sensorrig_gyro = T_sensorrig_gyro.translation();
+
+  Gyroscope gyroscope;
+  ASSERT_OK(gyroscope.SetModel(GyroscopeIntrinsicsModel::kGyroscopeScaleOnly));
+  Eigen::VectorXd intrinsics(GyroscopeScaleOnlyModel::kNumberOfParameters);
+  intrinsics.setOnes();
+  ASSERT_OK(gyroscope.SetIntrinsics(intrinsics));
+  gyroscope.SetExtrinsics(T_sensorrig_gyro);
+  std::vector<GyroscopeMeasurement> measurements;
+  ASSERT_OK_AND_ASSIGN(measurements,
+      gyroscope.Project(stamps, trajectory_world_sensorrig));
+
+  const double dt = 1e-5;
+  const double dt_inv = 1.0 / dt;
+
+  for (int i = 0; i < stamps.size() - 2; ++i) {
+    const double stamp_i = stamps.at(i);
+    const double stamp_ii = stamp_i + dt;
+    const Eigen::Vector<double, 6> pose_vector_i =
+        trajectory_world_sensorrig.spline().Interpolate(
+            {stamp_i}, /*derivative=*/0).value()[0];
+    const Eigen::Vector<double, 6> pose_vector_ii =
+        trajectory_world_sensorrig.spline().Interpolate(
+            {stamp_ii}, /*derivative=*/0).value()[0];
+    const Eigen::Vector<double, 6> pose_dot_vector_i =
+        trajectory_world_sensorrig.spline().Interpolate(
+            {stamp_i}, /*derivative=*/1).value()[0];
+    const Eigen::Vector3d phi_sensorrig_world_i = -pose_vector_i.head(3);
+    const Eigen::Vector3d phi_sensorrig_world_ii = -pose_vector_ii.head(3);
+
+    const Eigen::Matrix3d R_sensorrig_world_i = ExpSO3(phi_sensorrig_world_i);
+    const Eigen::Matrix3d R_sensorrig_world_ii = ExpSO3(phi_sensorrig_world_ii);
+
+    const Eigen::Matrix3d dR =
+        R_sensorrig_world_ii * R_sensorrig_world_i.transpose();
+    const Eigen::Vector3d omega_sensorrig_world = dt_inv * LnSO3(dR);
+    const Eigen::Vector3d omega_sensorrig_world_sensorrig = -omega_sensorrig_world;
+    const Eigen::Vector3d omega_gyroscope_world =
+        R_sensorrig_gyro.transpose() * omega_sensorrig_world_sensorrig;
+
+    const auto measurement = measurements.at(i);
+    const Eigen::Vector3d error = omega_gyroscope_world - measurement.measurement;
+    ASSERT_LT(error.squaredNorm(), kSmallError);
+  }
+}
+
 TEST_P(GyroscopeTest, PerfectDataPerfectResiduals) {
   const auto params = GetParam();
   Eigen::VectorXd intrinsics(params.parameter_size);
@@ -151,6 +204,7 @@ TEST_P(GyroscopeTest, PerfectDataPerfectResiduals) {
   std::vector<GyroscopeMeasurement> measurements;
   ASSERT_OK_AND_ASSIGN(measurements,
                        gyroscope.Project(stamps, trajectory_world_sensorrig));
+  ASSERT_OK(gyroscope.AddMeasurements(measurements));
   ceres::Problem problem;
   WorldModel world_model;
   ASSERT_OK_AND_ASSIGN(const int num_residuals,
@@ -167,14 +221,14 @@ INSTANTIATE_TEST_SUITE_P(
     GyroscopeTests, GyroscopeTest,
     testing::ValuesIn<GyroscopeTestCase>({
         {
-          "ScaleOnly",
-          GyroscopeIntrinsicsModel::kScaleOnly,
-          ScaleOnlyModel::kNumberOfParameters,
+          "GyroscopeScaleOnly",
+          GyroscopeIntrinsicsModel::kGyroscopeScaleOnly,
+          GyroscopeScaleOnlyModel::kNumberOfParameters,
         },
         {
-          "ScaleAndBias",
-          GyroscopeIntrinsicsModel::kScaleAndBias,
-          ScaleAndBiasModel::kNumberOfParameters,
+          "GyroscopeScaleAndBias",
+          GyroscopeIntrinsicsModel::kGyroscopeScaleAndBias,
+          GyroscopeScaleAndBiasModel::kNumberOfParameters,
         },
       }),
     [](const testing::TestParamInfo<GyroscopeTest::ParamType>& info
