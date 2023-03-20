@@ -41,7 +41,8 @@ struct RigidBody {
 // optimization problem.
 class WorldModel {
  public:
-  WorldModel() = default;
+  static constexpr double kGravityDefaultZ = -9.80665;
+  WorldModel();
   ~WorldModel() = default;
 
   // Add a `Landmark` object to the world model. Returns an InvalidArgument status
@@ -65,6 +66,13 @@ class WorldModel {
   absl::flat_hash_map<int, RigidBody>& rigidbodies();
   const absl::flat_hash_map<int, RigidBody>& rigidbodies() const;
 
+  // Enable flag for gravity estimation.
+  void EnableGravityEstimation(bool enable);
+
+  // Accessor for gravity vector.
+  Eigen::Vector3d& gravity();
+  const Eigen::Vector3d& gravity() const;
+
   // Get the number of landmarks currently in this world model.
   int NumberOfLandmarks() const;
 
@@ -83,7 +91,8 @@ class WorldModel {
  private:
   absl::flat_hash_map<int, RigidBody> rigidbody_id_to_rigidbody_;
   absl::flat_hash_map<int, Landmark> landmark_id_to_landmark_;
-
+  Eigen::Vector3d gravity_;
+  bool gravity_enabled_;
 };
 
 } // namespace calico

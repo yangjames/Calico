@@ -6,6 +6,12 @@
 
 namespace calico {
 
+  WorldModel::WorldModel() {
+    gravity_.setZero();
+    gravity_.z() = kGravityDefaultZ;
+    gravity_enabled_ = false;
+  }
+
 absl::Status WorldModel::AddLandmark(const Landmark& landmark) {
   if (landmark_id_to_landmark_.contains(landmark.id)) {
     return absl::InvalidArgumentError(absl::StrCat(
@@ -54,7 +60,17 @@ int WorldModel::AddParametersToProblem(ceres::Problem& problem) {
       utils::SetPoseConstantInProblem(problem, rigidbody.T_world_rigidbody);
     }
   }
+  // Add gravity vector.
+  problem.AddParameterBlock(gravity_.data(), gravity_.size());
+  num_parameters_added += gravity_.size();
+  if (!gravity_enabled_) {
+    problem.SetParameterBlockConstant(gravity_.data());
+  }
   return num_parameters_added;
+}
+
+void WorldModel::EnableGravityEstimation(bool enable) {
+  gravity_enabled_;
 }
 
 absl::flat_hash_map<int, Landmark>& WorldModel::landmarks() {
@@ -71,6 +87,14 @@ absl::flat_hash_map<int, RigidBody>& WorldModel::rigidbodies() {
 
 const absl::flat_hash_map<int, RigidBody>& WorldModel::rigidbodies() const {
   return rigidbody_id_to_rigidbody_;
+}
+
+Eigen::Vector3d& WorldModel::gravity() {
+  return gravity_;
+}
+
+const Eigen::Vector3d& WorldModel::gravity() const {
+  return gravity_;
 }
 
 int WorldModel::NumberOfLandmarks() const {

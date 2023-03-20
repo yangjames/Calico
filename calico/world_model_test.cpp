@@ -124,6 +124,12 @@ TEST_F(WorldModelTest, AddRigidBody) {
   EXPECT_EQ(world_model_.NumberOfRigidBodies(), 1);
 }
 
+TEST_F(WorldModelTest, SetGravity) {
+  const Eigen::Vector3d expected_grav = Eigen::Vector3d::Random();
+  world_model_.gravity() = expected_grav;
+  EXPECT_THAT(world_model_.gravity(), EigenEq(expected_grav));
+}
+
 TEST_F(WorldModelTest, AddParametersToProblem) {
   ceres::Problem problem;
   world_model_.Clear();

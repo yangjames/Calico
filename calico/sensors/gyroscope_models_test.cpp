@@ -40,15 +40,15 @@ INSTANTIATE_TEST_SUITE_P(
     GyroscopeModelTests, GyroscopeModelTest,
     testing::ValuesIn<GyroscopeModelTestCase>({
         {
-          "ScaleOnly",
-          GyroscopeIntrinsicsModel::kScaleOnly,
-          ScaleOnlyModel::kNumberOfParameters,
+          "GyroscopeScaleOnly",
+          GyroscopeIntrinsicsModel::kGyroscopeScaleOnly,
+          GyroscopeScaleOnlyModel::kNumberOfParameters,
           Eigen::Vector3d::Random(),
         },
         {
-          "ScaleAndBias",
-          GyroscopeIntrinsicsModel::kScaleAndBias,
-          ScaleAndBiasModel::kNumberOfParameters,
+          "GyroscopeScaleAndBias",
+          GyroscopeIntrinsicsModel::kGyroscopeScaleAndBias,
+          GyroscopeScaleAndBiasModel::kNumberOfParameters,
           Eigen::Vector3d::Random(),
         },
       }),

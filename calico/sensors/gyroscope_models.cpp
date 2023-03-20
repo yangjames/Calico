@@ -5,11 +5,11 @@ namespace calico::sensors {
 std::unique_ptr<GyroscopeModel> GyroscopeModel::Create(
     GyroscopeIntrinsicsModel gyroscope_model) {
   switch (gyroscope_model) {
-    case GyroscopeIntrinsicsModel::kScaleOnly: {
-      return std::make_unique<ScaleOnlyModel>();
+    case GyroscopeIntrinsicsModel::kGyroscopeScaleOnly: {
+      return std::make_unique<GyroscopeScaleOnlyModel>();
     }
-    case GyroscopeIntrinsicsModel::kScaleAndBias: {
-      return std::make_unique<ScaleAndBiasModel>();
+    case GyroscopeIntrinsicsModel::kGyroscopeScaleAndBias: {
+      return std::make_unique<GyroscopeScaleAndBiasModel>();
     }
     default: {
       return std::move(std::unique_ptr<GyroscopeModel>{});
