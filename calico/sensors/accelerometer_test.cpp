@@ -209,7 +209,6 @@ TEST_P(AccelerometerTest, AnalyticallyVsNumericallyDiffedKinematicsMatch) {
     const auto measurement = measurements.at(i);
     const Eigen::Vector3d error = a_accel_world_accel - measurement.measurement;
     EXPECT_LT(error.squaredNorm(), kSmallError);
-    break;
   }
 }
 
