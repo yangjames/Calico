@@ -15,6 +15,9 @@ template <typename T>
 using Vector3 = Matrix<T, 3, 1>;
 
 template <typename T>
+using Vector4 = Matrix<T, 4, 1>;
+
+template <typename T>
 using VectorX = Matrix<T, Dynamic, 1>;
 
 template <typename T>
@@ -39,21 +42,41 @@ class Pose3 {
         const Eigen::Vector3<T>& t)
     : q_(q), t_(t) {}
   
+  // Rotation accessors.
   Eigen::Quaternion<T>& rotation() {
     return q_;
   }
-
   const Eigen::Quaternion<T>& rotation() const {
     return q_;
   }
 
+  // Translation accessors.
   Eigen::Vector3<T>& translation() {
     return t_;
   }
-
   const Eigen::Vector3<T>& translation() const {
     return t_;
   }
+
+  // Rotation setter/getter as 4-vectors for python bindings.
+  void SetRotation(const Eigen::Vector4<T>& q) {
+    const Eigen::Vector4<T> qn = q.normalized();
+    q_.w() = qn(0);
+    q_.x() = qn(1);
+    q_.y() = qn(2);
+    q_.z() = qn(3);
+  }
+  Eigen::Vector4<T> GetRotation() const {
+    return Eigen::Vector4<T>(q_.w(), q_.x(), q_.y(), q_.z());
+  }
+  // Translation setter/getter for python bindings.
+  void SetTranslation(const Eigen::Vector3<T>& t) {
+    t_ = t;
+  }
+  Eigen::Vector3<T> GetTranslation() const {
+    return t_;
+  }
+
 
   Pose3 operator*(const Pose3<T>& T_b_a) const {
     // this = T_c_b

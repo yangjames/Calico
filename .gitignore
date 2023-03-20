@@ -2,3 +2,4 @@ build
 *~
 \#*
 .\#*
+calico/python/__pycache__
