@@ -54,9 +54,9 @@ INSTANTIATE_TEST_SUITE_P(
     testing::ValuesIn<GyroscopeCostFunctionCreationTestCase>({
         {
           "ScaleOnly",
-          GyroscopeIntrinsicsModel::kScaleOnly,
+          GyroscopeIntrinsicsModel::kGyroscopeScaleOnly,
           Eigen::Vector3d::Random(),
-          Eigen::VectorXd::Random(ScaleOnlyModel::kNumberOfParameters),
+          Eigen::VectorXd::Random(GyroscopeScaleOnlyModel::kNumberOfParameters),
           Pose3d(),
           5,
         },
