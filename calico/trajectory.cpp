@@ -10,10 +10,20 @@
 
 namespace calico {
 
+
 absl::Status Trajectory::AddPoses(
     const absl::flat_hash_map<double, Pose3d>& poses_world_body) {
   pose_id_to_pose_world_body_ = poses_world_body;
   return FitSpline(poses_world_body);
+}
+
+absl::Status Trajectory::AddPoses(
+    const std::unordered_map<double, Pose3d>& poses_world_body) {
+  absl::flat_hash_map<double, Pose3d> poses_temp;
+  for (const auto& [key, value] : poses_world_body) {
+    poses_temp[key] = value;
+  }
+  return AddPoses(poses_temp);
 }
 
 int Trajectory::AddParametersToProblem(ceres::Problem& problem) {

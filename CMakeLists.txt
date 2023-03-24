@@ -346,7 +346,10 @@ pybind11_add_module(
 target_link_libraries(
   calico PUBLIC
   accelerometer
+  camera
   gyroscope
+  trajectory
+  world_model
   Eigen3::Eigen
 )
 add_test(

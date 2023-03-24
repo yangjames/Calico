@@ -167,20 +167,6 @@ void Camera::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
 }
 
-absl::Status Camera::SetImageSize(const ImageSize& image_size) {
-  if (!(image_size.width > 0 && image_size.height > 0)) {
-    return absl::InvalidArgumentError(absl::StrCat(
-        "Invalid image size of width - ", image_size.width, ", height - ",
-        image_size.height, ". Width and height must be positive values."));
-  }
-  image_size_ = image_size;
-  return absl::OkStatus();
-}
-
-ImageSize Camera::GetImageSize() const {
-  return image_size_;
-}
-
 absl::Status Camera::SetModel(CameraIntrinsicsModel camera_model) {
   camera_model_ = CameraModel::Create(camera_model);
   intrinsics_ = Eigen::VectorXd::Zero(camera_model_->NumberOfParameters());

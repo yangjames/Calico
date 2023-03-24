@@ -15,7 +15,6 @@ namespace {
 class CameraContainerTest : public ::testing::Test {
  protected:
   const std::string kCameraName = "camera";
-  const ImageSize kImageSize { .width = 1280, .height = 800, };
   static constexpr CameraIntrinsicsModel kCameraModel =
       CameraIntrinsicsModel::kOpenCv5;
   const Pose3d kExtrinsics = Pose3d(
@@ -53,13 +52,11 @@ TEST_F(CameraContainerTest, SettersAndGetters) {
   EXPECT_EQ(camera_.GetModel(), CameraIntrinsicsModel::kNone);
   EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(Pose3d()));
   EXPECT_THAT(camera_.GetIntrinsics(), EigenEq(Eigen::VectorXd()));
-  EXPECT_THAT(camera_.GetImageSize(), ImageSizeEq(ImageSize()));
   // Post-assignment.
   camera_.SetName(kCameraName);
   EXPECT_OK(camera_.SetModel(kCameraModel));
   camera_.SetExtrinsics(kExtrinsics);
   EXPECT_OK(camera_.SetIntrinsics(kIntrinsics));
-  EXPECT_OK(camera_.SetImageSize(kImageSize));
   EXPECT_EQ(camera_.GetName(), kCameraName);
   EXPECT_EQ(camera_.GetModel(), kCameraModel);
   EXPECT_THAT(camera_.GetExtrinsics(), PoseEq(kExtrinsics));

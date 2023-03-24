@@ -1,5 +1,5 @@
 #include "calico/sensors/accelerometer.h"
-// #include "calico/sensors/camera.h"
+#include "calico/sensors/camera.h"
 #include "calico/sensors/gyroscope.h"
 #include "calico/typedefs.h"
 
@@ -28,15 +28,9 @@ PYBIND11_MODULE(calico, m) {
     .def(py::init<>())
     .def("ok", &absl::Status::ok)
     .def("code", &absl::Status::code)
-    // .def("__repr__",
-    //     [](const Pet &a) {
-    //       return "Status with message '" + std::string(+ "'>";
-    //     }
     .def("message", [](absl::Status& self) {
       return std::string(self.message());
     });
-  // py::enum_<absl::string_view>(m, "string_view")
-  //   .value
 
   // Typedefs.
   py::class_<Pose3d>(m, "Pose3d")
@@ -121,6 +115,62 @@ PYBIND11_MODULE(calico, m) {
     .def("AddMeasurements", &Gyroscope::AddMeasurements);
 
 
+  // Camera class.
+  py::enum_<CameraIntrinsicsModel>(m, "CameraIntrinsicsModel")
+    .value("kNone", CameraIntrinsicsModel::kNone)
+    .value("kOpenCv5", CameraIntrinsicsModel::kOpenCv5);
+
+  py::class_<CameraObservationId>(m, "CameraObservationId")
+    .def(py::init<>())
+    .def(py::init<CameraObservationId const &>())
+    .def_readwrite("stamp", &CameraObservationId::stamp)
+    .def_readwrite("image_id", &CameraObservationId::image_id)
+    .def_readwrite("model_id", &CameraObservationId::model_id)
+    .def_readwrite("feature_id", &CameraObservationId::feature_id);
+
+  py::class_<CameraMeasurement>(m, "CameraMeasurement")
+    .def(py::init<>())
+    .def_readwrite("pixel", &CameraMeasurement::pixel)
+    .def_readwrite("id", &CameraMeasurement::id);
+
+  py::class_<Camera>(m, "Camera")
+    .def(py::init<>())
+    .def("SetName", &Camera::SetName)
+    .def("GetName", &Camera::GetName)
+    .def("SetExtrinsics", &Camera::SetExtrinsics)
+    .def("GetExtrinsics", &Camera::GetExtrinsics)
+    .def("SetIntrinsics", &Camera::SetIntrinsics)
+    .def("GetIntrinsics", &Camera::GetIntrinsics)
+    .def("SetLatency", &Camera::SetLatency)
+    .def("GetLatency", &Camera::GetLatency)
+    .def("EnableExtrinsicsEstimation", &Camera::EnableExtrinsicsEstimation)
+    .def("EnableIntrinsicsEstimation", &Camera::EnableExtrinsicsEstimation)
+    .def("EnableLatencyEstimation", &Camera::EnableLatencyEstimation)
+    .def("SetModel", &Camera::SetModel)
+    .def("GetModel", &Camera::GetModel)
+    .def("AddMeasurement", &Camera::AddMeasurement)
+    .def("AddMeasurements", &Camera::AddMeasurements);
+
+  // Trajectory class.
+  py::class_<Trajectory>(m, "Trajectory")
+    .def(py::init<>())
+    .def("AddPoses", py::overload_cast<
+         const std::unordered_map<double, Pose3d>&>(&Trajectory::AddPoses));
+
+  // World model class.
+  py::class_<Landmark>(m, "Landmark")
+    .def(py::init<>())
+    .def_readwrite("point", &Landmark::point)
+    .def_readwrite("id", &Landmark::id)
+    .def_readwrite("point_is_constant", &Landmark::point_is_constant);
+
+  py::class_<RigidBody>(m, "RigidBody")
+    .def(py::init<>());
+
+  py::class_<WorldModel>(m, "WorldModel")
+    .def(py::init<>())
+    ;
+  
 }
 
 } // namespace calico::senosrs
