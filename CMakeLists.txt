@@ -378,7 +378,6 @@ install(
   gyroscope_models
   trajectory
   world_model
-  calico
   EXPORT
   CalicoConfig
   DESTINATION lib/calico
@@ -387,6 +386,10 @@ install(
   EXPORT
   CalicoConfig
   DESTINATION lib/cmake/calico
+)
+install(
+  TARGETS calico
+  DESTINATION ${Python_SITELIB}
 )
 set(top_level_headers
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/profiler.h
