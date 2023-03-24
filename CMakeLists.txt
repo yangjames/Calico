@@ -22,7 +22,7 @@ include_directories(
 # Typedefs test.
 add_executable(
   typedefs_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/typedefs_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/typedefs_test.cpp
 )
 target_link_libraries(
   typedefs_test
@@ -35,7 +35,7 @@ add_test(TypeDefsTest typedefs_test)
 # Build spline test.
 add_executable(
   bspline_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/bspline_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/bspline_test.cpp
 )
 target_link_libraries(
   bspline_test
@@ -62,7 +62,7 @@ target_link_libraries(
 )
 add_executable(
   trajectory_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/trajectory_test.cpp
   )
 target_link_libraries(
   trajectory_test
@@ -74,7 +74,7 @@ target_link_libraries(
 # Geometry test.
 add_executable(
   geometry_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/geometry_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/geometry_test.cpp
   )
 target_link_libraries(
   geometry_test
@@ -100,7 +100,7 @@ target_link_libraries(
 )
 add_executable(
   world_model_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/world_model_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/world_model_test.cpp
 )
 target_link_libraries(
   world_model_test
@@ -122,7 +122,7 @@ target_link_libraries(
 )
 add_executable(
   gyroscope_models_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_models_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/gyroscope_models_test.cpp
   )
 target_link_libraries(
   gyroscope_models_test
@@ -143,7 +143,7 @@ target_link_libraries(
 )
 add_executable(
   gyroscope_cost_functor_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_cost_functor_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/gyroscope_cost_functor_test.cpp
 )
 target_link_libraries(
   gyroscope_cost_functor_test
@@ -167,7 +167,7 @@ target_link_libraries(
 
 add_executable(
   gyroscope_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/gyroscope_test.cpp
 )
 target_link_libraries(
   gyroscope_test
@@ -189,7 +189,7 @@ target_link_libraries(
 )
 add_executable(
   accelerometer_models_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_models_test.cpp
   )
 target_link_libraries(
   accelerometer_models_test
@@ -210,7 +210,7 @@ target_link_libraries(
 )
 add_executable(
   accelerometer_cost_functor_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_cost_functor_test.cpp
 )
 target_link_libraries(
   accelerometer_cost_functor_test
@@ -234,7 +234,7 @@ target_link_libraries(
 
 add_executable(
   accelerometer_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_test.cpp
 )
 target_link_libraries(
   accelerometer_test
@@ -256,7 +256,7 @@ target_link_libraries(
 )
 add_executable(
   camera_models_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_models_test.cpp
 )
 target_link_libraries(
   camera_models_test
@@ -277,7 +277,7 @@ target_link_libraries(
 )
 add_executable(
   camera_cost_functor_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_cost_functor_test.cpp
 )
 target_link_libraries(
   camera_cost_functor_test
@@ -301,7 +301,7 @@ target_link_libraries(
 
 add_executable(
   camera_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_test.cpp
 )
 target_link_libraries(
   camera_test
@@ -326,7 +326,7 @@ target_link_libraries(
 
 add_executable(
   batch_optimizer_test
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer_test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/batch_optimizer_test.cpp
 )
 target_link_libraries(
   batch_optimizer_test
@@ -355,8 +355,8 @@ target_link_libraries(
 )
 add_test(
   NAME python_bindings_test
-  COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/python
+  COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
 )
 set_tests_properties(
   python_bindings_test
