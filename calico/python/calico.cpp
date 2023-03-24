@@ -34,12 +34,6 @@ PYBIND11_MODULE(calico, m) {
       return std::string(self.message());
     });
 
-  // absl::StatusOr
-  // template <typename T>
-  // py::class_<absl::StatusOr<T>>(m, "StatusOr")
-  //   .def("status", &absl::StatusOr<T>::status)
-  //   .def("value", &absl::StatusOr<T>::value);
-
   // Typedefs.
   py::class_<Pose3d>(m, "Pose3d")
     .def(py::init<>())
@@ -190,6 +184,15 @@ PYBIND11_MODULE(calico, m) {
     .def("AddLandmark", &WorldModel::AddLandmark)
     .def("AddRigidBody", &WorldModel::AddRigidBody);
 
+  // ceres::Summary
+  py::class_<ceres::Solver::Summary>(m, "Summary")
+    .def("BriefReport", &ceres::Solver::Summary::BriefReport)
+    .def("FullReport", &ceres::Solver::Summary::FullReport)
+    .def("IsSolutionUsable", &ceres::Solver::Summary::IsSolutionUsable)
+    .def_readonly("initial_cost", &ceres::Solver::Summary::initial_cost)
+    .def_readonly("final_cost", &ceres::Solver::Summary::final_cost);
+
+  // Batch Optimizer class.
   py::class_<BatchOptimizer>(m, "BatchOptimizer")
     .def(py::init())
     .def("AddSensor",
@@ -205,7 +208,14 @@ PYBIND11_MODULE(calico, m) {
          [](BatchOptimizer& self, std::shared_ptr<WorldModel> world_model) {
            self.AddWorldModel(world_model.get(), /*take_ownership=*/false);
          })
-    .def("Optimize", &BatchOptimizer::Optimize);
+    .def("Optimize", [](BatchOptimizer& self) {
+      const auto summary = self.Optimize();
+      if (!summary.ok()) {
+        throw std::runtime_error(
+            std::string("Error: ") + std::string(summary.status().message()));
+      }
+      return summary.value();
+    });
 }
 
 } // namespace calico::senosrs

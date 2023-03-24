@@ -217,7 +217,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
         optimizer.AddSensor(camera)
         optimizer.AddTrajectory(trajectory)
         optimizer.AddWorldModel(world_model)
-        # summary = optimizer.Optimize()
+        summary = optimizer.Optimize()
 
 
 if __name__ == '__main__':
