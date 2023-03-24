@@ -8,6 +8,11 @@ CMake (3.5 or higher): `sudo apt install cmake`
 
 TODO: bazel support
 
+
+Simple install:
+```
+sudo apt install -y build-essential libatlas-base-dev libgoogle-glog-dev libgflags-dev libeigen3-dev libgtest-dev libgmock-dev libabsl-dev python3-dev python3-pytest pybind11-dev libceres-dev
+```
 ## Library dependencies
 
 BLAS & LAPACK: `sudo apt install libatlas-base-dev` 
@@ -18,16 +23,9 @@ Eigen3: `sudo apt install libeigen3-dev`
 
 GTest: `sudo apt install libgtest-dev libgmock-dev`
 
-Abseil: Built with `std=c++17`. See [Abseil install page](https://abseil.io/docs/cpp/quickstart-cmake#getting-the-abseil-code) for more details.
-```
-cd ~
-git clone https://github.com/abseil/abseil-cpp.git
-mkdir ~/abseil-cpp/build
-cd ~/abseil-cpp/build
-cmake -DABSL_BUILD_TESTING=ON -DABSL_USE_GOOGLETEST_HEAD=ON -DCMAKE_CXX_STANDARD=17 ..
-cmake --build . --target all
-sudo make install
-```
+Abseil: `sudo apt install libabsl-dev`
+
+Pybind11: `sudo apt install pybind11-dev`
 
 Ceres Solver: Our least-squares optimization backend. See [Ceres solver installation page](http://ceres-solver.org/installation.html) for more details.
 ```

@@ -46,11 +46,6 @@ struct CameraMeasurement {
   CameraObservationId id;
 };
 
-// Image size
-struct ImageSize {
-  int width;
-  int height;
-};
 
 class Camera : public Sensor {
  public:
@@ -60,7 +55,7 @@ class Camera : public Sensor {
   ~Camera() = default;
 
   // Setter/getter for name.
-  void SetName(absl::string_view name) final;
+  void SetName(const std::string& name) final;
   const std::string& GetName() const final;
 
   // Setter/getter for extrinsics parameters.
@@ -101,12 +96,6 @@ class Camera : public Sensor {
       const Trajectory& sensorrig_trajectory,
       const WorldModel& world_model) const;
 
-  // Setter/getter for image size. This parameter gets used in the `Project`
-  // method which generates synthetic measurements within the bounds of the
-  // image dimensions if the 'apply_image_bounds` flag is set to true.
-  absl::Status SetImageSize(const ImageSize& image_size);
-  ImageSize GetImageSize() const;
-
   // Setter/getter for camera model.
   absl::Status SetModel(CameraIntrinsicsModel camera_model);
   CameraIntrinsicsModel GetModel() const;
@@ -142,7 +131,6 @@ class Camera : public Sensor {
   bool intrinsics_enabled_;
   bool extrinsics_enabled_;
   bool latency_enabled_;
-  ImageSize image_size_;
   std::unique_ptr<CameraModel> camera_model_;
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;

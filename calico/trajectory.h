@@ -30,6 +30,10 @@ class Trajectory {
   absl::Status AddPoses(
       const absl::flat_hash_map<double, Pose3d>& poses_world_body);
 
+  // Same as the absl version of AddPoses for python compatibility.
+  absl::Status AddPoses(
+      const std::unordered_map<double, Pose3d>& poses_world_body);
+
   // Add internal parameters to a ceres problem. Any internal parameters set to
   // constant are marked as such in the problem. Returns the total number of
   // parameters added to the problem.

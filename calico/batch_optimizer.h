@@ -14,12 +14,17 @@ namespace calico {
 
 class BatchOptimizer {
  public:
-  void AddSensor(sensors::Sensor* sensor);
-  void AddWorldModel(WorldModel* world_model);
-  void AddTrajectory(Trajectory* trajectory_world_body);
+  ~BatchOptimizer();
+  void AddSensor(sensors::Sensor* sensor, bool take_ownership = true);
+  void AddWorldModel(WorldModel* world_model, bool take_ownership = true);
+  void AddTrajectory(Trajectory* trajectory_world_body,
+                     bool take_ownership = true);
   absl::StatusOr<ceres::Solver::Summary> Optimize();
 
  private:
+  bool own_trajectory_world_body_;
+  bool own_world_model_;
+  std::vector<bool> own_sensors_;
   std::vector<std::unique_ptr<sensors::Sensor>> sensors_;
   std::unique_ptr<WorldModel> world_model_;
   std::unique_ptr<Trajectory> trajectory_world_body_;

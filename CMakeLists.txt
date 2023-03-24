@@ -3,13 +3,15 @@ project (Calico)
 
 # std=c++17 or higher required for Abseil.
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fPIC")
 
 # Load dependencies.
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(GTest REQUIRED)
 find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
+find_package(pybind11 REQUIRED)
+find_package(Python REQUIRED)
 enable_testing()
 
 # Add top level include directory.
@@ -293,11 +295,6 @@ target_link_libraries(
   camera
   camera_models
   camera_cost_functor
-  # absl::status
-  # absl::statusor
-  # absl::flat_hash_map
-  # Ceres::ceres
-  # Eigen3::Eigen
   trajectory
   world_model
 )
@@ -340,3 +337,28 @@ target_link_libraries(
   gmock
 )
 add_test(BatchOptimizerTest batch_optimizer_test)
+
+# Build python bindings.
+pybind11_add_module(
+  calico
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
+)
+target_link_libraries(
+  calico PUBLIC
+  accelerometer
+  batch_optimizer
+  camera
+  gyroscope
+  trajectory
+  world_model
+  Eigen3::Eigen
+)
+add_test(
+  NAME python_bindings_test
+  COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/python
+)
+set_tests_properties(
+  python_bindings_test
+  PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}:$ENV{PYTHON_PATH}"
+)

@@ -110,7 +110,7 @@ double Accelerometer::GetLatency() const {
   return latency_;
 }
 
-void Accelerometer::SetName(absl::string_view name) {
+void Accelerometer::SetName(const std::string& name) {
   name_ = name;
 }
 const std::string& Accelerometer::GetName() const { return name_; }

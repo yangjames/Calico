@@ -86,7 +86,7 @@ double Gyroscope::GetLatency() const {
   return latency_;
 }
 
-void Gyroscope::SetName(absl::string_view name) {
+void Gyroscope::SetName(const std::string& name) {
   name_ = name;
 }
 const std::string& Gyroscope::GetName() const { return name_; }
