@@ -20,7 +20,8 @@ PYBIND11_MODULE(calico, m) {
   m.doc() = "Calico";
   namespace py = pybind11;
 
-  // absl Status
+
+  // absl::Status
   py::enum_<absl::StatusCode>(m, "StatusCode")
     .value("kOk", absl::StatusCode::kOk)
     .value("kInvalidArgument", absl::StatusCode::kInvalidArgument);
@@ -33,6 +34,12 @@ PYBIND11_MODULE(calico, m) {
       return std::string(self.message());
     });
 
+  // absl::StatusOr
+  // template <typename T>
+  // py::class_<absl::StatusOr<T>>(m, "StatusOr")
+  //   .def("status", &absl::StatusOr<T>::status)
+  //   .def("value", &absl::StatusOr<T>::value);
+
   // Typedefs.
   py::class_<Pose3d>(m, "Pose3d")
     .def(py::init<>())
@@ -40,6 +47,9 @@ PYBIND11_MODULE(calico, m) {
     .def_property("rotation", &Pose3d::GetRotation, &Pose3d::SetRotation)
     .def_property("translation",
                   &Pose3d::GetTranslation, &Pose3d::SetTranslation);
+
+  // Base sensor class.
+  py::class_<Sensor, std::shared_ptr<Sensor>>(m, "Sensor");
 
   // Accelerometer class.
   py::enum_<AccelerometerIntrinsicsModel>(m, "AccelerometerIntrinsicsModel")
@@ -60,7 +70,8 @@ PYBIND11_MODULE(calico, m) {
     .def_readwrite("measurement", &AccelerometerMeasurement::measurement)
     .def_readwrite("id", &AccelerometerMeasurement::id);
 
-  py::class_<Accelerometer>(m, "Accelerometer")
+  py::class_<Accelerometer, std::shared_ptr<Accelerometer>, Sensor>
+      (m, "Accelerometer")
     .def(py::init<>())
     .def("SetName", &Accelerometer::SetName)
     .def("GetName", &Accelerometer::GetName)
@@ -97,7 +108,7 @@ PYBIND11_MODULE(calico, m) {
     .def_readwrite("measurement", &GyroscopeMeasurement::measurement)
     .def_readwrite("id", &GyroscopeMeasurement::id);
 
-  py::class_<Gyroscope>(m, "Gyroscope")
+  py::class_<Gyroscope, std::shared_ptr<Gyroscope>, Sensor>(m, "Gyroscope")
     .def(py::init<>())
     .def("SetName", &Gyroscope::SetName)
     .def("GetName", &Gyroscope::GetName)
@@ -134,7 +145,7 @@ PYBIND11_MODULE(calico, m) {
     .def_readwrite("pixel", &CameraMeasurement::pixel)
     .def_readwrite("id", &CameraMeasurement::id);
 
-  py::class_<Camera>(m, "Camera")
+  py::class_<Camera, std::shared_ptr<Camera>, Sensor>(m, "Camera")
     .def(py::init<>())
     .def("SetName", &Camera::SetName)
     .def("GetName", &Camera::GetName)
@@ -153,7 +164,7 @@ PYBIND11_MODULE(calico, m) {
     .def("AddMeasurements", &Camera::AddMeasurements);
 
   // Trajectory class.
-  py::class_<Trajectory>(m, "Trajectory")
+  py::class_<Trajectory, std::shared_ptr<Trajectory>>(m, "Trajectory")
     .def(py::init<>())
     .def("AddPoses", py::overload_cast<
          const std::unordered_map<double, Pose3d>&>(&Trajectory::AddPoses));
@@ -174,15 +185,27 @@ PYBIND11_MODULE(calico, m) {
     .def_readwrite("model_definition_is_constant",
                    &RigidBody::model_definition_is_constant);
 
-  py::class_<WorldModel>(m, "WorldModel")
+  py::class_<WorldModel, std::shared_ptr<WorldModel>>(m, "WorldModel")
     .def(py::init<>())
     .def("AddLandmark", &WorldModel::AddLandmark)
     .def("AddRigidBody", &WorldModel::AddRigidBody);
 
   py::class_<BatchOptimizer>(m, "BatchOptimizer")
-    .def(py::init<>())
-    .def("AddSensor", &BatchOptimizer::AddSensor);
-  
+    .def(py::init())
+    .def("AddSensor",
+         [](BatchOptimizer& self, std::shared_ptr<Sensor> sensor) {
+           self.AddSensor(sensor.get(), /*take_ownership=*/false);
+         })
+
+    .def("AddTrajectory",
+         [](BatchOptimizer& self, std::shared_ptr<Trajectory> trajectory) {
+           self.AddTrajectory(trajectory.get(), /*take_ownership=*/false);
+         })
+    .def("AddWorldModel",
+         [](BatchOptimizer& self, std::shared_ptr<WorldModel> world_model) {
+           self.AddWorldModel(world_model.get(), /*take_ownership=*/false);
+         })
+    .def("Optimize", &BatchOptimizer::Optimize);
 }
 
 } // namespace calico::senosrs

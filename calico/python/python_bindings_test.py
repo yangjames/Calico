@@ -184,15 +184,41 @@ class TestCalicoPythonBindings(unittest.TestCase):
         self.assertTrue(world_model.AddRigidBody(rigidbody).ok())
 
     def test_BatchOptimizer(self):
-        optimizer = calico.BatchOptimizer()
-
+        # Stub accelerometer.
         accelerometer = calico.Accelerometer()
         self.assertTrue(
             accelerometer.SetModel(
                 calico.AccelerometerIntrinsicsModel.kAccelerometerScaleOnly
             ).ok())
         self.assertTrue(accelerometer.SetIntrinsics([1]).ok())
-        # optimizer.AddSensor(accelerometer)
+        # Stub gyroscope.
+        gyroscope = calico.Gyroscope()
+        self.assertTrue(
+            gyroscope.SetModel(
+                calico.GyroscopeIntrinsicsModel.kGyroscopeScaleOnly
+            ).ok())
+        self.assertTrue(gyroscope.SetIntrinsics([1]).ok())
+        # Stub camera.
+        camera = calico.Camera()
+        self.assertTrue(
+            camera.SetModel(calico.CameraIntrinsicsModel.kOpenCv5).ok())
+        test_camera_intrinsics = [1, 2, 3, 4, 5, 6, 7, 8]
+        self.assertTrue(camera.SetIntrinsics(test_camera_intrinsics).ok())
+        # Stub trajectory.
+        trajectory = calico.Trajectory()
+        self.assertTrue(trajectory.AddPoses(
+            {0.0:calico.Pose3d(), 1.0:calico.Pose3d()}).ok())
+        # Stub world model.
+        world_model = calico.WorldModel()
+        # Create optimizer.
+        optimizer = calico.BatchOptimizer()
+        optimizer.AddSensor(accelerometer)
+        optimizer.AddSensor(gyroscope)
+        optimizer.AddSensor(camera)
+        optimizer.AddTrajectory(trajectory)
+        optimizer.AddWorldModel(world_model)
+        # summary = optimizer.Optimize()
+
 
 if __name__ == '__main__':
     unittest.main()
