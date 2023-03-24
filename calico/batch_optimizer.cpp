@@ -7,17 +7,38 @@
 
 namespace calico {
 
+BatchOptimizer::~BatchOptimizer() {
+  // If we don't own an object, release the pointer so it doesn't get
+  // de-allocated it.
+  for (int i = 0; i < sensors_.size(); ++i) {
+    if (!own_sensors_[i]) {
+      sensors_.at(i).release();
+    }
+  }
+  if (!own_trajectory_world_body_) {
+    trajectory_world_body_.release();
+  }
+  if (!own_world_model_) {
+    world_model_.release();
+  }
+}
+
 void BatchOptimizer::AddSensor(
-    sensors::Sensor* sensor) {
+    sensors::Sensor* sensor, bool take_ownership) {
   sensors_.push_back(std::unique_ptr<sensors::Sensor>(sensor));
+  own_sensors_.push_back(take_ownership);
 }
 
-void BatchOptimizer::AddWorldModel(WorldModel* world_model) {
+void BatchOptimizer::AddWorldModel(
+    WorldModel* world_model, bool take_ownership) {
   world_model_ = std::unique_ptr<WorldModel>(world_model);
+  own_world_model_ = take_ownership;
 }
 
-void BatchOptimizer::AddTrajectory(Trajectory* trajectory_world_body) {
+void BatchOptimizer::AddTrajectory(
+    Trajectory* trajectory_world_body, bool take_ownership) {
   trajectory_world_body_ = std::unique_ptr<Trajectory>(trajectory_world_body);
+  own_trajectory_world_body_ = take_ownership;
 }
 
 absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
