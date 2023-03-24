@@ -362,3 +362,63 @@ set_tests_properties(
   python_bindings_test
   PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}:$ENV{PYTHON_PATH}"
 )
+
+# Install library.
+install(
+  TARGETS
+  accelerometer
+  accelerometer_cost_functor
+  accelerometer_models
+  batch_optimizer
+  camera
+  camera_cost_functor
+  camera_models
+  gyroscope
+  gyroscope_cost_functor
+  gyroscope_models
+  trajectory
+  world_model
+  calico
+  EXPORT
+  CalicoConfig
+  DESTINATION lib/calico
+)
+install(
+  EXPORT
+  CalicoConfig
+  DESTINATION lib/cmake/calico
+)
+set(top_level_headers
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/profiler.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/bspline.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test_utils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/optimization_utils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/typedefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/matchers.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/status_builder.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/geometry.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/world_model.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/statusor_macros.h
+)
+install(
+  FILES ${top_level_headers}
+  DESTINATION include/calico
+)
+set(sensor_headers
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_models.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/sensor_base.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_cost_functor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.h
+)
+install(
+  FILES ${sensor_headers}
+  DESTINATION include/calico/sensors/
+)
