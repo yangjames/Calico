@@ -5,6 +5,7 @@ import unittest
 import copy
 
 class TestCalicoPythonBindings(unittest.TestCase):
+
     def test_Pose3d(self):
         expected_rot = [-0.774982, -0.1549964, -0.2324946, 0.5668556]
         expected_pos = [1.5, 2.3, 6.8]
@@ -14,7 +15,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
         np.testing.assert_allclose(temp_pose.rotation, np.array(expected_rot), 1e-7)
         np.testing.assert_equal(temp_pose.translation, np.array(expected_pos))
 
-    def test_accelerometer(self):
+    def test_Accelerometer(self):
         accelerometer = calico.Accelerometer()
         # Set/get name.
         test_name = 'test'
@@ -55,7 +56,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
             measurements.append(new_measurement)
         self.assertTrue(accelerometer.AddMeasurements(measurements).ok())
         
-    def test_gyroscope(self):
+    def test_Gyroscope(self):
         gyroscope = calico.Gyroscope()
         # Set/get name.
         test_name = 'test'
@@ -96,7 +97,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
             measurements.append(new_measurement)
         self.assertTrue(gyroscope.AddMeasurements(measurements).ok())
 
-    def test_camera(self):
+    def test_Camera(self):
         camera = calico.Camera()
         # Set/get name.
         test_name = 'test'
@@ -137,11 +138,61 @@ class TestCalicoPythonBindings(unittest.TestCase):
             measurements.append(new_measurement)
         self.assertTrue(camera.AddMeasurements(measurements).ok())
 
-    def test_trajectory(self):
+    def test_Trajectory(self):
         trajectory = calico.Trajectory()
         poses = {0.0:calico.Pose3d(), 1.0:calico.Pose3d()}
         self.assertTrue(trajectory.AddPoses(poses).ok())
         
-        
+    def test_Rigidbody(self):
+        rigidbody_model_definition = {
+            0: [0, 0, 0],
+            1: [1, 1, 1],
+            2: [2, 2, 2]
+        }
+        rigidbody_id = 1
+        rigidbody_world_pose_is_constant = True
+        rigidbody_model_definition_is_constant = True
+
+        rigidbody = calico.RigidBody()
+        rigidbody.model_definition = dict(rigidbody_model_definition)
+        rigidbody.id = rigidbody_id
+        rigidbody.world_pose_is_constant = rigidbody_world_pose_is_constant
+        rigidbody.model_definition_is_constant = \
+            rigidbody_model_definition_is_constant
+
+        for model_id, point in rigidbody.model_definition.items():
+            np.testing.assert_equal(rigidbody_model_definition[model_id],
+                                    rigidbody.model_definition[model_id])
+        self.assertTrue(rigidbody_id, rigidbody.id)
+        self.assertTrue(rigidbody_world_pose_is_constant,
+                        rigidbody.world_pose_is_constant)
+        self.assertTrue(rigidbody_model_definition_is_constant,
+                        rigidbody.model_definition_is_constant)
+
+    def test_WorldModel(self):
+        world_model = calico.WorldModel()
+
+        rigidbody = calico.RigidBody()
+        rigidbody.model_definition = {
+            0: [0, 0, 0],
+            1: [1, 1, 1],
+            2: [2, 2, 2]
+        }
+        rigidbody.id = 1
+        rigidbody.world_pose_is_constant = True
+        rigidbody.model_definition_is_constant = True
+        self.assertTrue(world_model.AddRigidBody(rigidbody).ok())
+
+    def test_BatchOptimizer(self):
+        optimizer = calico.BatchOptimizer()
+
+        accelerometer = calico.Accelerometer()
+        self.assertTrue(
+            accelerometer.SetModel(
+                calico.AccelerometerIntrinsicsModel.kAccelerometerScaleOnly
+            ).ok())
+        self.assertTrue(accelerometer.SetIntrinsics([1]).ok())
+        # optimizer.AddSensor(accelerometer)
+
 if __name__ == '__main__':
     unittest.main()

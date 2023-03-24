@@ -346,6 +346,7 @@ pybind11_add_module(
 target_link_libraries(
   calico PUBLIC
   accelerometer
+  batch_optimizer
   camera
   gyroscope
   trajectory

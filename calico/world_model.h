@@ -28,9 +28,10 @@ struct Landmark {
 // FROM the rigidbody frame. Both the model definition and its world pose can be
 // set as either constant or as free parameters in an optimization problem via
 // the flags `world_pose_is_constant` and `model_definition_is_constant`.
+// TODO(yangjames): Replace std::unordered_map with absl::flat_hash_map.
 struct RigidBody {
   // Maps feature id to its 3d point definition resolved in the rigid body frame
-  absl::flat_hash_map<int, Eigen::Vector3d> model_definition;
+  std::unordered_map<int, Eigen::Vector3d> model_definition;
   Pose3d T_world_rigidbody;
   int id;
   bool world_pose_is_constant;

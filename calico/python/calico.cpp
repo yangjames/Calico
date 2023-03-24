@@ -1,3 +1,4 @@
+#include "calico/batch_optimizer.h"
 #include "calico/sensors/accelerometer.h"
 #include "calico/sensors/camera.h"
 #include "calico/sensors/gyroscope.h"
@@ -165,11 +166,22 @@ PYBIND11_MODULE(calico, m) {
     .def_readwrite("point_is_constant", &Landmark::point_is_constant);
 
   py::class_<RigidBody>(m, "RigidBody")
-    .def(py::init<>());
+    .def(py::init<>())
+    .def_readwrite("model_definition", &RigidBody::model_definition)
+    .def_readwrite("T_world_rigidbody", &RigidBody::T_world_rigidbody)
+    .def_readwrite("id", &RigidBody::id)
+    .def_readwrite("world_pose_is_constant", &RigidBody::world_pose_is_constant)
+    .def_readwrite("model_definition_is_constant",
+                   &RigidBody::model_definition_is_constant);
 
   py::class_<WorldModel>(m, "WorldModel")
     .def(py::init<>())
-    ;
+    .def("AddLandmark", &WorldModel::AddLandmark)
+    .def("AddRigidBody", &WorldModel::AddRigidBody);
+
+  py::class_<BatchOptimizer>(m, "BatchOptimizer")
+    .def(py::init<>())
+    .def("AddSensor", &BatchOptimizer::AddSensor);
   
 }
 
