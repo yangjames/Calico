@@ -23,6 +23,9 @@ using VectorX = Matrix<T, Dynamic, 1>;
 template <typename T>
 using MatrixX = Matrix<T, Dynamic, Dynamic>;
 
+template <typename T>
+using Matrix3 = Matrix<T, 3, 3>;
+
 template <typename T, int N>
 using Vector = Matrix<T, N, 1>;
 

@@ -12,11 +12,14 @@ find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(pybind11 REQUIRED)
 find_package(Python REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(yaml-cpp REQUIRED)
 enable_testing()
 
 # Add top level include directory.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 # Typedefs test.
@@ -75,7 +78,7 @@ target_link_libraries(
 add_executable(
   geometry_test
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/geometry_test.cpp
-  )
+)
 target_link_libraries(
   geometry_test
   trajectory
@@ -338,6 +341,46 @@ target_link_libraries(
 )
 add_test(BatchOptimizerTest batch_optimizer_test)
 
+# AprilTags c++ library.
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/apriltags/
+)
+add_library(
+  apriltags
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Edge.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/FloatImage.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Gaussian.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/GLine2D.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/GLineSegment2D.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/GrayModel.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Homography33.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/MathUtil.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Quad.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Segment.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/TagFamily.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/TagDetection.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/TagDetector.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/UnionFindSimple.cc
+)
+target_link_libraries(
+  apriltags
+  Eigen3::Eigen
+)
+
+# AprilGrid Detector
+add_library(
+  aprilgrid_detector
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/chart_detectors/aprilgrid_detector.cpp
+)
+target_link_libraries(
+  aprilgrid_detector
+  world_model
+  apriltags
+  ${OpenCV_LIBS}
+  ${YAML_CPP_LIBRARIES}
+)
+
 # Build python bindings.
 pybind11_add_module(
   calico
@@ -346,6 +389,7 @@ pybind11_add_module(
 target_link_libraries(
   calico PUBLIC
   accelerometer
+  aprilgrid_detector
   batch_optimizer
   camera
   gyroscope
@@ -369,6 +413,7 @@ install(
   accelerometer
   accelerometer_cost_functor
   accelerometer_models
+  apriltags
   batch_optimizer
   camera
   camera_cost_functor
@@ -378,6 +423,7 @@ install(
   gyroscope_models
   trajectory
   world_model
+  aprilgrid_detector
   EXPORT
   CalicoConfig
   DESTINATION lib/calico

@@ -1,7 +1,7 @@
 #ifndef CALICO_GEOMETRY_H_
 #define CALICO_GEOMETRY_H_
 
-#include <iostream>
+#include "calico/typedefs.h"
 #include "Eigen/Dense"
 
 

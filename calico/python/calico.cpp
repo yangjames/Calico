@@ -1,4 +1,5 @@
 #include "calico/batch_optimizer.h"
+#include "calico/chart_detectors/aprilgrid_detector.h"
 #include "calico/sensors/accelerometer.h"
 #include "calico/sensors/camera.h"
 #include "calico/sensors/gyroscope.h"
@@ -14,12 +15,12 @@
 #include "pybind11/stl.h"
 
 
-namespace calico::sensors {
-
 PYBIND11_MODULE(calico, m) {
   m.doc() = "Calico";
   namespace py = pybind11;
-
+  using namespace calico;
+  using namespace calico::sensors;
+  using namespace calico::chart_detectors;
 
   // absl::Status
   py::enum_<absl::StatusCode>(m, "StatusCode")
@@ -192,7 +193,7 @@ PYBIND11_MODULE(calico, m) {
     .def_readonly("initial_cost", &ceres::Solver::Summary::initial_cost)
     .def_readonly("final_cost", &ceres::Solver::Summary::final_cost);
 
-  // Batch Optimizer class.
+  // BatchOptimizer class.
   py::class_<BatchOptimizer>(m, "BatchOptimizer")
     .def(py::init())
     .def("AddSensor",
@@ -216,6 +217,16 @@ PYBIND11_MODULE(calico, m) {
       }
       return summary.value();
     });
-}
 
-} // namespace calico::senosrs
+  // AprilGridDetector class.
+  py::class_<AprilGridDetector>(m, "AprilGridDetector")
+    .def(py::init<std::string>())
+    .def("Detect",
+         [](AprilGridDetector& self, const py::array_t<uint8_t>& img) {
+           py::buffer_info buf = img.request();
+           cv::Mat mat(buf.shape[0], buf.shape[1], CV_8UC1,
+                       static_cast<void*>(buf.ptr));
+           return self.Detect(mat);
+         })
+    .def("GetRigidBodyDefinition", &AprilGridDetector::GetRigidBodyDefinition);
+}
