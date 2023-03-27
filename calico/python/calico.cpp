@@ -259,14 +259,17 @@ PYBIND11_MODULE(_calico, m) {
          [](BatchOptimizer& self, std::shared_ptr<WorldModel> world_model) {
            self.AddWorldModel(world_model.get(), /*take_ownership=*/false);
          })
-    .def("Optimize", [](BatchOptimizer& self) {
-      const auto summary = self.Optimize();
-      if (!summary.ok()) {
-        throw std::runtime_error(
-            std::string("Error: ") + std::string(summary.status().message()));
-      }
-      return summary.value();
-    });
+    .def("Optimize",
+         [](BatchOptimizer& self, const ceres::Solver::Options& options) {
+           const auto summary = self.Optimize(options);
+           if (!summary.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") +
+                 std::string(summary.status().message()));
+           }
+           return summary.value();
+         },
+         py::arg("options") = DefaultSolverOptions());
 
   // AprilGridDetector class.
   py::class_<AprilGridDetector>(m, "AprilGridDetector")
