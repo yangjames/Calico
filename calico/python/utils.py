@@ -92,7 +92,7 @@ def InitializePinholeAndPoses(
     for j, (feature_id, pixel) in enumerate(detections.items()):
       pixels_i[j, :] = pixel
       model_points_i[j, :] = model_definition[feature_id][:2]
-    H_camera_chart_i, _ = cv2.findHomography(pixels_i, model_points_i)
+    H_camera_chart_i, _ = cv2.findHomography(model_points_i, pixels_i)
     H_camera_chart.append(H_camera_chart_i)
     pixels.append(pixels_i)
     model_points.append(model_points_i)
@@ -108,14 +108,14 @@ def InitializePinholeAndPoses(
     V[2 * i + 1, :] = v11 - v22
   # Solve for intrinsics.
   _, _, Vt = np.linalg.svd(np.dot(V.T, V))
-  b1, b2, b3, b4, b5, b6 = Vt[-1,:].flatten()
+  b = Vt[-1,:].flatten()
   c1 = b[0] * b[2] * b[5] - b[1] ** 2 * b[5] - b[0] * b[4] ** 2 + \
     2.0 * b[1] * b[3] * b[4] - b[2] * b[3] ** 2
   c2 = b[0] * b[2] - b[1]**2
   c2 *= np.sign(c2)
   alpha = np.sqrt(c1 / (c2 * b[0]))
   beta = np.sqrt(c1 / c2 ** 2 * b[0])
-  gamma = np.sqrt(c1 / (c2 ** 2 * b[0])) * b[1]
+  gamma = -np.sqrt(c1 / (c2 ** 2 * b[0])) * b[1]
   u0 = (b[1] * b[4] - b[2] * b[3]) / c2
   v0 = (b[1] * b[3] - b[0] * b[4]) / c2
   intrinsics = [alpha, beta, gamma, u0, v0]
