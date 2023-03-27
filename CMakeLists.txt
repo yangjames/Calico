@@ -383,11 +383,11 @@ target_link_libraries(
 
 # Build python bindings.
 pybind11_add_module(
-  calico
+  _calico
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
 )
 target_link_libraries(
-  calico PUBLIC
+  _calico PUBLIC
   accelerometer
   aprilgrid_detector
   batch_optimizer
@@ -402,12 +402,19 @@ add_test(
   COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
 )
+
+# Python utilities module.
+add_test(
+  NAME python_utils_test
+  COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
+)
 set_tests_properties(
-  python_bindings_test
+  python_bindings_test python_utils_test
   PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}:$ENV{PYTHON_PATH}"
 )
 
-# Install library.
+# Install cpp library.
 install(
   TARGETS
   accelerometer
@@ -432,10 +439,6 @@ install(
   EXPORT
   CalicoConfig
   DESTINATION lib/cmake/calico
-)
-install(
-  TARGETS calico
-  DESTINATION ${Python_SITELIB}
 )
 set(top_level_headers
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/profiler.h
@@ -470,4 +473,15 @@ set(sensor_headers
 install(
   FILES ${sensor_headers}
   DESTINATION include/calico/sensors/
+)
+# Install python library.
+install(
+  TARGETS _calico
+  DESTINATION ${Python_SITELIB}/calico
+)
+install(
+  FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+  DESTINATION ${Python_SITELIB}/calico
 )
