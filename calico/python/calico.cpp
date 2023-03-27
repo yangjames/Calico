@@ -72,7 +72,14 @@ PYBIND11_MODULE(_calico, m) {
     .def("GetName", &Accelerometer::GetName)
     .def("SetExtrinsics", &Accelerometer::SetExtrinsics)
     .def("GetExtrinsics", &Accelerometer::GetExtrinsics)
-    .def("SetIntrinsics", &Accelerometer::SetIntrinsics)
+    .def("SetIntrinsics",
+         [](Accelerometer& self, const Eigen::VectorXd& intrinsics) {
+           const auto status = self.SetIntrinsics(intrinsics);
+           if (!status.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(status.message()));
+           }
+         })
     .def("GetIntrinsics", &Accelerometer::GetIntrinsics)
     .def("SetLatency", &Accelerometer::SetLatency)
     .def("GetLatency", &Accelerometer::GetLatency)
@@ -109,7 +116,14 @@ PYBIND11_MODULE(_calico, m) {
     .def("GetName", &Gyroscope::GetName)
     .def("SetExtrinsics", &Gyroscope::SetExtrinsics)
     .def("GetExtrinsics", &Gyroscope::GetExtrinsics)
-    .def("SetIntrinsics", &Gyroscope::SetIntrinsics)
+    .def("SetIntrinsics",
+         [](Gyroscope& self, const Eigen::VectorXd& intrinsics) {
+           const auto status = self.SetIntrinsics(intrinsics);
+           if (!status.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(status.message()));
+           }
+         })
     .def("GetIntrinsics", &Gyroscope::GetIntrinsics)
     .def("SetLatency", &Gyroscope::SetLatency)
     .def("GetLatency", &Gyroscope::GetLatency)
@@ -146,7 +160,14 @@ PYBIND11_MODULE(_calico, m) {
     .def("GetName", &Camera::GetName)
     .def("SetExtrinsics", &Camera::SetExtrinsics)
     .def("GetExtrinsics", &Camera::GetExtrinsics)
-    .def("SetIntrinsics", &Camera::SetIntrinsics)
+    .def("SetIntrinsics",
+         [](Camera& self, const Eigen::VectorXd& intrinsics) {
+           const auto status = self.SetIntrinsics(intrinsics);
+           if (!status.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(status.message()));
+           }
+         })
     .def("GetIntrinsics", &Camera::GetIntrinsics)
     .def("SetLatency", &Camera::SetLatency)
     .def("GetLatency", &Camera::GetLatency)
@@ -161,8 +182,14 @@ PYBIND11_MODULE(_calico, m) {
   // Trajectory class.
   py::class_<Trajectory, std::shared_ptr<Trajectory>>(m, "Trajectory")
     .def(py::init<>())
-    .def("AddPoses", py::overload_cast<
-         const std::unordered_map<double, Pose3d>&>(&Trajectory::AddPoses));
+    .def("AddPoses",
+         [](Trajectory& self, const std::unordered_map<double, Pose3d>& poses) {
+           const auto status = self.AddPoses(poses);
+           if (!status.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(status.message()));
+           }
+         });
 
   // World model class.
   py::class_<Landmark>(m, "Landmark")

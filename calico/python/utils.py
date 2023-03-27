@@ -22,9 +22,9 @@ def DrawDetections(
     corner_id = feature_id % 4
     tag_id = feature_id // 4
     color = (
-      255 * (corner_id == 2 or corner_id == 3),
+      255 * (corner_id == 2),
       255 * (corner_id == 1 or corner_id == 3),
-      255 * (corner_id == 0),
+      255 * (corner_id == 0 or corner_id == 3),
     )
     cv2.putText(img_color, str(tag_id) + '.' + str(corner_id),
                 tuple(corner.astype(int)), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
