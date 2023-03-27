@@ -54,9 +54,6 @@ class Trajectory {
   absl::StatusOr<std::vector<Pose3d>>
   Interpolate(const std::vector<double>& interp_times) const;
 
-  // Dump the trajectory to binary.
-  // void WriteToFile(absl::string_view fname) const;
-
   // Convert a 6-DOF vector to Pose3 type. First three elements of the vector
   // are expected to be an SO(3) log map vector, and the last three are the
   // position values.

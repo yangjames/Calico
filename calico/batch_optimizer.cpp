@@ -66,7 +66,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
   options.function_tolerance = 1e-8;
   options.gradient_tolerance = 1e-10;
   options.parameter_tolerance = 1e-10;
-  options.num_threads = std::thread::hardware_concurrency();;
+  options.num_threads = 1;
   options.max_num_iterations = 50;
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);

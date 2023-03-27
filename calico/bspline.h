@@ -30,13 +30,16 @@ class BSpline {
                          const std::vector<Eigen::Vector<T,N>>& data,
                          int spline_order, T knot_frequency);
 
-  // Convenience function for getting the index of the active control point for
+  // Convenience function for getting the index of the active spline segement for
   // a queried time.
-  int GetControlPointIndex(T query_time) const;
+  int GetSplineIndex(T query_time) const;
 
   // Convenience function for getting the index of the appropriate beginning
   // knot for a spline segment with index control_point_index.
-  int GetKnotIndexFromControlPointIndex(int control_point_index) const;
+  int GetKnotIndexFromSplineIndex(int control_point_index) const;
+
+  // Getter for the spline order.
+  int GetSplineOrder() const;
 
   // Interpolate the spline at given times for the given derivative. If no
   // derivative is specified, it defaults to direct interpolation.
@@ -58,10 +61,10 @@ class BSpline {
   std::vector<T>& knots() { return knots_; }
 
   // Setter/getter for control points.
-  const Eigen::MatrixXd& control_points() const {
+  const std::vector<Eigen::Vector<T, N>>& control_points() const {
     return control_points_;
   }
-  Eigen::MatrixXd& control_points() {
+  std::vector<Eigen::Vector<T, N>>& control_points() {
     return control_points_;
   }
 
@@ -86,7 +89,7 @@ class BSpline {
   std::vector<T> valid_knots_;
   Eigen::MatrixXd derivative_coeffs_;
   std::vector<Eigen::MatrixXd> Mi_;
-  Eigen::MatrixXd control_points_; // num_control_pointsxN matrix.
+  std::vector<Eigen::Vector<T,N>> control_points_;
 
 
   // Convenience function for computing a knot vector.

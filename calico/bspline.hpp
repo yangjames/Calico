@@ -8,8 +8,12 @@ namespace calico {
 
 template <int N, typename T>
 int BSpline<N, T>::AddParametersToProblem(ceres::Problem& problem) {
-  problem.AddParameterBlock(control_points_.data(), control_points_.size());
-  return control_points_.size();
+  int num_parameters_added = 0;
+  for (Eigen::Vector<T, N>& control_point : control_points_) {
+    problem.AddParameterBlock(control_point.data(), control_point.size());
+    num_parameters_added += control_point.size();
+  }
+  return num_parameters_added;
 }
 
 template <int N, typename T>
@@ -78,15 +82,17 @@ absl::StatusOr<std::vector<Eigen::Vector<T, N>>> BSpline<N, T>::Interpolate(
       return absl::InvalidArgumentError(absl::StrCat(
           "Cannot interpolate ", t, ". Value is not within valid knots."));
     }
-   }
+  }
   int num_interp = times.size();
   std::vector<Eigen::Vector<T, N>> y(num_interp);
   for (int i = 0; i < num_interp; ++i) {
-    const int spline_idx = GetControlPointIndex(times[i]);
-    const int knot_idx = GetKnotIndexFromControlPointIndex(spline_idx);
-    const Eigen::MatrixX<T> UM = GetSplineBasis(spline_idx, times[i], derivative);
-    const Eigen::MatrixX<T> control_points =
-        control_points_.block(spline_idx, 0, spline_order_, N);
+    const int spline_idx = GetSplineIndex(times.at(i));
+    const int knot_idx = GetKnotIndexFromSplineIndex(spline_idx);
+    const Eigen::MatrixX<T> UM = GetSplineBasis(spline_idx, times.at(i), derivative);
+    Eigen::MatrixX<T> control_points(spline_order_, N);
+    for (int j = 0; j < spline_order_; ++j) {
+      control_points.row(j) = control_points_.at(spline_idx + j).transpose();
+    }
     y[i] = Evaluate(control_points, knots_[knot_idx], knots_[knot_idx + 1],
                     Mi_[spline_idx], times[i], derivative);
   }
@@ -97,7 +103,7 @@ template <int N, typename T>
 Eigen::MatrixX<T> BSpline<N, T>::GetSplineBasis(
     int spline_idx, T stamp, int derivative) const {
   // Compute u.
-  const int knot_idx = GetKnotIndexFromControlPointIndex(spline_idx);
+  const int knot_idx = GetKnotIndexFromSplineIndex(spline_idx);
   const T& knot0 = knots_.at(knot_idx);
   const T& knot1 = knots_.at(knot_idx + 1);
   const T dt = knot1 - knot0;
@@ -130,7 +136,7 @@ Eigen::MatrixX<T> BSpline<N, T>::GetSplineBasis(
 
 
 template <int N, typename T>
-int BSpline<N, T>::GetControlPointIndex(T query_time) const {
+int BSpline<N, T>::GetSplineIndex(T query_time) const {
   int spline_idx = -1;
   if (query_time == valid_knots_.back()) {
     spline_idx = valid_knots_.size() - 2;
@@ -144,7 +150,12 @@ int BSpline<N, T>::GetControlPointIndex(T query_time) const {
 }
 
 template <int N, typename T>
-int BSpline<N, T>::GetKnotIndexFromControlPointIndex(
+int BSpline<N, T>::GetSplineOrder() const {
+  return spline_order_;
+}
+
+template <int N, typename T>
+int BSpline<N, T>::GetKnotIndexFromSplineIndex(
     int control_point_index) const {
   return control_point_index + spline_degree_;
 }
@@ -252,7 +263,7 @@ void BSpline<N, T>::FitSpline() {
       auto lower = std::upper_bound(valid_knots_.begin(), valid_knots_.end(), t);
       spline_index = lower - valid_knots_.begin() - 1;
     }
-    const int knot_index = GetKnotIndexFromControlPointIndex(spline_index);
+    const int knot_index = GetKnotIndexFromSplineIndex(spline_index);
     // Grab the intermediate knot values
     const T ti = knots_[knot_index];
     const T tii = knots_[knot_index + 1];
@@ -278,8 +289,11 @@ void BSpline<N, T>::FitSpline() {
   // as this gets very expensive with more knots.
   const Eigen::MatrixX<T> XtX = X.transpose() * X;
   const Eigen::MatrixX<T> Xtd = X.transpose() * data;
-  control_points_ =
+  const Eigen::MatrixX<T> control_points =
       XtX.colPivHouseholderQr().solve(Xtd);
+  for (int i = 0; i < control_points.rows(); ++i) {
+    control_points_.push_back(control_points.row(i).transpose());
+  }
 }
 
 template <int N, typename T>

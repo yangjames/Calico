@@ -40,12 +40,11 @@ absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() {
 
 TrajectoryEvaluationParams Trajectory::GetEvaluationParams(double stamp) const {
   const int control_point_idx =
-      spline_pose_world_body_.GetControlPointIndex(stamp);
+      spline_pose_world_body_.GetSplineIndex(stamp);
   const int knot_idx =
-      spline_pose_world_body_.GetKnotIndexFromControlPointIndex(
+      spline_pose_world_body_.GetKnotIndexFromSplineIndex(
           control_point_idx);
-  const int num_control_points =
-      spline_pose_world_body_.control_points().rows();
+  const int num_control_points = spline_pose_world_body_.GetSplineOrder();
   return TrajectoryEvaluationParams {
     .spline_index = control_point_idx,
     .knot0 = spline_pose_world_body_.knots().at(knot_idx),
@@ -115,26 +114,5 @@ Trajectory::Interpolate(const std::vector<double>& interp_times) const {
   }
   return interpolated_poses;
 }
-
-// void Trajectory::WriteToFile(absl::string_view fname) const {
-//   std::ofstream file(std::string(fname), std::ios::out | std::ios::binary);
-//   file.write((char*)&kSplineOrder, sizeof(int));
-//   file.write((char*)&kKnotFrequency, sizeof(double));
-//   for (const auto& spline :
-//            std::vector{phi_world_body_, t_world_body_}) {
-//     const auto& control_points = spline.control_points();
-//     const auto& knots = spline.knots();
-//     const int num_control_points = control_points.size();
-//     const int num_knots = knots.size();
-//     file.write((char*)&num_control_points, sizeof(int));
-//     file.write((char*)&num_knots, sizeof(int));
-//     for (const auto& control_point : control_points) {
-//       file.write((char*) control_point.data(), sizeof(double)*3);
-//     }
-//     for (const auto& knot : knots) {
-//       file.write((char*) &knot, sizeof(double));
-//     }
-//   }
-// }
 
 } // namespace calico
