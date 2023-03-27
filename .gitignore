@@ -2,5 +2,5 @@ build
 *~
 \#*
 .\#*
-calico/python/__pycache__
+__pycache__
 Testing
