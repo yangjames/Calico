@@ -13,6 +13,7 @@ import rosbag
 
     
 if __name__ == '__main__':
+  visualize = False
   # Load in rosbag and chart definition.
   bag_path = '/home/james/Downloads/multicamera-calibration-data/cam_april.bag'
   bag = rosbag.Bag(bag_path, 'r')
@@ -41,13 +42,15 @@ if __name__ == '__main__':
   msg_count = 0
   for topic, msg, stamp in bag.read_messages(topics = [topic_left, topic_right]):
     msg_count += 1
-    print(f'{(100.0 * msg_count) / total_expected_messages:.1f}%:'
-          f' Processed {msg_count} of {total_expected_messages} images.', end='\r')
+    print(f'\r{(100.0 * msg_count) / total_expected_messages:.1f}%:'
+          f' Processed {msg_count} of {total_expected_messages} images.', end='')
     cv_img = bridge.imgmsg_to_cv2(msg, desired_encoding = 'passthrough')
     detections = detector.Detect(cv_img)
     if len(detections) < 28:
-      # cv2.imshow(topic, cv_img)
-      # cv2.waitKey(1)
+      # Show the picture without any detections.
+      if visualize:
+        cv2.imshow(topic, cv_img)
+        cv2.waitKey(1)
       continue
     all_detections[topic].append((msg.header.stamp.to_sec(), detections))
     measurements = calico.DetectionsToCameraMeasurements(
@@ -56,14 +59,16 @@ if __name__ == '__main__':
       camera_left.AddMeasurements(measurements)
     elif topic == topic_right:
       camera_right.AddMeasurements(measurements)
-    # # Visualize detections.
-    # im = calico.DrawDetections(cv_img, detections)
-    # cv2.imshow(topic, im)
-    # cv2.waitKey(1)
+    # Visualize if flagged.
+    if visualize:
+      im = calico.DrawDetections(cv_img, detections)
+      cv2.imshow(topic, im)
+      cv2.waitKey(1)
   bag.close()
   print()
 
   # Initialize our world model.
+  print('Initializing world model.')
   chart_rigid_body = detector.GetRigidBodyDefinition()
   chart_rigid_body.world_pose_is_constant = True
   chart_rigid_body.model_definition_is_constant = True
@@ -71,6 +76,7 @@ if __name__ == '__main__':
   world_model.AddRigidBody(chart_rigid_body)
 
   # Intialize left/right camera intrinsics and left camera-to-chart poses.
+  print('Initializing intrinsics for cameras.')
   left_detections = [detections[1] for detections in all_detections[topic_left]]
   intrinsics_left, R_chart_left, t_chart_left = \
     calico.InitializePinholeAndPoses(
@@ -79,6 +85,8 @@ if __name__ == '__main__':
     detections[1] for detections in all_detections[topic_right]]
   intrinsics_right, _, _ = calico.InitializePinholeAndPoses(
     right_detections, chart_rigid_body.model_definition)
+  print(intrinsics_left)
+  print(intrinsics_right)
   f = np.mean([
     intrinsics_left[0], intrinsics_left[1],
     intrinsics_right[0], intrinsics_right[1]])
@@ -89,6 +97,7 @@ if __name__ == '__main__':
   camera_right.SetIntrinsics(initial_intrinsics)
 
   # Initialize sensor rig trajectory.
+  print('Initializing sensor trajectory.')
   stamps = [detections[0] for detections in all_detections[topic_left]]
   poses_chart_sensorrig = {}
   for stamp, R_chart_left_i, t_chart_left_i in\
@@ -102,16 +111,32 @@ if __name__ == '__main__':
   trajectory_chart_sensorrig.AddPoses(poses_chart_sensorrig)
 
   # Run optimization.
+  print('Running optimization.')
+  print('Intial intrinsics: ')
+  print(f'{camera_left.GetName()}: {camera_left.GetIntrinsics()}')
+  print(f'{camera_right.GetName()}: {camera_right.GetIntrinsics()}')
+  print('Initial extrinsics: ')
+  print(f'{camera_right.GetName()}: q - {camera_right.GetExtrinsics().rotation}, t - {camera_right.GetExtrinsics().translation}')
   camera_left.EnableIntrinsicsEstimation(True)
   camera_left.EnableExtrinsicsEstimation(False)
   camera_left.EnableLatencyEstimation(False)
   camera_right.EnableIntrinsicsEstimation(True)
   camera_right.EnableExtrinsicsEstimation(True)
   camera_right.EnableLatencyEstimation(False)
+
   optimizer = calico.BatchOptimizer()
   optimizer.AddSensor(camera_left)
   optimizer.AddSensor(camera_right)
   optimizer.AddWorldModel(world_model)
   optimizer.AddTrajectory(trajectory_chart_sensorrig)
-  summary = optimizer.Optimize()
+
+  options = calico.DefaultSolverOptions()
+  options.num_threads = 4
+  summary = optimizer.Optimize(options)
+
+  print('Final intrinsics: ')
+  print(f'{camera_left.GetName()}: {camera_left.GetIntrinsics()}')
+  print(f'{camera_right.GetName()}: {camera_right.GetIntrinsics()}')
+  print('Final extrinsics: ')
+  print(f'{camera_right.GetName()}: q - {camera_right.GetExtrinsics().rotation}, t - {camera_right.GetExtrinsics().translation}')
   print(summary.FullReport())
