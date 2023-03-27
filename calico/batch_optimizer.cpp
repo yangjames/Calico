@@ -7,6 +7,15 @@
 
 namespace calico {
 
+ceres::Solver::Options DefaultSolverOptions() {
+  ceres::Solver::Options default_options;
+  default_options.linear_solver_type = ceres::DENSE_SCHUR;
+  default_options.minimizer_progress_to_stdout = true;
+  default_options.function_tolerance = 1e-8;
+  default_options.parameter_tolerance = 1e-10;
+  return default_options;
+}
+
 BatchOptimizer::~BatchOptimizer() {
   // If we don't own an object, release the pointer so it doesn't get
   // de-allocated it.
@@ -41,7 +50,8 @@ void BatchOptimizer::AddTrajectory(
   own_trajectory_world_body_ = take_ownership;
 }
 
-absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
+absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
+    const ceres::Solver::Options& options) {
   int num_parameters = 0;
   int num_residuals = 0;
   ceres::Problem problem;
@@ -58,16 +68,6 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize() {
     num_residuals += num_residuals_added;
   }
   // Run solver.
-  // TODO: Make optimizer options configurable
-  ceres::Solver::Options options;
-  options.linear_solver_type = ceres::DENSE_NORMAL_CHOLESKY;
-  options.preconditioner_type = ceres::JACOBI;
-  options.minimizer_progress_to_stdout = true;
-  options.function_tolerance = 1e-8;
-  options.gradient_tolerance = 1e-10;
-  options.parameter_tolerance = 1e-10;
-  options.num_threads = 1;
-  options.max_num_iterations = 50;
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);
   return summary;

@@ -220,6 +220,29 @@ PYBIND11_MODULE(_calico, m) {
     .def_readonly("initial_cost", &ceres::Solver::Summary::initial_cost)
     .def_readonly("final_cost", &ceres::Solver::Summary::final_cost);
 
+
+  // ceres::Solver::Options
+  py::class_<ceres::Solver::Options>(m, "SolverOptions")
+    .def_readwrite("minimizer_type", &ceres::Solver::Options::minimizer_type)
+    .def_readwrite("max_num_iterations",
+                   &ceres::Solver::Options::max_num_iterations)
+    .def_readwrite("num_threads", &ceres::Solver::Options::num_threads)
+    .def_readwrite("function_tolerance",
+                   &ceres::Solver::Options::function_tolerance)
+    .def_readwrite("gradient_tolerance",
+                   &ceres::Solver::Options::gradient_tolerance)
+    .def_readwrite("parameter_tolerance",
+                   &ceres::Solver::Options::parameter_tolerance)
+    .def_readwrite("linear_solver_type",
+                   &ceres::Solver::Options::linear_solver_type)
+    .def_readwrite("preconditioner_type",
+                   &ceres::Solver::Options::preconditioner_type)
+    .def_readwrite("minimizer_progress_to_stdout",
+                   &ceres::Solver::Options::minimizer_progress_to_stdout);
+
+  // Getter for default solver options.
+  m.def("DefaultSolverOptions", &DefaultSolverOptions);
+
   // BatchOptimizer class.
   py::class_<BatchOptimizer>(m, "BatchOptimizer")
     .def(py::init())
