@@ -75,6 +75,9 @@ class Camera : public Sensor {
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
 
+  // Set loss function type.
+  void SetLossFunction(utils::LossFunctionType loss, double scale) final;
+
   // Add this camera's parameters to the ceres problem. Returns the number of
   // parameters added to the problem, which should be intrinsics + extrinsics.
   // If the camera model hasn't been set yet, it will return an invalid
@@ -137,6 +140,8 @@ class Camera : public Sensor {
   double latency_;
   absl::flat_hash_map<CameraObservationId, CameraMeasurement>
       id_to_measurement_;
+  utils::LossFunctionType loss_function_;
+  double loss_scale_;
 };
 
 } // namespace calico::sensors

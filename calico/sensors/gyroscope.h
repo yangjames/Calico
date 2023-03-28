@@ -68,6 +68,9 @@ class Gyroscope : public Sensor {
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
 
+  // Set loss function type.
+  void SetLossFunction(utils::LossFunctionType loss, double scale) final;
+
   // Add this gyroscope's parameters to the ceres problem. Returns the number of
   // parameters added to the problem, which should be intrinsics + extrinsics +
   // latency. If the gyroscope model hasn't been set yet, it will return an
@@ -126,6 +129,8 @@ class Gyroscope : public Sensor {
   double latency_;
   absl::flat_hash_map<GyroscopeObservationId, GyroscopeMeasurement>
       id_to_measurement_;
+  utils::LossFunctionType loss_function_;
+  double loss_scale_;
 };
 
 } // namespace calico::sensors

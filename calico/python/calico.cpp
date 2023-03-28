@@ -19,8 +19,9 @@ PYBIND11_MODULE(_calico, m) {
   m.doc() = "Calico";
   namespace py = pybind11;
   using namespace calico;
-  using namespace calico::sensors;
   using namespace calico::chart_detectors;
+  using namespace calico::sensors;
+  using namespace calico::utils;
 
   // absl::Status
   py::enum_<absl::StatusCode>(m, "StatusCode")
@@ -42,6 +43,12 @@ PYBIND11_MODULE(_calico, m) {
     .def_property("rotation", &Pose3d::GetRotation, &Pose3d::SetRotation)
     .def_property("translation",
                   &Pose3d::GetTranslation, &Pose3d::SetTranslation);
+
+  // Loss function types.
+  py::enum_<LossFunctionType>(m, "LossFunctionType")
+    .value("kNone", LossFunctionType::kNone)
+    .value("kHuber", LossFunctionType::kHuber)
+    .value("kCauchy", LossFunctionType::kCauchy);
 
   // Base sensor class.
   py::class_<Sensor, std::shared_ptr<Sensor>>(m, "Sensor");
@@ -88,6 +95,7 @@ PYBIND11_MODULE(_calico, m) {
     .def("EnableLatencyEstimation", &Accelerometer::EnableLatencyEstimation)
     .def("SetModel", &Accelerometer::SetModel)
     .def("GetModel", &Accelerometer::GetModel)
+    .def("SetLossFunction", &Accelerometer::SetLossFunction)
     .def("AddMeasurement", &Accelerometer::AddMeasurement)
     .def("AddMeasurements", &Accelerometer::AddMeasurements);
 
@@ -132,6 +140,7 @@ PYBIND11_MODULE(_calico, m) {
     .def("EnableLatencyEstimation", &Gyroscope::EnableLatencyEstimation)
     .def("SetModel", &Gyroscope::SetModel)
     .def("GetModel", &Gyroscope::GetModel)
+    .def("SetLossFunction", &Gyroscope::SetLossFunction)
     .def("AddMeasurement", &Gyroscope::AddMeasurement)
     .def("AddMeasurements", &Gyroscope::AddMeasurements);
 
@@ -176,6 +185,7 @@ PYBIND11_MODULE(_calico, m) {
     .def("EnableLatencyEstimation", &Camera::EnableLatencyEstimation)
     .def("SetModel", &Camera::SetModel)
     .def("GetModel", &Camera::GetModel)
+    .def("SetLossFunction", &Camera::SetLossFunction)
     .def("AddMeasurement", &Camera::AddMeasurement)
     .def("AddMeasurements", &Camera::AddMeasurements);
 
@@ -210,7 +220,14 @@ PYBIND11_MODULE(_calico, m) {
   py::class_<WorldModel, std::shared_ptr<WorldModel>>(m, "WorldModel")
     .def(py::init<>())
     .def("AddLandmark", &WorldModel::AddLandmark)
-    .def("AddRigidBody", &WorldModel::AddRigidBody);
+    .def("AddRigidBody",
+         [](WorldModel& self, const RigidBody& rigidbody) {
+           const auto status = self.AddRigidBody(rigidbody);
+           if (!status.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(status.message()));
+           }
+         });
 
   // ceres::Summary
   py::class_<ceres::Solver::Summary>(m, "Summary")
@@ -218,8 +235,25 @@ PYBIND11_MODULE(_calico, m) {
     .def("FullReport", &ceres::Solver::Summary::FullReport)
     .def("IsSolutionUsable", &ceres::Solver::Summary::IsSolutionUsable)
     .def_readonly("initial_cost", &ceres::Solver::Summary::initial_cost)
-    .def_readonly("final_cost", &ceres::Solver::Summary::final_cost);
-
+    .def_readonly("final_cost", &ceres::Solver::Summary::final_cost)
+    .def_readonly("num_residual_blocks",
+                  &ceres::Solver::Summary::num_residual_blocks)
+    .def_readonly("num_residuals",
+                  &ceres::Solver::Summary::num_residuals)
+    .def_readonly("num_parameter_blocks",
+                  &ceres::Solver::Summary::num_parameter_blocks)
+    .def_readonly("num_parameters",
+                  &ceres::Solver::Summary::num_parameters)
+    .def_readonly("num_parameter_blocks_reduced",
+                  &ceres::Solver::Summary::num_parameter_blocks_reduced)
+    .def_readonly("num_parameters_reduced",
+                  &ceres::Solver::Summary::num_parameters_reduced)
+    .def_readonly("num_effective_parameters_reduced",
+                  &ceres::Solver::Summary::num_effective_parameters_reduced)
+    .def_readonly("num_residual_blocks_reduced",
+                  &ceres::Solver::Summary::num_residual_blocks_reduced)
+    .def_readonly("num_residuals_reduced",
+                  &ceres::Solver::Summary::num_residuals_reduced);
 
   // ceres::Solver::Options
   py::class_<ceres::Solver::Options>(m, "SolverOptions")

@@ -45,8 +45,10 @@ absl::StatusOr<int> Accelerometer::AddResidualsToProblem(
             measurement.measurement, accelerometer_model_->GetType(),
             intrinsics_, T_sensorrig_sensor_, latency_, world_model.gravity(),
             sensorrig_trajectory, observation_id.stamp, parameters);
+    ceres::LossFunction* loss_function = CreateLossFunction(
+        loss_function_, loss_scale_);
     const auto residual_block_id = problem.AddResidualBlock(
-        cost_function, /*loss_function=*/nullptr, parameters);
+        cost_function, loss_function, parameters);
     ++num_residuals_added;
   }
   return num_residuals_added;
@@ -152,6 +154,11 @@ void Accelerometer::EnableIntrinsicsEstimation(bool enable) {
 
 void Accelerometer::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
+}
+
+void Accelerometer::SetLossFunction(utils::LossFunctionType loss, double scale) {
+  loss_function_ = loss;
+  loss_scale_ = scale;
 }
 
 absl::Status Accelerometer::SetModel(AccelerometerIntrinsicsModel accelerometer_model) {

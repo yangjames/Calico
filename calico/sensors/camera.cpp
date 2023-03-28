@@ -55,8 +55,10 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
             T_sensorrig_sensor_, latency_, t_model_point,
             rigidbody_ref.T_world_rigidbody, sensorrig_trajectory,
             observation_id.stamp, parameters);
+    ceres::LossFunction* loss_function = CreateLossFunction(
+        loss_function_, loss_scale_);
     const auto residual_block_id = problem.AddResidualBlock(
-        cost_function, /*loss_function=*/nullptr, parameters);
+        cost_function, loss_function, parameters);
     num_residuals_added += 1;
   }
   return num_residuals_added;
@@ -165,6 +167,11 @@ void Camera::EnableIntrinsicsEstimation(bool enable) {
 
 void Camera::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
+}
+
+void Camera::SetLossFunction(utils::LossFunctionType loss, double scale) {
+  loss_function_ = loss;
+  loss_scale_ = scale;
 }
 
 absl::Status Camera::SetModel(CameraIntrinsicsModel camera_model) {

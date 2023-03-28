@@ -43,8 +43,10 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
             measurement.measurement, gyroscope_model_->GetType(), intrinsics_,
             T_sensorrig_sensor_, latency_, sensorrig_trajectory,
             observation_id.stamp, parameters);
+    ceres::LossFunction* loss_function = CreateLossFunction(
+        loss_function_, loss_scale_);
     const auto residual_block_id = problem.AddResidualBlock(
-        cost_function, /*loss_function=*/nullptr, parameters);
+        cost_function, loss_function, parameters);
     ++num_residuals_added;
   }
   return num_residuals_added;
@@ -128,6 +130,11 @@ void Gyroscope::EnableIntrinsicsEstimation(bool enable) {
 
 void Gyroscope::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
+}
+
+void Gyroscope::SetLossFunction(utils::LossFunctionType loss, double scale) {
+  loss_function_ = loss;
+  loss_scale_ = scale;
 }
 
 absl::Status Gyroscope::SetModel(GyroscopeIntrinsicsModel gyroscope_model) {
