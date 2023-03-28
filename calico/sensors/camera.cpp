@@ -235,6 +235,39 @@ absl::Status Camera::AddMeasurements(
   return absl::InvalidArgumentError(message);
 }
 
+const absl::flat_hash_map<CameraObservationId, Eigen::Vector2d>&
+Camera::GetMeasurementIdToResidual() const {
+  return id_to_residual_;
+}
+
+const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
+Camera::GetMeasurementIdToMeasurement() const {
+  return id_to_measurement_;
+}
+
+absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
+Camera::GetMeasurementResidualPairs() const {
+  if (id_to_residual_.size() != id_to_measurement_.size()) {
+    return absl::FailedPreconditionError(
+        "Residuals and measurements must be same size.");
+  }
+  if (id_to_measurement_.empty()) {
+    return absl::FailedPreconditionError(
+        "Measurements are empty. Nothing to return.");
+  }
+  std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>> pairs;
+  for (const auto [id, measurement] : id_to_measurement_) {
+    auto it = id_to_residual_.find(id);
+    if (it != id_to_residual_.end()) {
+      pairs.push_back({measurement, it->second});
+    } else {
+      return absl::InternalError(
+          "Measurements contain an id that residuals does not have.");
+    }
+  }
+  return pairs;
+}
+
 void Camera::ClearMeasurements() {
   id_to_measurement_.clear();
   id_to_residual_id_.clear();

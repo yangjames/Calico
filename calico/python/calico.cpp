@@ -153,6 +153,14 @@ PYBIND11_MODULE(_calico, m) {
   py::class_<CameraObservationId>(m, "CameraObservationId")
     .def(py::init<>())
     .def(py::init<CameraObservationId const &>())
+    .def("__hash__", absl::Hash<CameraObservationId>())
+    .def("__str__",
+         [](const CameraObservationId& self) {
+           return "stamp: " + std::to_string(self.stamp) + ", image_id: " +
+             std::to_string(self.image_id) + ", model_id: " +
+             std::to_string(self.model_id) + ", feature_id: " +
+             std::to_string(self.feature_id);
+         })
     .def_readwrite("stamp", &CameraObservationId::stamp)
     .def_readwrite("image_id", &CameraObservationId::image_id)
     .def_readwrite("model_id", &CameraObservationId::model_id)
@@ -187,7 +195,37 @@ PYBIND11_MODULE(_calico, m) {
     .def("GetModel", &Camera::GetModel)
     .def("SetLossFunction", &Camera::SetLossFunction)
     .def("AddMeasurement", &Camera::AddMeasurement)
-    .def("AddMeasurements", &Camera::AddMeasurements);
+    .def("AddMeasurements", &Camera::AddMeasurements)
+    .def("GetMeasurementResidualPairs",
+         [](const Camera& self) {
+           const auto pairs = self.GetMeasurementResidualPairs();
+           if (!pairs.status().ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(pairs.status().message()));
+           }
+           return pairs.value();
+         })
+    .def("GetMeasurementIdToMeasurement",
+         [](Camera& self) {
+           std::unordered_map<CameraObservationId, CameraMeasurement,
+                              absl::Hash<CameraObservationId>>
+               id_to_measurement;
+           for (const auto [id, measurement] :
+                  self.GetMeasurementIdToMeasurement()) {
+             id_to_measurement[id] = measurement;
+           }
+           return id_to_measurement;
+         })
+    .def("GetMeasurementIdToResidual",
+         [](Camera& self) {
+           std::unordered_map<CameraObservationId, Eigen::Vector2d,
+                              absl::Hash<CameraObservationId>>
+               id_to_residual;
+           for (const auto [id, residual] : self.GetMeasurementIdToResidual()) {
+             id_to_residual[id] = residual;
+           }
+           return id_to_residual;
+         });
 
   // Trajectory class.
   py::class_<Trajectory, std::shared_ptr<Trajectory>>(m, "Trajectory")

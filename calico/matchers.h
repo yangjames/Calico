@@ -40,12 +40,7 @@ MATCHER_P(EigenEq, expected_vector, "") {
 // Matcher for an Eigen vector with given tolerance.
 MATCHER_P2(EigenIsApprox, expected_vector, tolerance, "") {
   *result_listener << arg.transpose() << " vs. " << expected_vector.transpose();
-  return (arg.isApprox(expected_vector, tolerance));
-}
-
-MATCHER_P(ImageSizeEq, expected_image_size, "") {
-  return (arg.width == expected_image_size.width &&
-          arg.height == expected_image_size.height);
+  return ((arg - expected_vector).squaredNorm() < tolerance);
 }
 
 MATCHER_P(StatusIs, status, "") {

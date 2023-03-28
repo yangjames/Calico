@@ -119,9 +119,23 @@ class Camera : public Sensor {
   absl::Status AddMeasurements(
       const std::vector<CameraMeasurement>& measurements);
 
+  // Getter for observation id to residual map. If this sensor hasn't been
+  // optimized, the returned map will be empty.
+  const absl::flat_hash_map<CameraObservationId, Eigen::Vector2d>&
+  GetMeasurementIdToResidual() const;
+
+  // Getter for observation id to measurement map.
+  const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
+  GetMeasurementIdToMeasurement() const;
+
+  // Returns a vector of measurement-residual pairs. Returns an error if
+  // residuals and measurements are not the same size, or if one contains an
+  // observation ID that the other doesn't.
+  absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
+  GetMeasurementResidualPairs() const;
+
   // Clear all measurements.
   void ClearMeasurements();
-
 
   // Get current number of measurements stored.
   int NumberOfMeasurements() const;
