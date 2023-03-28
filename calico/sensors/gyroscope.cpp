@@ -47,6 +47,7 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
         loss_function_, loss_scale_);
     const auto residual_block_id = problem.AddResidualBlock(
         cost_function, loss_function, parameters);
+    id_to_residual_id_[observation_id] = residual_block_id;
     ++num_residuals_added;
   }
   return num_residuals_added;
@@ -137,6 +138,11 @@ void Gyroscope::SetLossFunction(utils::LossFunctionType loss, double scale) {
   loss_scale_ = scale;
 }
 
+void Gyroscope::ClearResidualInfo() {
+  id_to_residual_id_.clear();
+  id_to_residual_.clear();
+}
+
 absl::Status Gyroscope::SetModel(GyroscopeIntrinsicsModel gyroscope_model) {
   gyroscope_model_ = GyroscopeModel::Create(gyroscope_model);
   intrinsics_ = Eigen::VectorXd::Zero(gyroscope_model_->NumberOfParameters());
@@ -151,6 +157,19 @@ absl::Status Gyroscope::SetModel(GyroscopeIntrinsicsModel gyroscope_model) {
 GyroscopeIntrinsicsModel Gyroscope::GetModel() const {
   return gyroscope_model_ ?
     gyroscope_model_->GetType() : GyroscopeIntrinsicsModel::kNone;
+}
+
+absl::Status Gyroscope::UpdateResiduals(ceres::Problem& problem) {
+  for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
+    Eigen::Vector3d residual;
+    if (!problem.EvaluateResidualBlock(residual_id,
+        /*apply_loss_function=*/false, nullptr, residual.data(), nullptr)) {
+      return absl::InternalError("Failed to update residual for gyroscope " +
+          name_);
+    }
+    id_to_residual_[measurement_id] = residual;
+  }
+  return absl::OkStatus();
 }
 
 absl::Status Gyroscope::AddMeasurement(const GyroscopeMeasurement& measurement) {
@@ -169,30 +188,6 @@ absl::Status Gyroscope::AddMeasurements(
   std::string message;
   for (const auto& measurement : measurements) {
     absl::Status status = AddMeasurement(measurement);
-    if (!status.ok()) {
-      message += std::string(status.message()) + "\n";
-    }
-  }
-  if (message.empty()) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(message);
-}
-
-absl::Status Gyroscope::RemoveMeasurementById(const GyroscopeObservationId& id) {
-  if (id_to_measurement_.erase(id)) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Attempted to remove invalid mesaurement - Sequence: ", id.sequence,
-      ", stamp: ", id.stamp));
-}
-
-absl::Status Gyroscope::RemoveMeasurementsById(
-    const std::vector<GyroscopeObservationId>& ids) {
-  std::string message;
-  for (const auto& id : ids) {
-    absl::Status status = RemoveMeasurementById(id);
     if (!status.ok()) {
       message += std::string(status.message()) + "\n";
     }

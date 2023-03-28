@@ -59,6 +59,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
   num_parameters += world_model_->AddParametersToProblem(problem);
   num_parameters += trajectory_world_body_->AddParametersToProblem(problem);
   for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
+    sensor->ClearResidualInfo();
     ASSIGN_OR_RETURN(const auto num_parameters_added,
                      sensor->AddParametersToProblem(problem));
     num_parameters += num_parameters_added;
@@ -70,6 +71,12 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
   // Run solver.
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);
+
+  // Update residuals for every sensor.
+  for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
+    RETURN_IF_ERROR(sensor->UpdateResiduals(problem));
+  }
+
   return summary;
 }
 

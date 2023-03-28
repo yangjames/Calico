@@ -59,6 +59,7 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
         loss_function_, loss_scale_);
     const auto residual_block_id = problem.AddResidualBlock(
         cost_function, loss_function, parameters);
+    id_to_residual_id_[observation_id] = residual_block_id;
     num_residuals_added += 1;
   }
   return num_residuals_added;
@@ -174,6 +175,23 @@ void Camera::SetLossFunction(utils::LossFunctionType loss, double scale) {
   loss_scale_ = scale;
 }
 
+absl::Status Camera::UpdateResiduals(ceres::Problem& problem) {
+  for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
+    Eigen::Vector2d residual;
+    if (!problem.EvaluateResidualBlock(residual_id,
+        /*apply_loss_function=*/false, nullptr, residual.data(), nullptr)) {
+      return absl::InternalError("Failed to update residual for camera " + name_);
+    }
+    id_to_residual_[measurement_id] = residual;
+  }
+  return absl::OkStatus();
+}
+
+void Camera::ClearResidualInfo() {
+  id_to_residual_id_.clear();
+  id_to_residual_.clear();
+}
+
 absl::Status Camera::SetModel(CameraIntrinsicsModel camera_model) {
   camera_model_ = CameraModel::Create(camera_model);
   intrinsics_ = Eigen::VectorXd::Zero(camera_model_->NumberOfParameters());
@@ -217,33 +235,10 @@ absl::Status Camera::AddMeasurements(
   return absl::InvalidArgumentError(message);
 }
 
-absl::Status Camera::RemoveMeasurementById(const CameraObservationId& id) {
-  if (id_to_measurement_.erase(id)) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Attempted to remove invalid mesaurement - Image id: ",
-      id.image_id, ", model id: ", id.model_id, ", feature_id: ",
-      id.feature_id));
-}
-
-absl::Status Camera::RemoveMeasurementsById(
-    const std::vector<CameraObservationId>& ids) {
-  std::string message;
-  for (const auto& id : ids) {
-    absl::Status status = RemoveMeasurementById(id);
-    if (!status.ok()) {
-      message += std::string(status.message()) + "\n";
-    }
-  }
-  if (message.empty()) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(message);
-}
-
 void Camera::ClearMeasurements() {
   id_to_measurement_.clear();
+  id_to_residual_id_.clear();
+  id_to_residual_.clear();
 }
 
 int Camera::NumberOfMeasurements() const {

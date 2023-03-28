@@ -100,34 +100,6 @@ TEST_F(CameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size() - 1);
 }
 
-TEST_F(CameraContainerTest, RemoveMeasurement) {
-  const CameraMeasurement measurement{};
-  camera_.ClearMeasurements();
-  EXPECT_OK(camera_.AddMeasurement(measurement));
-  EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
-  EXPECT_OK(camera_.RemoveMeasurementById(measurement.id));
-  EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-  EXPECT_EQ(camera_.RemoveMeasurementById(measurement.id).code(),
-            absl::StatusCode::kInvalidArgument);
-}
-
-TEST_F(CameraContainerTest, RemoveMultipleMeasurements) {
-  std::vector<CameraMeasurement> measurements = measurements_;
-  camera_.ClearMeasurements();
-  EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-  EXPECT_OK(camera_.AddMeasurements(measurements));
-  EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size());
-
-  std::vector<CameraObservationId> ids;
-  for (const auto& measurement : measurements) {
-    ids.push_back(measurement.id);
-  }
-  EXPECT_OK(camera_.RemoveMeasurementsById(ids));
-  EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-  EXPECT_EQ(camera_.RemoveMeasurementsById(ids).code(),
-            absl::StatusCode::kInvalidArgument);
-}
-
 TEST_F(CameraContainerTest, AddCalibrationParametersToProblem) {
   EXPECT_OK(camera_.SetModel(kCameraModel));
   EXPECT_OK(camera_.SetIntrinsics(kIntrinsics));

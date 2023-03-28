@@ -47,6 +47,13 @@ class Sensor {
   // Enable or disable latency estimation.
   virtual void EnableLatencyEstimation(bool enable) = 0;
 
+  // Update residuals for this sensor. This is mean to be only invoked by the
+  // BatchOptimizer class.
+  virtual absl::Status UpdateResiduals(ceres::Problem& problem) = 0;
+
+  // Clear all stored info about residuals.
+  virtual void ClearResidualInfo() = 0;
+
   // Setter for loss function and scale.
   virtual void SetLossFunction(
       utils::LossFunctionType loss, double scale = 1.0) = 0;

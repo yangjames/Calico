@@ -90,6 +90,12 @@ class Camera : public Sensor {
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
 
+  // Update residuals for this sensor.
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+
+  // Clear all residual information.
+  void ClearResidualInfo() final;
+
   // Compute the project of a world model through a kinematic chain. This
   // method returns only valid synthetic measurements as would be observed by
   // the actual sensor, complying with physicality such as features being in
@@ -113,18 +119,9 @@ class Camera : public Sensor {
   absl::Status AddMeasurements(
       const std::vector<CameraMeasurement>& measurements);
 
-  // Remove a measurement with a specific observation id. Returns an error if
-  // the id was not associated with a measurement.
-  absl::Status RemoveMeasurementById(const CameraObservationId& id);
-
-  // Remove multiple measurements by their observation ids. Returns an error if
-  // it attempts to remove an id that was not associated with a measurement.
-  // This method will remove the entire vector, but skip invalid entries.
-  absl::Status RemoveMeasurementsById(
-      const std::vector<CameraObservationId>& ids);
-
   // Clear all measurements.
   void ClearMeasurements();
+
 
   // Get current number of measurements stored.
   int NumberOfMeasurements() const;
@@ -138,10 +135,13 @@ class Camera : public Sensor {
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   double latency_;
-  absl::flat_hash_map<CameraObservationId, CameraMeasurement>
-      id_to_measurement_;
   utils::LossFunctionType loss_function_;
   double loss_scale_;
+  absl::flat_hash_map<CameraObservationId, CameraMeasurement>
+      id_to_measurement_;
+  absl::flat_hash_map<CameraObservationId, Eigen::Vector2d> id_to_residual_;
+  absl::flat_hash_map<CameraObservationId, ceres::ResidualBlockId>
+      id_to_residual_id_;
 };
 
 } // namespace calico::sensors

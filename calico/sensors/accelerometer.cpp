@@ -49,9 +49,28 @@ absl::StatusOr<int> Accelerometer::AddResidualsToProblem(
         loss_function_, loss_scale_);
     const auto residual_block_id = problem.AddResidualBlock(
         cost_function, loss_function, parameters);
+    id_to_residual_id_[observation_id] = residual_block_id;
     ++num_residuals_added;
   }
   return num_residuals_added;
+}
+
+absl::Status Accelerometer::UpdateResiduals(ceres::Problem& problem) {
+  for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
+    Eigen::Vector3d residual;
+    if (!problem.EvaluateResidualBlock(residual_id,
+        /*apply_loss_function=*/false, nullptr, residual.data(), nullptr)) {
+      return absl::InternalError("Failed to update residual for accelerometer " +
+          name_);
+    }
+    id_to_residual_[measurement_id] = residual;
+  }
+  return absl::OkStatus();
+}
+
+void Accelerometer::ClearResidualInfo() {
+  id_to_residual_id_.clear();
+  id_to_residual_.clear();
 }
 
 absl::StatusOr<std::vector<AccelerometerMeasurement>> Accelerometer::Project(
@@ -193,30 +212,6 @@ absl::Status Accelerometer::AddMeasurements(
   std::string message;
   for (const auto& measurement : measurements) {
     absl::Status status = AddMeasurement(measurement);
-    if (!status.ok()) {
-      message += std::string(status.message()) + "\n";
-    }
-  }
-  if (message.empty()) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(message);
-}
-
-absl::Status Accelerometer::RemoveMeasurementById(const AccelerometerObservationId& id) {
-  if (id_to_measurement_.erase(id)) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Attempted to remove invalid mesaurement - Sequence: ", id.sequence,
-      ", stamp: ", id.stamp));
-}
-
-absl::Status Accelerometer::RemoveMeasurementsById(
-    const std::vector<AccelerometerObservationId>& ids) {
-  std::string message;
-  for (const auto& id : ids) {
-    absl::Status status = RemoveMeasurementById(id);
     if (!status.ok()) {
       message += std::string(status.message()) + "\n";
     }

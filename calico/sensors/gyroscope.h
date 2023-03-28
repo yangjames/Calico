@@ -83,6 +83,13 @@ class Gyroscope : public Sensor {
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
 
+  // Update residuals for this sensor. This is mean to be only invoked by the
+  // BatchOptimizer class.
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+
+  // Clear all residual information.
+  void ClearResidualInfo() final;
+
   // Compute synthetic gyroscope measurements at given a sensor rig trajectory.
   absl::StatusOr<std::vector<GyroscopeMeasurement>> Project(
       const std::vector<double>& interp_times,
@@ -102,16 +109,6 @@ class Gyroscope : public Sensor {
   absl::Status AddMeasurements(
       const std::vector<GyroscopeMeasurement>& measurements);
 
-  // Remove a measurement with a specific observation id. Returns an error if
-  // the id was not associated with a measurement.
-  absl::Status RemoveMeasurementById(const GyroscopeObservationId& id);
-
-  // Remove multiple measurements by their observation ids. Returns an error if
-  // it attempts to remove an id that was not associated with a measurement.
-  // This method will remove the entire vector, but skip invalid entries.
-  absl::Status RemoveMeasurementsById(
-      const std::vector<GyroscopeObservationId>& ids);
-
   // Clear all measurements.
   void ClearMeasurements();
 
@@ -127,10 +124,13 @@ class Gyroscope : public Sensor {
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   double latency_;
-  absl::flat_hash_map<GyroscopeObservationId, GyroscopeMeasurement>
-      id_to_measurement_;
   utils::LossFunctionType loss_function_;
   double loss_scale_;
+  absl::flat_hash_map<GyroscopeObservationId, GyroscopeMeasurement>
+      id_to_measurement_;
+  absl::flat_hash_map<GyroscopeObservationId, Eigen::Vector3d> id_to_residual_;
+  absl::flat_hash_map<GyroscopeObservationId, ceres::ResidualBlockId>
+      id_to_residual_id_;
 };
 
 } // namespace calico::sensors
