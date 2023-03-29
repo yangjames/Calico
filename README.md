@@ -1,4 +1,5 @@
 # Calico
+![Calico cat](doc/calico.png)
 Yet another sensor calibration library...
 
 # WIP
