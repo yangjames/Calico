@@ -1,6 +1,5 @@
 # Calico
-![Calico cat](doc/calico.png | width=200)
-Yet another sensor calibration library...
+<img src="doc/calico.png" width="200">
 
 # WIP
 ## Build dependencies
