@@ -55,8 +55,11 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
             T_sensorrig_sensor_, latency_, t_model_point,
             rigidbody_ref.T_world_rigidbody, sensorrig_trajectory,
             observation_id.stamp, parameters);
+    ceres::LossFunction* loss_function = CreateLossFunction(
+        loss_function_, loss_scale_);
     const auto residual_block_id = problem.AddResidualBlock(
-        cost_function, /*loss_function=*/nullptr, parameters);
+        cost_function, loss_function, parameters);
+    id_to_residual_id_[observation_id] = residual_block_id;
     num_residuals_added += 1;
   }
   return num_residuals_added;
@@ -167,6 +170,28 @@ void Camera::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
 }
 
+void Camera::SetLossFunction(utils::LossFunctionType loss, double scale) {
+  loss_function_ = loss;
+  loss_scale_ = scale;
+}
+
+absl::Status Camera::UpdateResiduals(ceres::Problem& problem) {
+  for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
+    Eigen::Vector2d residual;
+    if (!problem.EvaluateResidualBlock(residual_id,
+        /*apply_loss_function=*/false, nullptr, residual.data(), nullptr)) {
+      return absl::InternalError("Failed to update residual for camera " + name_);
+    }
+    id_to_residual_[measurement_id] = residual;
+  }
+  return absl::OkStatus();
+}
+
+void Camera::ClearResidualInfo() {
+  id_to_residual_id_.clear();
+  id_to_residual_.clear();
+}
+
 absl::Status Camera::SetModel(CameraIntrinsicsModel camera_model) {
   camera_model_ = CameraModel::Create(camera_model);
   intrinsics_ = Eigen::VectorXd::Zero(camera_model_->NumberOfParameters());
@@ -210,33 +235,43 @@ absl::Status Camera::AddMeasurements(
   return absl::InvalidArgumentError(message);
 }
 
-absl::Status Camera::RemoveMeasurementById(const CameraObservationId& id) {
-  if (id_to_measurement_.erase(id)) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Attempted to remove invalid mesaurement - Image id: ",
-      id.image_id, ", model id: ", id.model_id, ", feature_id: ",
-      id.feature_id));
+const absl::flat_hash_map<CameraObservationId, Eigen::Vector2d>&
+Camera::GetMeasurementIdToResidual() const {
+  return id_to_residual_;
 }
 
-absl::Status Camera::RemoveMeasurementsById(
-    const std::vector<CameraObservationId>& ids) {
-  std::string message;
-  for (const auto& id : ids) {
-    absl::Status status = RemoveMeasurementById(id);
-    if (!status.ok()) {
-      message += std::string(status.message()) + "\n";
+const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
+Camera::GetMeasurementIdToMeasurement() const {
+  return id_to_measurement_;
+}
+
+absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
+Camera::GetMeasurementResidualPairs() const {
+  if (id_to_residual_.size() != id_to_measurement_.size()) {
+    return absl::FailedPreconditionError(
+        "Residuals and measurements must be same size.");
+  }
+  if (id_to_measurement_.empty()) {
+    return absl::FailedPreconditionError(
+        "Measurements are empty. Nothing to return.");
+  }
+  std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>> pairs;
+  for (const auto [id, measurement] : id_to_measurement_) {
+    auto it = id_to_residual_.find(id);
+    if (it != id_to_residual_.end()) {
+      pairs.push_back({measurement, it->second});
+    } else {
+      return absl::InternalError(
+          "Measurements contain an id that residuals does not have.");
     }
   }
-  if (message.empty()) {
-    return absl::OkStatus();
-  }
-  return absl::InvalidArgumentError(message);
+  return pairs;
 }
 
 void Camera::ClearMeasurements() {
   id_to_measurement_.clear();
+  id_to_residual_id_.clear();
+  id_to_residual_.clear();
 }
 
 int Camera::NumberOfMeasurements() const {

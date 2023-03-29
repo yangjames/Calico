@@ -87,42 +87,6 @@ TEST_P(GyroscopeTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   EXPECT_EQ(gyroscope.NumberOfMeasurements(), measurements.size() - 1);
 }
 
-TEST_P(GyroscopeTest, RemoveMeasurement) {
-  const GyroscopeMeasurement measurement{};
-  Gyroscope gyroscope;
-  EXPECT_OK(gyroscope.AddMeasurement(measurement));
-  EXPECT_EQ(gyroscope.NumberOfMeasurements(), 1);
-  EXPECT_OK(gyroscope.RemoveMeasurementById(measurement.id));
-  EXPECT_EQ(gyroscope.NumberOfMeasurements(), 0);
-  EXPECT_EQ(gyroscope.RemoveMeasurementById(measurement.id).code(),
-            absl::StatusCode::kInvalidArgument);
-}
-
-TEST_P(GyroscopeTest, RemoveMultipleMeasurements) {
-  std::vector<GyroscopeMeasurement> measurements {
-    {
-      .measurement = Eigen::Vector3d::Random(),
-      .id = {.stamp = 0, .sequence = 0},
-    },
-    {
-      .measurement = Eigen::Vector3d::Random(),
-      .id = {.stamp = 1, .sequence = 1},
-    }
-  };
-  Gyroscope gyroscope;
-  EXPECT_OK(gyroscope.AddMeasurements(measurements));
-  EXPECT_EQ(gyroscope.NumberOfMeasurements(), measurements.size());
-
-  std::vector<GyroscopeObservationId> ids;
-  for (const auto& measurement : measurements) {
-    ids.push_back(measurement.id);
-  }
-  EXPECT_OK(gyroscope.RemoveMeasurementsById(ids));
-  EXPECT_EQ(gyroscope.NumberOfMeasurements(), 0);
-  EXPECT_EQ(gyroscope.RemoveMeasurementsById(ids).code(),
-            absl::StatusCode::kInvalidArgument);
-}
-
 TEST_P(GyroscopeTest, AddCalibrationParametersToProblem) {
   const auto params = GetParam();
   Eigen::VectorXd intrinsics(params.parameter_size);

@@ -208,6 +208,17 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   EXPECT_NEAR(kAccelerometerLatency, accelerometer->GetLatency(), kSmallNumber);
   // Gravity.
   EXPECT_THAT(world_model->gravity(), EigenIsApprox(true_gravity, kSmallNumber));
+
+  // Expect that the cameras have residuals populated and have a one-to-one
+  // corresondence with measurements.
+  const auto id_to_measurement = camera_left->GetMeasurementIdToMeasurement();
+  const auto id_to_residual = camera_left->GetMeasurementIdToResidual();
+  EXPECT_EQ(id_to_measurement.size(), id_to_residual.size());
+  for (const auto [id, measurement] : id_to_measurement) {
+    ASSERT_TRUE(id_to_residual.contains(id));
+    const Eigen::Vector2d residual = id_to_residual.at(id);
+    EXPECT_THAT(Eigen::Vector2d::Zero(), EigenIsApprox(residual, kSmallNumber));
+  }
   
   std::cout << summary.FullReport() << std::endl;
 }

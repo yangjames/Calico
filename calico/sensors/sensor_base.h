@@ -4,6 +4,7 @@
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "calico/optimization_utils.h"
 #include "calico/trajectory.h"
 #include "calico/typedefs.h"
 #include "calico/world_model.h"
@@ -12,6 +13,7 @@
 
 
 namespace calico::sensors {
+
 
 // Base class for sensors. For the sake of readability, we make this a purely
 // virtual class, so setters and getters must be implemented at the derived
@@ -44,6 +46,17 @@ class Sensor {
 
   // Enable or disable latency estimation.
   virtual void EnableLatencyEstimation(bool enable) = 0;
+
+  // Update residuals for this sensor. This is mean to be only invoked by the
+  // BatchOptimizer class.
+  virtual absl::Status UpdateResiduals(ceres::Problem& problem) = 0;
+
+  // Clear all stored info about residuals.
+  virtual void ClearResidualInfo() = 0;
+
+  // Setter for loss function and scale.
+  virtual void SetLossFunction(
+      utils::LossFunctionType loss, double scale = 1.0) = 0;
 
   // Method for adding this sensor's calibration parameters to a problem.
   // Returns the number of parameters added.

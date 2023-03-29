@@ -48,10 +48,14 @@ ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
   parameters.push_back(t_world_model.data());
   cost_function->AddParameterBlock(t_world_model.size());
   // trajectory spline control points.
-  parameters.push_back(
-      trajectory_world_sensorrig.spline().control_points().data());
-  cost_function->AddParameterBlock(
-      trajectory_world_sensorrig.spline().control_points().size());
+  const int idx = trajectory_world_sensorrig.spline().GetSplineIndex(stamp);
+  const int spline_order = trajectory_world_sensorrig.spline().GetSplineOrder();
+  for (int i = 0; i < spline_order; ++i) {
+    parameters.push_back(
+        trajectory_world_sensorrig.spline().control_points().at(idx + i).data());
+    cost_function->AddParameterBlock(
+        trajectory_world_sensorrig.spline().control_points().at(idx + i).size());
+  }
   // Residual
   cost_function->SetNumResiduals(kCameraResidualSize);
   return cost_function;

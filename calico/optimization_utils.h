@@ -7,6 +7,30 @@
 
 namespace calico::utils {
 
+enum class LossFunctionType : int {
+  kNone,
+  kHuber,
+  kCauchy,
+};
+
+inline ceres::LossFunction* CreateLossFunction(
+    LossFunctionType loss, double scale) {
+  switch (loss) {
+    case LossFunctionType::kNone: {
+      return nullptr;
+    }
+    case LossFunctionType::kHuber: {
+      return new ceres::HuberLoss(scale);
+    }
+    case LossFunctionType::kCauchy: {
+      return new ceres::CauchyLoss(scale);
+    }
+    default: {
+      return nullptr;
+    }
+  }
+}
+
 // Convenience function for adding a Pose3d type to a ceres problem with
 // correct parameterization and manifold specification.
 inline int AddPoseToProblem(ceres::Problem& problem, Pose3d& pose) {

@@ -68,6 +68,9 @@ class Accelerometer : public Sensor {
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
 
+  // Set loss function type.
+  void SetLossFunction(utils::LossFunctionType loss, double scale) final;
+
   // Add this accelerometer's parameters to the ceres problem. Returns the number of
   // parameters added to the problem, which should be intrinsics + extrinsics +
   // latency. If the accelerometer model hasn't been set yet, it will return an
@@ -79,6 +82,12 @@ class Accelerometer : public Sensor {
       ceres::Problem & problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
+
+  // Update residuals for this sensor.
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+
+  // Clear all residual information.
+  void ClearResidualInfo() final;
 
   // Compute synthetic accelerometer measurements at given a sensor rig trajectory.
   absl::StatusOr<std::vector<AccelerometerMeasurement>> Project(
@@ -100,16 +109,6 @@ class Accelerometer : public Sensor {
   absl::Status AddMeasurements(
       const std::vector<AccelerometerMeasurement>& measurements);
 
-  // Remove a measurement with a specific observation id. Returns an error if
-  // the id was not associated with a measurement.
-  absl::Status RemoveMeasurementById(const AccelerometerObservationId& id);
-
-  // Remove multiple measurements by their observation ids. Returns an error if
-  // it attempts to remove an id that was not associated with a measurement.
-  // This method will remove the entire vector, but skip invalid entries.
-  absl::Status RemoveMeasurementsById(
-      const std::vector<AccelerometerObservationId>& ids);
-
   // Clear all measurements.
   void ClearMeasurements();
 
@@ -125,8 +124,13 @@ class Accelerometer : public Sensor {
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   double latency_;
+  utils::LossFunctionType loss_function_;
+  double loss_scale_;
   absl::flat_hash_map<AccelerometerObservationId, AccelerometerMeasurement>
       id_to_measurement_;
+  absl::flat_hash_map<AccelerometerObservationId, Eigen::Vector3d> id_to_residual_;
+  absl::flat_hash_map<AccelerometerObservationId, ceres::ResidualBlockId>
+      id_to_residual_id_;
 };
 
 } // namespace calico::sensors

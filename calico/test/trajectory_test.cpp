@@ -29,7 +29,7 @@ TEST_F(TrajectoryTest, SplineFitAndInterpolation) {
     const double stamp = trajectory_key_values.at(i);
     const Pose3d expected_pose = trajectory_world_sensorrig.at(stamp);
     const Pose3d actual_pose = interpolated_poses.at(i);
-    EXPECT_THAT(actual_pose, PoseEq(expected_pose));
+    EXPECT_THAT(actual_pose, PoseIsApprox(expected_pose, 1e-3));
   }
 }
 

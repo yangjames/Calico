@@ -28,7 +28,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
         self.assertEqual(test_model, accelerometer.GetModel())
         # Set/get intrinsics.
         test_intrinsics = [1]
-        self.assertTrue(accelerometer.SetIntrinsics(test_intrinsics).ok())
+        accelerometer.SetIntrinsics(test_intrinsics)
         np.testing.assert_equal(test_intrinsics, accelerometer.GetIntrinsics())
         # Set/get extrinsics.
         test_extrinsics = calico.Pose3d()
@@ -69,7 +69,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
         self.assertEqual(test_model, gyroscope.GetModel())
         # Set/get intrinsics.
         test_intrinsics = [1]
-        self.assertTrue(gyroscope.SetIntrinsics(test_intrinsics).ok())
+        gyroscope.SetIntrinsics(test_intrinsics)
         np.testing.assert_equal(test_intrinsics, gyroscope.GetIntrinsics())
         # Set/get extrinsics.
         test_extrinsics = calico.Pose3d()
@@ -110,7 +110,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
         self.assertEqual(test_model, camera.GetModel())
         # Set/get intrinsics.
         test_intrinsics = [1, 2, 3, 4, 5, 6, 7, 8]
-        self.assertTrue(camera.SetIntrinsics(test_intrinsics).ok())
+        camera.SetIntrinsics(test_intrinsics)
         np.testing.assert_equal(test_intrinsics, camera.GetIntrinsics())
         # Set/get extrinsics.
         test_extrinsics = calico.Pose3d()
@@ -141,7 +141,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
     def test_Trajectory(self):
         trajectory = calico.Trajectory()
         poses = {0.0:calico.Pose3d(), 1.0:calico.Pose3d()}
-        self.assertTrue(trajectory.AddPoses(poses).ok())
+        trajectory.AddPoses(poses)
         
     def test_Rigidbody(self):
         rigidbody_model_definition = {
@@ -181,7 +181,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
         rigidbody.id = 1
         rigidbody.world_pose_is_constant = True
         rigidbody.model_definition_is_constant = True
-        self.assertTrue(world_model.AddRigidBody(rigidbody).ok())
+        world_model.AddRigidBody(rigidbody)
 
     def test_BatchOptimizer(self):
         # Stub accelerometer.
@@ -190,24 +190,23 @@ class TestCalicoPythonBindings(unittest.TestCase):
             accelerometer.SetModel(
                 calico.AccelerometerIntrinsicsModel.kAccelerometerScaleOnly
             ).ok())
-        self.assertTrue(accelerometer.SetIntrinsics([1]).ok())
+        accelerometer.SetIntrinsics([1])
         # Stub gyroscope.
         gyroscope = calico.Gyroscope()
         self.assertTrue(
             gyroscope.SetModel(
                 calico.GyroscopeIntrinsicsModel.kGyroscopeScaleOnly
             ).ok())
-        self.assertTrue(gyroscope.SetIntrinsics([1]).ok())
+        gyroscope.SetIntrinsics([1])
         # Stub camera.
         camera = calico.Camera()
         self.assertTrue(
             camera.SetModel(calico.CameraIntrinsicsModel.kOpenCv5).ok())
         test_camera_intrinsics = [1, 2, 3, 4, 5, 6, 7, 8]
-        self.assertTrue(camera.SetIntrinsics(test_camera_intrinsics).ok())
+        camera.SetIntrinsics(test_camera_intrinsics)
         # Stub trajectory.
         trajectory = calico.Trajectory()
-        self.assertTrue(trajectory.AddPoses(
-            {0.0:calico.Pose3d(), 1.0:calico.Pose3d()}).ok())
+        trajectory.AddPoses({0.0:calico.Pose3d(), 1.0:calico.Pose3d()})
         # Stub world model.
         world_model = calico.WorldModel()
         # Create optimizer.

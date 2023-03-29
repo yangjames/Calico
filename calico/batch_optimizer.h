@@ -12,14 +12,19 @@
 
 namespace calico {
 
+// Default solver options.
+ceres::Solver::Options DefaultSolverOptions();
+
 class BatchOptimizer {
  public:
+
   ~BatchOptimizer();
   void AddSensor(sensors::Sensor* sensor, bool take_ownership = true);
   void AddWorldModel(WorldModel* world_model, bool take_ownership = true);
   void AddTrajectory(Trajectory* trajectory_world_body,
                      bool take_ownership = true);
-  absl::StatusOr<ceres::Solver::Summary> Optimize();
+  absl::StatusOr<ceres::Solver::Summary> Optimize(
+      const ceres::Solver::Options& options = DefaultSolverOptions());
 
  private:
   bool own_trajectory_world_body_;

@@ -12,11 +12,14 @@ find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(pybind11 REQUIRED)
 find_package(Python REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(yaml-cpp REQUIRED)
 enable_testing()
 
 # Add top level include directory.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 # Typedefs test.
@@ -75,7 +78,7 @@ target_link_libraries(
 add_executable(
   geometry_test
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/geometry_test.cpp
-  )
+)
 target_link_libraries(
   geometry_test
   trajectory
@@ -338,14 +341,55 @@ target_link_libraries(
 )
 add_test(BatchOptimizerTest batch_optimizer_test)
 
+# AprilTags c++ library.
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/apriltags/
+)
+add_library(
+  apriltags
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Edge.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/FloatImage.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Gaussian.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/GLine2D.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/GLineSegment2D.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/GrayModel.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Homography33.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/MathUtil.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Quad.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/Segment.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/TagFamily.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/TagDetection.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/TagDetector.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/apriltags/src/UnionFindSimple.cc
+)
+target_link_libraries(
+  apriltags
+  Eigen3::Eigen
+)
+
+# AprilGrid Detector
+add_library(
+  aprilgrid_detector
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/chart_detectors/aprilgrid_detector.cpp
+)
+target_link_libraries(
+  aprilgrid_detector
+  world_model
+  apriltags
+  ${OpenCV_LIBS}
+  ${YAML_CPP_LIBRARIES}
+)
+
 # Build python bindings.
 pybind11_add_module(
-  calico
+  _calico
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
 )
 target_link_libraries(
-  calico PUBLIC
+  _calico PUBLIC
   accelerometer
+  aprilgrid_detector
   batch_optimizer
   camera
   gyroscope
@@ -353,12 +397,101 @@ target_link_libraries(
   world_model
   Eigen3::Eigen
 )
+set_target_properties(
+  _calico PROPERTIES
+  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
+)
 add_test(
   NAME python_bindings_test
-  COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
+  COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
+)
+
+file(
+  COPY
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
+  DESTINATION ${PROJECT_BINARY_DIR}/calico
+)
+# Python utilities module.
+add_test(
+  NAME python_utils_test
+  COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
 )
 set_tests_properties(
-  python_bindings_test
-  PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}:$ENV{PYTHON_PATH}"
+  python_bindings_test python_utils_test
+  PROPERTIES ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}:$ENV{PYTHONPATH}"
+)
+
+# Install cpp library.
+install(
+  TARGETS
+  accelerometer
+  accelerometer_cost_functor
+  accelerometer_models
+  apriltags
+  batch_optimizer
+  camera
+  camera_cost_functor
+  camera_models
+  gyroscope
+  gyroscope_cost_functor
+  gyroscope_models
+  trajectory
+  world_model
+  aprilgrid_detector
+  EXPORT
+  CalicoConfig
+  DESTINATION lib/calico
+)
+install(
+  EXPORT
+  CalicoConfig
+  DESTINATION lib/cmake/calico
+)
+set(top_level_headers
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/profiler.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/bspline.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test_utils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/optimization_utils.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/typedefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/matchers.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/status_builder.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/geometry.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/world_model.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/statusor_macros.h
+)
+install(
+  FILES ${top_level_headers}
+  DESTINATION include/calico
+)
+set(sensor_headers
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_models.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/sensor_base.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_cost_functor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.h
+)
+install(
+  FILES ${sensor_headers}
+  DESTINATION include/calico/sensors/
+)
+# Install python library.
+install(
+  TARGETS _calico
+  DESTINATION ${Python_SITELIB}/calico
+)
+install(
+  FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+  DESTINATION ${Python_SITELIB}/calico
 )

@@ -87,42 +87,6 @@ TEST_P(AccelerometerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   EXPECT_EQ(accelerometer.NumberOfMeasurements(), measurements.size() - 1);
 }
 
-TEST_P(AccelerometerTest, RemoveMeasurement) {
-  const AccelerometerMeasurement measurement{};
-  Accelerometer accelerometer;
-  EXPECT_OK(accelerometer.AddMeasurement(measurement));
-  EXPECT_EQ(accelerometer.NumberOfMeasurements(), 1);
-  EXPECT_OK(accelerometer.RemoveMeasurementById(measurement.id));
-  EXPECT_EQ(accelerometer.NumberOfMeasurements(), 0);
-  EXPECT_EQ(accelerometer.RemoveMeasurementById(measurement.id).code(),
-            absl::StatusCode::kInvalidArgument);
-}
-
-TEST_P(AccelerometerTest, RemoveMultipleMeasurements) {
-  std::vector<AccelerometerMeasurement> measurements {
-    {
-      .measurement = Eigen::Vector3d::Random(),
-      .id = {.stamp = 0, .sequence = 0},
-    },
-    {
-      .measurement = Eigen::Vector3d::Random(),
-      .id = {.stamp = 1, .sequence = 1},
-    }
-  };
-  Accelerometer accelerometer;
-  EXPECT_OK(accelerometer.AddMeasurements(measurements));
-  EXPECT_EQ(accelerometer.NumberOfMeasurements(), measurements.size());
-
-  std::vector<AccelerometerObservationId> ids;
-  for (const auto& measurement : measurements) {
-    ids.push_back(measurement.id);
-  }
-  EXPECT_OK(accelerometer.RemoveMeasurementsById(ids));
-  EXPECT_EQ(accelerometer.NumberOfMeasurements(), 0);
-  EXPECT_EQ(accelerometer.RemoveMeasurementsById(ids).code(),
-            absl::StatusCode::kInvalidArgument);
-}
-
 TEST_P(AccelerometerTest, AddCalibrationParametersToProblem) {
   const auto params = GetParam();
   Eigen::VectorXd intrinsics(params.parameter_size);

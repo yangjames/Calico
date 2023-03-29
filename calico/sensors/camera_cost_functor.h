@@ -26,8 +26,8 @@ enum class CameraParameterIndices : int {
   kModelPointIndex = 4,
   kModelRotationIndex = 5,
   kModelTranslationIndex = 6,
-  // Rotation and position control points of the entire trajectory spline as an
-  // Nx6 matrix.
+  // Rotation and position control points of the associated spline segment as an
+  // Nx6 matrix where N is the spline order.
   kSensorRigPoseSplineControlPointsIndex = 7,
 };
 
@@ -100,13 +100,13 @@ class CameraCostFunctor {
     // Parse sensor rig spline resolved in the world frame.
     const int num_control_points =
         trajectory_evaluation_params_.num_control_points;
-    const Eigen::Map<const Eigen::MatrixX<T>> all_control_points(
-        &(parameters[static_cast<int>(
-            CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex)][0]),
-        num_control_points, 6);
-    const Eigen::Ref<const Eigen::MatrixX<T>> control_points =
-        all_control_points.block(trajectory_evaluation_params_.spline_index, 0,
-                                 Trajectory::kSplineOrder, 6);
+    Eigen::MatrixX<T> control_points(num_control_points, 6);
+    for (int i = 0; i < num_control_points; ++i) {
+      control_points.row(i) = Eigen::Map<const Eigen::Vector<T, 6>>(
+          &(parameters[static_cast<int>(
+              CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex) + i
+              ][0]));
+    }
     const Eigen::MatrixX<T> basis_matrix =
         trajectory_evaluation_params_.basis_matrix.template cast<T>();
     const T knot0 = static_cast<T>(trajectory_evaluation_params_.knot0);
