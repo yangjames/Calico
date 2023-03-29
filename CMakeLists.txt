@@ -397,21 +397,31 @@ target_link_libraries(
   world_model
   Eigen3::Eigen
 )
+set_target_properties(
+  _calico PROPERTIES
+  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
+)
 add_test(
   NAME python_bindings_test
-  COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
+  COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
 )
 
+file(
+  COPY
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
+  DESTINATION ${PROJECT_BINARY_DIR}/calico
+)
 # Python utilities module.
 add_test(
   NAME python_utils_test
-  COMMAND pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
+  COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
 )
 set_tests_properties(
   python_bindings_test python_utils_test
-  PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}:$ENV{PYTHON_PATH}"
+  PROPERTIES ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}:$ENV{PYTHONPATH}"
 )
 
 # Install cpp library.
