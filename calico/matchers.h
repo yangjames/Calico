@@ -40,7 +40,7 @@ MATCHER_P(EigenEq, expected_vector, "") {
 // Matcher for an Eigen vector with given tolerance.
 MATCHER_P2(EigenIsApprox, expected_vector, tolerance, "") {
   *result_listener << arg.transpose() << " vs. " << expected_vector.transpose();
-  return ((arg - expected_vector).squaredNorm() < tolerance);
+  return ((arg - expected_vector).norm() < tolerance);
 }
 
 MATCHER_P(StatusIs, status, "") {
