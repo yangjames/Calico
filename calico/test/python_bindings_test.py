@@ -141,7 +141,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
     def test_Trajectory(self):
         trajectory = calico.Trajectory()
         poses = {0.0:calico.Pose3d(), 1.0:calico.Pose3d()}
-        trajectory.AddPoses(poses)
+        trajectory.FitSpline(poses)
         
     def test_Rigidbody(self):
         rigidbody_model_definition = {
@@ -206,7 +206,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
         camera.SetIntrinsics(test_camera_intrinsics)
         # Stub trajectory.
         trajectory = calico.Trajectory()
-        trajectory.AddPoses({0.0:calico.Pose3d(), 1.0:calico.Pose3d()})
+        trajectory.FitSpline({0.0:calico.Pose3d(), 1.0:calico.Pose3d()})
         # Stub world model.
         world_model = calico.WorldModel()
         # Create optimizer.

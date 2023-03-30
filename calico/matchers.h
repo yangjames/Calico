@@ -47,6 +47,9 @@ MATCHER_P(StatusIs, status, "") {
   return arg.status().code() == status;
 }
 
+MATCHER_P(StatusCodeIs, status, "") {
+  return arg.code() == status;
+}
 
 } // namespace calico
 #endif // CALICO_MATCHERS_H_

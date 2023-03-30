@@ -92,14 +92,10 @@ class GyroscopeCostFunctor {
     const T stamp =
         static_cast<T>(trajectory_evaluation_params_.stamp) - latency;
     // Evaluate the pose and pose rate.
-    const Eigen::Vector<T, 6> pose_vector =
-        BSpline<Trajectory::kSplineOrder, T>::Evaluate(
-            control_points, knot0, knot1, basis_matrix, stamp,
-            /*derivative=*/0);
-    const Eigen::Vector<T, 6> pose_dot_vector =
-        BSpline<Trajectory::kSplineOrder, T>::Evaluate(
-            control_points, knot0, knot1, basis_matrix, stamp,
-            /*derivative=*/1);
+    const Eigen::Vector<T, 6> pose_vector = BSpline<6, T>::Evaluate(
+        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/0);
+    const Eigen::Vector<T, 6> pose_dot_vector = BSpline<6, T>::Evaluate(
+        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/1);
     // Compute the angular velocity of the gyroscope.
     // TODO(yangjames): Also evaluate acceleration for g-sensitivity
     //                  calculations.

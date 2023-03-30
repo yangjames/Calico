@@ -115,7 +115,7 @@ class CameraCostFunctor {
         static_cast<T>(trajectory_evaluation_params_.stamp) - latency;
     // Evaluate the pose.
     const Eigen::Vector<T, 6> pose_vector =
-      BSpline<Trajectory::kSplineOrder, T>::Evaluate(
+      BSpline<6, T>::Evaluate(
           control_points, knot0, knot1, basis_matrix, stamp, 0);
     const Eigen::Vector3<T> phi_sensorrig_world = -pose_vector.head(3);
     T q_sensorrig_world_array[4];

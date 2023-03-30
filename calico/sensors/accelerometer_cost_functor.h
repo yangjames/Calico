@@ -100,15 +100,12 @@ class AccelerometerCostFunctor {
     const T stamp =
         static_cast<T>(trajectory_evaluation_params_.stamp) - latency;
     // Evaluate the pose, pose rate, and pose acceleration.
-    const Eigen::Vector<T, 6> pose_vector =
-        BSpline<Trajectory::kSplineOrder, T>::Evaluate(
-            control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/0);
-    const Eigen::Vector<T, 6> pose_dot_vector =
-        BSpline<Trajectory::kSplineOrder, T>::Evaluate(
-            control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/1);
-    const Eigen::Vector<T, 6> pose_ddot_vector =
-        BSpline<Trajectory::kSplineOrder, T>::Evaluate(
-            control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/2);
+    const Eigen::Vector<T, 6> pose_vector = BSpline<6, T>::Evaluate(
+        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/0);
+    const Eigen::Vector<T, 6> pose_dot_vector = BSpline<6, T>::Evaluate(
+        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/1);
+    const Eigen::Vector<T, 6> pose_ddot_vector = BSpline<6, T>::Evaluate(
+        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/2);
     // Compute the kinematics of the accelerometer.
     const Eigen::Vector3<T> phi_sensorrig_world = -pose_vector.head(3);
     const Eigen::Vector3<T> phi_dot_sensorrig_world = -pose_dot_vector.head(3);

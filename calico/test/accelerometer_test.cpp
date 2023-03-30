@@ -24,7 +24,7 @@ class AccelerometerTest
   void SetUp() override {
     DefaultSyntheticTest synthetic_test;
     const auto trajectory = synthetic_test.TrajectoryAsMap();
-    EXPECT_OK(trajectory_world_sensorrig.AddPoses(trajectory));
+    EXPECT_OK(trajectory_world_sensorrig.FitSpline(trajectory));
     stamps = synthetic_test.TrajectoryMapKeys();
   }
   std::vector<double> stamps;

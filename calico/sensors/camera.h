@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "absl/container/flat_hash_map.h"
+#include "absl/container/flat_hash_set.h"
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
 #include "calico/sensors/sensor_base.h"
@@ -75,6 +76,13 @@ class Camera : public Sensor {
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
 
+  // Update residuals for this sensor. This will only apply to measurements
+  // not marked as outliers.
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+
+  // Clear all residual information.
+  void ClearResidualInfo() final;
+
   // Set loss function type.
   void SetLossFunction(utils::LossFunctionType loss, double scale) final;
 
@@ -89,12 +97,6 @@ class Camera : public Sensor {
       ceres::Problem & problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
-
-  // Update residuals for this sensor.
-  absl::Status UpdateResiduals(ceres::Problem& problem) final;
-
-  // Clear all residual information.
-  void ClearResidualInfo() final;
 
   // Compute the project of a world model through a kinematic chain. This
   // method returns only valid synthetic measurements as would be observed by
@@ -119,22 +121,34 @@ class Camera : public Sensor {
   absl::Status AddMeasurements(
       const std::vector<CameraMeasurement>& measurements);
 
-  // Getter for observation id to residual map. If this sensor hasn't been
-  // optimized, the returned map will be empty.
-  const absl::flat_hash_map<CameraObservationId, Eigen::Vector2d>&
-  GetMeasurementIdToResidual() const;
-
-  // Getter for observation id to measurement map.
+  // Getter for all measurements. Returns a map of observation ids to
+  // measurements.
   const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
   GetMeasurementIdToMeasurement() const;
 
-  // Returns a vector of measurement-residual pairs. Returns an error if
-  // residuals and measurements are not the same size, or if one contains an
-  // observation ID that the other doesn't.
+  // Returns a vector of measurement-residual pairs. Only returns for
+  // measurements that have residuals. Returns an error if there are more
+  // residuals than measurements.
   absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
   GetMeasurementResidualPairs() const;
+  
+  // Tag a single measurement as an outlier by its measurement ID. Camera class
+  // keeps track of an outliers list internally. If passed a measurement ID that
+  // does not correspond with any measurement tracked by this camera, an
+  // InvalidArgument status is returned.
+  absl::Status MarkOutlierById(const CameraObservationId& id);
 
-  // Clear all measurements.
+  // Tag multiple measurements as outliers by measurement ID. Camera class keeps
+  // track of an outliers list internally. If passed a measurement ID that does
+  // not correspond with any measurement tracked by this camera, an
+  // InvalidArgument status is returned.
+  absl::Status MarkOutliersById(const std::vector<CameraObservationId>& ids);
+
+  // Clear outliers list.
+  void ClearOutliersList();
+
+  // Clear all measurements. This will also clear any internally stored residuals
+  // and marked outliers.
   void ClearMeasurements();
 
   // Get current number of measurements stored.
@@ -156,6 +170,7 @@ class Camera : public Sensor {
   absl::flat_hash_map<CameraObservationId, Eigen::Vector2d> id_to_residual_;
   absl::flat_hash_map<CameraObservationId, ceres::ResidualBlockId>
       id_to_residual_id_;
+  absl::flat_hash_set<CameraObservationId> outlier_ids_;
 };
 
 } // namespace calico::sensors

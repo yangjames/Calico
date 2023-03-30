@@ -11,19 +11,41 @@
 namespace calico {
 
 
-absl::Status Trajectory::AddPoses(
-    const absl::flat_hash_map<double, Pose3d>& poses_world_body) {
+absl::Status Trajectory::FitSpline(
+    const absl::flat_hash_map<double, Pose3d>& poses_world_body,
+    double knot_frequency, int spline_order) {
   pose_id_to_pose_world_body_ = poses_world_body;
-  return FitSpline(poses_world_body);
-}
 
-absl::Status Trajectory::AddPoses(
-    const std::unordered_map<double, Pose3d>& poses_world_body) {
-  absl::flat_hash_map<double, Pose3d> poses_temp;
-  for (const auto& [key, value] : poses_world_body) {
-    poses_temp[key] = value;
+  // Grab all sorted timestamps from the map.
+  std::vector<double> stamps;
+  for (const auto& [stamp, _] : poses_world_body) {
+    stamps.push_back(stamp);
   }
-  return AddPoses(poses_temp);
+  std::sort(stamps.begin(), stamps.end());
+
+  // Convert each pose into two 3-vectors, rotation and position.
+  const int num_poses = poses_world_body.size();
+  std::vector<Eigen::Vector3d> phi_world_body(num_poses);
+  std::vector<Eigen::Vector3d> t_world_body(num_poses);
+  int i = 0;
+  for (const auto& stamp : stamps) {
+    const Pose3d& T_world_body = poses_world_body.at(stamp);
+    Eigen::AngleAxisd vec(T_world_body.rotation());
+    phi_world_body[i] = vec.axis() * vec.angle();
+    t_world_body[i] = T_world_body.translation();
+    ++i;
+  }
+  UnwrapPhaseLogMap(phi_world_body);
+
+  std::vector<Eigen::Vector<double, 6>> pose_world_body(num_poses);
+  for (int i = 0; i < pose_world_body.size(); ++i) {
+    pose_world_body[i].head(3) = phi_world_body[i];
+    pose_world_body[i].tail(3) = t_world_body[i];
+  }
+
+  RETURN_IF_ERROR(spline_pose_world_body_.FitToData(
+      stamps, pose_world_body, spline_order, knot_frequency));
+  return absl::OkStatus();
 }
 
 int Trajectory::AddParametersToProblem(ceres::Problem& problem) {
@@ -54,39 +76,6 @@ TrajectoryEvaluationParams Trajectory::GetEvaluationParams(double stamp) const {
     .basis_matrix =
         spline_pose_world_body_.basis_matrices().at(control_point_idx),
   };
-}
-
-absl::Status Trajectory::FitSpline(
-    const absl::flat_hash_map<double, Pose3d>& poses_world_body) {
-  // Grab all sorted timestamps from the map.
-  std::vector<double> stamps;
-  for (const auto& [stamp, _] : poses_world_body) {
-    stamps.push_back(stamp);
-  }
-  std::sort(stamps.begin(), stamps.end());
-  // Convert each pose into two 3-vectors, rotation and position.
-  const int num_poses = poses_world_body.size();
-  std::vector<Eigen::Vector3d> phi_world_body(num_poses);
-  std::vector<Eigen::Vector3d> t_world_body(num_poses);
-  int i = 0;
-  for (const auto& stamp : stamps) {
-    const Pose3d& T_world_body = poses_world_body.at(stamp);
-    Eigen::AngleAxisd vec(T_world_body.rotation());
-    phi_world_body[i] = vec.axis() * vec.angle();
-    t_world_body[i] = T_world_body.translation();
-    ++i;
-  }
-  UnwrapPhaseLogMap(phi_world_body);
-
-  std::vector<Eigen::Vector<double, 6>> pose_world_body(num_poses);
-  for (int i = 0; i < pose_world_body.size(); ++i) {
-    pose_world_body[i].head(3) = phi_world_body[i];
-    pose_world_body[i].tail(3) = t_world_body[i];
-  }
-
-  RETURN_IF_ERROR(spline_pose_world_body_.FitToData(
-      stamps, pose_world_body, kSplineOrder, kKnotFrequency));
-  return absl::OkStatus();
 }
 
 void Trajectory::UnwrapPhaseLogMap(std::vector<Eigen::Vector3d>& phi) {
