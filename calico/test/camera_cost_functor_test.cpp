@@ -65,6 +65,16 @@ INSTANTIATE_TEST_SUITE_P(
           Eigen::Vector3d::Random(),
           Pose3d(),
         },
+        {
+          "KannalaBrandt",
+          CameraIntrinsicsModel::kKannalaBrandt,
+          Eigen::Vector2d::Random(),
+          Eigen::VectorXd::Random(KannalaBrandtModel::kNumberOfParameters),
+          Pose3d(),
+          5,
+          Eigen::Vector3d::Random(),
+          Pose3d(),
+        },
       }),
     [](const testing::TestParamInfo
         <CameraCostFunctionCreationTest::ParamType>& info) {

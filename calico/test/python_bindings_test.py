@@ -105,11 +105,11 @@ class TestCalicoPythonBindings(unittest.TestCase):
         self.assertEqual(test_name, camera.GetName())
         # Set/get model.
         test_model = (
-            calico.CameraIntrinsicsModel.kOpenCv5)
+            calico.CameraIntrinsicsModel.kKannalaBrandt)
         self.assertTrue(camera.SetModel(test_model).ok())
         self.assertEqual(test_model, camera.GetModel())
         # Set/get intrinsics.
-        test_intrinsics = [1, 2, 3, 4, 5, 6, 7, 8]
+        test_intrinsics = [1, 2, 3, 4, 5, 6, 7]
         camera.SetIntrinsics(test_intrinsics)
         np.testing.assert_equal(test_intrinsics, camera.GetIntrinsics())
         # Set/get extrinsics.
