@@ -14,4 +14,4 @@ Some features of Calico include:
 - Robustifier kernels on a per-sensor basis.
 - Addition of custom sensor intrinsics models.
 
-Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info!
+Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info.
