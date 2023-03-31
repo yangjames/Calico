@@ -15,3 +15,30 @@ Some features of Calico include:
 - Addition of custom sensor intrinsics models.
 
 Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info.
+
+# License
+Poor sensor calibration is a problem that is endemic within the robotics community, yet typically not given enough attention because it tends to detract from higher level project goals. The purpose of this library is to help roboticists quickly resolve their calibration issues so that they can work on more interesting things. This library is hereby granted the MIT license, to be used free of charge by a anyone within acadmia or industry.
+
+To the best of my knowledge, all library dependencies also fall under BSD 2/3, LGPL, or Apache 2.0.
+
+## MIT License
+
+Copyright (c) 2023 James Yang
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
