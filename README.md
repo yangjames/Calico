@@ -1,53 +1,17 @@
+<p align="center">
+<img src="https://user-images.githubusercontent.com/4121640/229179345-57bafb62-6391-498c-8d01-dbe86f8d54d1.png" width="300">
+</p>
+
 # Calico
-<img src="doc/calico.png" width="200">
 
-# WIP
-## Build dependencies
+Calico is a lightweight visual-inertial calibration library designed for rapid problem construction, debugging, and tool creation. Unlike other codebases that strictly contain standalone calibration tools made with specific hardware setups in mind, Calico is a flexible library with which you can build and change your **own tools** based on your hardware needs and limitations. As long as you adhere to the [geoemtry convention](), there is **no need** to change the formulation of the underlying optimization.
 
-CMake (3.5 or higher): `sudo apt install cmake`
+Some features of Calico include:
+- Sensor intrinsics, extrinsics, and latency estimation.
+- Calibration with multiple (and mixed) fiducials.
+- Addition of an arbitrary number of rigidly attached sensors.
+- Measurement outlier tagging and exclusion.
+- Robustifier kernels on a per-sensor basis.
+- Addition of custom sensor intrinsics models.
 
-TODO: bazel support
-
-
-Simple install:
-## Ubuntu 22.04
-```
-sudo apt install -y build-essential libatlas-base-dev libgoogle-glog-dev libgflags-dev libeigen3-dev libgtest-dev libgmock-dev libabsl-dev python3-dev python3-pytest pybind11-dev libceres-dev libyaml-cpp-dev libopencv-dev python3-opencv
-```
-## Ubuntu 20.04
-```
-sudo apt install -y build-essential libatlas-base-dev libgoogle-glog-dev libgflags-dev libeigen3-dev libgtest-dev libgmock-dev python3-dev python3-pytest pybind11-dev libyaml-cpp-dev libopencv-dev python3-opencv
-```
-```
-cd ~
-wget http://ceres-solver.org/ceres-solver-2.1.0.tar.gz
-tar zxf ceres-solver-2.1.0.tar.gz
-mkdir ceres-bin
-cd ceres-bin
-cmake ../ceres-solver-2.1.0
-make -j3
-sudo make install
-```
-```
-cd ~
-git clone https://github.com/abseil/abseil-cpp.git
-cd ~/abseil-cpp
-cmake -S . -B build -DCMAKE_CXX_STANDARD=17 -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-cmake --build build
-sudo cmake --install build
-```
-## Library dependencies
-
-BLAS & LAPACK: `sudo apt install libatlas-base-dev` 
-
-glog (for Ceres solver): `sudo apt install libgoogle-glog-dev libgflags-dev`
-
-Eigen3: `sudo apt install libeigen3-dev`
-
-GTest: `sudo apt install libgtest-dev libgmock-dev`
-
-Abseil: `sudo apt install libabsl-dev`
-
-Pybind11: `sudo apt install pybind11-dev`
-
-Ceres Solver: Our least-squares optimization backend. See [Ceres solver installation page](http://ceres-solver.org/installation.html) for more details.
+Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info!
