@@ -22,17 +22,15 @@ struct TrajectoryEvaluationParams {
 
 class Trajectory {
  public:
-  static constexpr int kSplineOrder = 6;
-  static constexpr double kKnotFrequency = 10;
+  static constexpr int kDefaultSplineOrder = 6;
+  static constexpr double kDefaultKnotFrequency = 10;
 
   // Add discrete poses representing a time-parameterized trajectory. A new
   // spline will be fit to these poses.
-  absl::Status AddPoses(
-      const absl::flat_hash_map<double, Pose3d>& poses_world_body);
-
-  // Same as the absl version of AddPoses for python compatibility.
-  absl::Status AddPoses(
-      const std::unordered_map<double, Pose3d>& poses_world_body);
+  absl::Status FitSpline(
+      const absl::flat_hash_map<double, Pose3d>& poses_world_body,
+      double knot_frequency = kDefaultKnotFrequency,
+      int spline_order = kDefaultSplineOrder);
 
   // Add internal parameters to a ceres problem. Any internal parameters set to
   // constant are marked as such in the problem. Returns the total number of
@@ -76,10 +74,6 @@ class Trajectory {
  private:
   absl::flat_hash_map<double, Pose3d> pose_id_to_pose_world_body_;
   BSpline<6> spline_pose_world_body_;
-
-  // Fit a 6-DOF spline through a set of stamped poses.
-  absl::Status FitSpline(
-      const absl::flat_hash_map<double, Pose3d>& poses_world_body);
 
   // Convenience function for unwrapping discrete axis-angle vectors in order to
   // get a more continuous signal.

@@ -38,17 +38,13 @@ class Sensor {
   virtual absl::Status SetLatency(double latency) = 0;
   virtual double GetLatency() const = 0;
 
-  // Enable or disable extrinsics estimation.
+  // Enable or disable extrinsics/intrinsics/latency estimation.
   virtual void EnableExtrinsicsEstimation(bool enable) = 0;
-
-  // Enable or disable intrinsics estimation.
   virtual void EnableIntrinsicsEstimation(bool enable) = 0;
-
-  // Enable or disable latency estimation.
   virtual void EnableLatencyEstimation(bool enable) = 0;
 
   // Update residuals for this sensor. This is mean to be only invoked by the
-  // BatchOptimizer class.
+  // BatchOptimizer class. Only applies to measurements not marked as outliers.
   virtual absl::Status UpdateResiduals(ceres::Problem& problem) = 0;
 
   // Clear all stored info about residuals.

@@ -29,7 +29,7 @@ class CameraCostFunctionCreationTest :
     absl::flat_hash_map<double, Pose3d> poses_world_sensorrig =
       synthetic_test.TrajectoryAsMap();
     timestamps = synthetic_test.TrajectoryMapKeys();
-    ASSERT_OK(trajectory_world_sensorrig.AddPoses(poses_world_sensorrig));
+    ASSERT_OK(trajectory_world_sensorrig.FitSpline(poses_world_sensorrig));
   }
   std::vector<double> timestamps;
   Trajectory trajectory_world_sensorrig;
@@ -60,6 +60,16 @@ INSTANTIATE_TEST_SUITE_P(
           CameraIntrinsicsModel::kOpenCv5,
           Eigen::Vector2d::Random(),
           Eigen::VectorXd::Random(OpenCv5Model::kNumberOfParameters),
+          Pose3d(),
+          5,
+          Eigen::Vector3d::Random(),
+          Pose3d(),
+        },
+        {
+          "KannalaBrandt",
+          CameraIntrinsicsModel::kKannalaBrandt,
+          Eigen::Vector2d::Random(),
+          Eigen::VectorXd::Random(KannalaBrandtModel::kNumberOfParameters),
           Pose3d(),
           5,
           Eigen::Vector3d::Random(),

@@ -27,7 +27,7 @@ class GyroscopeCostFunctionCreationTest :
     absl::flat_hash_map<double, Pose3d> poses_world_sensorrig =
       synthetic_test.TrajectoryAsMap();
     timestamps = synthetic_test.TrajectoryMapKeys();
-    ASSERT_OK(trajectory_world_sensorrig.AddPoses(poses_world_sensorrig));
+    ASSERT_OK(trajectory_world_sensorrig.FitSpline(poses_world_sensorrig));
   }
   std::vector<double> timestamps;
   Trajectory trajectory_world_sensorrig;

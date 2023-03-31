@@ -6,6 +6,81 @@
 
 namespace calico::sensors {
 
+void Camera::SetName(const std::string& name) {
+  name_ = name;
+}
+const std::string& Camera::GetName() const { return name_; }
+
+void Camera::SetExtrinsics(const Pose3d& T_sensorrig_sensor) {
+  T_sensorrig_sensor_ = T_sensorrig_sensor;
+}
+
+const Pose3d& Camera::GetExtrinsics() const {
+  return T_sensorrig_sensor_;
+}
+
+absl::Status Camera::SetIntrinsics(const Eigen::VectorXd& intrinsics) {
+  if (!camera_model_) {
+    return absl::InvalidArgumentError("Camera model has not been set!");
+  }
+  if (intrinsics.size() != camera_model_->NumberOfParameters()) {
+    return absl::InvalidArgumentError(
+        absl::StrCat(
+            "Tried to set intrinsics of size ", intrinsics.size(),
+            " for camera ", GetName(), ". Expected intrinsics size of ",
+            camera_model_->NumberOfParameters()));
+  }
+  intrinsics_ = intrinsics;
+  return absl::OkStatus();
+}
+
+const Eigen::VectorXd& Camera::GetIntrinsics() const {
+  return intrinsics_;
+}
+
+absl::Status Camera::SetLatency(double latency) {
+  latency_ = latency;
+  return absl::OkStatus();
+}
+
+double Camera::GetLatency() const {
+  return latency_;
+}
+
+void Camera::EnableExtrinsicsEstimation(bool enable) {
+  extrinsics_enabled_ = enable;
+}
+
+void Camera::EnableIntrinsicsEstimation(bool enable) {
+  intrinsics_enabled_ = enable;
+}
+
+void Camera::EnableLatencyEstimation(bool enable) {
+  latency_enabled_ = enable;
+}
+
+absl::Status Camera::UpdateResiduals(ceres::Problem& problem) {
+  for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
+    Eigen::Vector2d residual;
+    if (!problem.EvaluateResidualBlock(residual_id,
+        /*apply_loss_function=*/false, nullptr, residual.data(), nullptr)) {
+      return absl::InternalError("Failed to update residual for camera " + name_);
+    }
+    id_to_residual_[measurement_id] = residual;
+  }
+  return absl::OkStatus();
+}
+
+void Camera::ClearResidualInfo() {
+  id_to_residual_id_.clear();
+  id_to_residual_.clear();
+}
+
+void Camera::SetLossFunction(utils::LossFunctionType loss, double scale) {
+  loss_function_ = loss;
+  loss_scale_ = scale;
+}
+
 absl::StatusOr<int> Camera::AddParametersToProblem(ceres::Problem& problem) {
   int num_parameters_added = 0;
   if (!camera_model_) {
@@ -35,6 +110,10 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
     WorldModel& world_model) {
   int num_residuals_added = 0;
   for (const auto& [observation_id, measurement] : id_to_measurement_) {
+    // Skip measurements marked as outliers.
+    if (outlier_ids_.contains(observation_id)) {
+      continue;
+    }
     const int rigidbody_id = observation_id.model_id;
     if (!world_model.rigidbodies().contains(rigidbody_id)) {
       return absl::FailedPreconditionError(absl::StrCat(
@@ -117,81 +196,6 @@ absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
   return measurements;
 }
 
-absl::Status Camera::SetLatency(double latency) {
-  latency_ = latency;
-  return absl::OkStatus();
-}
-
-double Camera::GetLatency() const {
-  return latency_;
-}
-
-void Camera::SetName(const std::string& name) {
-  name_ = name;
-}
-const std::string& Camera::GetName() const { return name_; }
-
-void Camera::SetExtrinsics(const Pose3d& T_sensorrig_sensor) {
-  T_sensorrig_sensor_ = T_sensorrig_sensor;
-}
-    
-const Pose3d& Camera::GetExtrinsics() const {
-  return T_sensorrig_sensor_;
-}
-
-absl::Status Camera::SetIntrinsics(const Eigen::VectorXd& intrinsics) {
-  if (!camera_model_) {
-    return absl::InvalidArgumentError("Camera model has not been set!");
-  }
-  if (intrinsics.size() != camera_model_->NumberOfParameters()) {
-    return absl::InvalidArgumentError(
-        absl::StrCat(
-            "Tried to set intrinsics of size ", intrinsics.size(),
-            " for camera ", GetName(), ". Expected intrinsics size of ",
-            camera_model_->NumberOfParameters()));
-  }
-  intrinsics_ = intrinsics;
-  return absl::OkStatus();
-}
-
-const Eigen::VectorXd& Camera::GetIntrinsics() const {
-  return intrinsics_;
-}
-
-void Camera::EnableExtrinsicsEstimation(bool enable) {
-  extrinsics_enabled_ = enable;
-}
-
-void Camera::EnableIntrinsicsEstimation(bool enable) {
-  intrinsics_enabled_ = enable;
-}
-
-void Camera::EnableLatencyEstimation(bool enable) {
-  latency_enabled_ = enable;
-}
-
-void Camera::SetLossFunction(utils::LossFunctionType loss, double scale) {
-  loss_function_ = loss;
-  loss_scale_ = scale;
-}
-
-absl::Status Camera::UpdateResiduals(ceres::Problem& problem) {
-  for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
-    Eigen::Vector2d residual;
-    if (!problem.EvaluateResidualBlock(residual_id,
-        /*apply_loss_function=*/false, nullptr, residual.data(), nullptr)) {
-      return absl::InternalError("Failed to update residual for camera " + name_);
-    }
-    id_to_residual_[measurement_id] = residual;
-  }
-  return absl::OkStatus();
-}
-
-void Camera::ClearResidualInfo() {
-  id_to_residual_id_.clear();
-  id_to_residual_.clear();
-}
-
 absl::Status Camera::SetModel(CameraIntrinsicsModel camera_model) {
   camera_model_ = CameraModel::Create(camera_model);
   intrinsics_ = Eigen::VectorXd::Zero(camera_model_->NumberOfParameters());
@@ -235,11 +239,6 @@ absl::Status Camera::AddMeasurements(
   return absl::InvalidArgumentError(message);
 }
 
-const absl::flat_hash_map<CameraObservationId, Eigen::Vector2d>&
-Camera::GetMeasurementIdToResidual() const {
-  return id_to_residual_;
-}
-
 const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
 Camera::GetMeasurementIdToMeasurement() const {
   return id_to_measurement_;
@@ -247,31 +246,54 @@ Camera::GetMeasurementIdToMeasurement() const {
 
 absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
 Camera::GetMeasurementResidualPairs() const {
-  if (id_to_residual_.size() != id_to_measurement_.size()) {
-    return absl::FailedPreconditionError(
-        "Residuals and measurements must be same size.");
+  if (id_to_residual_.size() > id_to_measurement_.size()) {
+    return absl::InternalError(
+        "There are more residuals than measurements.");
   }
   if (id_to_measurement_.empty()) {
     return absl::FailedPreconditionError(
         "Measurements are empty. Nothing to return.");
   }
   std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>> pairs;
-  for (const auto [id, measurement] : id_to_measurement_) {
-    auto it = id_to_residual_.find(id);
-    if (it != id_to_residual_.end()) {
-      pairs.push_back({measurement, it->second});
+  for (const auto [id, residual] : id_to_residual_) {
+    auto it = id_to_measurement_.find(id);
+    if (it != id_to_measurement_.end()) {
+      pairs.push_back({it->second, residual});
     } else {
       return absl::InternalError(
-          "Measurements contain an id that residuals does not have.");
+          "Found a residual that doesn't correspond to any measurement.");
     }
   }
   return pairs;
+}
+
+absl::Status Camera::MarkOutlierById(const CameraObservationId& id) {
+  if (!id_to_measurement_.contains(id)) {
+    return absl::InvalidArgumentError(absl::StrCat(
+        "Attempted to add id that is not within the measurement set.",
+        "\nStamp - ", id.stamp, ", image_id - ", id.image_id,
+        "model_id - ", id.model_id, "feature_id - ", id.feature_id));
+  }
+  outlier_ids_.insert(id);
+  return absl::OkStatus();
+}
+
+absl::Status Camera::MarkOutliersById(const std::vector<CameraObservationId>& ids) {
+  for (const auto& id : ids) {
+    RETURN_IF_ERROR(MarkOutlierById(id));
+  }
+  return absl::OkStatus();
+}
+
+void Camera::ClearOutliersList() {
+  outlier_ids_.clear();
 }
 
 void Camera::ClearMeasurements() {
   id_to_measurement_.clear();
   id_to_residual_id_.clear();
   id_to_residual_.clear();
+  outlier_ids_.clear();
 }
 
 int Camera::NumberOfMeasurements() const {

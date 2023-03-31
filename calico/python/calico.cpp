@@ -148,7 +148,8 @@ PYBIND11_MODULE(_calico, m) {
   // Camera class.
   py::enum_<CameraIntrinsicsModel>(m, "CameraIntrinsicsModel")
     .value("kNone", CameraIntrinsicsModel::kNone)
-    .value("kOpenCv5", CameraIntrinsicsModel::kOpenCv5);
+    .value("kOpenCv5", CameraIntrinsicsModel::kOpenCv5)
+    .value("kKannalaBrandt", CameraIntrinsicsModel::kKannalaBrandt);
 
   py::class_<CameraObservationId>(m, "CameraObservationId")
     .def(py::init<>())
@@ -216,28 +217,43 @@ PYBIND11_MODULE(_calico, m) {
            }
            return id_to_measurement;
          })
-    .def("GetMeasurementIdToResidual",
-         [](Camera& self) {
-           std::unordered_map<CameraObservationId, Eigen::Vector2d,
-                              absl::Hash<CameraObservationId>>
-               id_to_residual;
-           for (const auto [id, residual] : self.GetMeasurementIdToResidual()) {
-             id_to_residual[id] = residual;
+    .def("MarkOutlierById",
+         [](Camera& self, CameraObservationId id) {
+           const auto status = self.MarkOutlierById(id);
+           if (!status.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(status.message()));
            }
-           return id_to_residual;
-         });
-
-  // Trajectory class.
-  py::class_<Trajectory, std::shared_ptr<Trajectory>>(m, "Trajectory")
-    .def(py::init<>())
-    .def("AddPoses",
-         [](Trajectory& self, const std::unordered_map<double, Pose3d>& poses) {
-           const auto status = self.AddPoses(poses);
+         })
+    .def("MarkOutliersById",
+         [](Camera& self, const std::vector<CameraObservationId>& ids) {
+           const auto status = self.MarkOutliersById(ids);
            if (!status.ok()) {
              throw std::runtime_error(
                  std::string("Error: ") + std::string(status.message()));
            }
          });
+
+  // Trajectory class.
+  py::class_<Trajectory, std::shared_ptr<Trajectory>>(m, "Trajectory")
+    .def(py::init<>())
+    .def("FitSpline",
+         [](Trajectory& self, const std::unordered_map<double, Pose3d>& poses,
+            double knot_frequency, int spline_order) {
+           absl::flat_hash_map<double, Pose3d> poses_absl;
+           for (const auto& [key, value] : poses) {
+             poses_absl[key] = value;
+           }
+           const auto status = self.FitSpline(poses_absl, knot_frequency,
+                                              spline_order);
+           if (!status.ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(status.message()));
+           }
+         },
+         py::arg("poses"),
+         py::arg("knot_frequency") = Trajectory::kDefaultKnotFrequency,
+         py::arg("spline_order") = Trajectory::kDefaultSplineOrder);
 
   // World model class.
   py::class_<Landmark>(m, "Landmark")
