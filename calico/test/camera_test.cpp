@@ -73,8 +73,8 @@ TEST_F(CameraContainerTest, AddSingleMeasurementOnlyUniqueAllowed) {
   EXPECT_OK(camera_.AddMeasurement(measurement));
   EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
   // Add the same measurement and expect an error.
-  EXPECT_EQ(camera_.AddMeasurement(measurement).code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(camera_.AddMeasurement(measurement),
+              StatusCodeIs(absl::StatusCode::kInvalidArgument));
   EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
 }
 
@@ -82,8 +82,7 @@ TEST_F(CameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   std::vector<CameraMeasurement> measurements = measurements_;
   camera_.ClearMeasurements();
   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-  EXPECT_EQ(camera_.AddMeasurements(measurements).code(),
-            absl::StatusCode::kOk);
+  EXPECT_OK(camera_.AddMeasurements(measurements));
   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size());
   const CameraMeasurement redundant_measurement {
     .id = {
@@ -95,8 +94,8 @@ TEST_F(CameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
   };
   measurements.push_back(redundant_measurement);
   camera_.ClearMeasurements();
-  EXPECT_EQ(camera_.AddMeasurements(measurements).code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(camera_.AddMeasurements(measurements),
+              StatusCodeIs(absl::StatusCode::kInvalidArgument));
   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size() - 1);
 }
 

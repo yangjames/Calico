@@ -4,6 +4,46 @@ import cv2
 import numpy as np
 from typing import Dict, List, Tuple
 
+def ComputeRmseHeatmapAndFeatureCount(
+  measurement_residual_pairs: List[Tuple[calico.CameraMeasurement, np.ndarray]],
+  image_width: int, image_height: int, num_rows:int = 8, num_cols:int = 12,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+  """Compute the RMSE heatmap with specified resolution.
+
+  Args:
+    measurement_residual_pairs:
+      List of camera measurements paired with their residuals.
+    image_width:
+      Width of the original image.
+    image_height:
+      Height of the original image.
+    num_rows:
+      Number of rows we want to divide the image into.
+    num_cols:
+      Number of columns we want to divide the image into.
+
+  Returns:
+    A tuple containing:
+      1. An rmse heatmap image with dimensions image_width x image_height.
+      2. A binned version of the RMSE heatmap as a num_rows x num_cols array.
+      3. A num_rows x num_cols array representing the number of features detected
+         in a particular region of the image space.
+  """
+  local_count = np.zeros((num_rows, num_cols))
+  local_rmse = np.zeros((num_rows, num_cols))
+  for measurement, residual in measurement_residual_pairs:
+    local_col = int(np.floor((measurement.pixel[0] / image_width) * num_cols))
+    local_row = int(np.floor((measurement.pixel[1] / image_height) * num_rows))
+    local_col = max(min(local_col, num_cols - 1), 0)
+    local_row = max(min(local_row, num_rows - 1), 0)
+    local_count[local_row, local_col] += 1
+    local_rmse[local_row, local_col] += np.sum(residual**2)
+  rmse_heatmap = np.sqrt(local_rmse / local_count)
+  rmse_heatmap_image = cv2.resize(
+      rmse_heatmap, dsize=(image_width, image_height),
+      interpolation=cv2.INTER_NEAREST)
+  return rmse_heatmap_image, rmse_heatmap, local_count
+
 def DrawDetections(
     img: np.ndarray,
     detections: Dict[int, np.ndarray]

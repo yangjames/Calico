@@ -22,7 +22,7 @@ class TrajectoryTest : public ::testing::Test {
 
 TEST_F(TrajectoryTest, SplineFitAndInterpolation) {
   Trajectory trajectory;
-  EXPECT_OK(trajectory.AddPoses(trajectory_world_sensorrig));
+  EXPECT_OK(trajectory.FitSpline(trajectory_world_sensorrig));
   ASSERT_OK_AND_ASSIGN(const std::vector<Pose3d> interpolated_poses,
                        trajectory.Interpolate(trajectory_key_values));
   for (int i = 0; i < trajectory_key_values.size(); ++i) {

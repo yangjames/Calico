@@ -47,7 +47,7 @@ TEST(GeometryTest, TestComputeRodriguesFormulaJacobians) {
   const auto trajectory_world_body = synthetic_test.TrajectoryAsMap();
   const auto timestamps = synthetic_test.TrajectoryMapKeys();
   Trajectory trajectory;
-  ASSERT_OK(trajectory.AddPoses(trajectory_world_body));
+  ASSERT_OK(trajectory.FitSpline(trajectory_world_body));
   // In small increments, test a subset of angles near knots.
   const double dt = 1e-6;
   for (int i = 0; i < timestamps.size() - 2; ++i) {

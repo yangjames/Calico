@@ -35,6 +35,11 @@ INSTANTIATE_TEST_SUITE_P(
           CameraIntrinsicsModel::kOpenCv5,
           OpenCv5Model::kNumberOfParameters
         },
+        {
+          "KannalaBrandt",
+          CameraIntrinsicsModel::kKannalaBrandt,
+          KannalaBrandtModel::kNumberOfParameters
+        }
       }),
     [](const testing::TestParamInfo<CameraModelCreationTest::ParamType>& info) {
       return info.param.test_name;
@@ -86,6 +91,32 @@ TEST_F(CameraModelTest, OpenCv5ModelProjectionAndUnprojection) {
     // Invert forward projection.
     ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
         OpenCv5Model::UnprojectPixel(intrinsics, pixel));
+    // Compare results.
+    const Eigen::Vector3d t_camera_point_metric =
+      t_camera_point / t_camera_point.z();
+    EXPECT_THAT(t_camera_point_metric, EigenIsApprox(
+        unprojected_point, kSmallError));
+  }
+}
+
+// TODO(yangjames): Unproject is not that great for KB model :( it takes 100
+// Newton iterations to get down to 1e-9, converges way too slowly. Figure out
+// why this is.
+TEST_F(CameraModelTest, KannalaBrandtModelProjectionAndUnprojection) {
+  constexpr double kSmallError = 1e-9;
+  Eigen::VectorXd intrinsics(KannalaBrandtModel::kNumberOfParameters);
+  intrinsics <<
+    785, 640, 400, -3.149e-1, 1.069e-1, 1.616e-4, 1.141e-4;
+  for (const Eigen::Vector3d& t_world_point : t_world_points) {
+    // Transform camera point into world coordinates.
+    const Eigen::Vector3d t_camera_point =
+      R_world_camera.transpose() * (t_world_point - t_world_camera);
+    // Forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector2d pixel,
+        KannalaBrandtModel::ProjectPoint(intrinsics, t_camera_point));
+    // Invert forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
+                         KannalaBrandtModel::UnprojectPixel(intrinsics, pixel));
     // Compare results.
     const Eigen::Vector3d t_camera_point_metric =
       t_camera_point / t_camera_point.z();

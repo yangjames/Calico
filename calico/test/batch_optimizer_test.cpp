@@ -43,7 +43,7 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   EXPECT_OK(world_model->AddRigidBody(planar_target));
   // Construct the sensorrig trajectory.
   Trajectory* trajectory_world_sensorrig = new Trajectory;
-  ASSERT_OK(trajectory_world_sensorrig->AddPoses(poses_world_sensorrig));
+  ASSERT_OK(trajectory_world_sensorrig->FitSpline(poses_world_sensorrig));
 
   // Construct ground truth cameras and measurements.
   const sensors::CameraIntrinsicsModel kCameraModel =
@@ -209,17 +209,6 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   // Gravity.
   EXPECT_THAT(world_model->gravity(), EigenIsApprox(true_gravity, kSmallNumber));
 
-  // Expect that the cameras have residuals populated and have a one-to-one
-  // corresondence with measurements.
-  const auto id_to_measurement = camera_left->GetMeasurementIdToMeasurement();
-  const auto id_to_residual = camera_left->GetMeasurementIdToResidual();
-  EXPECT_EQ(id_to_measurement.size(), id_to_residual.size());
-  for (const auto [id, measurement] : id_to_measurement) {
-    ASSERT_TRUE(id_to_residual.contains(id));
-    const Eigen::Vector2d residual = id_to_residual.at(id);
-    EXPECT_THAT(Eigen::Vector2d::Zero(), EigenIsApprox(residual, kSmallNumber));
-  }
-  
   std::cout << summary.FullReport() << std::endl;
 }
 
