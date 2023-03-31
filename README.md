@@ -17,7 +17,7 @@ Some features of Calico include:
 Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info.
 
 # License
-Poor sensor calibration is a problem that is endemic within the robotics community, yet typically not given enough attention because it tends to detract from higher level project goals. The purpose of this library is to help roboticists quickly resolve their calibration issues so that they can work on more interesting things. This library is hereby granted the MIT license, to be used free of charge by a anyone within acadmia or industry.
+Poor sensor calibration is a problem endemic to robotics, yet it's typically not given enough attention because it tends to detract from higher level project goals. The purpose of this library is to help roboticists quickly resolve their calibration issues so that they can work on more interesting things. This library is hereby granted the MIT license, to be used free of charge by a anyone within acadmia or industry.
 
 To the best of my knowledge, all library dependencies also fall under BSD 2/3, LGPL, or Apache 2.0.
 
