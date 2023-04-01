@@ -1,0 +1,79 @@
+\hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel}{}\doxysection{calico\+::sensors\+::Gyroscope\+Scale\+Only\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel}\index{calico::sensors::GyroscopeScaleOnlyModel@{calico::sensors::GyroscopeScaleOnlyModel}}
+
+
+{\ttfamily \#include $<$gyroscope\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Gyroscope\+Scale\+Only\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Gyroscope\+Scale\+Only\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_ac20599f4a50ea45f960845c0e27156b2}\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_ac20599f4a50ea45f960845c0e27156b2}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel}{Gyroscope\+Scale\+Only\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel}{Gyroscope\+Scale\+Only\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a23a26483438f0df7ecf16bb3b0a5d06c}\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a23a26483438f0df7ecf16bb3b0a5d06c}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a23a26483438f0df7ecf16bb3b0a5d06c}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for gyroscope model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a82ee650cdc0b99d5d7099569313662e0}\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a82ee650cdc0b99d5d7099569313662e0}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a82ee650cdc0b99d5d7099569313662e0}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a412947e33155cf4e9b5cb7210935ae69}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&omega\+\_\+sensor\+\_\+world)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_afec9eb1bab22b82898e4899df2a387d0}{Unproject}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&measurement)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_ac4c2039d40b668a3ce99a006b019f265}\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_ac4c2039d40b668a3ce99a006b019f265}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 1
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a2f1ea33478771eaef53f59b3626af90e}\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a2f1ea33478771eaef53f59b3626af90e}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da34e2be26dca2101fb95fc6487800e928}{Gyroscope\+Intrinsics\+Model\+::k\+Gyroscope\+Scale\+Only}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+1-\/parameter isotropic scale intrinsics model. $[s]$ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a412947e33155cf4e9b5cb7210935ae69}\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_a412947e33155cf4e9b5cb7210935ae69}} 
+\index{calico::sensors::GyroscopeScaleOnlyModel@{calico::sensors::GyroscopeScaleOnlyModel}!Project@{Project}}
+\index{Project@{Project}!calico::sensors::GyroscopeScaleOnlyModel@{calico::sensors::GyroscopeScaleOnlyModel}}
+\doxysubsubsection{\texorpdfstring{Project()}{Project()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Gyroscope\+Scale\+Only\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{omega\+\_\+sensor\+\_\+world }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns measurement $\mathbf{f}$, a 3-\/D vector such that \[ \mathbf{f} = s\boldsymbol{\omega}^s_{ws} \]~\newline
+~\newline
+{\ttfamily omega\+\_\+sensor\+\_\+world} is the angular velocity of the sensor relative to the inertial world frame resolved in the sensor frame $\boldsymbol{\omega}^s_{ws}$. \mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_afec9eb1bab22b82898e4899df2a387d0}\label{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel_afec9eb1bab22b82898e4899df2a387d0}} 
+\index{calico::sensors::GyroscopeScaleOnlyModel@{calico::sensors::GyroscopeScaleOnlyModel}!Unproject@{Unproject}}
+\index{Unproject@{Unproject}!calico::sensors::GyroscopeScaleOnlyModel@{calico::sensors::GyroscopeScaleOnlyModel}}
+\doxysubsubsection{\texorpdfstring{Unproject()}{Unproject()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Gyroscope\+Scale\+Only\+Model\+::\+Unproject (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{measurement }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the measurement model to obtain angular rate as observed by the sensor. \[ \boldsymbol{\omega}^s_{ws} = \frac{1}{s}\mathbf{f} \] 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/sensors/gyroscope\+\_\+models.\+h\end{DoxyCompactItemize}

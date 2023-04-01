@@ -11,49 +11,53 @@
 
 namespace calico::sensors {
 
-// Accelerometer model types.
+/// Accelerometer model types.
 enum class AccelerometerIntrinsicsModel : int {
+  /// Default no model.
   kNone,
+  /// Isotropic scale without bias.
   kAccelerometerScaleOnly,
+  /// Isotropic scale with bias.
   kAccelerometerScaleAndBias,
 };
 
-// Base class for accelerometer models.
+/// Base class for accelerometer models.
 class AccelerometerModel {
  public:
   virtual ~AccelerometerModel() = default;
 
-  // Project a linear acceleration vector through the intrinsics model.
-  // Top level call invokes the derived class's implementation.
+  /// Project a linear acceleration vector through the intrinsics model.
+  /// Top level call invokes the derived class's implementation.
   template <typename T>
   absl::StatusOr<Eigen::Vector3<T>> Project(
       const Eigen::VectorX<T>& intrinsics,
       const Eigen::Vector3<T>& ddt_sensor_world_sensor) const;
 
-  // Invert the intrinsics model to get an angular velocity vector.
-  // Top level call invokes the derived class's implementation.
+  /// Invert the intrinsics model to get an angular velocity vector.
+  /// Top level call invokes the derived class's implementation.
   template <typename T>
   absl::StatusOr<Eigen::Vector3<T>> Unproject(
       const Eigen::VectorX<T>& intrinsics,
       const Eigen::Vector3<T>& measurement) const;
 
-  // Getter for accelerometer model type.
+  /// Getter for accelerometer model type.
   virtual AccelerometerIntrinsicsModel GetType() const  = 0;
 
-  // Getter for the number of parameters for this model.
+  /// Getter for the number of parameters for this model.
   virtual int NumberOfParameters() const = 0;
 
   // TODO(yangjames): This method should return an absl::StatusOr. Figure out
   //   how to support this using unique_ptr's, or find macros that already
   //   implement this feature (i.e. ASSIGN_OR_RETURN).
-  // Factory method for creating a accelerometer model with `accelerometer_model`
-  // type. This method will return a nullptr if an unsupported
-  // AccelerometerIntrinsicsModel is passed in.
+  /// Factory method for creating a accelerometer model with `accelerometer_model`
+  /// type. This method will return a nullptr if an unsupported
+  /// AccelerometerIntrinsicsModel is passed in.
   static std::unique_ptr<AccelerometerModel> Create(
       AccelerometerIntrinsicsModel accelerometer_model);
 };
 
-// 1-parameter scale-only intrinsics model.
+//// 1-parameter isotropic scale intrinsics model.
+/// \f$[s]\f$
 class AccelerometerScaleOnlyModel : public AccelerometerModel {
  public:
   static constexpr int kNumberOfParameters = 1;
@@ -65,6 +69,10 @@ class AccelerometerScaleOnlyModel : public AccelerometerModel {
   AccelerometerScaleOnlyModel& operator=(
       const AccelerometerScaleOnlyModel&) = default;
 
+  /// Returns measurement \f$\mathbf{f}\f$, a 3-D vector such that
+  /// \f[
+  /// \mathbf{f} = s\mathbf{\ddot{t}}^s_{ws}
+  /// \f]
   template <typename T>
   static absl::StatusOr<Eigen::Vector3<T>> Project(
       const Eigen::VectorX<T>& intrinsics,
@@ -73,6 +81,11 @@ class AccelerometerScaleOnlyModel : public AccelerometerModel {
     return scale * ddt_sensor_world_sensor;
   }
 
+  /// Inverts the measurement model to obtain linear acceleration as observed by
+  /// the sensor.
+  /// \f[
+  /// \mathbf{\ddot{t}}^s_{ws} = \frac{1}{s}\mathbf{f}
+  /// \f]
   template <typename T>
   static absl::StatusOr<Eigen::Vector3<T>> Unproject(
       const Eigen::VectorX<T>& intrinsics,
@@ -90,9 +103,9 @@ class AccelerometerScaleOnlyModel : public AccelerometerModel {
   }
 };
 
-// 4-parameter scale + bias intrinsics model.
-// Parameter order:
-//   [s, bx, by, bz]
+/// 4-parameter scale + bias intrinsics model.
+/// Parameter order:
+///   \f$[s, b_x, b_y, b_z]\f$
 class AccelerometerScaleAndBiasModel : public AccelerometerModel {
  public:
   static constexpr int kNumberOfParameters = 4;
@@ -104,6 +117,11 @@ class AccelerometerScaleAndBiasModel : public AccelerometerModel {
   AccelerometerScaleAndBiasModel& operator=(
       const AccelerometerScaleAndBiasModel&) = default;
 
+  /// Returns measurement \f$\mathbf{f}\f$, a 3-D vector such that
+  /// \f[
+  /// \mathbf{f} = s\mathbf{\ddot{t}}^s_{ws} +
+  /// \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right]
+  /// \f]
   template <typename T>
   static absl::StatusOr<Eigen::Vector3<T>> Project(
       const Eigen::VectorX<T>& intrinsics,
@@ -119,6 +137,12 @@ class AccelerometerScaleAndBiasModel : public AccelerometerModel {
     return scale * ddt_sensor_world_sensor + bias;
   }
 
+  /// Inverts the measurement model to obtain linear acceleration as observed by
+  /// the sensor.
+  /// \f[
+  /// \mathbf{\ddot{t}}^s_{ws} = \frac{1}{s}\left(\mathbf{f} -
+  /// \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right]\right)
+  /// \f]
   template <typename T>
   static absl::StatusOr<Eigen::Vector3<T>> Unproject(
       const Eigen::VectorX<T>& intrinsics,

@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classcalico_1_1sensors_1_1AccelerometerModel.html" title="Base class for accelerometer models." alt="" coords="5,39,227,80"/>
+<area shape="rect" id="node2" href="$classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel.html" title=" " alt="" coords="275,5,496,47"/>
+<area shape="rect" id="node3" href="$classcalico_1_1sensors_1_1AccelerometerScaleOnlyModel.html" title=" " alt="" coords="275,71,496,112"/>
+</map>

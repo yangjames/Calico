@@ -1,0 +1,4 @@
+<map id="calico::sensors::AccelerometerMeasurement" name="calico::sensors::AccelerometerMeasurement">
+<area shape="rect" id="node1" title="Accelerometer measurement type." alt="" coords="5,109,227,151"/>
+<area shape="rect" id="node2" href="$structcalico_1_1sensors_1_1AccelerometerObservationId.html" title=" " alt="" coords="5,5,227,47"/>
+</map>

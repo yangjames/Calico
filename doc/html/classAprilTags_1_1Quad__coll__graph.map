@@ -1,0 +1,4 @@
+<map id="AprilTags::Quad" name="AprilTags::Quad">
+<area shape="rect" id="node1" title="Represents four segments that form a loop, and might be a tag." alt="" coords="5,95,128,121"/>
+<area shape="rect" id="node2" href="$classHomography33.html" title="Compute 3x3 homography using Direct Linear Transform." alt="" coords="5,5,128,32"/>
+</map>

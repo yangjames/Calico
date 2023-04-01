@@ -1,0 +1,70 @@
+\hypertarget{classcalico_1_1sensors_1_1AccelerometerModel}{}\doxysection{calico\+::sensors\+::Accelerometer\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1AccelerometerModel}\index{calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}}
+
+
+Base class for accelerometer models.  
+
+
+
+
+{\ttfamily \#include $<$accelerometer\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Accelerometer\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classcalico_1_1sensors_1_1AccelerometerModel__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_aa73cde8be082c68a3701d3d13a4291b3}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&ddt\+\_\+sensor\+\_\+world\+\_\+sensor) const
+\item 
+{\footnotesize template$<$typename T $>$ }\\absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}{Unproject}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&measurement) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_a52c20940d96d83471db2622b2bc4d034}\label{classcalico_1_1sensors_1_1AccelerometerModel_a52c20940d96d83471db2622b2bc4d034}} 
+virtual \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_a52c20940d96d83471db2622b2bc4d034}{Get\+Type}} () const =0
+\begin{DoxyCompactList}\small\item\em Getter for accelerometer model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_afbfc0f7764ed6d253a714c1a8cbce040}\label{classcalico_1_1sensors_1_1AccelerometerModel_afbfc0f7764ed6d253a714c1a8cbce040}} 
+virtual int \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_afbfc0f7764ed6d253a714c1a8cbce040}{Number\+Of\+Parameters}} () const =0
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel}{Accelerometer\+Model}} $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_a6086358a97bd91992b92768cb232032e}{Create}} (\mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} accelerometer\+\_\+model)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for accelerometer models. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_a6086358a97bd91992b92768cb232032e}\label{classcalico_1_1sensors_1_1AccelerometerModel_a6086358a97bd91992b92768cb232032e}} 
+\index{calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}!Create@{Create}}
+\index{Create@{Create}!calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel}{Accelerometer\+Model}} $>$ calico\+::sensors\+::\+Accelerometer\+Model\+::\+Create (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}}}]{accelerometer\+\_\+model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Factory method for creating a accelerometer model with {\ttfamily accelerometer\+\_\+model} type. This method will return a nullptr if an unsupported Accelerometer\+Intrinsics\+Model is passed in. \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_aa73cde8be082c68a3701d3d13a4291b3}\label{classcalico_1_1sensors_1_1AccelerometerModel_aa73cde8be082c68a3701d3d13a4291b3}} 
+\index{calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}!Project@{Project}}
+\index{Project@{Project}!calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}}
+\doxysubsubsection{\texorpdfstring{Project()}{Project()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ calico\+::sensors\+::\+Accelerometer\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{ddt\+\_\+sensor\+\_\+world\+\_\+sensor }\end{DoxyParamCaption}) const}
+
+Project a linear acceleration vector through the intrinsics model. Top level call invokes the derived class\textquotesingle{}s implementation. \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}\label{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}} 
+\index{calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}!Unproject@{Unproject}}
+\index{Unproject@{Unproject}!calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}}
+\doxysubsubsection{\texorpdfstring{Unproject()}{Unproject()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ calico\+::sensors\+::\+Accelerometer\+Model\+::\+Unproject (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{measurement }\end{DoxyParamCaption}) const}
+
+Invert the intrinsics model to get an angular velocity vector. Top level call invokes the derived class\textquotesingle{}s implementation. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/sensors/accelerometer\+\_\+models.\+h\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/sensors/accelerometer\+\_\+models.\+cpp\end{DoxyCompactItemize}

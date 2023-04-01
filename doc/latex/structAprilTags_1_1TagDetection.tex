@@ -1,0 +1,94 @@
+\hypertarget{structAprilTags_1_1TagDetection}{}\doxysection{April\+Tags\+::Tag\+Detection Struct Reference}
+\label{structAprilTags_1_1TagDetection}\index{AprilTags::TagDetection@{AprilTags::TagDetection}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a51b7d6e963f6af1aa8234f9646d44f57}\label{structAprilTags_1_1TagDetection_a51b7d6e963f6af1aa8234f9646d44f57}} 
+\mbox{\hyperlink{structAprilTags_1_1TagDetection_a51b7d6e963f6af1aa8234f9646d44f57}{Tag\+Detection}} ()
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_aa8aa61cb3d1dbe5d575baaad5fb34f14}\label{structAprilTags_1_1TagDetection_aa8aa61cb3d1dbe5d575baaad5fb34f14}} 
+\mbox{\hyperlink{structAprilTags_1_1TagDetection_aa8aa61cb3d1dbe5d575baaad5fb34f14}{Tag\+Detection}} (int \mbox{\hyperlink{structAprilTags_1_1TagDetection_ad402daacc6368e86351ec6ddd226cd15}{id}})
+\begin{DoxyCompactList}\small\item\em Constructor for manually creating tags in a world map. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a63d6d30ca13516883b261fe5efa3469d}\label{structAprilTags_1_1TagDetection_a63d6d30ca13516883b261fe5efa3469d}} 
+float \mbox{\hyperlink{structAprilTags_1_1TagDetection_a63d6d30ca13516883b261fe5efa3469d}{get\+X\+Y\+Orientation}} () const
+\begin{DoxyCompactList}\small\item\em Orientation in the xy plane. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_ad8161946d00c00ecae73f48c4cdd92ee}\label{structAprilTags_1_1TagDetection_ad8161946d00c00ecae73f48c4cdd92ee}} 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{structAprilTags_1_1TagDetection_ad8161946d00c00ecae73f48c4cdd92ee}{interpolate}} (float x, float y) const
+\begin{DoxyCompactList}\small\item\em Interpolate point given (x,y) is in tag coordinate space from (-\/1,-\/1) to (1,1). \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a3c4c6789e3e60c2067cc2e7f70ed6b0d}\label{structAprilTags_1_1TagDetection_a3c4c6789e3e60c2067cc2e7f70ed6b0d}} 
+bool \mbox{\hyperlink{structAprilTags_1_1TagDetection_a3c4c6789e3e60c2067cc2e7f70ed6b0d}{overlaps\+Too\+Much}} (const \mbox{\hyperlink{structAprilTags_1_1TagDetection}{Tag\+Detection}} \&other) const
+\begin{DoxyCompactList}\small\item\em Used to eliminate redundant tags. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a1f1fc2bda2c2039dd657912975c2da8a}\label{structAprilTags_1_1TagDetection_a1f1fc2bda2c2039dd657912975c2da8a}} 
+Eigen\+::\+Matrix4d \mbox{\hyperlink{structAprilTags_1_1TagDetection_a1f1fc2bda2c2039dd657912975c2da8a}{get\+Relative\+Transform}} (double tag\+\_\+size, double fx, double fy, double px, double py) const
+\begin{DoxyCompactList}\small\item\em Relative pose of tag with respect to the camera. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a50b871a248175a3841c90cb6046e346f}\label{structAprilTags_1_1TagDetection_a50b871a248175a3841c90cb6046e346f}} 
+void \mbox{\hyperlink{structAprilTags_1_1TagDetection_a50b871a248175a3841c90cb6046e346f}{get\+Relative\+Translation\+Rotation}} (double tag\+\_\+size, double fx, double fy, double px, double py, Eigen\+::\+Vector3d \&trans, Eigen\+::\+Matrix3d \&rot) const
+\begin{DoxyCompactList}\small\item\em Recover rotation matrix and translation vector of April tag relative to camera. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a7820dcd699d2dddea58b737ba69ddf7f}\label{structAprilTags_1_1TagDetection_a7820dcd699d2dddea58b737ba69ddf7f}} 
+void \mbox{\hyperlink{structAprilTags_1_1TagDetection_a7820dcd699d2dddea58b737ba69ddf7f}{draw}} (cv\+::\+Mat \&image) const
+\begin{DoxyCompactList}\small\item\em Draw the detection within the supplied image, including boarders and tag ID. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a6fd07b215ad1ea1141a47e39f9d1047f}\label{structAprilTags_1_1TagDetection_a6fd07b215ad1ea1141a47e39f9d1047f}} 
+static bool \mbox{\hyperlink{structAprilTags_1_1TagDetection_a6fd07b215ad1ea1141a47e39f9d1047f}{sort\+By\+Id\+Compare}} (const \mbox{\hyperlink{structAprilTags_1_1TagDetection}{Tag\+Detection}} \&a, const \mbox{\hyperlink{structAprilTags_1_1TagDetection}{Tag\+Detection}} \&b)
+\begin{DoxyCompactList}\small\item\em Compare function to sort detections by std\+::sort. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_ac4da2cd1c14b32f0152a6ea828870413}\label{structAprilTags_1_1TagDetection_ac4da2cd1c14b32f0152a6ea828870413}} 
+bool \mbox{\hyperlink{structAprilTags_1_1TagDetection_ac4da2cd1c14b32f0152a6ea828870413}{good}}
+\begin{DoxyCompactList}\small\item\em Is the detection good enough? \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a4fc2af2b8e56df4030ac8bb751b1334f}\label{structAprilTags_1_1TagDetection_a4fc2af2b8e56df4030ac8bb751b1334f}} 
+long long \mbox{\hyperlink{structAprilTags_1_1TagDetection_a4fc2af2b8e56df4030ac8bb751b1334f}{obs\+Code}}
+\begin{DoxyCompactList}\small\item\em Observed code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_ac18467b31ad56faf52e717b77d1af129}\label{structAprilTags_1_1TagDetection_ac18467b31ad56faf52e717b77d1af129}} 
+long long \mbox{\hyperlink{structAprilTags_1_1TagDetection_ac18467b31ad56faf52e717b77d1af129}{code}}
+\begin{DoxyCompactList}\small\item\em Matched code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_ad402daacc6368e86351ec6ddd226cd15}\label{structAprilTags_1_1TagDetection_ad402daacc6368e86351ec6ddd226cd15}} 
+int \mbox{\hyperlink{structAprilTags_1_1TagDetection_ad402daacc6368e86351ec6ddd226cd15}{id}}
+\begin{DoxyCompactList}\small\item\em What was the ID of the detected tag? \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a45835f3fabb2063bc61a9674c1d7d37d}\label{structAprilTags_1_1TagDetection_a45835f3fabb2063bc61a9674c1d7d37d}} 
+int \mbox{\hyperlink{structAprilTags_1_1TagDetection_a45835f3fabb2063bc61a9674c1d7d37d}{hamming\+Distance}}
+\begin{DoxyCompactList}\small\item\em The hamming distance between the detected code and the true code. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a1492773559c66352e5d17020b2f5c563}\label{structAprilTags_1_1TagDetection_a1492773559c66352e5d17020b2f5c563}} 
+int \mbox{\hyperlink{structAprilTags_1_1TagDetection_a1492773559c66352e5d17020b2f5c563}{rotation}}
+\begin{DoxyCompactList}\small\item\em How many 90 degree rotations were required to align the code (internal use only) \end{DoxyCompactList}\item 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{structAprilTags_1_1TagDetection_a51424269d34b011e17161e835a8e5149}{p}} \mbox{[}4\mbox{]}
+\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a0be0d15d381f8fa664a29eb682521cac}\label{structAprilTags_1_1TagDetection_a0be0d15d381f8fa664a29eb682521cac}} 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{structAprilTags_1_1TagDetection_a0be0d15d381f8fa664a29eb682521cac}{cxy}}
+\begin{DoxyCompactList}\small\item\em Center of tag in pixel coordinates. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{structAprilTags_1_1TagDetection_a305668873db95b85b0b78c0df4e2c90c}{observed\+Perimeter}}
+\begin{DoxyCompactList}\small\item\em Measured in pixels, how long was the observed perimeter. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a306e7bbef8727d33db049c02be76f186}\label{structAprilTags_1_1TagDetection_a306e7bbef8727d33db049c02be76f186}} 
+Eigen\+::\+Matrix3d \mbox{\hyperlink{structAprilTags_1_1TagDetection_a306e7bbef8727d33db049c02be76f186}{homography}}
+\begin{DoxyCompactList}\small\item\em A 3x3 homography that computes pixel coordinates from tag-\/relative coordinates. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_ac6573a546a94db5f41c74153d83520f1}\label{structAprilTags_1_1TagDetection_ac6573a546a94db5f41c74153d83520f1}} 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{structAprilTags_1_1TagDetection_ac6573a546a94db5f41c74153d83520f1}{hxy}}
+\begin{DoxyCompactList}\small\item\em The homography is relative to image center, whose coordinates are below. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structAprilTags_1_1TagDetection_a305668873db95b85b0b78c0df4e2c90c}\label{structAprilTags_1_1TagDetection_a305668873db95b85b0b78c0df4e2c90c}} 
+\index{AprilTags::TagDetection@{AprilTags::TagDetection}!observedPerimeter@{observedPerimeter}}
+\index{observedPerimeter@{observedPerimeter}!AprilTags::TagDetection@{AprilTags::TagDetection}}
+\doxysubsubsection{\texorpdfstring{observedPerimeter}{observedPerimeter}}
+{\footnotesize\ttfamily float April\+Tags\+::\+Tag\+Detection\+::observed\+Perimeter}
+
+
+
+Measured in pixels, how long was the observed perimeter. 
+
+Observed perimeter excludes the inferred perimeter which is used to connect incomplete quads. \mbox{\Hypertarget{structAprilTags_1_1TagDetection_a51424269d34b011e17161e835a8e5149}\label{structAprilTags_1_1TagDetection_a51424269d34b011e17161e835a8e5149}} 
+\index{AprilTags::TagDetection@{AprilTags::TagDetection}!p@{p}}
+\index{p@{p}!AprilTags::TagDetection@{AprilTags::TagDetection}}
+\doxysubsubsection{\texorpdfstring{p}{p}}
+{\footnotesize\ttfamily std\+::pair$<$float,float$>$ April\+Tags\+::\+Tag\+Detection\+::p\mbox{[}4\mbox{]}}
+
+Fields below are filled in by \mbox{\hyperlink{classAprilTags_1_1TagDetector}{Tag\+Detector}} /////////////// Position (in fractional pixel coordinates) of the detection. 
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/third\+\_\+party/apriltags/apriltags/Tag\+Detection.\+h\item 
+/home/james/\+Documents/calico-\/work/\+Calico/third\+\_\+party/apriltags/src/Tag\+Detection.\+cc\end{DoxyCompactItemize}

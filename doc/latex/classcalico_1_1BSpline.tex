@@ -1,0 +1,56 @@
+\hypertarget{classcalico_1_1BSpline}{}\doxysection{calico\+::B\+Spline$<$ N, T $>$ Class Template Reference}
+\label{classcalico_1_1BSpline}\index{calico::BSpline$<$ N, T $>$@{calico::BSpline$<$ N, T $>$}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_adf2ab617ce0262fac054ee23c2e55345}\label{classcalico_1_1BSpline_adf2ab617ce0262fac054ee23c2e55345}} 
+int {\bfseries Add\+Parameters\+To\+Problem} (ceres\+::\+Problem \&problem)
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a97cf7e9a463202eb699d3ec4dd3e501c}\label{classcalico_1_1BSpline_a97cf7e9a463202eb699d3ec4dd3e501c}} 
+absl\+::\+Status {\bfseries Fit\+To\+Data} (const std\+::vector$<$ T $>$ \&time, const std\+::vector$<$ Eigen\+::\+Vector$<$ T, N $>$$>$ \&data, int spline\+\_\+order, T knot\+\_\+frequency)
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a932079e4fcd7edca29adc4aa163caba0}\label{classcalico_1_1BSpline_a932079e4fcd7edca29adc4aa163caba0}} 
+int {\bfseries Get\+Spline\+Index} (T query\+\_\+time) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_ae10ab156fcbb58106f2990a341127a8e}\label{classcalico_1_1BSpline_ae10ab156fcbb58106f2990a341127a8e}} 
+int {\bfseries Get\+Knot\+Index\+From\+Spline\+Index} (int control\+\_\+point\+\_\+index) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a3dcfaef668d598bcdd879b23b3bdd36e}\label{classcalico_1_1BSpline_a3dcfaef668d598bcdd879b23b3bdd36e}} 
+int {\bfseries Get\+Spline\+Order} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a361a02cdfa50b203d594e54cf94ace3d}\label{classcalico_1_1BSpline_a361a02cdfa50b203d594e54cf94ace3d}} 
+absl\+::\+Status\+Or$<$ std\+::vector$<$ Eigen\+::\+Vector$<$ T, N $>$ $>$ $>$ {\bfseries Interpolate} (const std\+::vector$<$ T $>$ \&times, int derivative=0) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a998ccec47c06d576b2a4f48ddb5ebc03}\label{classcalico_1_1BSpline_a998ccec47c06d576b2a4f48ddb5ebc03}} 
+Eigen\+::\+MatrixX$<$ T $>$ {\bfseries Get\+Spline\+Basis} (int spline\+\_\+idx, T stamp, int derivative) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_aacf9d17757f70fe6a618b7d4d0358708}\label{classcalico_1_1BSpline_aacf9d17757f70fe6a618b7d4d0358708}} 
+const std\+::vector$<$ T $>$ \& {\bfseries knots} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a7c1aefcdc46a31af0c89ed82a8288b8c}\label{classcalico_1_1BSpline_a7c1aefcdc46a31af0c89ed82a8288b8c}} 
+std\+::vector$<$ T $>$ \& {\bfseries knots} ()
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a12ad46560d0aabc6eeade4a04e87a04d}\label{classcalico_1_1BSpline_a12ad46560d0aabc6eeade4a04e87a04d}} 
+const std\+::vector$<$ Eigen\+::\+Vector$<$ T, N $>$ $>$ \& {\bfseries control\+\_\+points} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a993205012e62238b4ab76aff3601e335}\label{classcalico_1_1BSpline_a993205012e62238b4ab76aff3601e335}} 
+std\+::vector$<$ Eigen\+::\+Vector$<$ T, N $>$ $>$ \& {\bfseries control\+\_\+points} ()
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a7ccd3d6b6d0e629bde723938e67ba33e}\label{classcalico_1_1BSpline_a7ccd3d6b6d0e629bde723938e67ba33e}} 
+const std\+::vector$<$ Eigen\+::\+MatrixX$<$ T $>$ $>$ \& {\bfseries basis\+\_\+matrices} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a2af2802adda5a9f2236a940847c68ae1}\label{classcalico_1_1BSpline_a2af2802adda5a9f2236a940847c68ae1}} 
+std\+::vector$<$ Eigen\+::\+MatrixX$<$ T $>$ $>$ \& {\bfseries basis\+\_\+matrices} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_a5da8f30634462cc48ce8600368dcc7e3}\label{classcalico_1_1BSpline_a5da8f30634462cc48ce8600368dcc7e3}} 
+static Eigen\+::\+Vector$<$ T, N $>$ {\bfseries Evaluate} (const Eigen\+::\+Ref$<$ const Eigen\+::\+MatrixX$<$ T $>$$>$ \&control\+\_\+points\+\_\+set, T knot0, T knot1, const Eigen\+::\+MatrixX$<$ T $>$ \&basis\+\_\+matrix, T stamp, int derivative)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/bspline.\+h\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/bspline.\+hpp\end{DoxyCompactItemize}

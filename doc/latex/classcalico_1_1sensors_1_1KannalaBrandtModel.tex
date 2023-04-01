@@ -1,0 +1,103 @@
+\hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel}{}\doxysection{calico\+::sensors\+::Kannala\+Brandt\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1KannalaBrandtModel}\index{calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}}
+
+
+{\ttfamily \#include $<$camera\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Kannala\+Brandt\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=243pt]{classcalico_1_1sensors_1_1KannalaBrandtModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Kannala\+Brandt\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=243pt]{classcalico_1_1sensors_1_1KannalaBrandtModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_a9937176c2bac3ff283132e596d2c5a06}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_a9937176c2bac3ff283132e596d2c5a06}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel}{Kannala\+Brandt\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel}{Kannala\+Brandt\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_a281d7e03c171bf972fe5cf18f8bb69f7}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_a281d7e03c171bf972fe5cf18f8bb69f7}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel_a281d7e03c171bf972fe5cf18f8bb69f7}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for camera model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_a8f1cd503c0719cc9b3f2f8ea3dc18043}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_a8f1cd503c0719cc9b3f2f8ea3dc18043}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel_a8f1cd503c0719cc9b3f2f8ea3dc18043}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this camera model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector2$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel_af7f67950a1adaf7005323f2320baee87}{Project\+Point}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&point)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel_acaa2402b38fe11f49e54f18c3b775fa9}{Unproject\+Pixel}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector2$<$ T $>$ \&pixel, int max\+\_\+iterations=100)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_aeb1927c0208501fa954d39e2642950fe}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_aeb1927c0208501fa954d39e2642950fe}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 7
+\item 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} {\bfseries k\+Model\+Type}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+4-\/parameter Kannala-\/\+Brandt projection model as presented in Open\+CV, also known as the \char`\"{}fisheye\char`\"{} model. This model assumes an isotropic pinhole model, i.\+e. $f_x == f_y = f$.~\newline
+Parameters are in the following order\+: $[f, c_x, c_y, k_1, k_2, k_3, k_4]$~\newline
+~\newline
+See \href{https://docs.opencv.org/3.4/db/d58/group__calib3d__fisheye.html}{\texttt{ https\+://docs.\+opencv.\+org/3.\+4/db/d58/group\+\_\+\+\_\+calib3d\+\_\+\+\_\+fisheye.\+html}} for more details. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_af7f67950a1adaf7005323f2320baee87}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_af7f67950a1adaf7005323f2320baee87}} 
+\index{calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}!ProjectPoint@{ProjectPoint}}
+\index{ProjectPoint@{ProjectPoint}!calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}}
+\doxysubsubsection{\texorpdfstring{ProjectPoint()}{ProjectPoint()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector2$<$T$>$ $>$ calico\+::sensors\+::\+Kannala\+Brandt\+Model\+::\+Project\+Point (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{point }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns projection $\mathbf{p}$, a 2-\/D pixel coordinate such that \[ \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d + \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\ \mathbf{p}_d = \frac{\theta_d}{r}\mathbf{p}_m\\ \theta_d = \theta + k_1\theta^3 + k_2\theta^5 + k_3\theta^7 + k_4\theta^9\\ \theta = \arctan\left(r\right)\\ r^2 = {\mathbf{p}_m}^T\mathbf{p}_m\\ \mathbf{p}_m = \left[\begin{matrix}t_x / t_z\\t_y/t_z\end{matrix}\right]\\ \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, k_1, k_2, k_3, k_4]$~\newline
+~\newline
+{\ttfamily point} is the location of the feature resolved in the camera frame $\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T$.~\newline
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_acaa2402b38fe11f49e54f18c3b775fa9}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_acaa2402b38fe11f49e54f18c3b775fa9}} 
+\index{calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}!UnprojectPixel@{UnprojectPixel}}
+\index{UnprojectPixel@{UnprojectPixel}!calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}}
+\doxysubsubsection{\texorpdfstring{UnprojectPixel()}{UnprojectPixel()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Kannala\+Brandt\+Model\+::\+Unproject\+Pixel (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector2$<$ T $>$ \&}]{pixel,  }\item[{int}]{max\+\_\+iterations = {\ttfamily 100} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the {\ttfamily Project\+Point} function. No closed form solution is available, so we use Newton\textquotesingle{}s method to invert the projection model.~\newline
+~\newline
+{\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, k_1, k_2, k_3, k_4]$~\newline
+~\newline
+{\ttfamily max\+\_\+iterations} specifies the maximum number of Newton steps to take. Optimization will stop automatically if the error is less than 1e-\/14.~\newline
+~\newline
+{\bfseries{Note\+: This implementation seems to require a significant number of Newton steps to properly converge. If you need faster code, it is recommended that you use Open\+CV\textquotesingle{}s implementation which is better conditioned.}} 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_a68dbb0509833fa8fa3b447970691fbdf}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_a68dbb0509833fa8fa3b447970691fbdf}} 
+\index{calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}!kModelType@{kModelType}}
+\index{kModelType@{kModelType}!calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}}
+\doxysubsubsection{\texorpdfstring{kModelType}{kModelType}}
+{\footnotesize\ttfamily constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} calico\+::sensors\+::\+Kannala\+Brandt\+Model\+::k\+Model\+Type\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=}
+\DoxyCodeLine{      \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}{CameraIntrinsicsModel::kKannalaBrandt}}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/sensors/camera\+\_\+models.\+h\end{DoxyCompactItemize}
