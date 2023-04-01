@@ -1,0 +1,63 @@
+\hypertarget{classcalico_1_1BatchOptimizer}{}\doxysection{calico\+::Batch\+Optimizer Class Reference}
+\label{classcalico_1_1BatchOptimizer}\index{calico::BatchOptimizer@{calico::BatchOptimizer}}
+
+
+{\ttfamily \#include $<$batch\+\_\+optimizer.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classcalico_1_1BatchOptimizer_adcc0fc997ccf70eb8c75b86664b0c1dc}{Add\+Sensor}} (\mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor}{sensors\+::\+Sensor}} $\ast$sensor, bool take\+\_\+ownership=true)
+\item 
+void \mbox{\hyperlink{classcalico_1_1BatchOptimizer_a6c02770812da1c8ad94fe59706051327}{Add\+World\+Model}} (\mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} $\ast$world\+\_\+model, bool take\+\_\+ownership=true)
+\item 
+void \mbox{\hyperlink{classcalico_1_1BatchOptimizer_a183868df8b8f0ac1321d03332b0efbdc}{Add\+Trajectory}} (\mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} $\ast$trajectory\+\_\+world\+\_\+sensorrig, bool take\+\_\+ownership=true)
+\item 
+absl\+::\+Status\+Or$<$ ceres\+::\+Solver\+::\+Summary $>$ \mbox{\hyperlink{classcalico_1_1BatchOptimizer_a3ab9c0411514b4d6a02b0cca674d052b}{Optimize}} (const ceres\+::\+Solver\+::\+Options \&options=\mbox{\hyperlink{namespacecalico_aaa1f3edabbaf4a92827f5340a76e37b6}{Default\+Solver\+Options}}())
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Batch optimizer class. Takes {\ttfamily Sensor}, {\ttfamily \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}}, and {\ttfamily \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}}} objects and adds their parameters to a least-\/squares optimization problem. Sensor classes also contribute residuals which are functions of {\ttfamily \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}} and {\ttfamily \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}}}. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1BatchOptimizer_adcc0fc997ccf70eb8c75b86664b0c1dc}\label{classcalico_1_1BatchOptimizer_adcc0fc997ccf70eb8c75b86664b0c1dc}} 
+\index{calico::BatchOptimizer@{calico::BatchOptimizer}!AddSensor@{AddSensor}}
+\index{AddSensor@{AddSensor}!calico::BatchOptimizer@{calico::BatchOptimizer}}
+\doxysubsubsection{\texorpdfstring{AddSensor()}{AddSensor()}}
+{\footnotesize\ttfamily void calico\+::\+Batch\+Optimizer\+::\+Add\+Sensor (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor}{sensors\+::\+Sensor}} $\ast$}]{sensor,  }\item[{bool}]{take\+\_\+ownership = {\ttfamily true} }\end{DoxyParamCaption})}
+
+Add a sensor to the optimizer. {\ttfamily sensor} is a raw pointer, and by default, {\ttfamily \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}}} will take ownership of that pointer, so there is no need to de-\/allocate once \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} goes out of scope.~\newline
+~\newline
+{\bfseries{N\+O\+TE\+: If this pointer is owned by a smart pointer or must persist out of the \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} scope, pass in {\ttfamily take\+\_\+ownership=false}.}} \mbox{\Hypertarget{classcalico_1_1BatchOptimizer_a183868df8b8f0ac1321d03332b0efbdc}\label{classcalico_1_1BatchOptimizer_a183868df8b8f0ac1321d03332b0efbdc}} 
+\index{calico::BatchOptimizer@{calico::BatchOptimizer}!AddTrajectory@{AddTrajectory}}
+\index{AddTrajectory@{AddTrajectory}!calico::BatchOptimizer@{calico::BatchOptimizer}}
+\doxysubsubsection{\texorpdfstring{AddTrajectory()}{AddTrajectory()}}
+{\footnotesize\ttfamily void calico\+::\+Batch\+Optimizer\+::\+Add\+Trajectory (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} $\ast$}]{trajectory\+\_\+world\+\_\+sensorrig,  }\item[{bool}]{take\+\_\+ownership = {\ttfamily true} }\end{DoxyParamCaption})}
+
+Add a \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} to the optimizer. {\ttfamily trajectory\+\_\+world\+\_\+sensorrig} is a raw pointer, and by default, {\ttfamily \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}}} will take ownership of that pointer, so there is no need to de-\/allocate once \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} goes out of scope.~\newline
+~\newline
+{\bfseries{N\+O\+TE\+: If this pointer is owned by a smart pointer or must persist out of the \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} scope, pass in {\ttfamily take\+\_\+ownership=false}.}}~\newline
+~\newline
+{\ttfamily trajectory\+\_\+world\+\_\+sensorrig} is the time-\/parameterized pose of the sensor rig w.\+r.\+t. the world origin resolved in the world frame \[ \mathbf{T}^w_r(t) = \left[\begin{matrix}\mathbf{R}^w_r & \mathbf{t}^w_{wr} \\\mathbf{0}&1\end{matrix}\right] \]. \mbox{\Hypertarget{classcalico_1_1BatchOptimizer_a6c02770812da1c8ad94fe59706051327}\label{classcalico_1_1BatchOptimizer_a6c02770812da1c8ad94fe59706051327}} 
+\index{calico::BatchOptimizer@{calico::BatchOptimizer}!AddWorldModel@{AddWorldModel}}
+\index{AddWorldModel@{AddWorldModel}!calico::BatchOptimizer@{calico::BatchOptimizer}}
+\doxysubsubsection{\texorpdfstring{AddWorldModel()}{AddWorldModel()}}
+{\footnotesize\ttfamily void calico\+::\+Batch\+Optimizer\+::\+Add\+World\+Model (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} $\ast$}]{world\+\_\+model,  }\item[{bool}]{take\+\_\+ownership = {\ttfamily true} }\end{DoxyParamCaption})}
+
+Add a \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} to the optimizer. {\ttfamily world\+\_\+model} is a raw pointer, and by default, {\ttfamily \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}}} will take ownership of that pointer, so there is no need to de-\/allocate once \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} goes out of scope.~\newline
+~\newline
+{\bfseries{N\+O\+TE\+: If this pointer is owned by a smart pointer or must persist out of the \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} scope, pass in {\ttfamily take\+\_\+ownership=false}.}} \mbox{\Hypertarget{classcalico_1_1BatchOptimizer_a3ab9c0411514b4d6a02b0cca674d052b}\label{classcalico_1_1BatchOptimizer_a3ab9c0411514b4d6a02b0cca674d052b}} 
+\index{calico::BatchOptimizer@{calico::BatchOptimizer}!Optimize@{Optimize}}
+\index{Optimize@{Optimize}!calico::BatchOptimizer@{calico::BatchOptimizer}}
+\doxysubsubsection{\texorpdfstring{Optimize()}{Optimize()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ ceres\+::\+Solver\+::\+Summary $>$ calico\+::\+Batch\+Optimizer\+::\+Optimize (\begin{DoxyParamCaption}\item[{const ceres\+::\+Solver\+::\+Options \&}]{options = {\ttfamily \mbox{\hyperlink{namespacecalico_aaa1f3edabbaf4a92827f5340a76e37b6}{Default\+Solver\+Options}}()} }\end{DoxyParamCaption})}
+
+Run the optimization with solver options. By default, {\ttfamily options} is {\ttfamily \mbox{\hyperlink{namespacecalico_aaa1f3edabbaf4a92827f5340a76e37b6}{Default\+Solver\+Options()}}}.~\newline
+~\newline
+{\ttfamily options} is an unmodified \href{http://ceres-solver.org/nnls_solving.html\#solver-options}{\texttt{ {\ttfamily ceres\+::\+Solver\+::\+Options} object}}. Click the link to see all configurable options. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/batch\+\_\+optimizer.\+h\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/batch\+\_\+optimizer.\+cpp\end{DoxyCompactItemize}

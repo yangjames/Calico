@@ -1,0 +1,95 @@
+\hypertarget{classcalico_1_1WorldModel}{}\doxysection{calico\+::World\+Model Class Reference}
+\label{classcalico_1_1WorldModel}\index{calico::WorldModel@{calico::WorldModel}}
+
+
+{\ttfamily \#include $<$world\+\_\+model.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1WorldModel_a7d0c51dd6c2fe1a7f238df970706d3c4}{Add\+Landmark}} (const \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} \&landmark)
+\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1WorldModel_afec3f48ea4e103843ee1af45a522406d}{Add\+Rigid\+Body}} (const \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} \&rigidbody)
+\item 
+int \mbox{\hyperlink{classcalico_1_1WorldModel_acf704782e9329ec635dd92e5eec5a628}{Add\+Parameters\+To\+Problem}} (ceres\+::\+Problem \&problem)
+\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a32b9752a56c0a9bb1ef4d9dc698e4323}\label{classcalico_1_1WorldModel_a32b9752a56c0a9bb1ef4d9dc698e4323}} 
+const absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $>$ \& \mbox{\hyperlink{classcalico_1_1WorldModel_a32b9752a56c0a9bb1ef4d9dc698e4323}{landmarks}} () const
+\begin{DoxyCompactList}\small\item\em Accessor for landmarks. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a0c90f5671aed1e4a9b91dfe4c0e9c69a}\label{classcalico_1_1WorldModel_a0c90f5671aed1e4a9b91dfe4c0e9c69a}} 
+absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $>$ \& {\bfseries landmarks} ()
+\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a0d2c7b3e9846096ef6cc09aba3ef0a9b}\label{classcalico_1_1WorldModel_a0d2c7b3e9846096ef6cc09aba3ef0a9b}} 
+const absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $>$ \& \mbox{\hyperlink{classcalico_1_1WorldModel_a0d2c7b3e9846096ef6cc09aba3ef0a9b}{rigidbodies}} () const
+\begin{DoxyCompactList}\small\item\em Accessor for rigid bodies. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_ae8428e51aac9a197db0f952da1be86f4}\label{classcalico_1_1WorldModel_ae8428e51aac9a197db0f952da1be86f4}} 
+absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $>$ \& {\bfseries rigidbodies} ()
+\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a0d74e3083470d9ce42e76c0c18232352}\label{classcalico_1_1WorldModel_a0d74e3083470d9ce42e76c0c18232352}} 
+void \mbox{\hyperlink{classcalico_1_1WorldModel_a0d74e3083470d9ce42e76c0c18232352}{Enable\+Gravity\+Estimation}} (bool enable)
+\begin{DoxyCompactList}\small\item\em Enable flag for gravity estimation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a1bdb7b2cfbd251208ae991ccae15f9fc}\label{classcalico_1_1WorldModel_a1bdb7b2cfbd251208ae991ccae15f9fc}} 
+const Eigen\+::\+Vector3d \& \mbox{\hyperlink{classcalico_1_1WorldModel_a1bdb7b2cfbd251208ae991ccae15f9fc}{gravity}} () const
+\begin{DoxyCompactList}\small\item\em Accessor for gravity vector. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a2bf5f0558b778ba9328a514fb9eeda4f}\label{classcalico_1_1WorldModel_a2bf5f0558b778ba9328a514fb9eeda4f}} 
+Eigen\+::\+Vector3d \& {\bfseries gravity} ()
+\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_ae5490368c97a76f340846c6fdf4bfc06}\label{classcalico_1_1WorldModel_ae5490368c97a76f340846c6fdf4bfc06}} 
+int \mbox{\hyperlink{classcalico_1_1WorldModel_ae5490368c97a76f340846c6fdf4bfc06}{Number\+Of\+Landmarks}} () const
+\begin{DoxyCompactList}\small\item\em Get the number of landmarks currently in this world model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a3814abe90cbbf75f7ac91bfaf4071506}\label{classcalico_1_1WorldModel_a3814abe90cbbf75f7ac91bfaf4071506}} 
+int \mbox{\hyperlink{classcalico_1_1WorldModel_a3814abe90cbbf75f7ac91bfaf4071506}{Number\+Of\+Rigid\+Bodies}} () const
+\begin{DoxyCompactList}\small\item\em Get the number of rigid bodies currently in this world model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_ad118b23fe00fa57e84931de473f63fef}\label{classcalico_1_1WorldModel_ad118b23fe00fa57e84931de473f63fef}} 
+void \mbox{\hyperlink{classcalico_1_1WorldModel_ad118b23fe00fa57e84931de473f63fef}{Clear\+Landmarks}} ()
+\begin{DoxyCompactList}\small\item\em Remove all {\ttfamily \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}}} objects from the world model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a1c0a27afdf03193c8de4fa2f0127e884}\label{classcalico_1_1WorldModel_a1c0a27afdf03193c8de4fa2f0127e884}} 
+void \mbox{\hyperlink{classcalico_1_1WorldModel_a1c0a27afdf03193c8de4fa2f0127e884}{Clear\+Rigid\+Bodies}} ()
+\begin{DoxyCompactList}\small\item\em Remove all {\ttfamily \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}}} objects from the world model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_afc24a5177e78989c1f0b4dbf976f2c96}\label{classcalico_1_1WorldModel_afc24a5177e78989c1f0b4dbf976f2c96}} 
+void \mbox{\hyperlink{classcalico_1_1WorldModel_afc24a5177e78989c1f0b4dbf976f2c96}{Clear}} ()
+\begin{DoxyCompactList}\small\item\em Remove all objects from the world model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr double \mbox{\hyperlink{classcalico_1_1WorldModel_ad1ea2db6d798cefe1a3324d928d8cf80}{k\+Gravity\+DefaultZ}} = -\/9.\+80665
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\ttfamily \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}} manages all {\ttfamily \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}}} and {\ttfamily \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}}} objects in an optimization problem. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a7d0c51dd6c2fe1a7f238df970706d3c4}\label{classcalico_1_1WorldModel_a7d0c51dd6c2fe1a7f238df970706d3c4}} 
+\index{calico::WorldModel@{calico::WorldModel}!AddLandmark@{AddLandmark}}
+\index{AddLandmark@{AddLandmark}!calico::WorldModel@{calico::WorldModel}}
+\doxysubsubsection{\texorpdfstring{AddLandmark()}{AddLandmark()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::\+World\+Model\+::\+Add\+Landmark (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} \&}]{landmark }\end{DoxyParamCaption})}
+
+Add a {\ttfamily \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}}} object to the world model. Returns an Invalid\+Argument status code if the landmark id is not unique. \mbox{\Hypertarget{classcalico_1_1WorldModel_acf704782e9329ec635dd92e5eec5a628}\label{classcalico_1_1WorldModel_acf704782e9329ec635dd92e5eec5a628}} 
+\index{calico::WorldModel@{calico::WorldModel}!AddParametersToProblem@{AddParametersToProblem}}
+\index{AddParametersToProblem@{AddParametersToProblem}!calico::WorldModel@{calico::WorldModel}}
+\doxysubsubsection{\texorpdfstring{AddParametersToProblem()}{AddParametersToProblem()}}
+{\footnotesize\ttfamily int calico\+::\+World\+Model\+::\+Add\+Parameters\+To\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem }\end{DoxyParamCaption})}
+
+Add internal parameters to a ceres problem. Any internal parameters set to constant are marked as such in the problem. Returns the total number of parameters added to the problem. \mbox{\Hypertarget{classcalico_1_1WorldModel_afec3f48ea4e103843ee1af45a522406d}\label{classcalico_1_1WorldModel_afec3f48ea4e103843ee1af45a522406d}} 
+\index{calico::WorldModel@{calico::WorldModel}!AddRigidBody@{AddRigidBody}}
+\index{AddRigidBody@{AddRigidBody}!calico::WorldModel@{calico::WorldModel}}
+\doxysubsubsection{\texorpdfstring{AddRigidBody()}{AddRigidBody()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::\+World\+Model\+::\+Add\+Rigid\+Body (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} \&}]{rigidbody }\end{DoxyParamCaption})}
+
+Add a {\ttfamily \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}}} object to the world model. Returns an Invalid\+Argument status code if the rigid body id is not unique. 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classcalico_1_1WorldModel_ad1ea2db6d798cefe1a3324d928d8cf80}\label{classcalico_1_1WorldModel_ad1ea2db6d798cefe1a3324d928d8cf80}} 
+\index{calico::WorldModel@{calico::WorldModel}!kGravityDefaultZ@{kGravityDefaultZ}}
+\index{kGravityDefaultZ@{kGravityDefaultZ}!calico::WorldModel@{calico::WorldModel}}
+\doxysubsubsection{\texorpdfstring{kGravityDefaultZ}{kGravityDefaultZ}}
+{\footnotesize\ttfamily constexpr double calico\+::\+World\+Model\+::k\+Gravity\+DefaultZ = -\/9.\+80665\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+Default magnitude of gravity vector. Gravity resolved in the standard inertial frame is defined as $\mathbf{g}^w=\left[0, 0, -9.80665\right]^T$ 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/world\+\_\+model.\+h\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/world\+\_\+model.\+cpp\end{DoxyCompactItemize}

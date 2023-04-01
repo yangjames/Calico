@@ -1,0 +1,5 @@
+<map id="AprilTags::TagDetector" name="AprilTags::TagDetector">
+<area shape="rect" id="node1" title=" " alt="" coords="5,199,172,225"/>
+<area shape="rect" id="node2" href="$classAprilTags_1_1TagFamily.html" title="Generic class for all tag encoding families." alt="" coords="11,109,166,136"/>
+<area shape="rect" id="node3" href="$classAprilTags_1_1TagFamily_1_1TableInitializer.html" title="Initializes the static popCountTable." alt="" coords="11,5,166,47"/>
+</map>

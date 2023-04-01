@@ -1,0 +1,70 @@
+\hypertarget{classcalico_1_1sensors_1_1CameraModel}{}\doxysection{calico\+::sensors\+::Camera\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1CameraModel}\index{calico::sensors::CameraModel@{calico::sensors::CameraModel}}
+
+
+Base class for camera models.  
+
+
+
+
+{\ttfamily \#include $<$camera\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Camera\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classcalico_1_1sensors_1_1CameraModel__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\absl\+::\+Status\+Or$<$ Eigen\+::\+Vector2$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel_af2b6c4e6787815273879f81a216bc84d}{Project\+Point}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&point) const
+\item 
+{\footnotesize template$<$typename T $>$ }\\absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel_a9724081a0bfba064a65bde83cded5dc9}{Unproject\+Pixel}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector2$<$ T $>$ \&pixel) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraModel_a9384a7307fc7a48d310f361f3b0b4a17}\label{classcalico_1_1sensors_1_1CameraModel_a9384a7307fc7a48d310f361f3b0b4a17}} 
+virtual \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel_a9384a7307fc7a48d310f361f3b0b4a17}{Get\+Type}} () const =0
+\begin{DoxyCompactList}\small\item\em Getter for camera model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraModel_aab677e475ba93fc317ecafc43f4d4711}\label{classcalico_1_1sensors_1_1CameraModel_aab677e475ba93fc317ecafc43f4d4711}} 
+virtual int \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel_aab677e475ba93fc317ecafc43f4d4711}{Number\+Of\+Parameters}} () const =0
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this camera model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel}{Camera\+Model}} $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel_aeda2cd0d8d899ba285a7e610b32fd2a4}{Create}} (\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for camera models. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraModel_aeda2cd0d8d899ba285a7e610b32fd2a4}\label{classcalico_1_1sensors_1_1CameraModel_aeda2cd0d8d899ba285a7e610b32fd2a4}} 
+\index{calico::sensors::CameraModel@{calico::sensors::CameraModel}!Create@{Create}}
+\index{Create@{Create}!calico::sensors::CameraModel@{calico::sensors::CameraModel}}
+\doxysubsubsection{\texorpdfstring{Create()}{Create()}}
+{\footnotesize\ttfamily std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel}{Camera\+Model}} $>$ calico\+::sensors\+::\+Camera\+Model\+::\+Create (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}}}]{camera\+\_\+model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Factory method for creating a camera model with {\ttfamily camera\+\_\+model} type. This method will return a nullptr if an unsupported Camera\+Intrinsics\+Model is passed in. \mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraModel_af2b6c4e6787815273879f81a216bc84d}\label{classcalico_1_1sensors_1_1CameraModel_af2b6c4e6787815273879f81a216bc84d}} 
+\index{calico::sensors::CameraModel@{calico::sensors::CameraModel}!ProjectPoint@{ProjectPoint}}
+\index{ProjectPoint@{ProjectPoint}!calico::sensors::CameraModel@{calico::sensors::CameraModel}}
+\doxysubsubsection{\texorpdfstring{ProjectPoint()}{ProjectPoint()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+absl\+::\+Status\+Or$<$ Eigen\+::\+Vector2$<$ T $>$ $>$ calico\+::sensors\+::\+Camera\+Model\+::\+Project\+Point (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{point }\end{DoxyParamCaption}) const}
+
+Project a point resolved in the camera frame into the pixel space. Top level call invokes the derived class\textquotesingle{}s implementation. \mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraModel_a9724081a0bfba064a65bde83cded5dc9}\label{classcalico_1_1sensors_1_1CameraModel_a9724081a0bfba064a65bde83cded5dc9}} 
+\index{calico::sensors::CameraModel@{calico::sensors::CameraModel}!UnprojectPixel@{UnprojectPixel}}
+\index{UnprojectPixel@{UnprojectPixel}!calico::sensors::CameraModel@{calico::sensors::CameraModel}}
+\doxysubsubsection{\texorpdfstring{UnprojectPixel()}{UnprojectPixel()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ calico\+::sensors\+::\+Camera\+Model\+::\+Unproject\+Pixel (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector2$<$ T $>$ \&}]{pixel }\end{DoxyParamCaption}) const}
+
+Unproject a pixel and return the corresponding metric plane point. In order to get the unprojected point in pixel space, apply the pinhole paraeters to the unprojectd results. Top level call invokes the derived class\textquotesingle{}s implementation. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/sensors/camera\+\_\+models.\+h\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/sensors/camera\+\_\+models.\+cpp\end{DoxyCompactItemize}

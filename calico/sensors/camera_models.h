@@ -12,68 +12,89 @@
 
 namespace calico::sensors {
 
-// Camera model types.
+/// Camera model types.
 enum class CameraIntrinsicsModel : int {
+  /// Default no model.
   kNone,
-  kPinhole,
+  /// 5-parameter OpenCV model.
   kOpenCv5,
-  kOpenCv8,
+  /// Kannala-Brandt model.
   kKannalaBrandt,
-  kFov,
 };
 
-// Base class for camera models.
+/// Base class for camera models.
 class CameraModel {
  public:
   virtual ~CameraModel() = default;
 
-  // Project a point resolved in the camera frame into the pixel space.
-  // Top level call invokes the derived class's implementation.
+  /// Project a point resolved in the camera frame into the pixel space.
+  /// Top level call invokes the derived class's implementation.
   template <typename T>
   absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
       const Eigen::VectorX<T>& intrinsics,
       const Eigen::Vector3<T>& point) const;
 
-  // Unproject a pixel and return the corresponding metric plane point. In order
-  // to get the unprojected point in pixel space, apply the pinhole paraeters to
-  // the unprojectd results.
-  // Top level call invokes the derived class's implementation.
+  /// Unproject a pixel and return the corresponding metric plane point. In order
+  /// to get the unprojected point in pixel space, apply the pinhole paraeters to
+  /// the unprojectd results.
+  /// Top level call invokes the derived class's implementation.
   template <typename T>
   absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
       const Eigen::VectorX<T>& intrinsics,
       const Eigen::Vector2<T>& pixel) const;
 
-  // Getter for camera model type.
+  /// Getter for camera model type.
   virtual CameraIntrinsicsModel GetType() const  = 0;
 
-  // Getter for the number of parameters for this camera model.
+  /// Getter for the number of parameters for this camera model.
   virtual int NumberOfParameters() const = 0;
 
   // TODO(yangjames): This method should return an absl::StatusOr. Figure out
   //   how to support this using unique_ptr's, or find macros that already
   //   implement this feature (i.e. ASSIGN_OR_RETURN).
-  // Factory method for creating a camera model with `camera_model` type.
-  // This method will return a nullptr if an unsupported CameraIntrinsicsModel
-  // is passed in.
+  /// Factory method for creating a camera model with `camera_model` type.
+  /// This method will return a nullptr if an unsupported CameraIntrinsicsModel
+  /// is passed in.
   static std::unique_ptr<CameraModel> Create(
       CameraIntrinsicsModel camera_model);
 };
 
-// 5-parameter Brown-Conrady projection model as presented in OpenCV. This model
-// assumes an isotropic pinhole model, i.e. `fx == fy = f`.
-// Parameters are in the following order:
-//   [f, cx, cy, k1, k2, p1, p2, k3]
-// See https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html for more details.
+/// 5-parameter Brown-Conrady projection model as presented in OpenCV. This model
+/// assumes an isotropic pinhole model, i.e. \f$fx == fy = f\f$.\n
+/// Parameters are in the following order:
+///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\f$\n\n
+/// See the [OpenCV documentations page]
+/// (https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html) for more details.
 class OpenCv5Model : public CameraModel {
  public:
   static constexpr int kNumberOfParameters = 8;
-  static constexpr CameraIntrinsicsModel kModelType =
-      CameraIntrinsicsModel::kOpenCv5;
+  static constexpr CameraIntrinsicsModel kModelType = CameraIntrinsicsModel::kOpenCv5;
 
   OpenCv5Model() = default;
   ~OpenCv5Model() override = default;
   OpenCv5Model& operator=(const OpenCv5Model&) = default;
 
+  /// Returns projection \f$\mathbf{p}\f$, a 2-D pixel coordinate such that
+  /// \f[
+  /// \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d +
+  ///    \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\
+  /// \mathbf{p}_d = s\mathbf{p}_m +
+  ///    \left(2\mathbf{p}_m{\mathbf{p}_m}^T + r^2\mathbf{I}\right)
+  ///    \left[\begin{matrix}p_2\\p_1\end{matrix}\right]\\
+  /// s = 1 + k_1r^2 + k_2r^4 + k_3r^6\\
+  /// r^2 = {\mathbf{p}_m}^T\mathbf{p}_m\\
+  /// \mathbf{p}_m = \left[\begin{matrix}t_x / t_z\\t_y/t_z\end{matrix}\right]\\
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\f$\n\n
+  /// `point` is the location of the feature resolved in the camera frame
+  /// \f$\mathbf{t}^s_{sx} =
+  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.\n\n
+  /// **Note: This implementation produces superior results for high distortions
+  /// compared to [OpenCV's implementation]
+  /// (https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#ga55c716492470bfe86b0ee9bf3a1f0f7e).
+  /// If your application requires numerical precision, it is recommend that you
+  /// use this one.**
   template <typename T>
   static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
       const Eigen::VectorX<T>& intrinsics,
@@ -113,6 +134,12 @@ class OpenCv5Model : public CameraModel {
     return projection;
   }
 
+  /// Inverts the `ProjectPoint` function. No closed form solution is available,
+  /// so we use Newton's method to invert the projection model.\n\n
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\f$\n\n
+  /// `max_iterations` specifies the maximum number of Newton steps to take.
+  /// Optimization will stop automatically if the error is less than 1e-14.
   template <typename T>
   static absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
       const Eigen::VectorX<T>& intrinsics,
@@ -180,11 +207,12 @@ class OpenCv5Model : public CameraModel {
   }
 };
 
-// 4-parameter Kannala-Brandt projection model as presented in OpenCV, also known
-// as the "fisheye" model. This model assumes an isotropic pinhole model, i.e.
-// `fx == fy = f`. Parameters are in the following order:
-//   [f, cx, cy, k1, k2, k3, k4]
-// See https://docs.opencv.org/3.4/db/d58/group__calib3d__fisheye.html for more details.
+/// 4-parameter Kannala-Brandt projection model as presented in OpenCV, also known
+/// as the "fisheye" model. This model assumes an isotropic pinhole model, i.e.
+/// \f$f_x == f_y = f\f$.\n
+/// Parameters are in the following order:
+///   \f$[f, c_x, c_y, k_1, k_2, k_3, k_4]\f$\n\n
+/// See https://docs.opencv.org/3.4/db/d58/group__calib3d__fisheye.html for more details.
 class KannalaBrandtModel : public CameraModel {
  public:
   static constexpr int kNumberOfParameters = 7;
@@ -195,6 +223,21 @@ class KannalaBrandtModel : public CameraModel {
   ~KannalaBrandtModel() override = default;
   KannalaBrandtModel& operator=(const KannalaBrandtModel&) = default;
 
+  /// Returns projection \f$\mathbf{p}\f$, a 2-D pixel coordinate such that
+  /// \f[
+  /// \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d +
+  ///    \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\
+  /// \mathbf{p}_d = \frac{\theta_d}{r}\mathbf{p}_m\\
+  /// \theta_d = \theta + k_1\theta^3 + k_2\theta^5 + k_3\theta^7 + k_4\theta^9\\
+  /// \theta = \arctan\left(r\right)\\
+  /// r^2 = {\mathbf{p}_m}^T\mathbf{p}_m\\
+  /// \mathbf{p}_m = \left[\begin{matrix}t_x / t_z\\t_y/t_z\end{matrix}\right]\\
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, k_1, k_2, k_3, k_4]\f$\n\n
+  /// `point` is the location of the feature resolved in the camera frame
+  /// \f$\mathbf{t}^s_{sx} =
+  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.\n
   template <typename T>
   static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
       const Eigen::VectorX<T>& intrinsics,
@@ -240,6 +283,15 @@ class KannalaBrandtModel : public CameraModel {
     return projection;
   }
 
+  /// Inverts the `ProjectPoint` function. No closed form solution is available,
+  /// so we use Newton's method to invert the projection model.\n\n
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, k_1, k_2, k_3, k_4]\f$\n\n
+  /// `max_iterations` specifies the maximum number of Newton steps to take.
+  /// Optimization will stop automatically if the error is less than 1e-14.\n\n
+  /// **Note: This implementation seems to require a significant number of Newton
+  /// steps to properly converge. If you need faster code, it is recommended that
+  /// you use OpenCV's implementation which is better conditioned.**
   // TODO(yangjames): Unproject is not that great for KB model :( it takes 100
   // Newton iterations to get down to 1e-9, converges way too slowly. Figure out
   // why this is.

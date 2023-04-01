@@ -1,0 +1,104 @@
+\hypertarget{namespacecalico}{}\doxysection{calico Namespace Reference}
+\label{namespacecalico}\index{calico@{calico}}
+
+
+Primary calico namespace.  
+
+
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacecalico_1_1sensors}{sensors}}
+\begin{DoxyCompactList}\small\item\em Sensors namespace. \end{DoxyCompactList}\item 
+ \mbox{\hyperlink{namespacecalico_1_1utils}{utils}}
+\begin{DoxyCompactList}\small\item\em Utils namespace. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1BSpline}{B\+Spline}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1DefaultSyntheticTest}{Default\+Synthetic\+Test}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1Profiler}{Profiler}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1TrajectoryEvaluationParams}{Trajectory\+Evaluation\+Params}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacecalico_aa8ceaa077016cce28472ebcc37c1a179}\label{namespacecalico_aa8ceaa077016cce28472ebcc37c1a179}} 
+using {\bfseries Pose3d} = \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ double $>$
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacecalico_aaa1f3edabbaf4a92827f5340a76e37b6}\label{namespacecalico_aaa1f3edabbaf4a92827f5340a76e37b6}} 
+ceres\+::\+Solver\+::\+Options \mbox{\hyperlink{namespacecalico_aaa1f3edabbaf4a92827f5340a76e37b6}{Default\+Solver\+Options}} ()
+\begin{DoxyCompactList}\small\item\em Default solver options. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacecalico_a1bc1ca70bd6cfc6753dfef1ab61adff4}\label{namespacecalico_a1bc1ca70bd6cfc6753dfef1ab61adff4}} 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Skew} (const Eigen\+::\+Vector3$<$ T $>$ \&v)
+\item 
+\mbox{\Hypertarget{namespacecalico_a68a61002300d80b0d403719b982400eb}\label{namespacecalico_a68a61002300d80b0d403719b982400eb}} 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Vector3$<$ T $>$ {\bfseries i\+Skew} (const Eigen\+::\+Matrix3$<$ T $>$ \&V)
+\item 
+\mbox{\Hypertarget{namespacecalico_a98705a3b05fcd2103fa6823528c9cc7d}\label{namespacecalico_a98705a3b05fcd2103fa6823528c9cc7d}} 
+{\footnotesize template$<$typename T $>$ }\\T {\bfseries Small\+Angle\+Sin} (const T theta)
+\item 
+\mbox{\Hypertarget{namespacecalico_a68a6ed102c3feb3b52f5b9950a6b2bc4}\label{namespacecalico_a68a6ed102c3feb3b52f5b9950a6b2bc4}} 
+{\footnotesize template$<$typename T $>$ }\\T {\bfseries Small\+Angle\+Cos} (const T theta)
+\item 
+\mbox{\Hypertarget{namespacecalico_aa4a4bab45cfce99938f0b261e5464547}\label{namespacecalico_aa4a4bab45cfce99938f0b261e5464547}} 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Exp\+S\+O3} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
+\item 
+\mbox{\Hypertarget{namespacecalico_a4b5e83bfad1cc6b767ae5354d5d483c8}\label{namespacecalico_a4b5e83bfad1cc6b767ae5354d5d483c8}} 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Vector3$<$ T $>$ {\bfseries Ln\+S\+O3} (const Eigen\+::\+Matrix3$<$ T $>$ \&R)
+\item 
+\mbox{\Hypertarget{namespacecalico_a405ed3df9c4ed8eebcabe5ec92d6717e}\label{namespacecalico_a405ed3df9c4ed8eebcabe5ec92d6717e}} 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Exp\+S\+O3\+Jacobian} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
+\item 
+\mbox{\Hypertarget{namespacecalico_a3e0aabf168db953b2b5903af43105582}\label{namespacecalico_a3e0aabf168db953b2b5903af43105582}} 
+{\footnotesize template$<$typename T $>$ }\\std\+::vector$<$ Eigen\+::\+Matrix3$<$ T $>$ $>$ {\bfseries Exp\+S\+O3\+Hessian} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
+\item 
+\mbox{\Hypertarget{namespacecalico_a7d85e76032e1f2ab3267b64b3992b0d3}\label{namespacecalico_a7d85e76032e1f2ab3267b64b3992b0d3}} 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Exp\+S\+O3\+Jacobian\+Dot} (const Eigen\+::\+Vector3$<$ T $>$ \&phi, const Eigen\+::\+Vector3$<$ T $>$ \&phi\+\_\+dot)
+\item 
+\mbox{\Hypertarget{namespacecalico_a8df7c12d7331911247e0d769c2365155}\label{namespacecalico_a8df7c12d7331911247e0d769c2365155}} 
+{\bfseries M\+A\+T\+C\+H\+E\+R\+\_\+\+P2} (Pose\+Is\+Approx, expected\+\_\+pose, tolerance, \char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{namespacecalico_a093b1be3aacf2830f416d4acdaee95a3}\label{namespacecalico_a093b1be3aacf2830f416d4acdaee95a3}} 
+{\bfseries M\+A\+T\+C\+H\+E\+R\+\_\+P} (Pose\+Eq, expected\+\_\+pose, \char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{namespacecalico_ad3cc02098e16d95b194d5d11aeb81075}\label{namespacecalico_ad3cc02098e16d95b194d5d11aeb81075}} 
+{\bfseries M\+A\+T\+C\+H\+E\+R\+\_\+P} (Eigen\+Eq, expected\+\_\+vector, \char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{namespacecalico_a93b2abc456325429855547157fa33f75}\label{namespacecalico_a93b2abc456325429855547157fa33f75}} 
+{\bfseries M\+A\+T\+C\+H\+E\+R\+\_\+\+P2} (Eigen\+Is\+Approx, expected\+\_\+vector, tolerance, \char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{namespacecalico_a59e5cd883467c65cc2e88ec9d6e5c03e}\label{namespacecalico_a59e5cd883467c65cc2e88ec9d6e5c03e}} 
+{\bfseries M\+A\+T\+C\+H\+E\+R\+\_\+P} (Status\+Is, status, \char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{namespacecalico_a7f3edab66b084d2cdc14e1a7c1b6c840}\label{namespacecalico_a7f3edab66b084d2cdc14e1a7c1b6c840}} 
+{\bfseries M\+A\+T\+C\+H\+E\+R\+\_\+P} (Status\+Code\+Is, status, \char`\"{}\char`\"{})
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacecalico_a6db3636699bf6c8f6405547a35608b33}\label{namespacecalico_a6db3636699bf6c8f6405547a35608b33}} 
+constexpr int \mbox{\hyperlink{namespacecalico_a6db3636699bf6c8f6405547a35608b33}{k\+Landmark\+Frame\+Id}} = -\/1
+\begin{DoxyCompactList}\small\item\em Default frame id for a landmark (i.\+e. World frame). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Primary calico namespace. 

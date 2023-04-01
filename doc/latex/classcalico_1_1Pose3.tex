@@ -1,0 +1,130 @@
+\hypertarget{classcalico_1_1Pose3}{}\doxysection{calico\+::Pose3$<$ T $>$ Class Template Reference}
+\label{classcalico_1_1Pose3}\index{calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}}
+
+
+{\ttfamily \#include $<$typedefs.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_abd61e064aeff4a633c890e1e56ad2ae8}\label{classcalico_1_1Pose3_abd61e064aeff4a633c890e1e56ad2ae8}} 
+{\bfseries Pose3} (const Eigen\+::\+Quaternion$<$ T $>$ \&q, const Eigen\+::\+Vector3$<$ T $>$ \&t)
+\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_ab855f93c267acba1f5875b4668cded48}\label{classcalico_1_1Pose3_ab855f93c267acba1f5875b4668cded48}} 
+Eigen\+::\+Quaternion$<$ T $>$ \& \mbox{\hyperlink{classcalico_1_1Pose3_ab855f93c267acba1f5875b4668cded48}{rotation}} ()
+\begin{DoxyCompactList}\small\item\em Rotation accessor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_a3e1100c1504884a1c2d09dbc8957e07f}\label{classcalico_1_1Pose3_a3e1100c1504884a1c2d09dbc8957e07f}} 
+const Eigen\+::\+Quaternion$<$ T $>$ \& {\bfseries rotation} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_a6199524fb9d92c656e8d9f63559c2708}\label{classcalico_1_1Pose3_a6199524fb9d92c656e8d9f63559c2708}} 
+Eigen\+::\+Vector3$<$ T $>$ \& \mbox{\hyperlink{classcalico_1_1Pose3_a6199524fb9d92c656e8d9f63559c2708}{translation}} ()
+\begin{DoxyCompactList}\small\item\em Translation accessor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_aa3962a0683fb60e23217b1403f7df31d}\label{classcalico_1_1Pose3_aa3962a0683fb60e23217b1403f7df31d}} 
+const Eigen\+::\+Vector3$<$ T $>$ \& {\bfseries translation} () const
+\item 
+void \mbox{\hyperlink{classcalico_1_1Pose3_ae6d055b87e1fbab123d462ce3a909813}{Set\+Rotation}} (const Eigen\+::\+Vector4$<$ T $>$ \&q)
+\item 
+Eigen\+::\+Vector4$<$ T $>$ \mbox{\hyperlink{classcalico_1_1Pose3_af8a2c9c1a0770632078de7bd9598153d}{Get\+Rotation}} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_add435d0528c7c6289bb305652b6e8d14}\label{classcalico_1_1Pose3_add435d0528c7c6289bb305652b6e8d14}} 
+void \mbox{\hyperlink{classcalico_1_1Pose3_add435d0528c7c6289bb305652b6e8d14}{Set\+Translation}} (const Eigen\+::\+Vector3$<$ T $>$ \&t)
+\begin{DoxyCompactList}\small\item\em Translation setter for python bindings. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_a60a3f483244ced4a3fb1b44cffee4504}\label{classcalico_1_1Pose3_a60a3f483244ced4a3fb1b44cffee4504}} 
+Eigen\+::\+Vector3$<$ T $>$ \mbox{\hyperlink{classcalico_1_1Pose3_a60a3f483244ced4a3fb1b44cffee4504}{Get\+Translation}} () const
+\begin{DoxyCompactList}\small\item\em Translation getter for python bindings. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}} \mbox{\hyperlink{classcalico_1_1Pose3_a964eb5b89fed180949a0b4c1073afbca}{operator$\ast$}} (const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ T $>$ \&T\+\_\+b\+\_\+a) const
+\item 
+Eigen\+::\+Vector3$<$ T $>$ \mbox{\hyperlink{classcalico_1_1Pose3_a0a760caa8c9cdabfd0967d533a5a855d}{operator$\ast$}} (const Eigen\+::\+Vector3$<$ T $>$ \&p) const
+\item 
+\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ T $>$ \mbox{\hyperlink{classcalico_1_1Pose3_a6a9bb21c19caa289b5a5ecb4de676313}{inverse}} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1Pose3_aa6483bfcfb4dd1daa165d8c6532e095b}\label{classcalico_1_1Pose3_aa6483bfcfb4dd1daa165d8c6532e095b}} 
+bool \mbox{\hyperlink{classcalico_1_1Pose3_aa6483bfcfb4dd1daa165d8c6532e095b}{is\+Approx}} (const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ T $>$ \&pose) const
+\begin{DoxyCompactList}\small\item\em Convenience method for checking if two poses are close in value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \mbox{\hyperlink{classcalico_1_1Pose3_adb9902f9f0af67b1b0a0f6940f423342}{operator$<$$<$}} (std\+::ostream \&os, const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ T $>$ \&pose)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class calico\+::\+Pose3$<$ T $>$}
+
+\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}} class. This class mainly serves as a container for $SE(3)$ rigid body transforms. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1Pose3_af8a2c9c1a0770632078de7bd9598153d}\label{classcalico_1_1Pose3_af8a2c9c1a0770632078de7bd9598153d}} 
+\index{calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}!GetRotation@{GetRotation}}
+\index{GetRotation@{GetRotation}!calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetRotation()}{GetRotation()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+Eigen\+::\+Vector4$<$T$>$ \mbox{\hyperlink{classcalico_1_1Pose3}{calico\+::\+Pose3}}$<$ T $>$\+::Get\+Rotation (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Rotation getter as a 4-\/vector for python bindings. Returned quaternion will be in the order $\left[w, x, y, z\right]$ \mbox{\Hypertarget{classcalico_1_1Pose3_a6a9bb21c19caa289b5a5ecb4de676313}\label{classcalico_1_1Pose3_a6a9bb21c19caa289b5a5ecb4de676313}} 
+\index{calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}!inverse@{inverse}}
+\index{inverse@{inverse}!calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{inverse()}{inverse()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$T$>$ \mbox{\hyperlink{classcalico_1_1Pose3}{calico\+::\+Pose3}}$<$ T $>$\+::inverse (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Returns the inverse of this transform $\mathbf{T}^{-1}$. Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Pose3<T> T\_rigidbody\_world = ...;}
+\DoxyCodeLine{Pose3<T> T\_world\_rigidbody = T\_rigidbody\_world.inverse();}
+\end{DoxyCode}
+ \mbox{\Hypertarget{classcalico_1_1Pose3_a0a760caa8c9cdabfd0967d533a5a855d}\label{classcalico_1_1Pose3_a0a760caa8c9cdabfd0967d533a5a855d}} 
+\index{calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator$\ast$()}{operator*()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+Eigen\+::\+Vector3$<$T$>$ \mbox{\hyperlink{classcalico_1_1Pose3}{calico\+::\+Pose3}}$<$ T $>$\+::operator$\ast$ (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{p }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Operator for transforming an Eigen 3-\/vector by a \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}} object. Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Pose3<T> T\_world\_rigidbody = ...;}
+\DoxyCodeLine{Eigen::Vector3<T> t\_rigidbody\_point = ...;}
+\DoxyCodeLine{Eigen::Vector3<T> t\_world\_point = T\_world\_rigidbody * t\_rigidbody\_point;}
+\end{DoxyCode}
+ \mbox{\Hypertarget{classcalico_1_1Pose3_a964eb5b89fed180949a0b4c1073afbca}\label{classcalico_1_1Pose3_a964eb5b89fed180949a0b4c1073afbca}} 
+\index{calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator$\ast$()}{operator*()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}} \mbox{\hyperlink{classcalico_1_1Pose3}{calico\+::\+Pose3}}$<$ T $>$\+::operator$\ast$ (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ T $>$ \&}]{T\+\_\+b\+\_\+a }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Operator for multiplying two \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}} objects. Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Pose3<T> T\_world\_rigidbody = ...;}
+\DoxyCodeLine{Pose3<T> T\_rigidbody\_sensor = ...;}
+\DoxyCodeLine{Pose3<T> T\_world\_sensor = T\_world\_rigidbody * T\_rigidbody\_sensor;}
+\end{DoxyCode}
+ \mbox{\Hypertarget{classcalico_1_1Pose3_ae6d055b87e1fbab123d462ce3a909813}\label{classcalico_1_1Pose3_ae6d055b87e1fbab123d462ce3a909813}} 
+\index{calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}!SetRotation@{SetRotation}}
+\index{SetRotation@{SetRotation}!calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SetRotation()}{SetRotation()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{classcalico_1_1Pose3}{calico\+::\+Pose3}}$<$ T $>$\+::Set\+Rotation (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector4$<$ T $>$ \&}]{q }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Rotation setter as a 4-\/vector quaternion for python bindings. Quaternion vector must be in the order $\left[w, x, y, z\right]$ 
+
+\doxysubsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1Pose3_adb9902f9f0af67b1b0a0f6940f423342}\label{classcalico_1_1Pose3_adb9902f9f0af67b1b0a0f6940f423342}} 
+\index{calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!calico::Pose3$<$ T $>$@{calico::Pose3$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::ostream\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ T $>$ \&}]{pose }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+Operator for printing a \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}} object. Usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Pose3<T> T = ...;}
+\DoxyCodeLine{std::cout << T << std::endl;}
+\DoxyCodeLine{>> q: w, x, y, z, t: x, y, z}
+\end{DoxyCode}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/james/\+Documents/calico-\/work/\+Calico/calico/typedefs.\+h\end{DoxyCompactItemize}
