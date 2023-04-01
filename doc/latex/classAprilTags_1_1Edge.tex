@@ -1,0 +1,85 @@
+\hypertarget{classAprilTags_1_1Edge}{}\doxysection{April\+Tags\+::Edge Class Reference}
+\label{classAprilTags_1_1Edge}\index{AprilTags::Edge@{AprilTags::Edge}}
+
+
+Represents an edge between adjacent pixels in the image.  
+
+
+
+
+{\ttfamily \#include $<$Edge.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_a274da8c779613f624ec8ee857dc0ba7d}\label{classAprilTags_1_1Edge_a274da8c779613f624ec8ee857dc0ba7d}} 
+\mbox{\hyperlink{classAprilTags_1_1Edge_a274da8c779613f624ec8ee857dc0ba7d}{Edge}} ()
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_aa33f1331d7680ef3cd539dece9f4f500}\label{classAprilTags_1_1Edge_aa33f1331d7680ef3cd539dece9f4f500}} 
+bool \mbox{\hyperlink{classAprilTags_1_1Edge_aa33f1331d7680ef3cd539dece9f4f500}{operator$<$}} (const \mbox{\hyperlink{classAprilTags_1_1Edge}{Edge}} \&other) const
+\begin{DoxyCompactList}\small\item\em Compare edges based on cost. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static int \mbox{\hyperlink{classAprilTags_1_1Edge_a8d32a6e3e60579f14caa4d2bd4a89e28}{edge\+Cost}} (float theta0, float theta1, float mag1)
+\begin{DoxyCompactList}\small\item\em Cost of an edge between two adjacent pixels; -\/1 if no edge here. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_ac9c140619c544ef691828686e137049c}\label{classAprilTags_1_1Edge_ac9c140619c544ef691828686e137049c}} 
+static void \mbox{\hyperlink{classAprilTags_1_1Edge_ac9c140619c544ef691828686e137049c}{calc\+Edges}} (float theta0, int x, int y, const \mbox{\hyperlink{classAprilTags_1_1FloatImage}{Float\+Image}} \&theta, const \mbox{\hyperlink{classAprilTags_1_1FloatImage}{Float\+Image}} \&mag, std\+::vector$<$ \mbox{\hyperlink{classAprilTags_1_1Edge}{Edge}} $>$ \&edges, size\+\_\+t \&n\+Edges)
+\begin{DoxyCompactList}\small\item\em Calculates and inserts up to four edges into \textquotesingle{}edges\textquotesingle{}, a vector of Edges. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_a865ec1903f15bab40e3231e23c6d8845}\label{classAprilTags_1_1Edge_a865ec1903f15bab40e3231e23c6d8845}} 
+static void \mbox{\hyperlink{classAprilTags_1_1Edge_a865ec1903f15bab40e3231e23c6d8845}{merge\+Edges}} (std\+::vector$<$ \mbox{\hyperlink{classAprilTags_1_1Edge}{Edge}} $>$ \&edges, \mbox{\hyperlink{classAprilTags_1_1UnionFindSimple}{Union\+Find\+Simple}} \&uf, float tmin\mbox{[}$\,$\mbox{]}, float tmax\mbox{[}$\,$\mbox{]}, float mmin\mbox{[}$\,$\mbox{]}, float mmax\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Process edges in order of increasing cost, merging clusters if we can do so without exceeding the theta\+Thresh. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_ad8579fa6781801ad280c7d74e2379bfa}\label{classAprilTags_1_1Edge_ad8579fa6781801ad280c7d74e2379bfa}} 
+int {\bfseries pixel\+IdxA}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_acaa7293c86b7196e4dac5708ce7e27ae}\label{classAprilTags_1_1Edge_acaa7293c86b7196e4dac5708ce7e27ae}} 
+int {\bfseries pixel\+IdxB}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_ab3300d3fb9c418c43456a255279f65ff}\label{classAprilTags_1_1Edge_ab3300d3fb9c418c43456a255279f65ff}} 
+int {\bfseries cost}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_a279b972838aeefb8093b1eb01158a57c}\label{classAprilTags_1_1Edge_a279b972838aeefb8093b1eb01158a57c}} 
+static float const \mbox{\hyperlink{classAprilTags_1_1Edge_a279b972838aeefb8093b1eb01158a57c}{min\+Mag}} = 0.\+004f
+\begin{DoxyCompactList}\small\item\em minimum intensity gradient for an edge to be recognized \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_a7ac272dfcf04e12ecc3f90b80641bac4}\label{classAprilTags_1_1Edge_a7ac272dfcf04e12ecc3f90b80641bac4}} 
+static float const \mbox{\hyperlink{classAprilTags_1_1Edge_a7ac272dfcf04e12ecc3f90b80641bac4}{max\+Edge\+Cost}} = 30.f $\ast$ float(M\+\_\+\+PI) / 180.f
+\begin{DoxyCompactList}\small\item\em 30 degrees = maximum acceptable difference in local orientations \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_aa3602e56e497c731821c98e995c0ea0f}\label{classAprilTags_1_1Edge_aa3602e56e497c731821c98e995c0ea0f}} 
+static int const {\bfseries WEIGHT\+\_\+\+SCALE} = 100
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_ad7b3f90f934cbd9105b3cda63b0167ba}\label{classAprilTags_1_1Edge_ad7b3f90f934cbd9105b3cda63b0167ba}} 
+static float const \mbox{\hyperlink{classAprilTags_1_1Edge_ad7b3f90f934cbd9105b3cda63b0167ba}{theta\+Thresh}} = 100
+\begin{DoxyCompactList}\small\item\em theta threshold for merging edges \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Edge_a36747ff004f7264c1eba593428bdc188}\label{classAprilTags_1_1Edge_a36747ff004f7264c1eba593428bdc188}} 
+static float const \mbox{\hyperlink{classAprilTags_1_1Edge_a36747ff004f7264c1eba593428bdc188}{mag\+Thresh}} = 1200
+\begin{DoxyCompactList}\small\item\em magnitude threshold for merging edges \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents an edge between adjacent pixels in the image. 
+
+The edge is encoded by the indices of the two pixels. \mbox{\hyperlink{classAprilTags_1_1Edge}{Edge}} cost is proportional to the difference in local orientations. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classAprilTags_1_1Edge_a8d32a6e3e60579f14caa4d2bd4a89e28}\label{classAprilTags_1_1Edge_a8d32a6e3e60579f14caa4d2bd4a89e28}} 
+\index{AprilTags::Edge@{AprilTags::Edge}!edgeCost@{edgeCost}}
+\index{edgeCost@{edgeCost}!AprilTags::Edge@{AprilTags::Edge}}
+\doxysubsubsection{\texorpdfstring{edgeCost()}{edgeCost()}}
+{\footnotesize\ttfamily int April\+Tags\+::\+Edge\+::edge\+Cost (\begin{DoxyParamCaption}\item[{float}]{theta0,  }\item[{float}]{theta1,  }\item[{float}]{mag1 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Cost of an edge between two adjacent pixels; -\/1 if no edge here. 
+
+An edge exists between adjacent pixels if the magnitude of the intensity gradient at both pixels is above threshold. The edge cost is proportional to the difference in the local orientation at the two pixels. Lower cost is better. A cost of -\/1 means there is no edge here (intensity gradien fell below threshold). 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+third\+\_\+party/apriltags/apriltags/Edge.\+h\item 
+third\+\_\+party/apriltags/src/Edge.\+cc\end{DoxyCompactItemize}

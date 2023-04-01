@@ -1,0 +1,72 @@
+\hypertarget{namespacecalico_1_1utils}{}\doxysection{calico\+::utils Namespace Reference}
+\label{namespacecalico_1_1utils}\index{calico::utils@{calico::utils}}
+
+
+Utils namespace.  
+
+
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum class \mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{Loss\+Function\+Type}} \+: int \{ \mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a35c3ace1970663a16e5c65baa5941b13}{k\+None}}
+, \mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a084edafec56dd4f16e59c49086cd996b}{k\+Huber}}
+, \mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a837525318a461e4a282986beb74c0211}{k\+Cauchy}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+ceres\+::\+Loss\+Function $\ast$ \mbox{\hyperlink{namespacecalico_1_1utils_aeee1e1f3baea4f1b75efab0c42923dcf}{Create\+Loss\+Function}} (\mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{Loss\+Function\+Type}} loss, double scale)
+\item 
+int \mbox{\hyperlink{namespacecalico_1_1utils_ac4ef701716e2efff5e392c94bbb0e7ed}{Add\+Pose\+To\+Problem}} (ceres\+::\+Problem \&problem, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&pose)
+\item 
+void \mbox{\hyperlink{namespacecalico_1_1utils_a86079fbae8165d8052d293a2cad53079}{Set\+Pose\+Constant\+In\+Problem}} (ceres\+::\+Problem \&problem, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&pose)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Utils namespace. 
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}\label{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}} 
+\index{calico::utils@{calico::utils}!LossFunctionType@{LossFunctionType}}
+\index{LossFunctionType@{LossFunctionType}!calico::utils@{calico::utils}}
+\doxysubsubsection{\texorpdfstring{LossFunctionType}{LossFunctionType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{calico\+::utils\+::\+Loss\+Function\+Type}} \+: int\hspace{0.3cm}{\ttfamily [strong]}}
+
+Loss\+Function\+Type. For more information, visit the \href{http://ceres-solver.org/nnls_modeling.html?highlight=loss\%20function\#lossfunction}{\texttt{ Ceres Solver documentation page on loss functions}} \begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kNone@{kNone}!calico::utils@{calico::utils}}\index{calico::utils@{calico::utils}!kNone@{kNone}}}\mbox{\Hypertarget{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a35c3ace1970663a16e5c65baa5941b13}\label{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a35c3ace1970663a16e5c65baa5941b13}} 
+k\+None&Standard least-\/squares. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kHuber@{kHuber}!calico::utils@{calico::utils}}\index{calico::utils@{calico::utils}!kHuber@{kHuber}}}\mbox{\Hypertarget{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a084edafec56dd4f16e59c49086cd996b}\label{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a084edafec56dd4f16e59c49086cd996b}} 
+k\+Huber&Huber loss. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kCauchy@{kCauchy}!calico::utils@{calico::utils}}\index{calico::utils@{calico::utils}!kCauchy@{kCauchy}}}\mbox{\Hypertarget{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a837525318a461e4a282986beb74c0211}\label{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9a837525318a461e4a282986beb74c0211}} 
+k\+Cauchy&Cauchy loss. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacecalico_1_1utils_ac4ef701716e2efff5e392c94bbb0e7ed}\label{namespacecalico_1_1utils_ac4ef701716e2efff5e392c94bbb0e7ed}} 
+\index{calico::utils@{calico::utils}!AddPoseToProblem@{AddPoseToProblem}}
+\index{AddPoseToProblem@{AddPoseToProblem}!calico::utils@{calico::utils}}
+\doxysubsubsection{\texorpdfstring{AddPoseToProblem()}{AddPoseToProblem()}}
+{\footnotesize\ttfamily int calico\+::utils\+::\+Add\+Pose\+To\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem,  }\item[{\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&}]{pose }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Convenience function for adding a Pose3d type to a ceres problem with correct parameterization and manifold specification. \mbox{\Hypertarget{namespacecalico_1_1utils_aeee1e1f3baea4f1b75efab0c42923dcf}\label{namespacecalico_1_1utils_aeee1e1f3baea4f1b75efab0c42923dcf}} 
+\index{calico::utils@{calico::utils}!CreateLossFunction@{CreateLossFunction}}
+\index{CreateLossFunction@{CreateLossFunction}!calico::utils@{calico::utils}}
+\doxysubsubsection{\texorpdfstring{CreateLossFunction()}{CreateLossFunction()}}
+{\footnotesize\ttfamily ceres\+::\+Loss\+Function$\ast$ calico\+::utils\+::\+Create\+Loss\+Function (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{Loss\+Function\+Type}}}]{loss,  }\item[{double}]{scale }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Convenience function for allocating a {\ttfamily ceres\+::\+Loss\+Function} object of of specified type and scale. For more information, visit the \href{http://ceres-solver.org/nnls_modeling.html?highlight=loss\%20function\#lossfunction}{\texttt{ Ceres Solver documentation page on loss functions}} \mbox{\Hypertarget{namespacecalico_1_1utils_a86079fbae8165d8052d293a2cad53079}\label{namespacecalico_1_1utils_a86079fbae8165d8052d293a2cad53079}} 
+\index{calico::utils@{calico::utils}!SetPoseConstantInProblem@{SetPoseConstantInProblem}}
+\index{SetPoseConstantInProblem@{SetPoseConstantInProblem}!calico::utils@{calico::utils}}
+\doxysubsubsection{\texorpdfstring{SetPoseConstantInProblem()}{SetPoseConstantInProblem()}}
+{\footnotesize\ttfamily void calico\+::utils\+::\+Set\+Pose\+Constant\+In\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem,  }\item[{\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&}]{pose }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Convenience function for setting a Pose3d object parameters constant within a ceres problem. 

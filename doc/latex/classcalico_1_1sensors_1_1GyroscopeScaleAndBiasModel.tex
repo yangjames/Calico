@@ -1,0 +1,79 @@
+\hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel}{}\doxysection{calico\+::sensors\+::Gyroscope\+Scale\+And\+Bias\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel}\index{calico::sensors::GyroscopeScaleAndBiasModel@{calico::sensors::GyroscopeScaleAndBiasModel}}
+
+
+{\ttfamily \#include $<$gyroscope\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Gyroscope\+Scale\+And\+Bias\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=212pt]{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Gyroscope\+Scale\+And\+Bias\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=212pt]{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_acd30cc1608ad351e71a4739a0f51f571}\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_acd30cc1608ad351e71a4739a0f51f571}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel}{Gyroscope\+Scale\+And\+Bias\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel}{Gyroscope\+Scale\+And\+Bias\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a2da8af552ed6f172e70115010788ddff}\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a2da8af552ed6f172e70115010788ddff}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a2da8af552ed6f172e70115010788ddff}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for gyroscope model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_aef9eed7ab47f29a01f814eee5a4656d0}\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_aef9eed7ab47f29a01f814eee5a4656d0}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_aef9eed7ab47f29a01f814eee5a4656d0}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a2b2e0611b8331e9ab5996dda0e07a9ac}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&omega\+\_\+sensor\+\_\+world)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_ade7e2c5c6c6d1c0d013b1b7806cd9e86}{Unproject}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&measurement)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a059b959233a6334bb2d8d5ff17ca909b}\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a059b959233a6334bb2d8d5ff17ca909b}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 4
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_acf6bae081732e7a228cc5e4b47c9ef14}\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_acf6bae081732e7a228cc5e4b47c9ef14}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}{Gyroscope\+Intrinsics\+Model\+::k\+Gyroscope\+Scale\+And\+Bias}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+4-\/parameter scale + bias intrinsics model. Parameter order\+: $[s, b_x, b_y, b_z]$ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a2b2e0611b8331e9ab5996dda0e07a9ac}\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_a2b2e0611b8331e9ab5996dda0e07a9ac}} 
+\index{calico::sensors::GyroscopeScaleAndBiasModel@{calico::sensors::GyroscopeScaleAndBiasModel}!Project@{Project}}
+\index{Project@{Project}!calico::sensors::GyroscopeScaleAndBiasModel@{calico::sensors::GyroscopeScaleAndBiasModel}}
+\doxysubsubsection{\texorpdfstring{Project()}{Project()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Gyroscope\+Scale\+And\+Bias\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{omega\+\_\+sensor\+\_\+world }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns measurement $\mathbf{f}$, a 3-\/D vector such that \[ \mathbf{f} = s\boldsymbol{\omega}^s_{ws} + \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right] \] \mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_ade7e2c5c6c6d1c0d013b1b7806cd9e86}\label{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel_ade7e2c5c6c6d1c0d013b1b7806cd9e86}} 
+\index{calico::sensors::GyroscopeScaleAndBiasModel@{calico::sensors::GyroscopeScaleAndBiasModel}!Unproject@{Unproject}}
+\index{Unproject@{Unproject}!calico::sensors::GyroscopeScaleAndBiasModel@{calico::sensors::GyroscopeScaleAndBiasModel}}
+\doxysubsubsection{\texorpdfstring{Unproject()}{Unproject()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Gyroscope\+Scale\+And\+Bias\+Model\+::\+Unproject (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{measurement }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the measurement model to obtain angular rate as observed by the sensor. \[ \boldsymbol{\omega}^s_{ws} = \frac{1}{s}\left(\mathbf{f} - \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right]\right) \] 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/gyroscope\+\_\+models.\+h\end{DoxyCompactItemize}

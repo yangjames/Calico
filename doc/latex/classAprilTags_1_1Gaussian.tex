@@ -1,0 +1,66 @@
+\hypertarget{classAprilTags_1_1Gaussian}{}\doxysection{April\+Tags\+::Gaussian Class Reference}
+\label{classAprilTags_1_1Gaussian}\index{AprilTags::Gaussian@{AprilTags::Gaussian}}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::vector$<$ float $>$ \mbox{\hyperlink{classAprilTags_1_1Gaussian_af56c23ba698c8ca2e8a8a44035e1d873}{make\+Gaussian\+Filter}} (float sigma, int n)
+\begin{DoxyCompactList}\small\item\em Returns a \mbox{\hyperlink{classAprilTags_1_1Gaussian}{Gaussian}} filter of size n. \end{DoxyCompactList}\item 
+static void \mbox{\hyperlink{classAprilTags_1_1Gaussian_aa31e223b55fee8be400e955db2e0222f}{convolve\+Symmetric\+Centered}} (const std\+::vector$<$ float $>$ \&a, unsigned int aoff, unsigned int alen, const std\+::vector$<$ float $>$ \&f, std\+::vector$<$ float $>$ \&r, unsigned int roff)
+\begin{DoxyCompactList}\small\item\em Convolve the input \textquotesingle{}a\textquotesingle{} (which begins at offset aoff and is alen elements in length) with the filter \textquotesingle{}f\textquotesingle{}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Gaussian_a4a0ffca42178d10c0def1ce8a9abf3dc}\label{classAprilTags_1_1Gaussian_a4a0ffca42178d10c0def1ce8a9abf3dc}} 
+static bool {\bfseries warned} = false
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classAprilTags_1_1Gaussian_aa31e223b55fee8be400e955db2e0222f}\label{classAprilTags_1_1Gaussian_aa31e223b55fee8be400e955db2e0222f}} 
+\index{AprilTags::Gaussian@{AprilTags::Gaussian}!convolveSymmetricCentered@{convolveSymmetricCentered}}
+\index{convolveSymmetricCentered@{convolveSymmetricCentered}!AprilTags::Gaussian@{AprilTags::Gaussian}}
+\doxysubsubsection{\texorpdfstring{convolveSymmetricCentered()}{convolveSymmetricCentered()}}
+{\footnotesize\ttfamily void April\+Tags\+::\+Gaussian\+::convolve\+Symmetric\+Centered (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ float $>$ \&}]{a,  }\item[{unsigned int}]{aoff,  }\item[{unsigned int}]{alen,  }\item[{const std\+::vector$<$ float $>$ \&}]{f,  }\item[{std\+::vector$<$ float $>$ \&}]{r,  }\item[{unsigned int}]{roff }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Convolve the input \textquotesingle{}a\textquotesingle{} (which begins at offset aoff and is alen elements in length) with the filter \textquotesingle{}f\textquotesingle{}. 
+
+The result is deposited in \textquotesingle{}r\textquotesingle{} at offset \textquotesingle{}roff\textquotesingle{}. f.\+size() should be odd. The output is shifted by -\/f.\+size()/2, so that there is no net time delay. 
+\begin{DoxyParams}{Parameters}
+{\em a} & input vector of pixels \\
+\hline
+{\em aoff} & \\
+\hline
+{\em alen} & \\
+\hline
+{\em f} & \\
+\hline
+{\em r} & the resultant array of pixels \\
+\hline
+{\em roff} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classAprilTags_1_1Gaussian_af56c23ba698c8ca2e8a8a44035e1d873}\label{classAprilTags_1_1Gaussian_af56c23ba698c8ca2e8a8a44035e1d873}} 
+\index{AprilTags::Gaussian@{AprilTags::Gaussian}!makeGaussianFilter@{makeGaussianFilter}}
+\index{makeGaussianFilter@{makeGaussianFilter}!AprilTags::Gaussian@{AprilTags::Gaussian}}
+\doxysubsubsection{\texorpdfstring{makeGaussianFilter()}{makeGaussianFilter()}}
+{\footnotesize\ttfamily std\+::vector$<$ float $>$ April\+Tags\+::\+Gaussian\+::make\+Gaussian\+Filter (\begin{DoxyParamCaption}\item[{float}]{sigma,  }\item[{int}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Returns a \mbox{\hyperlink{classAprilTags_1_1Gaussian}{Gaussian}} filter of size n. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sigma} & standard deviation of the \mbox{\hyperlink{classAprilTags_1_1Gaussian}{Gaussian}} \\
+\hline
+{\em n} & length of the \mbox{\hyperlink{classAprilTags_1_1Gaussian}{Gaussian}} (must be odd) \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+third\+\_\+party/apriltags/apriltags/Gaussian.\+h\item 
+third\+\_\+party/apriltags/src/Gaussian.\+cc\end{DoxyCompactItemize}

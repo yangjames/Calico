@@ -1,0 +1,47 @@
+\hypertarget{classAprilTags_1_1TagDetector}{}\doxysection{April\+Tags\+::Tag\+Detector Class Reference}
+\label{classAprilTags_1_1TagDetector}\index{AprilTags::TagDetector@{AprilTags::TagDetector}}
+
+
+Collaboration diagram for April\+Tags\+::Tag\+Detector\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=202pt]{classAprilTags_1_1TagDetector__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1TagDetector_a480e76e69ab3d59c21155730e789ed77}\label{classAprilTags_1_1TagDetector_a480e76e69ab3d59c21155730e789ed77}} 
+\mbox{\hyperlink{classAprilTags_1_1TagDetector_a480e76e69ab3d59c21155730e789ed77}{Tag\+Detector}} (const \mbox{\hyperlink{classAprilTags_1_1TagCodes}{Tag\+Codes}} \&tag\+Codes, const size\+\_\+t black\+Border=2)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+std\+::vector$<$ \mbox{\hyperlink{structAprilTags_1_1TagDetection}{Tag\+Detection}} $>$ \mbox{\hyperlink{classAprilTags_1_1TagDetector_a4e6c8de7128871422fe06f5e37d22dba}{extract\+Tags}} (const cv\+::\+Mat \&image)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1TagDetector_a0d8ce301a4133d83e8de6c7c6857e070}\label{classAprilTags_1_1TagDetector_a0d8ce301a4133d83e8de6c7c6857e070}} 
+const \mbox{\hyperlink{classAprilTags_1_1TagFamily}{Tag\+Family}} {\bfseries this\+Tag\+Family}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classAprilTags_1_1TagDetector_a4e6c8de7128871422fe06f5e37d22dba}\label{classAprilTags_1_1TagDetector_a4e6c8de7128871422fe06f5e37d22dba}} 
+\index{AprilTags::TagDetector@{AprilTags::TagDetector}!extractTags@{extractTags}}
+\index{extractTags@{extractTags}!AprilTags::TagDetector@{AprilTags::TagDetector}}
+\doxysubsubsection{\texorpdfstring{extractTags()}{extractTags()}}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{structAprilTags_1_1TagDetection}{Tag\+Detection}} $>$ April\+Tags\+::\+Tag\+Detector\+::extract\+Tags (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{image }\end{DoxyParamCaption})}
+
+\mbox{\hyperlink{classAprilTags_1_1Gaussian}{Gaussian}} smoothing kernel applied to image (0 == no filter).
+
+Used when sampling bits. Filtering is a good idea in cases where A) a cheap camera is introducing artifical sharpening, B) the bayer pattern is creating artifcats, C) the sensor is very noisy and/or has hot/cold pixels. However, filtering makes it harder to decode very small tags. Reasonable values are 0, or \mbox{[}0.\+8, 1.\+5\mbox{]}.
+
+\mbox{\hyperlink{classAprilTags_1_1Gaussian}{Gaussian}} smoothing kernel applied to image (0 == no filter).
+
+Used when detecting the outline of the box. It is almost always useful to have some filtering, since the loss of small details won\textquotesingle{}t hurt. Recommended value = 0.\+8. The case where sigma == segsigma has been optimized to avoid a redundant filter operation.
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+third\+\_\+party/apriltags/apriltags/Tag\+Detector.\+h\item 
+third\+\_\+party/apriltags/src/Tag\+Detector.\+cc\end{DoxyCompactItemize}

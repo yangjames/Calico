@@ -1,0 +1,184 @@
+\hypertarget{namespacecalico_1_1sensors}{}\doxysection{calico\+::sensors Namespace Reference}
+\label{namespacecalico_1_1sensors}\index{calico::sensors@{calico::sensors}}
+
+
+Sensors namespace.  
+
+
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerObservationId}{Accelerometer\+Observation\+Id}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerMeasurement}{Accelerometer\+Measurement}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} measurement type. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} class. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerCostFunctor}{Accelerometer\+Cost\+Functor}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel}{Accelerometer\+Model}}
+\begin{DoxyCompactList}\small\item\em Base class for accelerometer models. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleOnlyModel}{Accelerometer\+Scale\+Only\+Model}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel}{Accelerometer\+Scale\+And\+Bias\+Model}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraObservationId}{Camera\+Observation\+Id}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera}{Camera}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera}{Camera}} class. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraCostFunctor}{Camera\+Cost\+Functor}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel}{Camera\+Model}}
+\begin{DoxyCompactList}\small\item\em Base class for camera models. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1OpenCv5Model}{Open\+Cv5\+Model}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel}{Kannala\+Brandt\+Model}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1sensors_1_1GyroscopeObservationId}{Gyroscope\+Observation\+Id}}
+\item 
+struct \mbox{\hyperlink{structcalico_1_1sensors_1_1GyroscopeMeasurement}{Gyroscope\+Measurement}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope}{Gyroscope}} measurement type. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope}{Gyroscope}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope}{Gyroscope}} class. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeCostFunctor}{Gyroscope\+Cost\+Functor}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeModel}{Gyroscope\+Model}}
+\begin{DoxyCompactList}\small\item\em Base class for gyroscope models. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel}{Gyroscope\+Scale\+Only\+Model}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel}{Gyroscope\+Scale\+And\+Bias\+Model}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor}{Sensor}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacecalico_1_1sensors_a26f40c250732bcd248ab2cf757204ac8}\label{namespacecalico_1_1sensors_a26f40c250732bcd248ab2cf757204ac8}} 
+enum class {\bfseries Accelerometer\+Parameter\+Indices} \+: int \{ \newline
+{\bfseries k\+Intrinsics\+Index} = 0
+, {\bfseries k\+Extrinsics\+Rotation\+Index} = 1
+, {\bfseries k\+Extrinsics\+Translation\+Index} = 2
+, {\bfseries k\+Latency\+Index} = 3
+, \newline
+{\bfseries k\+Gravity\+Index} = 4
+, {\bfseries k\+Sensor\+Rig\+Pose\+Spline\+Control\+Points\+Index} = 5
+ \}
+\item 
+enum class \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} \+: int \{ \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a35c3ace1970663a16e5c65baa5941b13}{k\+None}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a21041b4c17c9d356c0905ff0ba6544de}{k\+Accelerometer\+Scale\+Only}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5}{k\+Accelerometer\+Scale\+And\+Bias}}
+ \}
+\begin{DoxyCompactList}\small\item\em Accelerometer model types. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacecalico_1_1sensors_ad6ac270c0a97d772be9dd07092f78182}\label{namespacecalico_1_1sensors_ad6ac270c0a97d772be9dd07092f78182}} 
+enum class {\bfseries Camera\+Parameter\+Indices} \+: int \{ \newline
+{\bfseries k\+Intrinsics\+Index} = 0
+, {\bfseries k\+Extrinsics\+Rotation\+Index} = 1
+, {\bfseries k\+Extrinsics\+Translation\+Index} = 2
+, {\bfseries k\+Latency\+Index} = 3
+, \newline
+{\bfseries k\+Model\+Point\+Index} = 4
+, {\bfseries k\+Model\+Rotation\+Index} = 5
+, {\bfseries k\+Model\+Translation\+Index} = 6
+, {\bfseries k\+Sensor\+Rig\+Pose\+Spline\+Control\+Points\+Index} = 7
+ \}
+\item 
+enum class \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} \+: int \{ \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa35c3ace1970663a16e5c65baa5941b13}{k\+None}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa5c5d81ff8c055e0af2d4080ca90f3b6d}{k\+Open\+Cv5}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}{k\+Kannala\+Brandt}}
+ \}
+\begin{DoxyCompactList}\small\item\em Camera model types. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacecalico_1_1sensors_a8ab41fd089b77e315a5747103fe688c6}\label{namespacecalico_1_1sensors_a8ab41fd089b77e315a5747103fe688c6}} 
+enum class {\bfseries Gyroscope\+Parameter\+Indices} \+: int \{ \newline
+{\bfseries k\+Intrinsics\+Index} = 0
+, {\bfseries k\+Extrinsics\+Rotation\+Index} = 1
+, {\bfseries k\+Extrinsics\+Translation\+Index} = 2
+, {\bfseries k\+Latency\+Index} = 3
+, \newline
+{\bfseries k\+Sensor\+Rig\+Pose\+Spline\+Control\+Points\+Index} = 4
+ \}
+\item 
+enum class \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} \+: int \{ \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da35c3ace1970663a16e5c65baa5941b13}{k\+None}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da34e2be26dca2101fb95fc6487800e928}{k\+Gyroscope\+Scale\+Only}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}{k\+Gyroscope\+Scale\+And\+Bias}}
+ \}
+\begin{DoxyCompactList}\small\item\em Gyroscope model types. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Sensors namespace. 
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}\label{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}} 
+\index{calico::sensors@{calico::sensors}!AccelerometerIntrinsicsModel@{AccelerometerIntrinsicsModel}}
+\index{AccelerometerIntrinsicsModel@{AccelerometerIntrinsicsModel}!calico::sensors@{calico::sensors}}
+\doxysubsubsection{\texorpdfstring{AccelerometerIntrinsicsModel}{AccelerometerIntrinsicsModel}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{calico\+::sensors\+::\+Accelerometer\+Intrinsics\+Model}} \+: int\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+\mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} model types. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kNone@{kNone}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kNone@{kNone}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a35c3ace1970663a16e5c65baa5941b13}\label{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a35c3ace1970663a16e5c65baa5941b13}} 
+k\+None&Default no model. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kAccelerometerScaleOnly@{kAccelerometerScaleOnly}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kAccelerometerScaleOnly@{kAccelerometerScaleOnly}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a21041b4c17c9d356c0905ff0ba6544de}\label{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a21041b4c17c9d356c0905ff0ba6544de}} 
+k\+Accelerometer\+Scale\+Only&Isotropic scale without bias. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kAccelerometerScaleAndBias@{kAccelerometerScaleAndBias}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kAccelerometerScaleAndBias@{kAccelerometerScaleAndBias}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5}\label{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5}} 
+k\+Accelerometer\+Scale\+And\+Bias&Isotropic scale with bias. \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}\label{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}} 
+\index{calico::sensors@{calico::sensors}!CameraIntrinsicsModel@{CameraIntrinsicsModel}}
+\index{CameraIntrinsicsModel@{CameraIntrinsicsModel}!calico::sensors@{calico::sensors}}
+\doxysubsubsection{\texorpdfstring{CameraIntrinsicsModel}{CameraIntrinsicsModel}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{calico\+::sensors\+::\+Camera\+Intrinsics\+Model}} \+: int\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+\mbox{\hyperlink{classcalico_1_1sensors_1_1Camera}{Camera}} model types. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kNone@{kNone}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kNone@{kNone}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa35c3ace1970663a16e5c65baa5941b13}\label{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa35c3ace1970663a16e5c65baa5941b13}} 
+k\+None&Default no model. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kOpenCv5@{kOpenCv5}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kOpenCv5@{kOpenCv5}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa5c5d81ff8c055e0af2d4080ca90f3b6d}\label{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa5c5d81ff8c055e0af2d4080ca90f3b6d}} 
+k\+Open\+Cv5&5-\/parameter Open\+CV model. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kKannalaBrandt@{kKannalaBrandt}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kKannalaBrandt@{kKannalaBrandt}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}\label{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}} 
+k\+Kannala\+Brandt&Kannala-\/\+Brandt model. \\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}\label{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}} 
+\index{calico::sensors@{calico::sensors}!GyroscopeIntrinsicsModel@{GyroscopeIntrinsicsModel}}
+\index{GyroscopeIntrinsicsModel@{GyroscopeIntrinsicsModel}!calico::sensors@{calico::sensors}}
+\doxysubsubsection{\texorpdfstring{GyroscopeIntrinsicsModel}{GyroscopeIntrinsicsModel}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{calico\+::sensors\+::\+Gyroscope\+Intrinsics\+Model}} \+: int\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+\mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope}{Gyroscope}} model types. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kNone@{kNone}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kNone@{kNone}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da35c3ace1970663a16e5c65baa5941b13}\label{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da35c3ace1970663a16e5c65baa5941b13}} 
+k\+None&Default no model. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kGyroscopeScaleOnly@{kGyroscopeScaleOnly}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kGyroscopeScaleOnly@{kGyroscopeScaleOnly}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da34e2be26dca2101fb95fc6487800e928}\label{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da34e2be26dca2101fb95fc6487800e928}} 
+k\+Gyroscope\+Scale\+Only&Isotropic scale without bias. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kGyroscopeScaleAndBias@{kGyroscopeScaleAndBias}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kGyroscopeScaleAndBias@{kGyroscopeScaleAndBias}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}\label{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}} 
+k\+Gyroscope\+Scale\+And\+Bias&Isotropic scale with bias. \\
+\hline
+
+\end{DoxyEnumFields}

@@ -1,0 +1,48 @@
+\hypertarget{classIsOkAndHoldsMatcherImpl}{}\doxysection{Is\+Ok\+And\+Holds\+Matcher\+Impl$<$ Status\+Or\+Type $>$ Class Template Reference}
+\label{classIsOkAndHoldsMatcherImpl}\index{IsOkAndHoldsMatcherImpl$<$ StatusOrType $>$@{IsOkAndHoldsMatcherImpl$<$ StatusOrType $>$}}
+
+
+Inheritance diagram for Is\+Ok\+And\+Holds\+Matcher\+Impl$<$ Status\+Or\+Type $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=214pt]{classIsOkAndHoldsMatcherImpl__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Is\+Ok\+And\+Holds\+Matcher\+Impl$<$ Status\+Or\+Type $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=214pt]{classIsOkAndHoldsMatcherImpl__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classIsOkAndHoldsMatcherImpl_a440819330ef307ee16f53ee20db0858a}\label{classIsOkAndHoldsMatcherImpl_a440819330ef307ee16f53ee20db0858a}} 
+typedef std\+::remove\+\_\+reference$<$ Status\+Or\+Type $>$\+::type\+::value\+\_\+type {\bfseries value\+\_\+type}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classIsOkAndHoldsMatcherImpl_af45b126e8c8ed1e52a307ce43bf05d65}\label{classIsOkAndHoldsMatcherImpl_af45b126e8c8ed1e52a307ce43bf05d65}} 
+{\footnotesize template$<$typename Inner\+Matcher $>$ }\\{\bfseries Is\+Ok\+And\+Holds\+Matcher\+Impl} (Inner\+Matcher \&\&inner\+\_\+matcher)
+\item 
+\mbox{\Hypertarget{classIsOkAndHoldsMatcherImpl_adacb1b9d4973823c00295919111193b1}\label{classIsOkAndHoldsMatcherImpl_adacb1b9d4973823c00295919111193b1}} 
+void {\bfseries Describe\+To} (std\+::ostream $\ast$os) const override
+\item 
+\mbox{\Hypertarget{classIsOkAndHoldsMatcherImpl_a820892222f421c4d1b0fe0ab48874848}\label{classIsOkAndHoldsMatcherImpl_a820892222f421c4d1b0fe0ab48874848}} 
+void {\bfseries Describe\+Negation\+To} (std\+::ostream $\ast$os) const override
+\item 
+\mbox{\Hypertarget{classIsOkAndHoldsMatcherImpl_ae4fe189d1c38b0031b161ad2a2bb7956}\label{classIsOkAndHoldsMatcherImpl_ae4fe189d1c38b0031b161ad2a2bb7956}} 
+bool {\bfseries Match\+And\+Explain} (Status\+Or\+Type actual\+\_\+value, \+::testing\+::\+Match\+Result\+Listener $\ast$result\+\_\+listener) const override
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/statusor\+\_\+macros.\+h\end{DoxyCompactItemize}

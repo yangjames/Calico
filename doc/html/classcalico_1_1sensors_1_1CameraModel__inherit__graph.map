@@ -1,0 +1,5 @@
+<map id="calico::sensors::CameraModel" name="calico::sensors::CameraModel">
+<area shape="rect" id="node1" title="Base class for camera models." alt="" coords="83,5,278,32"/>
+<area shape="rect" id="node2" href="$classcalico_1_1sensors_1_1KannalaBrandtModel.html" title=" " alt="" coords="5,80,167,121"/>
+<area shape="rect" id="node3" href="$classcalico_1_1sensors_1_1OpenCv5Model.html" title=" " alt="" coords="191,80,359,121"/>
+</map>

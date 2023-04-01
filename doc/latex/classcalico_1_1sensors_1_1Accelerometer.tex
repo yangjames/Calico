@@ -1,0 +1,191 @@
+\hypertarget{classcalico_1_1sensors_1_1Accelerometer}{}\doxysection{calico\+::sensors\+::Accelerometer Class Reference}
+\label{classcalico_1_1sensors_1_1Accelerometer}\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+
+
+\mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} class.  
+
+
+
+
+{\ttfamily \#include $<$accelerometer.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Accelerometer\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=229pt]{classcalico_1_1sensors_1_1Accelerometer__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Accelerometer\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=229pt]{classcalico_1_1sensors_1_1Accelerometer__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a87831b8a85f2c3a2cad4bb789151f74a}\label{classcalico_1_1sensors_1_1Accelerometer_a87831b8a85f2c3a2cad4bb789151f74a}} 
+{\bfseries Accelerometer} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} \&)=delete
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_ad0123d56bd91eba5d8e8a34ff8ab2552}\label{classcalico_1_1sensors_1_1Accelerometer_ad0123d56bd91eba5d8e8a34ff8ab2552}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} \&)=delete
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a69c802ad172b3875992298cbde1399e1}\label{classcalico_1_1sensors_1_1Accelerometer_a69c802ad172b3875992298cbde1399e1}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a69c802ad172b3875992298cbde1399e1}{Set\+Name}} (const std\+::string \&name) final
+\begin{DoxyCompactList}\small\item\em Setter for name. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_ac11dda7c2c1c93091c5d3544b867a761}\label{classcalico_1_1sensors_1_1Accelerometer_ac11dda7c2c1c93091c5d3544b867a761}} 
+const std\+::string \& \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_ac11dda7c2c1c93091c5d3544b867a761}{Get\+Name}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for name. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a0babbee636013d6224b1908b5c8c4ec7}\label{classcalico_1_1sensors_1_1Accelerometer_a0babbee636013d6224b1908b5c8c4ec7}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a0babbee636013d6224b1908b5c8c4ec7}{Set\+Extrinsics}} (const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&T\+\_\+sensorrig\+\_\+sensor) final
+\begin{DoxyCompactList}\small\item\em Setter for extrinsics parameters. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a3461a72e36066b1e22778a18525873bf}\label{classcalico_1_1sensors_1_1Accelerometer_a3461a72e36066b1e22778a18525873bf}} 
+const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \& \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a3461a72e36066b1e22778a18525873bf}{Get\+Extrinsics}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for extrinsics parameters. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_acd8424db4c5a76a33a113963e763eaa6}\label{classcalico_1_1sensors_1_1Accelerometer_acd8424db4c5a76a33a113963e763eaa6}} 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_acd8424db4c5a76a33a113963e763eaa6}{Set\+Intrinsics}} (const Eigen\+::\+Vector\+Xd \&intrinsics) final
+\begin{DoxyCompactList}\small\item\em Setter for intrinsics parameters. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a046cef74dd6478b5001d5b5392d866bd}\label{classcalico_1_1sensors_1_1Accelerometer_a046cef74dd6478b5001d5b5392d866bd}} 
+const Eigen\+::\+Vector\+Xd \& \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a046cef74dd6478b5001d5b5392d866bd}{Get\+Intrinsics}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for intrinsics parameters. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_aab53d1ea391bcffe744ad1c5e77ea893}\label{classcalico_1_1sensors_1_1Accelerometer_aab53d1ea391bcffe744ad1c5e77ea893}} 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_aab53d1ea391bcffe744ad1c5e77ea893}{Set\+Latency}} (double latency) final
+\begin{DoxyCompactList}\small\item\em Setter for sensor latency. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a6a4922add5c71301ac6dd55a63a2ea96}\label{classcalico_1_1sensors_1_1Accelerometer_a6a4922add5c71301ac6dd55a63a2ea96}} 
+double \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a6a4922add5c71301ac6dd55a63a2ea96}{Get\+Latency}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for sensor latency. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_aaa70cd751e2a85322a44461df1ba8b41}\label{classcalico_1_1sensors_1_1Accelerometer_aaa70cd751e2a85322a44461df1ba8b41}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_aaa70cd751e2a85322a44461df1ba8b41}{Enable\+Extrinsics\+Estimation}} (bool enable) final
+\begin{DoxyCompactList}\small\item\em Enable or disable extrinsics estimation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_ac67ee592eac447f77f3570cc3d1f7955}\label{classcalico_1_1sensors_1_1Accelerometer_ac67ee592eac447f77f3570cc3d1f7955}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_ac67ee592eac447f77f3570cc3d1f7955}{Enable\+Intrinsics\+Estimation}} (bool enable) final
+\begin{DoxyCompactList}\small\item\em Enable or disable intrinsics estimation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_ac9cdfe615bc666967c5c72231cd23b60}\label{classcalico_1_1sensors_1_1Accelerometer_ac9cdfe615bc666967c5c72231cd23b60}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_ac9cdfe615bc666967c5c72231cd23b60}{Enable\+Latency\+Estimation}} (bool enable) final
+\begin{DoxyCompactList}\small\item\em Enable or disable latency estimation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a4b441d544eafab8b86c867a27b5147a8}\label{classcalico_1_1sensors_1_1Accelerometer_a4b441d544eafab8b86c867a27b5147a8}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a4b441d544eafab8b86c867a27b5147a8}{Set\+Loss\+Function}} (\mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{utils\+::\+Loss\+Function\+Type}} loss, double scale) final
+\begin{DoxyCompactList}\small\item\em Setter for loss function and scale. \end{DoxyCompactList}\item 
+absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_ad662a04d9dc1fa620d674260a10ef584}{Add\+Parameters\+To\+Problem}} (ceres\+::\+Problem \&problem) final
+\begin{DoxyCompactList}\small\item\em Add this sensor\textquotesingle{}s calibration parameters to the ceres problem. \end{DoxyCompactList}\item 
+absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a18f345438e5d1c919e8a2842491552fd}{Add\+Residuals\+To\+Problem}} (ceres\+::\+Problem \&problem, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) final
+\begin{DoxyCompactList}\small\item\em Contribue this sensor\textquotesingle{}s residuals to the ceres problem. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}{Update\+Residuals}} (ceres\+::\+Problem \&problem) final
+\begin{DoxyCompactList}\small\item\em Update residuals for this sensor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a7a7b63e21eb8358ba98f78ee9cdb5d25}\label{classcalico_1_1sensors_1_1Accelerometer_a7a7b63e21eb8358ba98f78ee9cdb5d25}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a7a7b63e21eb8358ba98f78ee9cdb5d25}{Clear\+Residual\+Info}} () final
+\begin{DoxyCompactList}\small\item\em Clear all stored info about residuals. \end{DoxyCompactList}\item 
+absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerMeasurement}{Accelerometer\+Measurement}} $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_ac1e574412a12a2dad447b6a7b3fe2855}{Project}} (const std\+::vector$<$ double $>$ \&interp\+\_\+times, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, const \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a35c7bedfecf5338f29bd3518476eed29}\label{classcalico_1_1sensors_1_1Accelerometer_a35c7bedfecf5338f29bd3518476eed29}} 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a35c7bedfecf5338f29bd3518476eed29}{Set\+Model}} (\mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} accelerometer\+\_\+model)
+\begin{DoxyCompactList}\small\item\em Setter for accelerometer model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a3bbd02b0dec4641a5b012dc19f4dd006}\label{classcalico_1_1sensors_1_1Accelerometer_a3bbd02b0dec4641a5b012dc19f4dd006}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a3bbd02b0dec4641a5b012dc19f4dd006}{Get\+Model}} () const
+\begin{DoxyCompactList}\small\item\em Getter for accelerometer model. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_ae3b0b45306c07f8af56bcd42cdc3cbab}{Add\+Measurement}} (const \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerMeasurement}{Accelerometer\+Measurement}} \&measurement)
+\begin{DoxyCompactList}\small\item\em Add an accelerometer measurement to the measurement list. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_aaaac1bf62c3b01d64ce320d5cde74453}{Add\+Measurements}} (const std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerMeasurement}{Accelerometer\+Measurement}} $>$ \&measurements)
+\begin{DoxyCompactList}\small\item\em Add multiple measurements to the measurement list. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a572707e00c6b6acc67e61699ca8c436d}\label{classcalico_1_1sensors_1_1Accelerometer_a572707e00c6b6acc67e61699ca8c436d}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a572707e00c6b6acc67e61699ca8c436d}{Clear\+Measurements}} ()
+\begin{DoxyCompactList}\small\item\em Clear all measurements. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a60bb4adcaedefd9022a7771445618fba}\label{classcalico_1_1sensors_1_1Accelerometer_a60bb4adcaedefd9022a7771445618fba}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a60bb4adcaedefd9022a7771445618fba}{Number\+Of\+Measurements}} () const
+\begin{DoxyCompactList}\small\item\em Get current number of measurements stored. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer}{Accelerometer}} class. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_ae3b0b45306c07f8af56bcd42cdc3cbab}\label{classcalico_1_1sensors_1_1Accelerometer_ae3b0b45306c07f8af56bcd42cdc3cbab}} 
+\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!AddMeasurement@{AddMeasurement}}
+\index{AddMeasurement@{AddMeasurement}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+\doxysubsubsection{\texorpdfstring{AddMeasurement()}{AddMeasurement()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Accelerometer\+::\+Add\+Measurement (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerMeasurement}{Accelerometer\+Measurement}} \&}]{measurement }\end{DoxyParamCaption})}
+
+
+
+Add an accelerometer measurement to the measurement list. 
+
+Returns an error if the measurement\textquotesingle{}s id is duplicated without adding. \mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_aaaac1bf62c3b01d64ce320d5cde74453}\label{classcalico_1_1sensors_1_1Accelerometer_aaaac1bf62c3b01d64ce320d5cde74453}} 
+\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!AddMeasurements@{AddMeasurements}}
+\index{AddMeasurements@{AddMeasurements}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+\doxysubsubsection{\texorpdfstring{AddMeasurements()}{AddMeasurements()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Accelerometer\+::\+Add\+Measurements (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerMeasurement}{Accelerometer\+Measurement}} $>$ \&}]{measurements }\end{DoxyParamCaption})}
+
+
+
+Add multiple measurements to the measurement list. 
+
+Returns an error status if any measurements are duplicates. This method will add the entire vector, but skips any duplicates. {\bfseries{Note\+: If this method encounters any duplicates, it will STILL attempt to add the entire vector. If it returns an error status, it means that all unique measurements have been added, but duplicates have been skipped.}} \mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_ad662a04d9dc1fa620d674260a10ef584}\label{classcalico_1_1sensors_1_1Accelerometer_ad662a04d9dc1fa620d674260a10ef584}} 
+\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!AddParametersToProblem@{AddParametersToProblem}}
+\index{AddParametersToProblem@{AddParametersToProblem}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+\doxysubsubsection{\texorpdfstring{AddParametersToProblem()}{AddParametersToProblem()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ int $>$ calico\+::sensors\+::\+Accelerometer\+::\+Add\+Parameters\+To\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Add this sensor\textquotesingle{}s calibration parameters to the ceres problem. 
+
+Returns the number of parameters added to the problem, which should be intrinsics + extrinsics + latency. If the sensor\textquotesingle{}s model hasn\textquotesingle{}t been set yet, it will return an invalid argument error. 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_a54f63f5a3b982b444d3a77724ec0a4cd}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a18f345438e5d1c919e8a2842491552fd}\label{classcalico_1_1sensors_1_1Accelerometer_a18f345438e5d1c919e8a2842491552fd}} 
+\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!AddResidualsToProblem@{AddResidualsToProblem}}
+\index{AddResidualsToProblem@{AddResidualsToProblem}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+\doxysubsubsection{\texorpdfstring{AddResidualsToProblem()}{AddResidualsToProblem()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ int $>$ calico\+::sensors\+::\+Accelerometer\+::\+Add\+Residuals\+To\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem,  }\item[{\mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&}]{sensorrig\+\_\+trajectory,  }\item[{\mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&}]{world\+\_\+model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Contribue this sensor\textquotesingle{}s residuals to the ceres problem. 
+
+{\ttfamily sensorrig\+\_\+trajectory} is the world-\/from-\/sensorrig trajectory $\mathbf{T}^w_r(t)$. 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_a7b60ca0610c6caa6a3278f7da5a251d8}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_ac1e574412a12a2dad447b6a7b3fe2855}\label{classcalico_1_1sensors_1_1Accelerometer_ac1e574412a12a2dad447b6a7b3fe2855}} 
+\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!Project@{Project}}
+\index{Project@{Project}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+\doxysubsubsection{\texorpdfstring{Project()}{Project()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1AccelerometerMeasurement}{Accelerometer\+Measurement}} $>$ $>$ calico\+::sensors\+::\+Accelerometer\+::\+Project (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{interp\+\_\+times,  }\item[{const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&}]{sensorrig\+\_\+trajectory,  }\item[{const \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&}]{world\+\_\+model }\end{DoxyParamCaption}) const}
+
+Compute synthetic accelerometer measurements at given a sensorrig trajectory. This method interpolates the sensorrig trajectory at given timestamps and generates synthetic measurements as would be observed by the actual sensor at those timestamps. Gravity points in the direction as defined by \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}.~\newline
+~\newline
+{\ttfamily interp\+\_\+times} is a vector of timestamps in seconds at which {\ttfamily sensorrig\+\_\+trajectory} will be interpolated. No assumptions are made about timestamp uniqueness or order.~\newline
+~\newline
+{\ttfamily sensorrig\+\_\+trajectory} is the world-\/from-\/sensorrig trajectory $\mathbf{T}^w_r(t)$.~\newline
+~\newline
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}\label{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}} 
+\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!UpdateResiduals@{UpdateResiduals}}
+\index{UpdateResiduals@{UpdateResiduals}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+\doxysubsubsection{\texorpdfstring{UpdateResiduals()}{UpdateResiduals()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Accelerometer\+::\+Update\+Residuals (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Update residuals for this sensor. 
+
+This will only apply to measurements not marked as outliers.~\newline
+~\newline
+{\bfseries{Note\+: This method is meant to be invoked by \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} ONLY. It is not recommended that you invoke this method manually.}} 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_af08e6476f0188cdb77cf912a9026709a}{calico\+::sensors\+::\+Sensor}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/accelerometer.\+h\item 
+calico/sensors/accelerometer.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,68 @@
+\hypertarget{classAprilTags_1_1FloatImage}{}\doxysection{April\+Tags\+::Float\+Image Class Reference}
+\label{classAprilTags_1_1FloatImage}\index{AprilTags::FloatImage@{AprilTags::FloatImage}}
+
+
+Represent an image as a vector of floats in \mbox{[}0,1\mbox{]}.  
+
+
+
+
+{\ttfamily \#include $<$Float\+Image.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_afcc87588cf9dd85df3dc462c5b96520b}\label{classAprilTags_1_1FloatImage_afcc87588cf9dd85df3dc462c5b96520b}} 
+\mbox{\hyperlink{classAprilTags_1_1FloatImage_afcc87588cf9dd85df3dc462c5b96520b}{Float\+Image}} ()
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_a3416d8563e336b546ee9d321ff52cb3c}\label{classAprilTags_1_1FloatImage_a3416d8563e336b546ee9d321ff52cb3c}} 
+\mbox{\hyperlink{classAprilTags_1_1FloatImage_a3416d8563e336b546ee9d321ff52cb3c}{Float\+Image}} (int width\+Arg, int height\+Arg)
+\begin{DoxyCompactList}\small\item\em Construct an empty image. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_aece2b3666542057bced37fabe6b9e4a7}\label{classAprilTags_1_1FloatImage_aece2b3666542057bced37fabe6b9e4a7}} 
+\mbox{\hyperlink{classAprilTags_1_1FloatImage_aece2b3666542057bced37fabe6b9e4a7}{Float\+Image}} (int width\+Arg, int height\+Arg, const std\+::vector$<$ float $>$ \&p\+Arg)
+\begin{DoxyCompactList}\small\item\em Constructor that copies pixels from an array. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_a08d4cd17679e23808fe8210e100f10fe}\label{classAprilTags_1_1FloatImage_a08d4cd17679e23808fe8210e100f10fe}} 
+\mbox{\hyperlink{classAprilTags_1_1FloatImage}{Float\+Image}} \& {\bfseries operator=} (const \mbox{\hyperlink{classAprilTags_1_1FloatImage}{Float\+Image}} \&other)
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_ac7a0fce2cee1c67529218f2dc81362d2}\label{classAprilTags_1_1FloatImage_ac7a0fce2cee1c67529218f2dc81362d2}} 
+float {\bfseries get} (int x, int y) const
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_aafad542ce75f7ff5f16a2173c399f06b}\label{classAprilTags_1_1FloatImage_aafad542ce75f7ff5f16a2173c399f06b}} 
+void {\bfseries set} (int x, int y, float v)
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_a78b856d667c4cbe4236c3f7c2624b1ed}\label{classAprilTags_1_1FloatImage_a78b856d667c4cbe4236c3f7c2624b1ed}} 
+int {\bfseries get\+Width} () const
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_af5b2d714b232698cc40cb0dc6f5d74c1}\label{classAprilTags_1_1FloatImage_af5b2d714b232698cc40cb0dc6f5d74c1}} 
+int {\bfseries get\+Height} () const
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_ad39efb85e79a4f9ccdc4c5a06e57b9f5}\label{classAprilTags_1_1FloatImage_ad39efb85e79a4f9ccdc4c5a06e57b9f5}} 
+int {\bfseries get\+Num\+Float\+Image\+Pixels} () const
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_a49c3ec1fec30323c7db78b8f0521b29f}\label{classAprilTags_1_1FloatImage_a49c3ec1fec30323c7db78b8f0521b29f}} 
+const std\+::vector$<$ float $>$ \& {\bfseries get\+Float\+Image\+Pixels} () const
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_a16ed23a8c968a37a924e9d8b1a0a7024}\label{classAprilTags_1_1FloatImage_a16ed23a8c968a37a924e9d8b1a0a7024}} 
+void \mbox{\hyperlink{classAprilTags_1_1FloatImage_a16ed23a8c968a37a924e9d8b1a0a7024}{decimate\+Avg}} ()
+\begin{DoxyCompactList}\small\item\em TODO\+: Fix decimate\+Avg function. DO NOT USE! \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_a11b35a556a0a124d577c2337310113fb}\label{classAprilTags_1_1FloatImage_a11b35a556a0a124d577c2337310113fb}} 
+void \mbox{\hyperlink{classAprilTags_1_1FloatImage_a11b35a556a0a124d577c2337310113fb}{normalize}} ()
+\begin{DoxyCompactList}\small\item\em Rescale all values so that they are between \mbox{[}0,1\mbox{]}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_aeb934a46faa519a9a25b6c7b4661e1cd}\label{classAprilTags_1_1FloatImage_aeb934a46faa519a9a25b6c7b4661e1cd}} 
+void {\bfseries filter\+Factored\+Centered} (const std\+::vector$<$ float $>$ \&fhoriz, const std\+::vector$<$ float $>$ \&fvert)
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_a662defb29d51c739d8928d1446784c6d}\label{classAprilTags_1_1FloatImage_a662defb29d51c739d8928d1446784c6d}} 
+{\footnotesize template$<$typename T $>$ }\\void {\bfseries copy\+To\+Sketch} (\mbox{\hyperlink{classDualCoding_1_1Sketch}{Dual\+Coding\+::\+Sketch}}$<$ T $>$ \&sketch)
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1FloatImage_af10e34eb5869e7752b8d4f59a45347fe}\label{classAprilTags_1_1FloatImage_af10e34eb5869e7752b8d4f59a45347fe}} 
+void {\bfseries print\+Min\+Max} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represent an image as a vector of floats in \mbox{[}0,1\mbox{]}. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+third\+\_\+party/apriltags/apriltags/Float\+Image.\+h\item 
+third\+\_\+party/apriltags/src/Float\+Image.\+cc\end{DoxyCompactItemize}

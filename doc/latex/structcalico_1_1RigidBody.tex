@@ -1,0 +1,50 @@
+\hypertarget{structcalico_1_1RigidBody}{}\doxysection{calico\+::Rigid\+Body Struct Reference}
+\label{structcalico_1_1RigidBody}\index{calico::RigidBody@{calico::RigidBody}}
+
+
+{\ttfamily \#include $<$world\+\_\+model.\+h$>$}
+
+
+
+Collaboration diagram for calico\+::Rigid\+Body\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=221pt]{structcalico_1_1RigidBody__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structcalico_1_1RigidBody_a9ef4f4a0970873044f524a3fcd7b5682}\label{structcalico_1_1RigidBody_a9ef4f4a0970873044f524a3fcd7b5682}} 
+std\+::unordered\+\_\+map$<$ int, Eigen\+::\+Vector3d $>$ \mbox{\hyperlink{structcalico_1_1RigidBody_a9ef4f4a0970873044f524a3fcd7b5682}{model\+\_\+definition}}
+\begin{DoxyCompactList}\small\item\em Maps feature id to its 3d point definition resolved in the rigid body frame, $\mathbf{t}^b_{bx_i}$. Each feature needs a unique integer id. The numerical value of the id does not matter. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcalico_1_1RigidBody_a94fa27a592a25869caed2b420af468ca}\label{structcalico_1_1RigidBody_a94fa27a592a25869caed2b420af468ca}} 
+\mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \mbox{\hyperlink{structcalico_1_1RigidBody_a94fa27a592a25869caed2b420af468ca}{T\+\_\+world\+\_\+rigidbody}}
+\begin{DoxyCompactList}\small\item\em FROM world TO rigidbody transform, $\mathbf{T}^w_b$. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcalico_1_1RigidBody_a637c97b6fafebaae78e52cc40a06b794}\label{structcalico_1_1RigidBody_a637c97b6fafebaae78e52cc40a06b794}} 
+int \mbox{\hyperlink{structcalico_1_1RigidBody_a637c97b6fafebaae78e52cc40a06b794}{id}}
+\begin{DoxyCompactList}\small\item\em Id of this rigid body. When adding rigid bodies to the \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}}, id\textquotesingle{}s for all rigid bodies must be unique. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcalico_1_1RigidBody_acb3060fecdee55133d44931193c1db7e}\label{structcalico_1_1RigidBody_acb3060fecdee55133d44931193c1db7e}} 
+bool \mbox{\hyperlink{structcalico_1_1RigidBody_acb3060fecdee55133d44931193c1db7e}{world\+\_\+pose\+\_\+is\+\_\+constant}}
+\begin{DoxyCompactList}\small\item\em Flag for keeping this rigid body\textquotesingle{}s world-\/from-\/rigidbody pose constant or as a free parameter. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structcalico_1_1RigidBody_a10740abe70a502c155d87108f2c50eaa}\label{structcalico_1_1RigidBody_a10740abe70a502c155d87108f2c50eaa}} 
+bool \mbox{\hyperlink{structcalico_1_1RigidBody_a10740abe70a502c155d87108f2c50eaa}{model\+\_\+definition\+\_\+is\+\_\+constant}}
+\begin{DoxyCompactList}\small\item\em Flag for keeping the model definition constant or as free parameters. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+{\ttfamily Rigidbody} object which represents a constellation of points on a rigid body. ~\newline
+~\newline
+{\ttfamily model\+\_\+definition} contains 3d points that make up the rigid body resolved in the rigid body frame $\mathbf{t}^b_{bx_i}$. For example, this could be planar points on a fiducial target in a calibration problem relative to some origin defined on the target.~\newline
+~\newline
+{\ttfamily T\+\_\+world\+\_\+rigidbody} is the rigid transform TO the world FROM the rigidbody frame such that the model defintion points can be resolved in the world frame by the following\+: \[ \mathbf{T}^w_b = \left[\begin{matrix} \mathbf{R}^w_b & \mathbf{t}^w_{wb}\\ \mathbf{0}&1 \end{matrix}\right]\\ \mathbf{t}^w_{wx_i} = \mathbf{t}^w_{wb} + \mathbf{R}^w_b\mathbf{t}^b_{bx_i} \] ~\newline
+~\newline
+Both the model definition and its world pose can be set as either constant or as free parameters in an optimization problem via the flags {\ttfamily world\+\_\+pose\+\_\+is\+\_\+constant} and {\ttfamily model\+\_\+definition\+\_\+is\+\_\+constant}.~\newline
+~\newline
+TODO(yangjames)\+: Replace std\+::unordered\+\_\+map with absl\+::flat\+\_\+hash\+\_\+map. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/world\+\_\+model.\+h\end{DoxyCompactItemize}

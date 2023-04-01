@@ -1,0 +1,29 @@
+\hypertarget{classcalico_1_1sensors_1_1AccelerometerCostFunctor}{}\doxysection{calico\+::sensors\+::Accelerometer\+Cost\+Functor Class Reference}
+\label{classcalico_1_1sensors_1_1AccelerometerCostFunctor}\index{calico::sensors::AccelerometerCostFunctor@{calico::sensors::AccelerometerCostFunctor}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerCostFunctor_a1202b48a4d958bb42aa968b3eaa0a423}\label{classcalico_1_1sensors_1_1AccelerometerCostFunctor_a1202b48a4d958bb42aa968b3eaa0a423}} 
+{\bfseries Accelerometer\+Cost\+Functor} (\mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} accelerometer\+\_\+model, const Eigen\+::\+Vector3d \&measurement, double stamp, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sp\+\_\+\+T\+\_\+world\+\_\+sensorrig)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerCostFunctor_aed7c838072eb89fb4a8ca5f379dbf430}\label{classcalico_1_1sensors_1_1AccelerometerCostFunctor_aed7c838072eb89fb4a8ca5f379dbf430}} 
+{\footnotesize template$<$typename T $>$ }\\bool {\bfseries operator()} (T const $\ast$const $\ast$parameters, T $\ast$residual)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerCostFunctor_a7528bf86247bbfd3aadc1eb9a92ded15}\label{classcalico_1_1sensors_1_1AccelerometerCostFunctor_a7528bf86247bbfd3aadc1eb9a92ded15}} 
+static ceres\+::\+Cost\+Function $\ast$ {\bfseries Create\+Cost\+Function} (const Eigen\+::\+Vector3d \&measurement, \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} accelerometer\+\_\+model, Eigen\+::\+Vector\+Xd \&intrinsics, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&extrinsics, double \&latency, Eigen\+::\+Vector3d \&gravity, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&trajectory\+\_\+world\+\_\+sensorrig, double stamp, std\+::vector$<$ double $\ast$ $>$ \&parameters)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerCostFunctor_a33f3117a78627c2fda641ab17dad166a}\label{classcalico_1_1sensors_1_1AccelerometerCostFunctor_a33f3117a78627c2fda641ab17dad166a}} 
+static constexpr int {\bfseries k\+Accelerometer\+Residual\+Size} = 3
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/accelerometer\+\_\+cost\+\_\+functor.\+h\item 
+calico/sensors/accelerometer\+\_\+cost\+\_\+functor.\+cpp\end{DoxyCompactItemize}

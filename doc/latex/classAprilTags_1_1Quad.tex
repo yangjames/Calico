@@ -1,0 +1,105 @@
+\hypertarget{classAprilTags_1_1Quad}{}\doxysection{April\+Tags\+::Quad Class Reference}
+\label{classAprilTags_1_1Quad}\index{AprilTags::Quad@{AprilTags::Quad}}
+
+
+Represents four segments that form a loop, and might be a tag.  
+
+
+
+
+{\ttfamily \#include $<$Quad.\+h$>$}
+
+
+
+Collaboration diagram for April\+Tags\+::Quad\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=178pt]{classAprilTags_1_1Quad__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classAprilTags_1_1Quad_a61dcb0ff81a8e56a46f8ec8c690c4b15}{Quad}} (const std\+::vector$<$ std\+::pair$<$ float, float $>$ $>$ \&p, const std\+::pair$<$ float, float $>$ \&optical\+Center)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Quad_af8724a12f12daee93579bae28d4109e0}\label{classAprilTags_1_1Quad_af8724a12f12daee93579bae28d4109e0}} 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{classAprilTags_1_1Quad_af8724a12f12daee93579bae28d4109e0}{interpolate}} (float x, float y)
+\begin{DoxyCompactList}\small\item\em Interpolate given that the lower left corner of the lower left cell is at (-\/1,-\/1) and the upper right corner of the upper right cell is at (1,1). \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Quad_a8e893f004aee7447396d1939e1a87648}\label{classAprilTags_1_1Quad_a8e893f004aee7447396d1939e1a87648}} 
+std\+::pair$<$ float, float $>$ \mbox{\hyperlink{classAprilTags_1_1Quad_a8e893f004aee7447396d1939e1a87648}{interpolate01}} (float x, float y)
+\begin{DoxyCompactList}\small\item\em Same as interpolate, except that the coordinates are interpreted between 0 and 1, instead of -\/1 and 1. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Quad_af94d37c4ebc2280dcfc37b53cd7afb92}\label{classAprilTags_1_1Quad_af94d37c4ebc2280dcfc37b53cd7afb92}} 
+static void \mbox{\hyperlink{classAprilTags_1_1Quad_af94d37c4ebc2280dcfc37b53cd7afb92}{search}} (const \mbox{\hyperlink{classAprilTags_1_1FloatImage}{Float\+Image}} \&f\+Image, std\+::vector$<$ \mbox{\hyperlink{classAprilTags_1_1Segment}{Segment}} $\ast$ $>$ \&path, \mbox{\hyperlink{classAprilTags_1_1Segment}{Segment}} \&parent, int depth, std\+::vector$<$ \mbox{\hyperlink{classAprilTags_1_1Quad}{Quad}} $>$ \&quads, const std\+::pair$<$ float, float $>$ \&optical\+Center)
+\begin{DoxyCompactList}\small\item\em Searches through a vector of Segments to form Quads. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Quad_a9ef5047c264772f2a3a44f8fd0a18363}\label{classAprilTags_1_1Quad_a9ef5047c264772f2a3a44f8fd0a18363}} 
+std\+::vector$<$ std\+::pair$<$ float, float $>$ $>$ \mbox{\hyperlink{classAprilTags_1_1Quad_a9ef5047c264772f2a3a44f8fd0a18363}{quad\+Points}}
+\begin{DoxyCompactList}\small\item\em Points for the quad (in pixel coordinates), in counter clockwise order. These points are the intersections of segments. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Quad_afa06de3d6ae8bf4bb670f2b7f8ec4f5f}\label{classAprilTags_1_1Quad_afa06de3d6ae8bf4bb670f2b7f8ec4f5f}} 
+std\+::vector$<$ \mbox{\hyperlink{classAprilTags_1_1Segment}{Segment}} $\ast$ $>$ \mbox{\hyperlink{classAprilTags_1_1Quad_afa06de3d6ae8bf4bb670f2b7f8ec4f5f}{segments}}
+\begin{DoxyCompactList}\small\item\em Segments composing this quad. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{classAprilTags_1_1Quad_a26b948b98fdede39e373fabcc3214b7a}{observed\+Perimeter}}
+\begin{DoxyCompactList}\small\item\em Total length (in pixels) of the actual perimeter observed for the quad. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classHomography33}{Homography33}} \mbox{\hyperlink{classAprilTags_1_1Quad_a3b6590252139460f985375c1a843b94f}{homography}}
+\begin{DoxyCompactList}\small\item\em Given that the whole quad spans from (0,0) to (1,1) in \char`\"{}quad space\char`\"{}, compute the pixel coordinates for a given point within that quad. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAprilTags_1_1Quad_ae5473d956218448be77f6997796b1ea8}\label{classAprilTags_1_1Quad_ae5473d956218448be77f6997796b1ea8}} 
+static const int \mbox{\hyperlink{classAprilTags_1_1Quad_ae5473d956218448be77f6997796b1ea8}{minimum\+Edge\+Length}} = 6
+\begin{DoxyCompactList}\small\item\em Minimum size of a tag (in pixels) as measured along edges and diagonals. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAprilTags_1_1Quad_afeec819e242367c2c400e2c027db0574}\label{classAprilTags_1_1Quad_afeec819e242367c2c400e2c027db0574}} 
+static float const \mbox{\hyperlink{classAprilTags_1_1Quad_afeec819e242367c2c400e2c027db0574}{max\+Quad\+Aspect\+Ratio}} = 32
+\begin{DoxyCompactList}\small\item\em Early pruning of quads with insane ratios. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents four segments that form a loop, and might be a tag. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classAprilTags_1_1Quad_a61dcb0ff81a8e56a46f8ec8c690c4b15}\label{classAprilTags_1_1Quad_a61dcb0ff81a8e56a46f8ec8c690c4b15}} 
+\index{AprilTags::Quad@{AprilTags::Quad}!Quad@{Quad}}
+\index{Quad@{Quad}!AprilTags::Quad@{AprilTags::Quad}}
+\doxysubsubsection{\texorpdfstring{Quad()}{Quad()}}
+{\footnotesize\ttfamily April\+Tags\+::\+Quad\+::\+Quad (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::pair$<$ float, float $>$ $>$ \&}]{p,  }\item[{const std\+::pair$<$ float, float $>$ \&}]{optical\+Center }\end{DoxyParamCaption})}
+
+
+
+Constructor. 
+
+(x,y) are the optical center of the camera, which is needed to correctly compute the homography. 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classAprilTags_1_1Quad_a3b6590252139460f985375c1a843b94f}\label{classAprilTags_1_1Quad_a3b6590252139460f985375c1a843b94f}} 
+\index{AprilTags::Quad@{AprilTags::Quad}!homography@{homography}}
+\index{homography@{homography}!AprilTags::Quad@{AprilTags::Quad}}
+\doxysubsubsection{\texorpdfstring{homography}{homography}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classHomography33}{Homography33}} April\+Tags\+::\+Quad\+::homography}
+
+
+
+Given that the whole quad spans from (0,0) to (1,1) in \char`\"{}quad space\char`\"{}, compute the pixel coordinates for a given point within that quad. 
+
+Note that for most of the \mbox{\hyperlink{classAprilTags_1_1Quad}{Quad}}\textquotesingle{}s existence, we will not know the correct orientation of the tag. \mbox{\Hypertarget{classAprilTags_1_1Quad_a26b948b98fdede39e373fabcc3214b7a}\label{classAprilTags_1_1Quad_a26b948b98fdede39e373fabcc3214b7a}} 
+\index{AprilTags::Quad@{AprilTags::Quad}!observedPerimeter@{observedPerimeter}}
+\index{observedPerimeter@{observedPerimeter}!AprilTags::Quad@{AprilTags::Quad}}
+\doxysubsubsection{\texorpdfstring{observedPerimeter}{observedPerimeter}}
+{\footnotesize\ttfamily float April\+Tags\+::\+Quad\+::observed\+Perimeter}
+
+
+
+Total length (in pixels) of the actual perimeter observed for the quad. 
+
+This is in contrast to the geometric perimeter, some of which may not have been directly observed but rather inferred by intersecting segments. Quads with more observed perimeter are preferred over others. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+third\+\_\+party/apriltags/apriltags/Quad.\+h\item 
+third\+\_\+party/apriltags/src/Quad.\+cc\end{DoxyCompactItemize}
