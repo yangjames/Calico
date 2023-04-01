@@ -1,0 +1,57 @@
+name: Doxygen documentation generation
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ mainline ]
+
+
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Doxygen Action
+      uses: mattnotmitt/doxygen-action@v1.3.1
+      with:
+        working-directory: "."
+        doxyfile-path: "./Doxyfile"
+
+    - name: Upload output directory
+      uses: actions/upload-artifacts@v2
+      with:
+        name: doc-files
+        path: doc
+        retention-days: 1
+
+  copy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+
+    - uses: actions/checkout@v2
+      with:
+      ref: gh-pages
+
+    - name: Download output directory
+      uses: actions/download-artifact@v2
+      with:
+        name: doc-files
+        path: doc
+
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: .
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v7
+      with:
+        author name: autodoc
+        author email: nobody@nobody
+        message: "update docs"
+        branch: gh-pages
+        add: 'doc'
