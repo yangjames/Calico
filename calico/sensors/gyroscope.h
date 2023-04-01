@@ -17,9 +17,13 @@
 
 namespace calico::sensors {
 
-// Gyroscope observation id.
+/// Gyroscope observation id type for a gyroscope measurement.
+/// This object is hashable by `absl::Hash` for use as a key in
+/// `absl::flat_hash_map` or `absl::flat_hash_set`.
 struct GyroscopeObservationId {
+  /// Timestamp in seconds.
   double stamp;
+  /// Sequence number of this measurement.
   int sequence;
 
   template <typename H>
@@ -33,13 +37,15 @@ struct GyroscopeObservationId {
   }
 };
 
-// Gyroscope measurement type.
+/// Gyroscope measurement type.
 struct GyroscopeMeasurement {
+  /// \brief Raw uncalibrated measurement value from a gyroscope.
   Eigen::Vector3d measurement;
+  /// \brief Id of this observation.
   GyroscopeObservationId id;
 };
 
-
+/// Gyroscope class.
 class Gyroscope : public Sensor {
  public:
   explicit Gyroscope() = default;
@@ -47,72 +53,65 @@ class Gyroscope : public Sensor {
   Gyroscope& operator=(const Gyroscope&) = delete;
   ~Gyroscope() = default;
 
-  // Setter/getter for name.
   void SetName(const std::string& name) final;
   const std::string& GetName() const final;
-
-  // Setter/getter for extrinsics parameters.
   void SetExtrinsics(const Pose3d& T_sensorrig_sensor) final;
   const Pose3d& GetExtrinsics() const final;
-
-  // Setter/getter for intrinsics parameters.
   absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
   const Eigen::VectorXd& GetIntrinsics() const final;
-
-  // Setter/getter for sensor latency.
   absl::Status SetLatency(double latency) final;
   double GetLatency() const final;
-
-  // Enable flags for intrinsics, extrinsics, and latency.
   void EnableExtrinsicsEstimation(bool enable) final;
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
-
-  // Set loss function type.
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+  void ClearResidualInfo() final;
   void SetLossFunction(utils::LossFunctionType loss, double scale) final;
-
-  // Add this gyroscope's parameters to the ceres problem. Returns the number of
-  // parameters added to the problem, which should be intrinsics + extrinsics +
-  // latency. If the gyroscope model hasn't been set yet, it will return an
-  // invalid argument error.
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
-
-  // Contribue this gyroscope's residuals to the ceres problem.
   absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem & problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
 
-  // Update residuals for this sensor. This is mean to be only invoked by the
-  // BatchOptimizer class.
-  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+  /// Compute synthetic gyroscope measurements at given a sensorrig trajectory.
 
-  // Clear all residual information.
-  void ClearResidualInfo() final;
-
-  // Compute synthetic gyroscope measurements at given a sensor rig trajectory.
+  /// This method interpolates the sensorrig trajectory at given timestamps and
+  /// generates synthetic measurements as would be observed by the actual sensor
+  /// at those timestamps.\n\n
+  /// `interp_times` is a vector of timestamps in seconds at which
+  /// `sensorrig_trajectory` will be interpolated. No assumptions are made about
+  /// timestamp uniqueness or order.\n\n
+  /// `sensorrig_trajectory` is the world-from-sensorrig trajectory
+  /// \f$\mathbf{T}^w_r(t)\f$.\n\n
   absl::StatusOr<std::vector<GyroscopeMeasurement>> Project(
       const std::vector<double>& interp_times,
       const Trajectory& sensorrig_trajectory) const;
 
-  // Setter/getter for gyroscope model.
+  /// Setter for gyroscope model.
   absl::Status SetModel(GyroscopeIntrinsicsModel gyroscope_model);
+
+  /// Getter for gyroscope model.
   GyroscopeIntrinsicsModel GetModel() const;
 
-  // Add a gyroscope measurement to the measurement list. Returns an error if the
-  // measurement's id is duplicated without adding.
+  /// Add a gyroscope measurement to the measurement list.
+
+  /// Returns an error if the measurement's id is duplicated without adding.
   absl::Status AddMeasurement(const GyroscopeMeasurement& measurement);
 
-  // Add multiple measurements to the measurement list. Returns an error status
-  // if any measurements are duplicates. This method will add the entire vector,
-  // but skips any duplicates.
+  /// Add multiple measurements to the measurement list.
+
+  /// Returns an error status if any measurements are duplicates. This method
+  /// will add the entire vector, but skips any duplicates.
+  /// **Note: If this method encounters any duplicates, it will STILL attempt to
+  /// add the entire vector. If it returns an error status, it means that all
+  /// unique measurements have been added, but duplicates have been skipped.**
   absl::Status AddMeasurements(
       const std::vector<GyroscopeMeasurement>& measurements);
 
-  // Clear all measurements.
+  /// Clear all measurements.
   void ClearMeasurements();
 
-  // Get current number of measurements stored.
+  /// Get current number of measurements stored.
   int NumberOfMeasurements() const;
 
  private:
