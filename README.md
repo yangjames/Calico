@@ -4,15 +4,16 @@
 
 # Calico
 
-Calico is a lightweight visual-inertial calibration library designed for rapid problem construction, debugging, and tool creation. Unlike other codebases that strictly contain standalone calibration tools made with specific hardware setups in mind, Calico is a flexible library with which you can build and change your **own tools** based on your hardware needs and limitations. As long your calibration problem is consistent with our [geometry paradigm](https://github.com/yangjames/Calico/wiki/The-Geometry-of-Calico-Problems), there is **no need** to change the formulation of the underlying optimization.
+Calico is a lightweight visual-inertial calibration library that allows for rapid problem construction, debugging, and tool creation. Unlike other codebases that are limited to standalone calibration tools for specific hardware setups, Calico is a flexible library that enables **building and modifying custom tools** to suit your hardware requirements. If your calibration problem aligns with our geometry paradigm, there is no need to modify the underlying optimization.
 
-Some features of Calico include:
+Calico features:
+
+- Flexible auto-differentiable cost functors.
 - Sensor intrinsics, extrinsics, and latency estimation.
-- Calibration with multiple (and mixed) fiducials.
-- Addition of an arbitrary number of rigidly attached sensors.
+- The ability to add multiple sensors.
 - Measurement outlier tagging and exclusion.
-- Robustifier kernels on a per-sensor basis.
-- Addition of custom sensor intrinsics models.
+- Per-sensor robustifier kernels.
+- Ability to create custom sensor models.
 
 Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info.
 
