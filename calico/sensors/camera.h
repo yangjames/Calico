@@ -18,21 +18,13 @@
 
 namespace calico::sensors {
 
-/// Camera observation id type for a camera measurement.
-/// This object is hashable by `absl::Hash` for use as a key in
-/// `absl::flat_hash_map` or `absl::flat_hash_set`.
+// CameraObservationId type for a camera measurement. This object is hashable by
+// `absl::Hash` for use as a key in `absl::flat_hash_map` or
+// `absl::flat_hash_set`.
 struct CameraObservationId {
-  /// Timestamp in seconds.
   double stamp;
-  /// Image id.
   int image_id;
-  /// \brief RigidBody model id. Equivalent to `RigidBody.id` field of a
-  /// RigidBody or `kLandmarkFrameId` if this measurement corersponds to a
-  /// landmark.
   int model_id;
-  /// \brief Feature id. Equivalent to the key field of
-  /// `RigidBody.model_definition` of RigidBody or `Landmark.id` field of
-  /// Landmark.
   int feature_id;
 
   template <typename H>
@@ -51,14 +43,11 @@ struct CameraObservationId {
 
 // Camera measurement type.
 struct CameraMeasurement {
-  /// \brief Pixel location of the observed feature.
   Eigen::Vector2d pixel;
-  /// \brief Id of this observation.
   CameraObservationId id;
 };
 
 
-/// Camera class. 
 class Camera : public Sensor {
  public:
   explicit Camera() = default;
@@ -66,102 +55,103 @@ class Camera : public Sensor {
   Camera& operator=(const Camera&) = delete;
   ~Camera() = default;
 
+  // Setter/getter for name.
   void SetName(const std::string& name) final;
   const std::string& GetName() const final;
+
+  // Setter/getter for extrinsics parameters.
   void SetExtrinsics(const Pose3d& T_sensorrig_sensor) final;
   const Pose3d& GetExtrinsics() const final;
+
+  // Setter/getter for intrinsics parameters.
   absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
   const Eigen::VectorXd& GetIntrinsics() const final;
+
+  // Setter/getter for sensor latency.
   absl::Status SetLatency(double latency) final;
   double GetLatency() const final;
+
+  // Enable flags for intrinsics, extrinsics, and latency.
   void EnableExtrinsicsEstimation(bool enable) final;
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
+
+  // Update residuals for this sensor. This will only apply to measurements
+  // not marked as outliers.
   absl::Status UpdateResiduals(ceres::Problem& problem) final;
+
+  // Clear all residual information.
   void ClearResidualInfo() final;
+
+  // Set loss function type.
   void SetLossFunction(utils::LossFunctionType loss, double scale) final;
+
+  // Add this camera's parameters to the ceres problem. Returns the number of
+  // parameters added to the problem, which should be intrinsics + extrinsics.
+  // If the camera model hasn't been set yet, it will return an invalid
+  // argument error.
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
+
+  // Contribue this camera's residuals to the ceres problem.
   absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem & problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
 
-  /// Compute synthetic camera measurements given a Trajectory and WorldModel.
-
-  /// This method projects the world model through the kinematic chain at given
-  /// timestamps. This method returns only valid synthetic measurements as would
-  /// be observed by the actual sensor, complying with physicality such as
-  /// features being in front of the camera. Returns measurements in the order
-  /// of the interpolation timestamps.\n\n
-  /// `interp_times` is a vector of timestamps in seconds at which
-  /// `sensorrig_trajectory` will be interpolated. No assumptions are made about
-  /// timestamp uniqueness or order.\n\n
-  /// `sensorrig_trajectory` is the world-from-sensorrig trajectory
-  /// \f$\mathbf{T}^w_r(t)\f$.\n\n
+  // Compute the project of a world model through a kinematic chain. This
+  // method returns only valid synthetic measurements as would be observed by
+  // the actual sensor, complying with physicality such as features being in
+  // front of the camera and within image bounds.
   absl::StatusOr<std::vector<CameraMeasurement>> Project(
       const std::vector<double>& interp_times,
       const Trajectory& sensorrig_trajectory,
       const WorldModel& world_model) const;
 
-  /// Setter for the camera model.
+  // Setter/getter for camera model.
   absl::Status SetModel(CameraIntrinsicsModel camera_model);
-
-  /// Getter for the camera model.
   CameraIntrinsicsModel GetModel() const;
 
-  /// Add a single camera measurement to the measurement list.
-
-  /// Returns an error if the measurement's id is duplicated without adding.
+  // Add a camera measurement to the measurement list. Returns an error if the
+  // measurement's id is duplicated without adding.
   absl::Status AddMeasurement(const CameraMeasurement& measurement);
 
-  /// Add multiple measurements to the measurement list.
-
-  /// Returns an error status if any measurements are duplicates within its
-  /// internally managed set of measurements.\n\n
-  /// **Note: If this method encounters any duplicates, it will STILL attempt to
-  /// add the entire vector. If it returns an error status, it means that all
-  /// unique measurements have been added, but duplicates have been skipped.**
+  // Add multiple measurements to the measurement list. Returns an error status
+  // if any measurements are duplicates. This method will add the entire vector,
+  // but skips any duplicates.
   absl::Status AddMeasurements(
       const std::vector<CameraMeasurement>& measurements);
 
-  /// Getter for all measurements. Returns a map of observation ids to
-  /// measurements. Will be empty if there are no measurements.
+  // Getter for all measurements. Returns a map of observation ids to
+  // measurements.
   const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
   GetMeasurementIdToMeasurement() const;
 
-  /// Returns a vector of measurement-residual pairs.
-
-  /// Only returns for measurements that have residuals. Returns an error if
-  /// there are more residuals than measurements, or if there are no
-  /// measurements.\n\n
-  /// **Note: This method will only return residuals for measurements that have
-  /// NOT been marked as outliers.**
+  // Returns a vector of measurement-residual pairs. Only returns for
+  // measurements that have residuals. Returns an error if there are more
+  // residuals than measurements.
   absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
   GetMeasurementResidualPairs() const;
   
-  /// Tag a single measurement as an outlier by its measurement ID.
-
-  /// Camera class keeps track of an outliers list internally. If passed a
-  /// measurement ID that does not correspond with any measurement tracked by
-  /// this camera, an InvalidArgument status is returned.
+  // Tag a single measurement as an outlier by its measurement ID. Camera class
+  // keeps track of an outliers list internally. If passed a measurement ID that
+  // does not correspond with any measurement tracked by this camera, an
+  // InvalidArgument status is returned.
   absl::Status MarkOutlierById(const CameraObservationId& id);
 
-  /// Tag multiple measurements as outliers by measurement ID.
-
-  /// Camera class keeps track of an outliers list internally. If passed a
-  /// measurement ID that does not correspond with any measurement tracked by
-  /// this camera, an InvalidArgument status is returned.
+  // Tag multiple measurements as outliers by measurement ID. Camera class keeps
+  // track of an outliers list internally. If passed a measurement ID that does
+  // not correspond with any measurement tracked by this camera, an
+  // InvalidArgument status is returned.
   absl::Status MarkOutliersById(const std::vector<CameraObservationId>& ids);
 
-  /// Clear outliers list.
+  // Clear outliers list.
   void ClearOutliersList();
 
-  /// Clear all measurements.
-
-  /// This will also clear any internally stored residuals and marked outliers.
+  // Clear all measurements. This will also clear any internally stored residuals
+  // and marked outliers.
   void ClearMeasurements();
 
-  /// Get current number of measurements stored.
+  // Get current number of measurements stored.
   int NumberOfMeasurements() const;
 
  private:
