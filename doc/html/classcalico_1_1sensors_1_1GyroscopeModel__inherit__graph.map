@@ -1,5 +1,0 @@
-<map id="calico::sensors::GyroscopeModel" name="calico::sensors::GyroscopeModel">
-<area shape="rect" id="node1" title="Base class for gyroscope models." alt="" coords="5,39,200,80"/>
-<area shape="rect" id="node2" href="$classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel.html" title=" " alt="" coords="248,5,443,47"/>
-<area shape="rect" id="node3" href="$classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel.html" title=" " alt="" coords="248,71,443,112"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="calico::sensors::GyroscopeMeasurement" name="calico::sensors::GyroscopeMeasurement">
-<area shape="rect" id="node1" title="Gyroscope measurement type." alt="" coords="5,109,200,151"/>
-<area shape="rect" id="node2" href="$structcalico_1_1sensors_1_1GyroscopeObservationId.html" title=" " alt="" coords="5,5,200,47"/>
-</map>
