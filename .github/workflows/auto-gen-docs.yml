@@ -22,7 +22,7 @@ jobs:
         doxyfile-path: "./Doxyfile"
 
     - name: Upload output directory
-      uses: actions/upload-artifacts@v2
+      uses: actions/upload-artifact@v2
       with:
         name: doc-files
         path: doc
