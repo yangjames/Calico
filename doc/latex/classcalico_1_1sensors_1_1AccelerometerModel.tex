@@ -22,7 +22,7 @@ Inheritance diagram for calico\+::sensors\+::Accelerometer\+Model\+:
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-{\footnotesize template$<$typename T $>$ }\\absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_aa73cde8be082c68a3701d3d13a4291b3}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&ddt\+\_\+sensor\+\_\+world\+\_\+sensor) const
+{\footnotesize template$<$typename T $>$ }\\absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_a27f7b3a21646154d53656609acfad689}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&p\+\_\+sensor\+\_\+world\+\_\+sensor) const
 \item 
 {\footnotesize template$<$typename T $>$ }\\absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}{Unproject}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&measurement) const
 \item 
@@ -49,21 +49,21 @@ Base class for accelerometer models.
 \doxysubsubsection{\texorpdfstring{Create()}{Create()}}
 {\footnotesize\ttfamily std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerModel}{Accelerometer\+Model}} $>$ calico\+::sensors\+::\+Accelerometer\+Model\+::\+Create (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}}}]{accelerometer\+\_\+model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
-Factory method for creating a accelerometer model with {\ttfamily accelerometer\+\_\+model} type. This method will return a nullptr if an unsupported Accelerometer\+Intrinsics\+Model is passed in. \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_aa73cde8be082c68a3701d3d13a4291b3}\label{classcalico_1_1sensors_1_1AccelerometerModel_aa73cde8be082c68a3701d3d13a4291b3}} 
+Factory method for creating a accelerometer model with {\ttfamily accelerometer\+\_\+model} type. This method will return a nullptr if an unsupported Accelerometer\+Intrinsics\+Model is passed in. \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_a27f7b3a21646154d53656609acfad689}\label{classcalico_1_1sensors_1_1AccelerometerModel_a27f7b3a21646154d53656609acfad689}} 
 \index{calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}!Project@{Project}}
 \index{Project@{Project}!calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}}
 \doxysubsubsection{\texorpdfstring{Project()}{Project()}}
 {\footnotesize\ttfamily template$<$typename T $>$ \\
-absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ calico\+::sensors\+::\+Accelerometer\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{ddt\+\_\+sensor\+\_\+world\+\_\+sensor }\end{DoxyParamCaption}) const}
+absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ calico\+::sensors\+::\+Accelerometer\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{p\+\_\+sensor\+\_\+world\+\_\+sensor }\end{DoxyParamCaption}) const}
 
-Project a linear acceleration vector through the intrinsics model. Top level call invokes the derived class\textquotesingle{}s implementation. \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}\label{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}} 
+Project a specific force vector through the intrinsics model. Top level call invokes the derived class\textquotesingle{}s implementation. \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}\label{classcalico_1_1sensors_1_1AccelerometerModel_af4e7fd3000f2d4a4748e169deb4a8f5e}} 
 \index{calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}!Unproject@{Unproject}}
 \index{Unproject@{Unproject}!calico::sensors::AccelerometerModel@{calico::sensors::AccelerometerModel}}
 \doxysubsubsection{\texorpdfstring{Unproject()}{Unproject()}}
 {\footnotesize\ttfamily template$<$typename T $>$ \\
 absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ calico\+::sensors\+::\+Accelerometer\+Model\+::\+Unproject (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{measurement }\end{DoxyParamCaption}) const}
 
-Invert the intrinsics model to get an angular velocity vector. Top level call invokes the derived class\textquotesingle{}s implementation. 
+Invert the intrinsics model to get an specific force vector. Top level call invokes the derived class\textquotesingle{}s implementation. 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 

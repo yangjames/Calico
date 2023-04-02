@@ -39,7 +39,7 @@ int \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_a5
 \doxysubsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_a83ce726b55a3ddc29a36db9189fa5c4c}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&ddt\+\_\+sensor\+\_\+world\+\_\+sensor)
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad67fe62b6fce2960f1bd5b52d2cc5a32}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&p\+\_\+sensor\+\_\+world\+\_\+sensor)
 \item 
 {\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad45a32abd92a9b477496cf628df98da8}{Unproject}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&measurement)
 \end{DoxyCompactItemize}
@@ -57,21 +57,21 @@ static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4
 4-\/parameter scale + bias intrinsics model. Parameter order\+: $[s, b_x, b_y, b_z]$ 
 
 \doxysubsection{Member Function Documentation}
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_a83ce726b55a3ddc29a36db9189fa5c4c}\label{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_a83ce726b55a3ddc29a36db9189fa5c4c}} 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad67fe62b6fce2960f1bd5b52d2cc5a32}\label{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad67fe62b6fce2960f1bd5b52d2cc5a32}} 
 \index{calico::sensors::AccelerometerScaleAndBiasModel@{calico::sensors::AccelerometerScaleAndBiasModel}!Project@{Project}}
 \index{Project@{Project}!calico::sensors::AccelerometerScaleAndBiasModel@{calico::sensors::AccelerometerScaleAndBiasModel}}
 \doxysubsubsection{\texorpdfstring{Project()}{Project()}}
 {\footnotesize\ttfamily template$<$typename T $>$ \\
-static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Accelerometer\+Scale\+And\+Bias\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{ddt\+\_\+sensor\+\_\+world\+\_\+sensor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Accelerometer\+Scale\+And\+Bias\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{p\+\_\+sensor\+\_\+world\+\_\+sensor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
 
-Returns measurement $\mathbf{f}$, a 3-\/D vector such that \[ \mathbf{f} = s\mathbf{\ddot{t}}^s_{ws} + \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right] \] \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad45a32abd92a9b477496cf628df98da8}\label{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad45a32abd92a9b477496cf628df98da8}} 
+Returns measurement $\mathbf{f}$, a 3-\/D vector such that \[ \mathbf{f} = s\mathbf{p}^s_{ws} + \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right] \] \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad45a32abd92a9b477496cf628df98da8}\label{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ad45a32abd92a9b477496cf628df98da8}} 
 \index{calico::sensors::AccelerometerScaleAndBiasModel@{calico::sensors::AccelerometerScaleAndBiasModel}!Unproject@{Unproject}}
 \index{Unproject@{Unproject}!calico::sensors::AccelerometerScaleAndBiasModel@{calico::sensors::AccelerometerScaleAndBiasModel}}
 \doxysubsubsection{\texorpdfstring{Unproject()}{Unproject()}}
 {\footnotesize\ttfamily template$<$typename T $>$ \\
 static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Accelerometer\+Scale\+And\+Bias\+Model\+::\+Unproject (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{measurement }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
 
-Inverts the measurement model to obtain linear acceleration as observed by the sensor. \[ \mathbf{\ddot{t}}^s_{ws} = \frac{1}{s}\left(\mathbf{f} - \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right]\right) \] 
+Inverts the measurement model to obtain specific force as observed by the sensor. \[ \mathbf{p}^s_{ws} = \frac{1}{s}\left(\mathbf{f} - \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right]\right) \] 
 
 \doxysubsection{Member Data Documentation}
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ae88b721091d80381789f261b612cda81}\label{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel_ae88b721091d80381789f261b612cda81}} 

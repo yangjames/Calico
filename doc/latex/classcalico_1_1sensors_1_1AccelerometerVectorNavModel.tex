@@ -1,0 +1,80 @@
+\hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel}{}\doxysection{calico\+::sensors\+::Accelerometer\+Vector\+Nav\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel}\index{calico::sensors::AccelerometerVectorNavModel@{calico::sensors::AccelerometerVectorNavModel}}
+
+
+{\ttfamily \#include $<$accelerometer\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Accelerometer\+Vector\+Nav\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=229pt]{classcalico_1_1sensors_1_1AccelerometerVectorNavModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Accelerometer\+Vector\+Nav\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=229pt]{classcalico_1_1sensors_1_1AccelerometerVectorNavModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_ad29a386747ca1736d70156d8e9624b44}\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_ad29a386747ca1736d70156d8e9624b44}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerVectorNavModel}{Accelerometer\+Vector\+Nav\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerVectorNavModel}{Accelerometer\+Vector\+Nav\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_ad68d749f6c7659f8ad85058bc6bfa5a5}\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_ad68d749f6c7659f8ad85058bc6bfa5a5}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_ad68d749f6c7659f8ad85058bc6bfa5a5}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for accelerometer model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_aeaf17fa76f13763cd073a49cfca7197d}\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_aeaf17fa76f13763cd073a49cfca7197d}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_aeaf17fa76f13763cd073a49cfca7197d}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_afc277b3d04d104d44373d4822dc33ca6}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&p\+\_\+sensor\+\_\+world\+\_\+sensor)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_a2bc60c7e37af3e8deb29c02378c718a2}{Unproject}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&measurement)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_a391e2a3ffb2f387178bafd1ed327cc1d}\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_a391e2a3ffb2f387178bafd1ed327cc1d}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 12
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_adca6abae2674fb3ac139b259dd41daf4}\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_adca6abae2674fb3ac139b259dd41daf4}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42acdba1d768a2f7547e329020671e7a24e}{Accelerometer\+Intrinsics\+Model\+::k\+Accelerometer\+Vector\+Nav}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Vector-\/\+Nav model. See \href{https://www.vectornav.com/resources/inertial-navigation-primer/specifications--and--error-budgets/specs-imucal}{\texttt{ their page}} for more details.~\newline
+Parameter order\+: $[s_x, s_y, s_z, a_1, a_2, a_3, a_4, a_5, a_6, b_x, b_y, b_z]$ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_afc277b3d04d104d44373d4822dc33ca6}\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_afc277b3d04d104d44373d4822dc33ca6}} 
+\index{calico::sensors::AccelerometerVectorNavModel@{calico::sensors::AccelerometerVectorNavModel}!Project@{Project}}
+\index{Project@{Project}!calico::sensors::AccelerometerVectorNavModel@{calico::sensors::AccelerometerVectorNavModel}}
+\doxysubsubsection{\texorpdfstring{Project()}{Project()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Accelerometer\+Vector\+Nav\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{p\+\_\+sensor\+\_\+world\+\_\+sensor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns measurement $\mathbf{f}$, a 3-\/D vector such that \[ \mathbf{f} = \mathbf{S}\mathbf{A}\mathbf{p}^s_{ws} + \mathbf{b}\\\\ \mathbf{S} = \left[\begin{matrix} s_x & 0 & 0\\ 0 & s_y & 0\\ 0 & 0 & s_z \end{matrix}\right], \mathbf{A} = \left[\begin{matrix} 1 & a_1 & a_2\\ a_3 & 1 & a_4\\ a_5 & a_6 & 1 \end{matrix}\right], \mathbf{b} = \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right] \] \mbox{\Hypertarget{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_a2bc60c7e37af3e8deb29c02378c718a2}\label{classcalico_1_1sensors_1_1AccelerometerVectorNavModel_a2bc60c7e37af3e8deb29c02378c718a2}} 
+\index{calico::sensors::AccelerometerVectorNavModel@{calico::sensors::AccelerometerVectorNavModel}!Unproject@{Unproject}}
+\index{Unproject@{Unproject}!calico::sensors::AccelerometerVectorNavModel@{calico::sensors::AccelerometerVectorNavModel}}
+\doxysubsubsection{\texorpdfstring{Unproject()}{Unproject()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Accelerometer\+Vector\+Nav\+Model\+::\+Unproject (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{measurement }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the measurement model to obtain specific force as observed by the sensor. \[ \mathbf{p}^s_{ws} = \left(\mathbf{S}\mathbf{A}\right)^{-1} \left(\mathbf{f} - \mathbf{b}\right)\\\\ \mathbf{S} = \left[\begin{matrix} s_x & 0 & 0\\ 0 & s_y & 0\\ 0 & 0 & s_z \end{matrix}\right], \mathbf{A} = \left[\begin{matrix} 1 & a_1 & a_2\\ a_3 & 1 & a_4\\ a_5 & a_6 & 1 \end{matrix}\right], \mathbf{b} = \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right] \] 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/accelerometer\+\_\+models.\+h\end{DoxyCompactItemize}

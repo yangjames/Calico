@@ -103,6 +103,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel.html">AccelerometerScaleAndBiasModel</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1AccelerometerVectorNavModel.html">AccelerometerVectorNavModel</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcalico_1_1sensors_1_1CameraObservationId.html">CameraObservationId</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcalico_1_1sensors_1_1CameraMeasurement.html">CameraMeasurement</a></td></tr>
@@ -136,6 +138,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel.html">GyroscopeScaleAndBiasModel</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1GyroscopeVectorNavModel.html">GyroscopeVectorNavModel</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html">Sensor</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -155,6 +159,7 @@ Enumerations</h2></td></tr>
 <tr class="memitem:a911841171d662dc3e4bf4b39463a4c42"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42">AccelerometerIntrinsicsModel</a> : int { <a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42a35c3ace1970663a16e5c65baa5941b13">kNone</a>
 , <a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42a21041b4c17c9d356c0905ff0ba6544de">kAccelerometerScaleOnly</a>
 , <a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5">kAccelerometerScaleAndBias</a>
+, <a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42acdba1d768a2f7547e329020671e7a24e">kAccelerometerVectorNav</a>
  }</td></tr>
 <tr class="memdesc:a911841171d662dc3e4bf4b39463a4c42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accelerometer model types.  <a href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42">More...</a><br /></td></tr>
 <tr class="separator:a911841171d662dc3e4bf4b39463a4c42"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -190,6 +195,7 @@ Enumerations</h2></td></tr>
 <tr class="memitem:a3a17fd4af1cc53c28ec7130fdad5f22d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> : int { <a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22da35c3ace1970663a16e5c65baa5941b13">kNone</a>
 , <a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22da34e2be26dca2101fb95fc6487800e928">kGyroscopeScaleOnly</a>
 , <a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21">kGyroscopeScaleAndBias</a>
+, <a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22da81a678b12b8333c96667a1ef6af9c65c">kGyroscopeVectorNav</a>
  }</td></tr>
 <tr class="memdesc:a3a17fd4af1cc53c28ec7130fdad5f22d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gyroscope model types.  <a href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">More...</a><br /></td></tr>
 <tr class="separator:a3a17fd4af1cc53c28ec7130fdad5f22d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -224,6 +230,8 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a911841171d662dc3e4bf4b39463a4c42a21041b4c17c9d356c0905ff0ba6544de"></a>kAccelerometerScaleOnly&#160;</td><td class="fielddoc"><p>Isotropic scale without bias. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5"></a>kAccelerometerScaleAndBias&#160;</td><td class="fielddoc"><p>Isotropic scale with bias. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a911841171d662dc3e4bf4b39463a4c42acdba1d768a2f7547e329020671e7a24e"></a>kAccelerometerVectorNav&#160;</td><td class="fielddoc"><p>VectorNav model. </p>
 </td></tr>
 </table>
 
@@ -288,6 +296,8 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a3a17fd4af1cc53c28ec7130fdad5f22da34e2be26dca2101fb95fc6487800e928"></a>kGyroscopeScaleOnly&#160;</td><td class="fielddoc"><p>Isotropic scale without bias. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21"></a>kGyroscopeScaleAndBias&#160;</td><td class="fielddoc"><p>Isotropic scale with bias. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a3a17fd4af1cc53c28ec7130fdad5f22da81a678b12b8333c96667a1ef6af9c65c"></a>kGyroscopeVectorNav&#160;</td><td class="fielddoc"><p>VectorNav model. </p>
 </td></tr>
 </table>
 

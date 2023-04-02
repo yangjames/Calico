@@ -91,17 +91,18 @@ Inheritance diagram for calico::sensors::AccelerometerModel:</div>
 <div class="dyncontent">
 <div class="center"><img src="classcalico_1_1sensors_1_1AccelerometerModel__inherit__graph.png" border="0" usemap="#acalico_1_1sensors_1_1AccelerometerModel_inherit__map" alt="Inheritance graph"/></div>
 <map name="acalico_1_1sensors_1_1AccelerometerModel_inherit__map" id="acalico_1_1sensors_1_1AccelerometerModel_inherit__map">
-<area shape="rect" title="Base class for accelerometer models." alt="" coords="5,39,204,80"/>
+<area shape="rect" title="Base class for accelerometer models." alt="" coords="5,71,204,112"/>
 <area shape="rect" href="classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel.html" title=" " alt="" coords="252,5,451,47"/>
 <area shape="rect" href="classcalico_1_1sensors_1_1AccelerometerScaleOnlyModel.html" title=" " alt="" coords="252,71,451,112"/>
+<area shape="rect" href="classcalico_1_1sensors_1_1AccelerometerVectorNavModel.html" title=" " alt="" coords="252,136,451,177"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa73cde8be082c68a3701d3d13a4291b3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aa73cde8be082c68a3701d3d13a4291b3"><td class="memTemplItemLeft" align="right" valign="top">absl::StatusOr&lt; Eigen::Vector3&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1AccelerometerModel.html#aa73cde8be082c68a3701d3d13a4291b3">Project</a> (const Eigen::VectorX&lt; T &gt; &amp;intrinsics, const Eigen::Vector3&lt; T &gt; &amp;ddt_sensor_world_sensor) const</td></tr>
-<tr class="separator:aa73cde8be082c68a3701d3d13a4291b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27f7b3a21646154d53656609acfad689"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a27f7b3a21646154d53656609acfad689"><td class="memTemplItemLeft" align="right" valign="top">absl::StatusOr&lt; Eigen::Vector3&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1AccelerometerModel.html#a27f7b3a21646154d53656609acfad689">Project</a> (const Eigen::VectorX&lt; T &gt; &amp;intrinsics, const Eigen::Vector3&lt; T &gt; &amp;p_sensor_world_sensor) const</td></tr>
+<tr class="separator:a27f7b3a21646154d53656609acfad689"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4e7fd3000f2d4a4748e169deb4a8f5e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:af4e7fd3000f2d4a4748e169deb4a8f5e"><td class="memTemplItemLeft" align="right" valign="top">absl::StatusOr&lt; Eigen::Vector3&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1AccelerometerModel.html#af4e7fd3000f2d4a4748e169deb4a8f5e">Unproject</a> (const Eigen::VectorX&lt; T &gt; &amp;intrinsics, const Eigen::Vector3&lt; T &gt; &amp;measurement) const</td></tr>
 <tr class="separator:af4e7fd3000f2d4a4748e169deb4a8f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,8 +150,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa73cde8be082c68a3701d3d13a4291b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa73cde8be082c68a3701d3d13a4291b3">&#9670;&nbsp;</a></span>Project()</h2>
+<a id="a27f7b3a21646154d53656609acfad689"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27f7b3a21646154d53656609acfad689">&#9670;&nbsp;</a></span>Project()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +168,7 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::Vector3&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>ddt_sensor_world_sensor</em>&#160;</td>
+          <td class="paramname"><em>p_sensor_world_sensor</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -176,7 +177,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Project a linear acceleration vector through the intrinsics model. Top level call invokes the derived class's implementation. </p>
+<p>Project a specific force vector through the intrinsics model. Top level call invokes the derived class's implementation. </p>
 
 </div>
 </div>
@@ -207,7 +208,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Invert the intrinsics model to get an angular velocity vector. Top level call invokes the derived class's implementation. </p>
+<p>Invert the intrinsics model to get an specific force vector. Top level call invokes the derived class's implementation. </p>
 
 </div>
 </div>

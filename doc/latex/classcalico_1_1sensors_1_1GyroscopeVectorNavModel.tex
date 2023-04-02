@@ -1,0 +1,80 @@
+\hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel}{}\doxysection{calico\+::sensors\+::Gyroscope\+Vector\+Nav\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel}\index{calico::sensors::GyroscopeVectorNavModel@{calico::sensors::GyroscopeVectorNavModel}}
+
+
+{\ttfamily \#include $<$gyroscope\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Gyroscope\+Vector\+Nav\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=212pt]{classcalico_1_1sensors_1_1GyroscopeVectorNavModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Gyroscope\+Vector\+Nav\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=212pt]{classcalico_1_1sensors_1_1GyroscopeVectorNavModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a7e980706e66dbc5beb46802192a5bddf}\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a7e980706e66dbc5beb46802192a5bddf}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel}{Gyroscope\+Vector\+Nav\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel}{Gyroscope\+Vector\+Nav\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a5f69f94fd29082510acf16faae1e5f89}\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a5f69f94fd29082510acf16faae1e5f89}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a5f69f94fd29082510acf16faae1e5f89}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for gyroscope model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_aa4e7ecd6ddcfb97551367e14fa6de09b}\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_aa4e7ecd6ddcfb97551367e14fa6de09b}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_aa4e7ecd6ddcfb97551367e14fa6de09b}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_ae7736c1b942b6b21c352bada85bdadc8}{Project}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&omega\+\_\+sensor\+\_\+world)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a367b1544da875a905345519aa565ca0b}{Unproject}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&measurement)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a27217638d03fdbdcc3836b1ebd0bc586}\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a27217638d03fdbdcc3836b1ebd0bc586}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 12
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a1100b1ee844fa21c4248c5a4065bfa49}\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a1100b1ee844fa21c4248c5a4065bfa49}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da81a678b12b8333c96667a1ef6af9c65c}{Gyroscope\+Intrinsics\+Model\+::k\+Gyroscope\+Vector\+Nav}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Vector-\/\+Nav model. See \href{https://www.vectornav.com/resources/inertial-navigation-primer/specifications--and--error-budgets/specs-imucal}{\texttt{ their page}} for more details.~\newline
+Parameter order\+: $[s_x, s_y, s_z, a_1, a_2, a_3, a_4, a_5, a_6, b_x, b_y, b_z]$ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_ae7736c1b942b6b21c352bada85bdadc8}\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_ae7736c1b942b6b21c352bada85bdadc8}} 
+\index{calico::sensors::GyroscopeVectorNavModel@{calico::sensors::GyroscopeVectorNavModel}!Project@{Project}}
+\index{Project@{Project}!calico::sensors::GyroscopeVectorNavModel@{calico::sensors::GyroscopeVectorNavModel}}
+\doxysubsubsection{\texorpdfstring{Project()}{Project()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Gyroscope\+Vector\+Nav\+Model\+::\+Project (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{omega\+\_\+sensor\+\_\+world }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns measurement $\mathbf{f}$, a 3-\/D vector such that \[ \mathbf{f} = \mathbf{S}\mathbf{A}\boldsymbol{\omega}^s_{ws} + \mathbf{b}\\\\ \mathbf{S} = \left[\begin{matrix} s_x & 0 & 0\\ 0 & s_y & 0\\ 0 & 0 & s_z \end{matrix}\right], \mathbf{A} = \left[\begin{matrix} 1 & a_1 & a_2\\ a_3 & 1 & a_4\\ a_5 & a_6 & 1 \end{matrix}\right], \mathbf{b} = \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right] \] \mbox{\Hypertarget{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a367b1544da875a905345519aa565ca0b}\label{classcalico_1_1sensors_1_1GyroscopeVectorNavModel_a367b1544da875a905345519aa565ca0b}} 
+\index{calico::sensors::GyroscopeVectorNavModel@{calico::sensors::GyroscopeVectorNavModel}!Unproject@{Unproject}}
+\index{Unproject@{Unproject}!calico::sensors::GyroscopeVectorNavModel@{calico::sensors::GyroscopeVectorNavModel}}
+\doxysubsubsection{\texorpdfstring{Unproject()}{Unproject()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Gyroscope\+Vector\+Nav\+Model\+::\+Unproject (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{measurement }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the measurement model to obtain angular rate as observed by the sensor. \[ \boldsymbol{\omega}^s_{ws} = \left(\mathbf{S}\mathbf{A}\right)^{-1} \left(\mathbf{f} - \mathbf{b}\right)\\\\ \mathbf{S} = \left[\begin{matrix} s_x & 0 & 0\\ 0 & s_y & 0\\ 0 & 0 & s_z \end{matrix}\right], \mathbf{A} = \left[\begin{matrix} 1 & a_1 & a_2\\ a_3 & 1 & a_4\\ a_5 & a_6 & 1 \end{matrix}\right], \mathbf{b} = \left[\begin{matrix}b_x\\b_y\\b_z\end{matrix}\right] \] 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/gyroscope\+\_\+models.\+h\end{DoxyCompactItemize}

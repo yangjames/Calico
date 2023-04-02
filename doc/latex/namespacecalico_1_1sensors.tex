@@ -22,6 +22,8 @@ class \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleOnlyModel}{Ac
 \item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel}{Accelerometer\+Scale\+And\+Bias\+Model}}
 \item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1AccelerometerVectorNavModel}{Accelerometer\+Vector\+Nav\+Model}}
+\item 
 struct \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraObservationId}{Camera\+Observation\+Id}}
 \item 
 struct \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}}
@@ -50,6 +52,8 @@ class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleOnlyModel}{Gyrosc
 \item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel}{Gyroscope\+Scale\+And\+Bias\+Model}}
 \item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel}{Gyroscope\+Vector\+Nav\+Model}}
+\item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor}{Sensor}}
 \end{DoxyCompactItemize}
 \doxysubsection*{Enumerations}
@@ -69,6 +73,7 @@ enum class {\bfseries Accelerometer\+Parameter\+Indices} \+: int \{ \newline
 enum class \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42}{Accelerometer\+Intrinsics\+Model}} \+: int \{ \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a35c3ace1970663a16e5c65baa5941b13}{k\+None}}
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a21041b4c17c9d356c0905ff0ba6544de}{k\+Accelerometer\+Scale\+Only}}
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5}{k\+Accelerometer\+Scale\+And\+Bias}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42acdba1d768a2f7547e329020671e7a24e}{k\+Accelerometer\+Vector\+Nav}}
  \}
 \begin{DoxyCompactList}\small\item\em Accelerometer model types. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_1_1sensors_ad6ac270c0a97d772be9dd07092f78182}\label{namespacecalico_1_1sensors_ad6ac270c0a97d772be9dd07092f78182}} 
@@ -102,6 +107,7 @@ enum class {\bfseries Gyroscope\+Parameter\+Indices} \+: int \{ \newline
 enum class \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} \+: int \{ \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da35c3ace1970663a16e5c65baa5941b13}{k\+None}}
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da34e2be26dca2101fb95fc6487800e928}{k\+Gyroscope\+Scale\+Only}}
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}{k\+Gyroscope\+Scale\+And\+Bias}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da81a678b12b8333c96667a1ef6af9c65c}{k\+Gyroscope\+Vector\+Nav}}
  \}
 \begin{DoxyCompactList}\small\item\em Gyroscope model types. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
@@ -131,6 +137,10 @@ k\+Accelerometer\+Scale\+Only&Isotropic scale without bias. \\
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{kAccelerometerScaleAndBias@{kAccelerometerScaleAndBias}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kAccelerometerScaleAndBias@{kAccelerometerScaleAndBias}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5}\label{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42a8fd5773547ffe792d7cddcc07f5260b5}} 
 k\+Accelerometer\+Scale\+And\+Bias&Isotropic scale with bias. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kAccelerometerVectorNav@{kAccelerometerVectorNav}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kAccelerometerVectorNav@{kAccelerometerVectorNav}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42acdba1d768a2f7547e329020671e7a24e}\label{namespacecalico_1_1sensors_a911841171d662dc3e4bf4b39463a4c42acdba1d768a2f7547e329020671e7a24e}} 
+k\+Accelerometer\+Vector\+Nav&Vector\+Nav model. \\
 \hline
 
 \end{DoxyEnumFields}
@@ -179,6 +189,10 @@ k\+Gyroscope\+Scale\+Only&Isotropic scale without bias. \\
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{kGyroscopeScaleAndBias@{kGyroscopeScaleAndBias}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kGyroscopeScaleAndBias@{kGyroscopeScaleAndBias}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}\label{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}} 
 k\+Gyroscope\+Scale\+And\+Bias&Isotropic scale with bias. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kGyroscopeVectorNav@{kGyroscopeVectorNav}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kGyroscopeVectorNav@{kGyroscopeVectorNav}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da81a678b12b8333c96667a1ef6af9c65c}\label{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da81a678b12b8333c96667a1ef6af9c65c}} 
+k\+Gyroscope\+Vector\+Nav&Vector\+Nav model. \\
 \hline
 
 \end{DoxyEnumFields}

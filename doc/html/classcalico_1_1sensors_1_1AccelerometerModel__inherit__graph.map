@@ -1,5 +1,6 @@
 <map id="calico::sensors::AccelerometerModel" name="calico::sensors::AccelerometerModel">
-<area shape="rect" id="node1" title="Base class for accelerometer models." alt="" coords="5,39,204,80"/>
+<area shape="rect" id="node1" title="Base class for accelerometer models." alt="" coords="5,71,204,112"/>
 <area shape="rect" id="node2" href="$classcalico_1_1sensors_1_1AccelerometerScaleAndBiasModel.html" title=" " alt="" coords="252,5,451,47"/>
 <area shape="rect" id="node3" href="$classcalico_1_1sensors_1_1AccelerometerScaleOnlyModel.html" title=" " alt="" coords="252,71,451,112"/>
+<area shape="rect" id="node4" href="$classcalico_1_1sensors_1_1AccelerometerVectorNavModel.html" title=" " alt="" coords="252,136,451,177"/>
 </map>
