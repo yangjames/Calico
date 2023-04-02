@@ -20,6 +20,8 @@ enum class CameraIntrinsicsModel : int {
   kOpenCv5,
   /// Kannala-Brandt model.
   kKannalaBrandt,
+  /// Double-Sphere model.
+  kDoubleSphere,
 };
 
 /// Base class for camera models.
@@ -216,8 +218,7 @@ class OpenCv5Model : public CameraModel {
 class KannalaBrandtModel : public CameraModel {
  public:
   static constexpr int kNumberOfParameters = 7;
-  static constexpr CameraIntrinsicsModel kModelType =
-      CameraIntrinsicsModel::kKannalaBrandt;
+  static constexpr CameraIntrinsicsModel kModelType = CameraIntrinsicsModel::kKannalaBrandt;
 
   KannalaBrandtModel() = default;
   ~KannalaBrandtModel() override = default;
@@ -407,6 +408,126 @@ class KannalaBrandtModel : public CameraModel {
   }
 };
 
+/// Double-Sphere projection model. This model assumes an isotropic pinhole
+/// model, i.e. \f$f_x == f_y = f\f$.\n
+/// Parameters are in the following order:
+///   \f$[f, c_x, c_y, \xi, \alpha]\f$\n\n
+class DoubleSphereModel : public CameraModel {
+ public:
+  static constexpr int kNumberOfParameters = 5;
+  static constexpr CameraIntrinsicsModel kModelType = CameraIntrinsicsModel::kDoubleSphere;
+
+  DoubleSphereModel() = default;
+  ~DoubleSphereModel() override = default;
+  DoubleSphereModel& operator=(const DoubleSphereModel&) = default;
+
+  /// Returns projection \f$\mathbf{p}\f$, a 2-D pixel coordinate such that
+  /// \f[
+  /// \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d +
+  ///    \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\
+  /// \mathbf{p}_d =
+  ///   \left(\alpha d +
+  ///        \left(1-\alpha\right)
+  ///        \left(\xi r+t_z\right)\right)^{-1}
+  ///        \left[\begin{matrix}t_x\\t_y\end{matrix}\right]\\
+  /// d = \sqrt{r^2\left(1 + \xi^2\right) + 2\xi r t_z}\\
+  /// r^2 = {\mathbf{t}^s_{sx}}^T\mathbf{t}^s_{sx}
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, \xi, \alpha]\f$\n\n
+  /// `point` is the location of the feature resolved in the camera frame
+  /// \f$\mathbf{t}^s_{sx} =
+  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.\n
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& point) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Invalid number of intrinsics parameters provided. Expected ",
+          kNumberOfParameters, ". Got ", intrinsics.size()));
+    }
+    const T& xi = intrinsics(3);
+    const T& alpha = intrinsics(4);
+    const T w1 = alpha > T(0.5) ?
+        (T(1.0) - alpha) / alpha : alpha / (T(1.0) - alpha);
+    const T num = w1 + xi;
+    const T w2_sq = num * num / (T(2.0) * w1 * xi + xi * xi + T(1.0));
+    const T r2 = point.squaredNorm();
+    if (point.z() * point.z() <= -w2_sq * r2) {
+      return absl::InvalidArgumentError(
+          "Invalid point. Cannot project.");
+    }
+    // Prepare values.
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    const T r = sqrt(r2);
+    const T d = sqrt(r2 * (T(1.0) + xi * xi) + T(2.0) * xi * r * point.z());
+    const T s = T(1.0) / (alpha * d + (T(1.0) - alpha) * (xi * r + point.z()));
+    // Apply radial distortion.
+    Eigen::Vector2<T> projection(point.x(), point.y());
+    projection *= s;
+    // Apply pinhole parameters.
+    projection *= f;
+    projection.x() += cx;
+    projection.y() += cy;
+    return projection;
+  }
+
+  /// Inverts the measurement model \f$\mathbf{p}\f$ to obtain the normalized
+  /// undistorted pixel location \f$\mathbf{p}_m\f$.
+  /// \f[
+  /// \mathbf{p}_m = \mathbf{p}_s / \|\mathbf{p}_s\|\\
+  /// \mathbf{p}_s = \frac{m_z\xi + \sqrt{m_z^2 + (1-\xi^2)r^2}}{m_z^2+r^2}
+  ///     \left[\begin{matrix}m_x\\m_y\\m_z\end{matrix}\right]
+  ///     - \left[\begin{matrix}0\\0\\\xi\end{matrix}\right]\\
+  /// r^2 = {\mathbf{p}}^T\mathbf{p},\\
+  /// m_x = \frac{p_x - c_x}{f}, m_y = \frac{p_y - c_y}{f},
+  /// m_z = \frac{1-\alpha^2r^2}{\alpha\sqrt{1-(2\alpha-1)r^2}+1-\alpha}\\
+  /// \mathbf{p} = \left[\begin{matrix}p_x\\p_y\end{matrix}\right]
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, \xi, \alpha]\f$\n\n
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector2<T>& pixel) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Expected ", kNumberOfParameters, " parameters for intrinsics. Got ",
+          intrinsics.size()));
+    }
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    const T& xi = intrinsics(3);
+    const T& alpha = intrinsics(4);
+    const T inv_f = T(1.0) / f;
+    // Invert pinhole model from distorted point.
+    T mx = inv_f * (pixel.x() - cx);
+    T my = inv_f * (pixel.y() - cy);
+    // Invert distortion.
+    const T r2 = mx * mx + my * my;
+    T mz =
+        (1.0 - alpha * alpha * r2) /
+        (alpha * sqrt(1.0 - (2.0 * alpha - 1.0) * r2) + 1.0 - alpha);
+    const T mz2 = mz * mz;
+    const T inv_s = (mz * xi + sqrt(mz2 + (1 - xi * xi) * r2)) / (mz2 + r2);
+    Eigen::Vector3<T> pm(inv_s * mx, inv_s * my, inv_s * mz - xi);
+    pm /= pm.z();
+    return pm;
+  }
+
+  CameraIntrinsicsModel GetType() const final {
+    return kModelType;
+  }
+
+  int NumberOfParameters() const final {
+    return kNumberOfParameters;
+  }
+};
+
 template <typename T>
 absl::StatusOr<Eigen::Vector2<T>> CameraModel::ProjectPoint(
     const Eigen::VectorX<T>& intrinsics,
@@ -415,6 +536,9 @@ absl::StatusOr<Eigen::Vector2<T>> CameraModel::ProjectPoint(
     return derived->ProjectPoint(intrinsics, point);
   }
   if (const auto derived = dynamic_cast<const KannalaBrandtModel*>(this)) {
+    return derived->ProjectPoint(intrinsics, point);
+  }
+  if (const auto derived = dynamic_cast<const DoubleSphereModel*>(this)) {
     return derived->ProjectPoint(intrinsics, point);
   }
   return absl::InvalidArgumentError(absl::StrCat(
@@ -429,6 +553,9 @@ absl::StatusOr<Eigen::Vector3<T>> CameraModel::UnprojectPixel(
     return derived->UnprojectPixel(intrinsics, pixel);
   }
   if (const auto derived = dynamic_cast<const KannalaBrandtModel*>(this)) {
+    return derived->UnprojectPixel(intrinsics, pixel);
+  }
+  if (const auto derived = dynamic_cast<const DoubleSphereModel*>(this)) {
     return derived->UnprojectPixel(intrinsics, pixel);
   }
   return absl::InvalidArgumentError(absl::StrCat(
