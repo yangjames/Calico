@@ -11,6 +11,9 @@ std::unique_ptr<CameraModel> CameraModel::Create(
     case CameraIntrinsicsModel::kKannalaBrandt: {
       return std::make_unique<KannalaBrandtModel>();
     }
+    case CameraIntrinsicsModel::kDoubleSphere: {
+      return std::make_unique<DoubleSphereModel>();
+    }
     default: {
       return std::move(std::unique_ptr<CameraModel>{});
     }

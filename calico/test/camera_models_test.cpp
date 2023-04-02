@@ -33,13 +33,18 @@ INSTANTIATE_TEST_SUITE_P(
         {
           "OpenCv5",
           CameraIntrinsicsModel::kOpenCv5,
-          OpenCv5Model::kNumberOfParameters
+          OpenCv5Model::kNumberOfParameters,
         },
         {
           "KannalaBrandt",
           CameraIntrinsicsModel::kKannalaBrandt,
-          KannalaBrandtModel::kNumberOfParameters
-        }
+          KannalaBrandtModel::kNumberOfParameters,
+        },
+        {
+          "DoubleSphere",
+          CameraIntrinsicsModel::kDoubleSphere,
+          DoubleSphereModel::kNumberOfParameters,
+        },
       }),
     [](const testing::TestParamInfo<CameraModelCreationTest::ParamType>& info) {
       return info.param.test_name;
@@ -116,7 +121,7 @@ TEST_F(CameraModelTest, KannalaBrandtModelProjectionAndUnprojection) {
         KannalaBrandtModel::ProjectPoint(intrinsics, t_camera_point));
     // Invert forward projection.
     ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
-                         KannalaBrandtModel::UnprojectPixel(intrinsics, pixel));
+        KannalaBrandtModel::UnprojectPixel(intrinsics, pixel));
     // Compare results.
     const Eigen::Vector3d t_camera_point_metric =
       t_camera_point / t_camera_point.z();
@@ -124,6 +129,30 @@ TEST_F(CameraModelTest, KannalaBrandtModelProjectionAndUnprojection) {
         unprojected_point, kSmallError));
   }
 }
+
+TEST_F(CameraModelTest, DoubleSphereModelProjectionAndUnprojection) {
+  constexpr double kSmallError = 1e-12;
+  Eigen::VectorXd intrinsics(DoubleSphereModel::kNumberOfParameters);
+  intrinsics <<
+    785, 640, 400, 0.5, 0.5;
+  for (const Eigen::Vector3d& t_world_point : t_world_points) {
+    // Transform camera point into world coordinates.
+    const Eigen::Vector3d t_camera_point =
+      R_world_camera.transpose() * (t_world_point - t_world_camera);
+    // Forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector2d pixel,
+        DoubleSphereModel::ProjectPoint(intrinsics, t_camera_point));
+    // Invert forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
+        DoubleSphereModel::UnprojectPixel(intrinsics, pixel));
+    // Compare results.
+    const Eigen::Vector3d t_camera_point_metric =
+      t_camera_point / t_camera_point.z();
+    EXPECT_THAT(t_camera_point_metric, EigenIsApprox(
+        unprojected_point, kSmallError));
+  }
+}
+
 
 } // namespace
 } // namespace calico::sensors
