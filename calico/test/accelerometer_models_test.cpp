@@ -53,6 +53,12 @@ INSTANTIATE_TEST_SUITE_P(
           AccelerometerScaleAndBiasModel::kNumberOfParameters,
           Eigen::Vector3d::Random(),
         },
+        {
+          "VectorNav",
+          AccelerometerIntrinsicsModel::kAccelerometerVectorNav,
+          AccelerometerVectorNavModel::kNumberOfParameters,
+          Eigen::Vector3d::Random(),
+        },
       }),
     [](const testing::TestParamInfo<AccelerometerModelTest::ParamType>& info
          ) {

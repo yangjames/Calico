@@ -51,6 +51,12 @@ INSTANTIATE_TEST_SUITE_P(
           GyroscopeScaleAndBiasModel::kNumberOfParameters,
           Eigen::Vector3d::Random(),
         },
+        {
+          "GyroscopeVectorNav",
+          GyroscopeIntrinsicsModel::kGyroscopeVectorNav,
+          GyroscopeVectorNavModel::kNumberOfParameters,
+          Eigen::Vector3d::Random(),
+        }
       }),
     [](const testing::TestParamInfo<GyroscopeModelTest::ParamType>& info
          ) {
