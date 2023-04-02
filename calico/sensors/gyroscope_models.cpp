@@ -11,6 +11,9 @@ std::unique_ptr<GyroscopeModel> GyroscopeModel::Create(
     case GyroscopeIntrinsicsModel::kGyroscopeScaleAndBias: {
       return std::make_unique<GyroscopeScaleAndBiasModel>();
     }
+    case GyroscopeIntrinsicsModel::kGyroscopeVectorNav: {
+      return std::make_unique<GyroscopeVectorNavModel>();
+    }
     default: {
       return std::move(std::unique_ptr<GyroscopeModel>{});
     }

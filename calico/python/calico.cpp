@@ -59,7 +59,9 @@ PYBIND11_MODULE(_calico, m) {
     .value("kAccelerometerScaleOnly",
            AccelerometerIntrinsicsModel::kAccelerometerScaleOnly)
     .value("kAccelerometerScaleAndBias",
-           AccelerometerIntrinsicsModel::kAccelerometerScaleAndBias);
+           AccelerometerIntrinsicsModel::kAccelerometerScaleAndBias)
+    .value("kAccelerometerVectorNav",
+           AccelerometerIntrinsicsModel::kAccelerometerVectorNav);
 
   py::class_<AccelerometerObservationId>(m, "AccelerometerObservationId")
     .def(py::init<>())
@@ -105,7 +107,9 @@ PYBIND11_MODULE(_calico, m) {
     .value("kGyroscopeScaleOnly",
            GyroscopeIntrinsicsModel::kGyroscopeScaleOnly)
     .value("kGyroscopeScaleAndBias",
-           GyroscopeIntrinsicsModel::kGyroscopeScaleAndBias);
+           GyroscopeIntrinsicsModel::kGyroscopeScaleAndBias)
+    .value("kGyroscopeVectorNav",
+           GyroscopeIntrinsicsModel::kGyroscopeVectorNav);
 
   py::class_<GyroscopeObservationId>(m, "GyroscopeObservationId")
     .def(py::init<>())

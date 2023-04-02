@@ -11,6 +11,9 @@ std::unique_ptr<AccelerometerModel> AccelerometerModel::Create(
     case AccelerometerIntrinsicsModel::kAccelerometerScaleAndBias: {
       return std::make_unique<AccelerometerScaleAndBiasModel>();
     }
+    case AccelerometerIntrinsicsModel::kAccelerometerVectorNav: {
+      return std::make_unique<AccelerometerVectorNavModel>();
+    }
     default: {
       return std::move(std::unique_ptr<AccelerometerModel>{});
     }
