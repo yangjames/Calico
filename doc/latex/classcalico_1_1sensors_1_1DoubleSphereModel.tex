@@ -1,0 +1,87 @@
+\hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel}{}\doxysection{calico\+::sensors\+::Double\+Sphere\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1DoubleSphereModel}\index{calico::sensors::DoubleSphereModel@{calico::sensors::DoubleSphereModel}}
+
+
+{\ttfamily \#include $<$camera\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Double\+Sphere\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1DoubleSphereModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Double\+Sphere\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1DoubleSphereModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel_a3c419936a38e53f94033d0604f7d7acf}\label{classcalico_1_1sensors_1_1DoubleSphereModel_a3c419936a38e53f94033d0604f7d7acf}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1DoubleSphereModel}{Double\+Sphere\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1DoubleSphereModel}{Double\+Sphere\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel_a9a567916e1aa137c22fca5ad36eb573a}\label{classcalico_1_1sensors_1_1DoubleSphereModel_a9a567916e1aa137c22fca5ad36eb573a}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1DoubleSphereModel_a9a567916e1aa137c22fca5ad36eb573a}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for camera model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel_afc9cae152ae02f4aa347d92bab1144fa}\label{classcalico_1_1sensors_1_1DoubleSphereModel_afc9cae152ae02f4aa347d92bab1144fa}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1DoubleSphereModel_afc9cae152ae02f4aa347d92bab1144fa}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this camera model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector2$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1DoubleSphereModel_a911a3897069d2b40686bb79a13730fda}{Project\+Point}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&point)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1DoubleSphereModel_a032d0e2b98603b2ac675e4730295588a}{Unproject\+Pixel}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector2$<$ T $>$ \&pixel)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel_a2aae70dc6759783f3504c9deb6651894}\label{classcalico_1_1sensors_1_1DoubleSphereModel_a2aae70dc6759783f3504c9deb6651894}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 5
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel_a0184e53fc7eda61220835e0020836c62}\label{classcalico_1_1sensors_1_1DoubleSphereModel_a0184e53fc7eda61220835e0020836c62}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2faff638d15c8b2b0f612376181393188fd}{Camera\+Intrinsics\+Model\+::k\+Double\+Sphere}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Double-\/\+Sphere projection model. This model assumes an isotropic pinhole model, i.\+e. $f_x == f_y = f$.~\newline
+Parameters are in the following order\+: $[f, c_x, c_y, \xi, \alpha]$~\newline
+~\newline
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel_a911a3897069d2b40686bb79a13730fda}\label{classcalico_1_1sensors_1_1DoubleSphereModel_a911a3897069d2b40686bb79a13730fda}} 
+\index{calico::sensors::DoubleSphereModel@{calico::sensors::DoubleSphereModel}!ProjectPoint@{ProjectPoint}}
+\index{ProjectPoint@{ProjectPoint}!calico::sensors::DoubleSphereModel@{calico::sensors::DoubleSphereModel}}
+\doxysubsubsection{\texorpdfstring{ProjectPoint()}{ProjectPoint()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector2$<$T$>$ $>$ calico\+::sensors\+::\+Double\+Sphere\+Model\+::\+Project\+Point (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{point }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns projection $\mathbf{p}$, a 2-\/D pixel coordinate such that \[ \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d + \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\ \mathbf{p}_d = \left(\alpha d + \left(1-\alpha\right) \left(\xi r+t_z\right)\right)^{-1} \left[\begin{matrix}t_x\\t_y\end{matrix}\right]\\ d = \sqrt{r^2\left(1 + \xi^2\right) + 2\xi r t_z}\\ r^2 = {\mathbf{t}^s_{sx}}^T\mathbf{t}^s_{sx} \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, \xi, \alpha]$~\newline
+~\newline
+{\ttfamily point} is the location of the feature resolved in the camera frame $\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T$.~\newline
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1DoubleSphereModel_a032d0e2b98603b2ac675e4730295588a}\label{classcalico_1_1sensors_1_1DoubleSphereModel_a032d0e2b98603b2ac675e4730295588a}} 
+\index{calico::sensors::DoubleSphereModel@{calico::sensors::DoubleSphereModel}!UnprojectPixel@{UnprojectPixel}}
+\index{UnprojectPixel@{UnprojectPixel}!calico::sensors::DoubleSphereModel@{calico::sensors::DoubleSphereModel}}
+\doxysubsubsection{\texorpdfstring{UnprojectPixel()}{UnprojectPixel()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Double\+Sphere\+Model\+::\+Unproject\+Pixel (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector2$<$ T $>$ \&}]{pixel }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the measurement model $\mathbf{p}$ to obtain the normalized undistorted pixel location $\mathbf{p}_m$. \[ \mathbf{p}_m = \mathbf{p}_s / \|\mathbf{p}_s\|\\ \mathbf{p}_s = \frac{m_z\xi + \sqrt{m_z^2 + (1-\xi^2)r^2}}{m_z^2+r^2} \left[\begin{matrix}m_x\\m_y\\m_z\end{matrix}\right] - \left[\begin{matrix}0\\0\\\xi\end{matrix}\right]\\ r^2 = {\mathbf{p}}^T\mathbf{p},\\ m_x = \frac{p_x - c_x}{f}, m_y = \frac{p_y - c_y}{f}, m_z = \frac{1-\alpha^2r^2}{\alpha\sqrt{1-(2\alpha-1)r^2}+1-\alpha}\\ \mathbf{p} = \left[\begin{matrix}p_x\\p_y\end{matrix}\right] \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, \xi, \alpha]$~\newline
+~\newline
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/camera\+\_\+models.\+h\end{DoxyCompactItemize}

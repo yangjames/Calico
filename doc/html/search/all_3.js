@@ -5,5 +5,6 @@ var searchData=
   ['defaultsolveroptions_52',['DefaultSolverOptions',['../namespacecalico.html#aaa1f3edabbaf4a92827f5340a76e37b6',1,'calico']]],
   ['defaultsynthetictest_53',['DefaultSyntheticTest',['../classcalico_1_1DefaultSyntheticTest.html',1,'calico']]],
   ['dimension_54',['dimension',['../classAprilTags_1_1TagFamily.html#a70c25d3f3802bde5122643490332f8c6',1,'AprilTags::TagFamily']]],
-  ['draw_55',['draw',['../structAprilTags_1_1TagDetection.html#a7820dcd699d2dddea58b737ba69ddf7f',1,'AprilTags::TagDetection']]]
+  ['doublespheremodel_55',['DoubleSphereModel',['../classcalico_1_1sensors_1_1DoubleSphereModel.html',1,'calico::sensors']]],
+  ['draw_56',['draw',['../structAprilTags_1_1TagDetection.html#a7820dcd699d2dddea58b737ba69ddf7f',1,'AprilTags::TagDetection']]]
 ];

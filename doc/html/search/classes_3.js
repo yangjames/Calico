@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['defaultsynthetictest_242',['DefaultSyntheticTest',['../classcalico_1_1DefaultSyntheticTest.html',1,'calico']]]
+  ['defaultsynthetictest_244',['DefaultSyntheticTest',['../classcalico_1_1DefaultSyntheticTest.html',1,'calico']]],
+  ['doublespheremodel_245',['DoubleSphereModel',['../classcalico_1_1sensors_1_1DoubleSphereModel.html',1,'calico::sensors']]]
 ];

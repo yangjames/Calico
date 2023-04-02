@@ -49,7 +49,8 @@ int \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel_a8f1cd503c0719
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_aeb1927c0208501fa954d39e2642950fe}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_aeb1927c0208501fa954d39e2642950fe}} 
 static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 7
 \item 
-static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} {\bfseries k\+Model\+Type}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_a68dbb0509833fa8fa3b447970691fbdf}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_a68dbb0509833fa8fa3b447970691fbdf}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}{Camera\+Intrinsics\+Model\+::k\+Kannala\+Brandt}}
 \end{DoxyCompactItemize}
 
 
@@ -84,21 +85,6 @@ Inverts the {\ttfamily Project\+Point} function. No closed form solution is avai
 {\ttfamily max\+\_\+iterations} specifies the maximum number of Newton steps to take. Optimization will stop automatically if the error is less than 1e-\/14.~\newline
 ~\newline
 {\bfseries{Note\+: This implementation seems to require a significant number of Newton steps to properly converge. If you need faster code, it is recommended that you use Open\+CV\textquotesingle{}s implementation which is better conditioned.}} 
-
-\doxysubsection{Member Data Documentation}
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1KannalaBrandtModel_a68dbb0509833fa8fa3b447970691fbdf}\label{classcalico_1_1sensors_1_1KannalaBrandtModel_a68dbb0509833fa8fa3b447970691fbdf}} 
-\index{calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}!kModelType@{kModelType}}
-\index{kModelType@{kModelType}!calico::sensors::KannalaBrandtModel@{calico::sensors::KannalaBrandtModel}}
-\doxysubsubsection{\texorpdfstring{kModelType}{kModelType}}
-{\footnotesize\ttfamily constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} calico\+::sensors\+::\+Kannala\+Brandt\+Model\+::k\+Model\+Type\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
-
-{\bfseries Initial value\+:}
-\begin{DoxyCode}{0}
-\DoxyCodeLine{=}
-\DoxyCodeLine{      \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}{CameraIntrinsicsModel::kKannalaBrandt}}}
-
-\end{DoxyCode}
-
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 
