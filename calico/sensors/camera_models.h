@@ -22,6 +22,8 @@ enum class CameraIntrinsicsModel : int {
   kKannalaBrandt,
   /// Double-Sphere model.
   kDoubleSphere,
+  /// Field-of-View model.
+  kFieldOfView,
 };
 
 /// Base class for camera models.
@@ -29,17 +31,18 @@ class CameraModel {
  public:
   virtual ~CameraModel() = default;
 
-  /// Project a point resolved in the camera frame into the pixel space.
-  /// Top level call invokes the derived class's implementation.
+  /// Project a point resolved in the camera frame into the pixel space. Top
+  /// level call invokes the derived class's implementation.
   template <typename T>
   absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
       const Eigen::VectorX<T>& intrinsics,
       const Eigen::Vector3<T>& point) const;
 
-  /// Unproject a pixel and return the corresponding metric plane point. In order
-  /// to get the unprojected point in pixel space, apply the pinhole paraeters to
-  /// the unprojectd results.
-  /// Top level call invokes the derived class's implementation.
+  /// Inverts the projection model \f$\mathbf{P}\f$ to obtain the bearing vector
+  /// \f$\mathbf{p}_m\f$ of the pixel location \f$\mathbf{p}\f$. Multiplying the
+  /// return quantity by the distance of the point gives the location of the
+  /// resolved in the camera frame. Top level call invokes the derived class's
+  /// implementation.
   template <typename T>
   absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
       const Eigen::VectorX<T>& intrinsics,
@@ -136,8 +139,10 @@ class OpenCv5Model : public CameraModel {
     return projection;
   }
 
-  /// Inverts the `ProjectPoint` function. No closed form solution is available,
-  /// so we use Newton's method to invert the projection model.\n\n
+  /// Inverts the projection model \f$\mathbf{P}\f$ to obtain the bearing vector
+  /// \f$\mathbf{p}_m\f$ of the pixel location \f$\mathbf{p}\f$. No closed form
+  /// solution is available, so we use Newton's method to invert the projection
+  /// model.\n\n
   /// `intrinsics` is a vector of intrinsics parameters the following order:
   ///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\f$\n\n
   /// `max_iterations` specifies the maximum number of Newton steps to take.
@@ -197,7 +202,9 @@ class OpenCv5Model : public CameraModel {
       x = x + (alpha * err_x + beta * err_y);
       y = y + (beta * err_x + gamma * err_y);
     }
-    return Eigen::Vector3<T>(x, y, 1);
+    Eigen::Vector3<T> bearing_vector(x, y, 1);
+    bearing_vector.normalize();
+    return bearing_vector;
   }
 
   CameraIntrinsicsModel GetType() const final {
@@ -284,8 +291,10 @@ class KannalaBrandtModel : public CameraModel {
     return projection;
   }
 
-  /// Inverts the `ProjectPoint` function. No closed form solution is available,
-  /// so we use Newton's method to invert the projection model.\n\n
+  /// Inverts the projection model \f$\mathbf{P}\f$ to obtain the bearing vector
+  /// \f$\mathbf{p}_m\f$ of the pixel location \f$\mathbf{p}\f$. No closed form
+  /// solution is available, so we use Newton's method to invert the projection
+  /// model.\n\n
   /// `intrinsics` is a vector of intrinsics parameters the following order:
   ///   \f$[f, c_x, c_y, k_1, k_2, k_3, k_4]\f$\n\n
   /// `max_iterations` specifies the maximum number of Newton steps to take.
@@ -396,7 +405,9 @@ class KannalaBrandtModel : public CameraModel {
       x = x + (alpha * err_x + beta * err_y);
       y = y + (beta * err_x + gamma * err_y);
     }
-    return Eigen::Vector3<T>(x, y, 1);
+    Eigen::Vector3<T> bearing_vector(x, y, 1);
+    bearing_vector.normalize();
+    return bearing_vector;
   }
 
   CameraIntrinsicsModel GetType() const final {
@@ -465,7 +476,7 @@ class DoubleSphereModel : public CameraModel {
     const T r = sqrt(r2);
     const T d = sqrt(r2 * (T(1.0) + xi * xi) + T(2.0) * xi * r * point.z());
     const T s = T(1.0) / (alpha * d + (T(1.0) - alpha) * (xi * r + point.z()));
-    // Apply radial distortion.
+    // Apply distortion.
     Eigen::Vector2<T> projection(point.x(), point.y());
     projection *= s;
     // Apply pinhole parameters.
@@ -475,8 +486,8 @@ class DoubleSphereModel : public CameraModel {
     return projection;
   }
 
-  /// Inverts the measurement model \f$\mathbf{p}\f$ to obtain the normalized
-  /// undistorted pixel location \f$\mathbf{p}_m\f$.
+  /// Inverts the projection model \f$\mathbf{P}\f$ to obtain the bearing vector
+  /// \f$\mathbf{p}_m\f$ of the pixel location \f$\mathbf{p}\f$.
   /// \f[
   /// \mathbf{p}_m = \mathbf{p}_s / \|\mathbf{p}_s\|\\
   /// \mathbf{p}_s = \frac{m_z\xi + \sqrt{m_z^2 + (1-\xi^2)r^2}}{m_z^2+r^2}
@@ -514,8 +525,139 @@ class DoubleSphereModel : public CameraModel {
         (alpha * sqrt(1.0 - (2.0 * alpha - 1.0) * r2) + 1.0 - alpha);
     const T mz2 = mz * mz;
     const T inv_s = (mz * xi + sqrt(mz2 + (1 - xi * xi) * r2)) / (mz2 + r2);
-    Eigen::Vector3<T> pm(inv_s * mx, inv_s * my, inv_s * mz - xi);
-    pm /= pm.z();
+    Eigen::Vector3<T> bearing_vector(inv_s * mx, inv_s * my, inv_s * mz - xi);
+    bearing_vector.normalize();
+    return bearing_vector;
+  }
+
+  CameraIntrinsicsModel GetType() const final {
+    return kModelType;
+  }
+
+  int NumberOfParameters() const final {
+    return kNumberOfParameters;
+  }
+};
+
+/// Field-of-View projection model. This model assumes an isotropic pinhole
+/// model, i.e. \f$f_x == f_y = f\f$.\n
+/// Parameters are in the following order:
+///   \f$[f, c_x, c_y, w]\f$\n\n
+class FieldOfViewModel : public CameraModel {
+ public:
+  static constexpr int kNumberOfParameters = 4;
+  static constexpr CameraIntrinsicsModel kModelType = CameraIntrinsicsModel::kFieldOfView;
+
+  FieldOfViewModel() = default;
+  ~FieldOfViewModel() override = default;
+  FieldOfViewModel& operator=(const FieldOfViewModel&) = default;
+
+  /// Returns projection \f$\mathbf{p}\f$, a 2-D pixel coordinate such that
+  /// \f[
+  /// \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d +
+  ///    \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\
+  /// \mathbf{p}_d = \frac{r_d}{r_u}\\
+  /// r_d = \tan^{-1}\left(2r_u\tan\frac{w}{2}\right)\\
+  /// r_u = \sqrt{{\mathbf{p}_m}^T\mathbf{p}_m}\\
+  /// \mathbf{p}_m = \left[\begin{matrix}t_x/t_z\\t_y/t_z\end{matrix}\right]
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, \xi, \alpha]\f$\n\n
+  /// `point` is the location of the feature resolved in the camera frame
+  /// \f$\mathbf{t}^s_{sx} =
+  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.\n
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& point) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Invalid number of intrinsics parameters provided. Expected ",
+          kNumberOfParameters, ". Got ", intrinsics.size()));
+    }
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    const T& w = intrinsics(3);
+    if (point.z() <= T(0.0)) {
+      return absl::InvalidArgumentError(
+          "Invalid point. Cannot project.");
+    }
+    // Prepare values.
+    Eigen::Vector2<T> projection(point.x(), point.y());
+    projection /= point.z();
+    const T r = projection.norm();
+
+    T s;
+    if (w * w  < 1e-5) {
+      // When w approaches 0.
+      s = T(1.0);
+    } else {
+      const T tan_term = T(2.0) * tan(w * T(0.5));
+      if (r * r < 1e-5) {
+        // For when r approaches 0.
+        s = tan_term / w;
+      } else {
+        s = atan(r * tan_term) / (r * w);
+      }
+    }
+    // Apply distortion.
+    projection *= s;
+    // Apply pinhole parameters.
+    projection *= f;
+    projection.x() += cx;
+    projection.y() += cy;
+    return projection;
+  }
+
+  /// Inverts the projection model \f$\mathbf{P}\f$ to obtain the bearing vector
+  /// \f$\mathbf{p}_m\f$ of the pixel location \f$\mathbf{p}\f$.
+  /// \f[
+  /// \mathbf{p}_m = \mathbf{p}_s / \|\mathbf{p}_s\|\\
+  /// \mathbf{p}_s = \left[\begin{matrix}
+  ///     \eta m_x\\\eta m_y\\\cos(r_dw)
+  /// \end{matrix}\right]\\
+  /// \eta = \frac{\sin(r_dw)}{2r_d\tan(w/2)}\\
+  /// r_d^2 = {\mathbf{p}}^T\mathbf{p},\\
+  /// m_x = \frac{p_x - c_x}{f}, m_y = \frac{p_y - c_y}{f}\\
+  /// \mathbf{p} = \left[\begin{matrix}p_x\\p_y\end{matrix}\right]
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, \xi, \alpha]\f$\n\n
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector2<T>& pixel) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Expected ", kNumberOfParameters, " parameters for intrinsics. Got ",
+          intrinsics.size()));
+    }
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    const T& w = intrinsics(3);
+    const T inv_f = T(1.0) / f;
+    // Invert pinhole model from distorted point.
+    const T mx = inv_f * (pixel.x() - cx);
+    const T my = inv_f * (pixel.y() - cy);
+    // Undistort.
+    const T r = sqrt(mx * mx + my * my);
+    T eta;
+    if (w * w < 1e-5) {
+      // Limit as w approaches 0.
+      eta = T(1.0);
+    } else {
+      const T tan_term = T(2.0) * tan(w * T(0.5));
+      if (r * r < 1e-5) {
+        // Limit as r approaches 0.
+        eta = w / tan_term;
+      } else {
+        eta = sin(r * w) / (r * tan_term);
+      }
+    }
+    Eigen::Vector3<T> pm(eta * mx, eta * my, cos(r * w));
+    pm.normalize();
     return pm;
   }
 
@@ -541,6 +683,9 @@ absl::StatusOr<Eigen::Vector2<T>> CameraModel::ProjectPoint(
   if (const auto derived = dynamic_cast<const DoubleSphereModel*>(this)) {
     return derived->ProjectPoint(intrinsics, point);
   }
+  if (const auto derived = dynamic_cast<const FieldOfViewModel*>(this)) {
+    return derived->ProjectPoint(intrinsics, point);
+  }
   return absl::InvalidArgumentError(absl::StrCat(
       "ProjectPoint for camera model ", this->GetType(), " not supported."));
 }
@@ -556,6 +701,9 @@ absl::StatusOr<Eigen::Vector3<T>> CameraModel::UnprojectPixel(
     return derived->UnprojectPixel(intrinsics, pixel);
   }
   if (const auto derived = dynamic_cast<const DoubleSphereModel*>(this)) {
+    return derived->UnprojectPixel(intrinsics, pixel);
+  }
+  if (const auto derived = dynamic_cast<const FieldOfViewModel*>(this)) {
     return derived->UnprojectPixel(intrinsics, pixel);
   }
   return absl::InvalidArgumentError(absl::StrCat(
