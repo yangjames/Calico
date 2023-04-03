@@ -63,7 +63,7 @@ Project a point resolved in the camera frame into the pixel space. Top level cal
 {\footnotesize\ttfamily template$<$typename T $>$ \\
 absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ calico\+::sensors\+::\+Camera\+Model\+::\+Unproject\+Pixel (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector2$<$ T $>$ \&}]{pixel }\end{DoxyParamCaption}) const}
 
-Unproject a pixel and return the corresponding metric plane point. In order to get the unprojected point in pixel space, apply the pinhole paraeters to the unprojectd results. Top level call invokes the derived class\textquotesingle{}s implementation. 
+Inverts the projection model $\mathbf{P}$ to obtain the bearing vector $\mathbf{p}_m$ of the pixel location $\mathbf{p}$. Multiplying the return quantity by the distance of the point gives the location of the resolved in the camera frame. Top level call invokes the derived class\textquotesingle{}s implementation. 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 

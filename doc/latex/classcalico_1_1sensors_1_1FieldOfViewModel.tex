@@ -1,0 +1,87 @@
+\hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel}{}\doxysection{calico\+::sensors\+::Field\+Of\+View\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1FieldOfViewModel}\index{calico::sensors::FieldOfViewModel@{calico::sensors::FieldOfViewModel}}
+
+
+{\ttfamily \#include $<$camera\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Field\+Of\+View\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1FieldOfViewModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Field\+Of\+View\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1FieldOfViewModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel_a238fa2a03018e8b831ca57ad179f8f3a}\label{classcalico_1_1sensors_1_1FieldOfViewModel_a238fa2a03018e8b831ca57ad179f8f3a}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1FieldOfViewModel}{Field\+Of\+View\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1FieldOfViewModel}{Field\+Of\+View\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel_a3b0c18a5fc0d7c14ff350a0aa828ae83}\label{classcalico_1_1sensors_1_1FieldOfViewModel_a3b0c18a5fc0d7c14ff350a0aa828ae83}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1FieldOfViewModel_a3b0c18a5fc0d7c14ff350a0aa828ae83}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for camera model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel_a6fff8ec0495ed3a69ec2e2c0d229dd80}\label{classcalico_1_1sensors_1_1FieldOfViewModel_a6fff8ec0495ed3a69ec2e2c0d229dd80}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1FieldOfViewModel_a6fff8ec0495ed3a69ec2e2c0d229dd80}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this camera model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector2$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1FieldOfViewModel_a32b49ba158ffeda0d8fa8e9054be006c}{Project\+Point}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&point)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1FieldOfViewModel_ae83d5a0e11ce41216826ce49456ff1bd}{Unproject\+Pixel}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector2$<$ T $>$ \&pixel)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel_ae24367b66264a2303311c630c88e6768}\label{classcalico_1_1sensors_1_1FieldOfViewModel_ae24367b66264a2303311c630c88e6768}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 4
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel_a5281cd41657587802438aefb023fe20d}\label{classcalico_1_1sensors_1_1FieldOfViewModel_a5281cd41657587802438aefb023fe20d}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fadfc7df0f7b103737f5161a57e8f57c34}{Camera\+Intrinsics\+Model\+::k\+Field\+Of\+View}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Field-\/of-\/\+View projection model. This model assumes an isotropic pinhole model, i.\+e. $f_x == f_y = f$.~\newline
+Parameters are in the following order\+: $[f, c_x, c_y, w]$~\newline
+~\newline
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel_a32b49ba158ffeda0d8fa8e9054be006c}\label{classcalico_1_1sensors_1_1FieldOfViewModel_a32b49ba158ffeda0d8fa8e9054be006c}} 
+\index{calico::sensors::FieldOfViewModel@{calico::sensors::FieldOfViewModel}!ProjectPoint@{ProjectPoint}}
+\index{ProjectPoint@{ProjectPoint}!calico::sensors::FieldOfViewModel@{calico::sensors::FieldOfViewModel}}
+\doxysubsubsection{\texorpdfstring{ProjectPoint()}{ProjectPoint()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector2$<$T$>$ $>$ calico\+::sensors\+::\+Field\+Of\+View\+Model\+::\+Project\+Point (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{point }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns projection $\mathbf{p}$, a 2-\/D pixel coordinate such that \[ \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d + \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\ \mathbf{p}_d = \frac{r_d}{r_u}\\ r_d = \tan^{-1}\left(2r_u\tan\frac{w}{2}\right)\\ r_u = \sqrt{{\mathbf{p}_m}^T\mathbf{p}_m}\\ \mathbf{p}_m = \left[\begin{matrix}t_x/t_z\\t_y/t_z\end{matrix}\right] \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, \xi, \alpha]$~\newline
+~\newline
+{\ttfamily point} is the location of the feature resolved in the camera frame $\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T$.~\newline
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1FieldOfViewModel_ae83d5a0e11ce41216826ce49456ff1bd}\label{classcalico_1_1sensors_1_1FieldOfViewModel_ae83d5a0e11ce41216826ce49456ff1bd}} 
+\index{calico::sensors::FieldOfViewModel@{calico::sensors::FieldOfViewModel}!UnprojectPixel@{UnprojectPixel}}
+\index{UnprojectPixel@{UnprojectPixel}!calico::sensors::FieldOfViewModel@{calico::sensors::FieldOfViewModel}}
+\doxysubsubsection{\texorpdfstring{UnprojectPixel()}{UnprojectPixel()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Field\+Of\+View\+Model\+::\+Unproject\+Pixel (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector2$<$ T $>$ \&}]{pixel }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the projection model $\mathbf{P}$ to obtain the bearing vector $\mathbf{p}_m$ of the pixel location $\mathbf{p}$. \[ \mathbf{p}_m = \mathbf{p}_s / \|\mathbf{p}_s\|\\ \mathbf{p}_s = \left[\begin{matrix} \eta m_x\\\eta m_y\\\cos(r_dw) \end{matrix}\right]\\ \eta = \frac{\sin(r_dw)}{2r_d\tan(w/2)}\\ r_d^2 = {\mathbf{p}}^T\mathbf{p},\\ m_x = \frac{p_x - c_x}{f}, m_y = \frac{p_y - c_y}{f}\\ \mathbf{p} = \left[\begin{matrix}p_x\\p_y\end{matrix}\right] \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, \xi, \alpha]$~\newline
+~\newline
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/camera\+\_\+models.\+h\end{DoxyCompactItemize}
