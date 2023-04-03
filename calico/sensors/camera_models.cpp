@@ -14,6 +14,8 @@ std::unique_ptr<CameraModel> CameraModel::Create(
     case CameraIntrinsicsModel::kDoubleSphere: {
       return std::make_unique<DoubleSphereModel>();
     }
+    case CameraIntrinsicsModel::kFieldOfView:
+      return std::make_unique<FieldOfViewModel>();
     default: {
       return std::move(std::unique_ptr<CameraModel>{});
     }

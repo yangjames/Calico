@@ -45,6 +45,11 @@ INSTANTIATE_TEST_SUITE_P(
           CameraIntrinsicsModel::kDoubleSphere,
           DoubleSphereModel::kNumberOfParameters,
         },
+        {
+          "FieldOfView",
+          CameraIntrinsicsModel::kFieldOfView,
+          FieldOfViewModel::kNumberOfParameters,
+        },
       }),
     [](const testing::TestParamInfo<CameraModelCreationTest::ParamType>& info) {
       return info.param.test_name;
@@ -97,10 +102,8 @@ TEST_F(CameraModelTest, OpenCv5ModelProjectionAndUnprojection) {
     ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
         OpenCv5Model::UnprojectPixel(intrinsics, pixel));
     // Compare results.
-    const Eigen::Vector3d t_camera_point_metric =
-      t_camera_point / t_camera_point.z();
-    EXPECT_THAT(t_camera_point_metric, EigenIsApprox(
-        unprojected_point, kSmallError));
+    const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
+    EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));
   }
 }
 
@@ -123,10 +126,8 @@ TEST_F(CameraModelTest, KannalaBrandtModelProjectionAndUnprojection) {
     ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
         KannalaBrandtModel::UnprojectPixel(intrinsics, pixel));
     // Compare results.
-    const Eigen::Vector3d t_camera_point_metric =
-      t_camera_point / t_camera_point.z();
-    EXPECT_THAT(t_camera_point_metric, EigenIsApprox(
-        unprojected_point, kSmallError));
+    const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
+    EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));
   }
 }
 
@@ -146,13 +147,31 @@ TEST_F(CameraModelTest, DoubleSphereModelProjectionAndUnprojection) {
     ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
         DoubleSphereModel::UnprojectPixel(intrinsics, pixel));
     // Compare results.
-    const Eigen::Vector3d t_camera_point_metric =
-      t_camera_point / t_camera_point.z();
-    EXPECT_THAT(t_camera_point_metric, EigenIsApprox(
-        unprojected_point, kSmallError));
+    const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
+    EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));
   }
 }
 
+TEST_F(CameraModelTest, FieldOfViewModelProjectionAndUnprojection) {
+  constexpr double kSmallError = 1e-12;
+  Eigen::VectorXd intrinsics(FieldOfViewModel::kNumberOfParameters);
+  intrinsics <<
+    785, 640, 400, 0.05;
+  for (const Eigen::Vector3d& t_world_point : t_world_points) {
+    // Transform camera point into world coordinates.
+    const Eigen::Vector3d t_camera_point =
+      R_world_camera.transpose() * (t_world_point - t_world_camera);
+    // Forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector2d pixel,
+        FieldOfViewModel::ProjectPoint(intrinsics, t_camera_point));
+    // Invert forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
+        FieldOfViewModel::UnprojectPixel(intrinsics, pixel));
+    // Compare results.
+    const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
+    EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));
+  }
+}
 
 } // namespace
 } // namespace calico::sensors

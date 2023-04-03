@@ -154,7 +154,8 @@ PYBIND11_MODULE(_calico, m) {
     .value("kNone", CameraIntrinsicsModel::kNone)
     .value("kOpenCv5", CameraIntrinsicsModel::kOpenCv5)
     .value("kKannalaBrandt", CameraIntrinsicsModel::kKannalaBrandt)
-    .value("kDoubleSphere", CameraIntrinsicsModel::kDoubleSphere);
+    .value("kDoubleSphere", CameraIntrinsicsModel::kDoubleSphere)
+    .value("kFieldOfView", CameraIntrinsicsModel::kFieldOfView);
 
   py::class_<CameraObservationId>(m, "CameraObservationId")
     .def(py::init<>())
