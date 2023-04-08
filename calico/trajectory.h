@@ -100,11 +100,11 @@ class Trajectory {
     return Pose3<T>(rot, pos);
   }
 
-  // Setter/getter for the internal map between timestamp and pose.
+  /// Setter/getter for the internal map between timestamp and pose.
   const absl::flat_hash_map<double, Pose3d>& trajectory() const;
   absl::flat_hash_map<double, Pose3d>& trajectory();
 
-  // Get the parameters needed to evaluate the spline for a given timestamp.
+  /// Get the parameters needed to evaluate the spline for a given timestamp.
   TrajectoryEvaluationParams GetEvaluationParams(double stamp) const;
 
  private:

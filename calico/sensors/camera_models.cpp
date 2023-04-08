@@ -8,6 +8,9 @@ std::unique_ptr<CameraModel> CameraModel::Create(
     case CameraIntrinsicsModel::kOpenCv5: {
       return std::make_unique<OpenCv5Model>();
     }
+    case CameraIntrinsicsModel::kOpenCv8: {
+      return std::make_unique<OpenCv8Model>();
+    }
     case CameraIntrinsicsModel::kKannalaBrandt: {
       return std::make_unique<KannalaBrandtModel>();
     }
