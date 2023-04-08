@@ -18,6 +18,8 @@ enum class CameraIntrinsicsModel : int {
   kNone,
   /// 5-parameter OpenCV model.
   kOpenCv5,
+  /// 8-parameter OpenCV model.
+  kOpenCv8,
   /// Kannala-Brandt model.
   kKannalaBrandt,
   /// Double-Sphere model.
@@ -94,12 +96,7 @@ class OpenCv5Model : public CameraModel {
   ///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\f$\n\n
   /// `point` is the location of the feature resolved in the camera frame
   /// \f$\mathbf{t}^s_{sx} =
-  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.\n\n
-  /// **Note: This implementation produces superior results for high distortions
-  /// compared to [OpenCV's implementation]
-  /// (https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#ga55c716492470bfe86b0ee9bf3a1f0f7e).
-  /// If your application requires numerical precision, it is recommend that you
-  /// use this one.**
+  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.
   template <typename T>
   static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
       const Eigen::VectorX<T>& intrinsics,
@@ -146,7 +143,12 @@ class OpenCv5Model : public CameraModel {
   /// `intrinsics` is a vector of intrinsics parameters the following order:
   ///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\f$\n\n
   /// `max_iterations` specifies the maximum number of Newton steps to take.
-  /// Optimization will stop automatically if the error is less than 1e-14.
+  /// Optimization will stop automatically if the error is less than 1e-14.\n\n
+  /// **Note: This implementation produces superior results for high distortions
+  /// compared to [OpenCV's implementation]
+  /// (https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#ga55c716492470bfe86b0ee9bf3a1f0f7e).
+  /// If your application requires numerical precision, it is recommend that you
+  /// use this one.**
   template <typename T>
   static absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
       const Eigen::VectorX<T>& intrinsics,
@@ -190,6 +192,170 @@ class OpenCv5Model : public CameraModel {
       // J = [a, b]
       //     [b, c]
       const T ds = 2 * (k1 + r2 * (2 * k2 + 3 * k3 * r2));
+      const T a = ds * x2 + s + 2 * (p1 * y + 3 * p2 * x);
+      const T b = ds * x * y + 2 * (p1 * x + p2 * y);
+      const T c = ds * y2 + s + 2 * (p2 * x + 3 * p1 * y);
+      // Invert Jacobian;
+      const T det = T(1.0) / (a * c - b * b);
+      const T alpha = det * c;
+      const T beta = -det * b;
+      const T gamma = det * a;
+      // Apply update.
+      x = x + (alpha * err_x + beta * err_y);
+      y = y + (beta * err_x + gamma * err_y);
+    }
+    Eigen::Vector3<T> bearing_vector(x, y, 1);
+    bearing_vector.normalize();
+    return bearing_vector;
+  }
+
+  CameraIntrinsicsModel GetType() const final {
+    return kModelType;
+  }
+
+  int NumberOfParameters() const final {
+    return kNumberOfParameters;
+  }
+};
+
+/// 8-parameter Brown-Conrady projection model as presented in OpenCV. This model
+/// assumes an isotropic pinhole model, i.e. \f$fx == fy = f\f$.\n
+/// Parameters are in the following order:
+///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3, k_4, k_5, k_6]\f$\n\n
+/// See the [OpenCV documentations page]
+/// (https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html) for more details.
+class OpenCv8Model : public CameraModel {
+ public:
+  static constexpr int kNumberOfParameters = 11;
+  static constexpr CameraIntrinsicsModel kModelType = CameraIntrinsicsModel::kOpenCv8;
+
+  OpenCv8Model() = default;
+  ~OpenCv8Model() override = default;
+  OpenCv8Model& operator=(const OpenCv8Model&) = default;
+
+  /// Returns projection \f$\mathbf{p}\f$, a 2-D pixel coordinate such that
+  /// \f[
+  /// \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d +
+  ///    \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\
+  /// \mathbf{p}_d = s\mathbf{p}_m +
+  ///    \left(2\mathbf{p}_m{\mathbf{p}_m}^T + r^2\mathbf{I}\right)
+  ///    \left[\begin{matrix}p_2\\p_1\end{matrix}\right]\\
+  /// s = \frac{1 + k_1r^2 + k_2r^4 + k_3r^6}{1 + k_4r^2 + k_5r^4 + k_6r^6}\\
+  /// r^2 = {\mathbf{p}_m}^T\mathbf{p}_m\\
+  /// \mathbf{p}_m = \left[\begin{matrix}t_x / t_z\\t_y/t_z\end{matrix}\right]\\
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3, k_4, k_5, k_6]\f$\n\n
+  /// `point` is the location of the feature resolved in the camera frame
+  /// \f$\mathbf{t}^s_{sx} =
+  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& point) {
+    if (point.z() <= T(0.0)) {
+      return absl::InvalidArgumentError(
+          "Camera point is behind the camera. Cannot project.");
+    }
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Invalid number of intrinsics parameters provided. Expected ",
+          kNumberOfParameters, ". Got ", intrinsics.size()));
+    }
+    // Prepare values.
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    const T& k1 = intrinsics(3);
+    const T& k2 = intrinsics(4);
+    const T& p1 = intrinsics(5);
+    const T& p2 = intrinsics(6);
+    const T& k3 = intrinsics(7);
+    const T& k4 = intrinsics(8);
+    const T& k5 = intrinsics(9);
+    const T& k6 = intrinsics(10);
+    Eigen::Vector2<T> projection(point.x() / point.z(), point.y() / point.z());
+    const T x = projection.x();
+    const T y = projection.y();
+    const T r2 = projection.squaredNorm();
+    const T s_num = T(1.0) + r2 * (k1 + r2 * (k2 + r2 * k3));
+    const T s_den = T(1.0) + r2 * (k4 + r2 * (k5 + r2 * k6));
+    const T s = s_num / s_den;
+    // Apply radial distortion.
+    projection *= s;
+    // Apply tangential distortion.
+    projection.x() += T(2.0) * p1 * x * y + p2 * (r2 + T(2.0) * x * x);
+    projection.y() += T(2.0) * p2 * x * y + p1 * (r2 + T(2.0) * y * y);
+    // Apply pinhole parameters.
+    projection *= f;
+    projection.x() += cx;
+    projection.y() += cy;
+    return projection;
+  }
+
+  /// Inverts the projection model \f$\mathbf{P}\f$ to obtain the bearing vector
+  /// \f$\mathbf{p}_m\f$ of the pixel location \f$\mathbf{p}\f$. No closed form
+  /// solution is available, so we use Newton's method to invert the projection
+  /// model.\n\n
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3, k_4, k_5, k_6]\f$\n\n
+  /// `max_iterations` specifies the maximum number of Newton steps to take.
+  /// Optimization will stop automatically if the error is less than 1e-14.\n\n
+  /// **Note: This implementation produces superior results for high distortions
+  /// compared to [OpenCV's implementation]
+  /// (https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#ga55c716492470bfe86b0ee9bf3a1f0f7e).
+  /// If your application requires numerical precision, it is recommend that you
+  /// use this one.**
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector2<T>& pixel,
+      int max_iterations = 30) {
+    constexpr T kSmallValue = T(1e-14);
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Expected ", kNumberOfParameters, " parameters for intrinsics. Got ",
+          intrinsics.size()));
+    }
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    const T& k1 = intrinsics(3);
+    const T& k2 = intrinsics(4);
+    const T& p1 = intrinsics(5);
+    const T& p2 = intrinsics(6);
+    const T& k3 = intrinsics(7);
+    const T& k4 = intrinsics(8);
+    const T& k5 = intrinsics(9);
+    const T& k6 = intrinsics(10);
+    const T inv_f = T(1.0) / f;
+    // Invert pinhole model from distorted point.
+    const T xd0 = inv_f * (pixel.x() - cx);
+    const T yd0 = inv_f * (pixel.y() - cy);
+    // Set distorted pixel as initial guess.
+    T x = xd0;
+    T y = yd0;
+    // Run Newton's method on the residual of distorted pixel.
+    for (int i = 0; i < max_iterations; ++i) {
+      const T x2 = x * x;
+      const T y2 = y * y;
+      const T r2 = x2 + y2;
+      const T s_num = T(1.0) + r2 * (k1 + r2 * (k2 + r2 * k3));
+      const T s_den = T(1.0) + r2 * (k4 + r2 * (k5 + r2 * k6));
+      const T s = s_num / s_den;
+      // Compute residual.
+      const T err_x = xd0 - (s * x + 2 * p1 * x * y + p2 * (r2 + 2 * x2));
+      const T err_y = yd0 - (s * y + 2 * p2 * x * y + p1 * (r2 + 2 * y2));
+      // If residual is small enough, exit early.
+      if (std::abs(err_x) + std::abs(err_y) < kSmallValue) {
+        break;
+      }
+      // Compute Jacobian:
+      // J = [a, b]
+      //     [b, c]
+      const T dnum = k1 + r2 * (T(2.0) * k2 + T(3.0) * r2 * k3);
+      const T dden = k4 + r2 * (T(2.0) * k5 + T(3.0) * r2 * k6);
+      const T ds = (dnum - s * dden) / s_den;
       const T a = ds * x2 + s + 2 * (p1 * y + 3 * p2 * x);
       const T b = ds * x * y + 2 * (p1 * x + p2 * y);
       const T c = ds * y2 + s + 2 * (p2 * x + 3 * p1 * y);
@@ -677,6 +843,9 @@ absl::StatusOr<Eigen::Vector2<T>> CameraModel::ProjectPoint(
   if (const auto derived = dynamic_cast<const OpenCv5Model*>(this)) {
     return derived->ProjectPoint(intrinsics, point);
   }
+  if (const auto derived = dynamic_cast<const OpenCv8Model*>(this)) {
+    return derived->ProjectPoint(intrinsics, point);
+  }
   if (const auto derived = dynamic_cast<const KannalaBrandtModel*>(this)) {
     return derived->ProjectPoint(intrinsics, point);
   }
@@ -695,6 +864,9 @@ absl::StatusOr<Eigen::Vector3<T>> CameraModel::UnprojectPixel(
     const Eigen::VectorX<T>& intrinsics,
     const Eigen::Vector2<T>& pixel) const {
   if (const auto derived = dynamic_cast<const OpenCv5Model*>(this)) {
+    return derived->UnprojectPixel(intrinsics, pixel);
+  }
+  if (const auto derived = dynamic_cast<const OpenCv8Model*>(this)) {
     return derived->UnprojectPixel(intrinsics, pixel);
   }
   if (const auto derived = dynamic_cast<const KannalaBrandtModel*>(this)) {

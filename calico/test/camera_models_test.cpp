@@ -36,6 +36,11 @@ INSTANTIATE_TEST_SUITE_P(
           OpenCv5Model::kNumberOfParameters,
         },
         {
+          "OpenCv8",
+          CameraIntrinsicsModel::kOpenCv8,
+          OpenCv8Model::kNumberOfParameters,
+        },
+        {
           "KannalaBrandt",
           CameraIntrinsicsModel::kKannalaBrandt,
           KannalaBrandtModel::kNumberOfParameters,
@@ -101,6 +106,28 @@ TEST_F(CameraModelTest, OpenCv5ModelProjectionAndUnprojection) {
     // Invert forward projection.
     ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
         OpenCv5Model::UnprojectPixel(intrinsics, pixel));
+    // Compare results.
+    const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
+    EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));
+  }
+}
+
+TEST_F(CameraModelTest, OpenCv8ModelProjectionAndUnprojection) {
+  constexpr double kSmallError = 1e-10;
+  Eigen::VectorXd intrinsics(OpenCv8Model::kNumberOfParameters);
+  intrinsics <<
+    785, 640, 400, -3.149e-1, 1.069e-1, 1.616e-4, 1.141e-4, -1.853e-2, 1.225e-1,
+    -5.26e-2, 8.58e-3;
+  for (const Eigen::Vector3d& t_world_point : t_world_points) {
+    // Transform camera point into world coordinates.
+    const Eigen::Vector3d t_camera_point =
+        R_world_camera.transpose() * (t_world_point - t_world_camera);
+    // Forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector2d pixel,
+        OpenCv8Model::ProjectPoint(intrinsics, t_camera_point));
+    // Invert forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
+        OpenCv8Model::UnprojectPixel(intrinsics, pixel));
     // Compare results.
     const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
     EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));

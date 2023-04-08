@@ -219,5 +219,41 @@ class TestCalicoPythonBindings(unittest.TestCase):
         summary = optimizer.Optimize()
 
 
+    def test_camera_model_instantiation(self):
+        camera_models = [
+            (calico.CameraIntrinsicsModel.kOpenCv5, 8),
+            (calico.CameraIntrinsicsModel.kOpenCv8, 11),
+            (calico.CameraIntrinsicsModel.kKannalaBrandt, 7),
+            (calico.CameraIntrinsicsModel.kDoubleSphere, 5),
+            (calico.CameraIntrinsicsModel.kFieldOfView, 4),
+        ]
+        for model_type, num_parameters in camera_models:
+            camera = calico.Camera()
+            camera.SetModel(model_type)
+            camera.SetIntrinsics(np.random.rand(num_parameters))
+
+    def test_accelerometer_model_instantiation(self):
+        accelerometer_models = [
+            (calico.AccelerometerIntrinsicsModel.kAccelerometerScaleOnly, 1),
+            (calico.AccelerometerIntrinsicsModel.kAccelerometerScaleAndBias, 4),
+            (calico.AccelerometerIntrinsicsModel.kAccelerometerVectorNav, 12),
+        ]
+        for model_type, num_parameters in accelerometer_models:
+            accelerometer = calico.Accelerometer()
+            accelerometer.SetModel(model_type)
+            accelerometer.SetIntrinsics(np.random.rand(num_parameters))
+
+    def test_gyroscope_model_instantiation(self):
+        gyroscope_models = [
+            (calico.GyroscopeIntrinsicsModel.kGyroscopeScaleOnly, 1),
+            (calico.GyroscopeIntrinsicsModel.kGyroscopeScaleAndBias, 4),
+            (calico.GyroscopeIntrinsicsModel.kGyroscopeVectorNav, 12),
+        ]
+        for model_type, num_parameters in gyroscope_models:
+            gyroscope = calico.Gyroscope()
+            gyroscope.SetModel(model_type)
+            gyroscope.SetIntrinsics(np.random.rand(num_parameters))
+
+
 if __name__ == '__main__':
     unittest.main()

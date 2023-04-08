@@ -7,7 +7,7 @@
 
 namespace calico {
 
-// Convert a 3-vector to a skew-symmetric cross-product matrix.
+/// Convert a 3-vector to a skew-symmetric cross-product matrix.
 template <typename T>
 inline Eigen::Matrix3<T> Skew(const Eigen::Vector3<T>& v) {
   Eigen::Matrix3<T> V;
@@ -21,7 +21,7 @@ inline Eigen::Matrix3<T> Skew(const Eigen::Vector3<T>& v) {
   return V;
 }
 
-// Converts a skew symmetric matrix back into a vector.
+/// Converts a skew symmetric matrix back into a vector.
 template <typename T>
 inline Eigen::Vector3<T> iSkew(const Eigen::Matrix3<T>& V) {
   Eigen::Vector3<T> v;
@@ -31,7 +31,7 @@ inline Eigen::Vector3<T> iSkew(const Eigen::Matrix3<T>& V) {
   return 0.5 * v;
 }
 
-// Fourth order Taylor expansion of sin(theta).
+/// Fourth order Taylor expansion of sin(theta).
 template <typename T>
 inline T SmallAngleSin(const T theta) {
   const T theta_sq = theta * theta;
@@ -40,7 +40,7 @@ inline T SmallAngleSin(const T theta) {
                    (T(1.0 / 120.0) - theta_sq * T(1.0 / 5040.0))));
 }
 
-// Fourth order Taylor expansion of cos(theta).
+/// Fourth order Taylor expansion of cos(theta).
 template <typename T>
 inline T SmallAngleCos(const T theta) {
   const T theta_sq = theta * theta;
@@ -49,7 +49,7 @@ inline T SmallAngleCos(const T theta) {
                                (T(1.0/720.0) - theta_sq * T(1.0 / 40320.0))));
 }
 
-// Convert axis-angle to rotation matrix.
+/// Convert axis-angle to rotation matrix.
 template <typename T>
 inline Eigen::Matrix3<T> ExpSO3(const Eigen::Vector3<T>& phi) {
   constexpr T kSmallAngle = 1e-7;
@@ -73,8 +73,8 @@ inline Eigen::Matrix3<T> ExpSO3(const Eigen::Vector3<T>& phi) {
   return R;
 }
 
-// Convert rotation matrix to axis-angle. Algorithm pulled from this page:
-// https://math.stackexchange.com/questions/83874/efficient-and-accurate-numerical-implementation-of-the-inverse-rodrigues-rotatio
+/// Convert rotation matrix to axis-angle. Algorithm pulled from this page:
+/// https://math.stackexchange.com/questions/83874/efficient-and-accurate-numerical-implementation-of-the-inverse-rodrigues-rotatio
 template <typename T>
 inline Eigen::Vector3<T> LnSO3(const Eigen::Matrix3<T>& R) {
   constexpr T kInvSqrt2 = T(1.0 / sqrt(2.0));
@@ -123,11 +123,17 @@ inline Eigen::Vector3<T> LnSO3(const Eigen::Matrix3<T>& R) {
   return phi;
 }
 
-// Compute the manifold Jacobian matrix of the Rodrigues formula, i.e.:
-//  R(phi) = exp([phi]_x) = I + sin(theta)/theta * [phi]_x +
-//                      (1-cos(theta))/theta^2 * ([phi]_x)^2
-//  d(exp[phi]_x)/dphi = I + (1-cos(theta))/theta^2 * ([phi]_x) +
-//                           (theta-sin(theta))/theta^3 * ([phi]_x)^2
+/// Compute the manifold Jacobian matrix of the Rodrigues formula, i.e.:
+/// \f[
+/// \mathbf{R}\left(\boldsymbol{\Phi}\right) = \exp\left(
+///   \mathbf{I} + \frac{\sin(\theta)}{\theta} \left[\boldsymbol{\Phi}\right]_\times +
+///   \frac{1 - \cos(\theta)}{\theta^2}{\left[\boldsymbol{\Phi}\right]_\times}^2
+/// \right)\\
+/// \frac{\partial \exp\left(\left[\boldsymbol{\Phi}\right]_\times\right)}{\partial \boldsymbol{\Phi}} =
+///   \mathbf{I} + \frac{1-\cos(\theta)}{\theta^2} \left[\boldsymbol{\Phi}\right]_\times +
+///   \frac{\theta-\sin(\theta)}{\theta^3} {\left[\boldsymbol{\Phi}\right]_\times}^2\\
+/// \theta = \boldsymbol{\Phi}^T\boldsymbol{\Phi}
+/// \f]
 template <typename T>
 inline Eigen::Matrix3<T> ExpSO3Jacobian(
     const Eigen::Vector3<T>& phi) {
@@ -154,10 +160,15 @@ inline Eigen::Matrix3<T> ExpSO3Jacobian(
   return J;
 }
 
-// Compute the manifold Hessian matrix of the Rodrigues formula, i.e.:
-//  R(phi) = exp([phi]_x) = I + sin(theta)/theta * [phi]_x +
-//                      (1-cos(theta))/theta^2 * ([phi]_x)^2
-//  H = d^2(exp[phi]_x)/dphi^2
+/// Compute the manifold Hessian matrix of the Rodrigues formula, i.e.:
+/// \f[
+///   \mathbf{R}(\boldsymbol{\Phi}) =
+///     \exp\left(\left[\boldsymbol{\Phi}\right]_\times\right) =
+///     \mathbf{I} + \frac{\sin(\theta)}{\theta}\left[\boldsymbol{\Phi}\right]_\times +
+///     \frac{1-\cos(\theta)}{\theta^2} {\left[\boldsymbol{\Phi}\right]_\times}^2\\
+///  \mathbf{H} = \frac{\partial^2 \exp\left(\left[\boldsymbol{\Phi}\right]_\times\right)}
+///    {\partial \boldsymbol{\Phi}^2}
+/// \f]
 template <typename T>
 inline std::vector<Eigen::Matrix3<T>> ExpSO3Hessian(
     const Eigen::Vector3<T>& phi) {
@@ -198,7 +209,7 @@ inline std::vector<Eigen::Matrix3<T>> ExpSO3Hessian(
   return H;
 }
 
-// Compute the time derivative of the Rodrigues formula manifold Jacobian.
+/// Compute the time derivative of the Rodrigues formula manifold Jacobian.
 template <typename T>
 inline Eigen::Matrix3<T> ExpSO3JacobianDot(
     const Eigen::Vector3<T>& phi, const Eigen::Vector3<T>& phi_dot) {

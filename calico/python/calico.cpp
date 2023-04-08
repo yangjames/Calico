@@ -153,6 +153,7 @@ PYBIND11_MODULE(_calico, m) {
   py::enum_<CameraIntrinsicsModel>(m, "CameraIntrinsicsModel")
     .value("kNone", CameraIntrinsicsModel::kNone)
     .value("kOpenCv5", CameraIntrinsicsModel::kOpenCv5)
+    .value("kOpenCv8", CameraIntrinsicsModel::kOpenCv8)
     .value("kKannalaBrandt", CameraIntrinsicsModel::kKannalaBrandt)
     .value("kDoubleSphere", CameraIntrinsicsModel::kDoubleSphere)
     .value("kFieldOfView", CameraIntrinsicsModel::kFieldOfView);

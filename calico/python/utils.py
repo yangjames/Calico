@@ -1,14 +1,19 @@
+"""@package Python utils
+Utility functions for calico python bindings.
+"""
 import calico
 
 import cv2
 import numpy as np
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
+import yaml
+
 
 def ComputeRmseHeatmapAndFeatureCount(
   measurement_residual_pairs: List[Tuple[calico.CameraMeasurement, np.ndarray]],
   image_width: int, image_height: int, num_rows:int = 8, num_cols:int = 12,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-  """Compute the RMSE heatmap with specified resolution.
+  """ Compute the RMSE heatmap with specified resolution.
 
   Args:
     measurement_residual_pairs:
@@ -78,9 +83,9 @@ def DetectionsToCameraMeasurements(
     stamp: float,
     seq: int,
 ) -> List[calico.CameraMeasurement]:
-  '''Convenience function for converting a calibration chart detection into
+  """Convenience function for converting a calibration chart detection into
   camera measurement types.
-  '''
+  """
   measurements = []
   for feature_id, point in detections.items():
     measurement = calico.CameraMeasurement()
@@ -98,7 +103,7 @@ def InitializePinholeAndPoses(
     all_detections: List[Dict[int, np.ndarray]],
     model_definition: Dict[int, np.ndarray]
 ) -> Tuple[np.ndarray, List[np.ndarray], List[np.ndarray]]:
-  '''Implements Zhang's pinhole estimation algorithm.
+  """Implements Zhang's pinhole estimation algorithm.
   https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr98-71.pdf
   For convenience, we also return the pose of the camera w.r.t. the calibration
   chart.
@@ -119,7 +124,7 @@ def InitializePinholeAndPoses(
           [ 0  0  1]
     R_chart_camera:
       List of 3x3 
-  '''
+  """
   V = np.zeros((2*len(all_detections), 6))
   H_camera_chart = []
   pixels = []
