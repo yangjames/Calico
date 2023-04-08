@@ -1,0 +1,102 @@
+\hypertarget{namespacepython_1_1utils}{}\doxysection{python.\+utils Namespace Reference}
+\label{namespacepython_1_1utils}\index{python.utils@{python.utils}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Tuple\mbox{[}np.\+ndarray, np.\+ndarray, np.\+ndarray\mbox{]} \mbox{\hyperlink{namespacepython_1_1utils_aa9b2525642c6f52cb123793e081d8fbc}{Compute\+Rmse\+Heatmap\+And\+Feature\+Count}} (List\mbox{[}Tuple\mbox{[}calico.\+Camera\+Measurement, np.\+ndarray\mbox{]}\mbox{]} measurement\+\_\+residual\+\_\+pairs, int image\+\_\+width, int image\+\_\+height, int num\+\_\+rows=8, int num\+\_\+cols=12)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespacepython_1_1utils_a00b6c3490b3740af5750d9b04e2f49e3}{Draw\+Detections}} (np.\+ndarray img, Dict\mbox{[}int, np.\+ndarray\mbox{]} detections)
+\item 
+List\mbox{[}calico.\+Camera\+Measurement\mbox{]} \mbox{\hyperlink{namespacepython_1_1utils_a95bbea75973db244f9b74de9767aa039}{Detections\+To\+Camera\+Measurements}} (Dict\mbox{[}int, np.\+ndarray\mbox{]} detections, float stamp, int seq)
+\item 
+Tuple\mbox{[}np.\+ndarray, List\mbox{[}np.\+ndarray\mbox{]}, List\mbox{[}np.\+ndarray\mbox{]}\mbox{]} \mbox{\hyperlink{namespacepython_1_1utils_a44ec1e8887c4150fb7373a6c21aadd6a}{Initialize\+Pinhole\+And\+Poses}} (List\mbox{[}Dict\mbox{[}int, np.\+ndarray\mbox{]}\mbox{]} all\+\_\+detections, Dict\mbox{[}int, np.\+ndarray\mbox{]} model\+\_\+definition)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}@package Python utils
+Utility functions for calico python bindings.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacepython_1_1utils_aa9b2525642c6f52cb123793e081d8fbc}\label{namespacepython_1_1utils_aa9b2525642c6f52cb123793e081d8fbc}} 
+\index{python.utils@{python.utils}!ComputeRmseHeatmapAndFeatureCount@{ComputeRmseHeatmapAndFeatureCount}}
+\index{ComputeRmseHeatmapAndFeatureCount@{ComputeRmseHeatmapAndFeatureCount}!python.utils@{python.utils}}
+\doxysubsubsection{\texorpdfstring{ComputeRmseHeatmapAndFeatureCount()}{ComputeRmseHeatmapAndFeatureCount()}}
+{\footnotesize\ttfamily  Tuple\mbox{[}np.\+ndarray, np.\+ndarray, np.\+ndarray\mbox{]} python.\+utils.\+Compute\+Rmse\+Heatmap\+And\+Feature\+Count (\begin{DoxyParamCaption}\item[{List\mbox{[}Tuple\mbox{[}calico.\+Camera\+Measurement, np.\+ndarray\mbox{]}\mbox{]}}]{measurement\+\_\+residual\+\_\+pairs,  }\item[{int}]{image\+\_\+width,  }\item[{int}]{image\+\_\+height,  }\item[{int }]{num\+\_\+rows = {\ttfamily 8},  }\item[{int }]{num\+\_\+cols = {\ttfamily 12} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb} Compute the RMSE heatmap with specified resolution.
+
+Args:
+  measurement_residual_pairs:
+    List of camera measurements paired with their residuals.
+  image_width:
+    Width of the original image.
+  image_height:
+    Height of the original image.
+  num_rows:
+    Number of rows we want to divide the image into.
+  num_cols:
+    Number of columns we want to divide the image into.
+
+Returns:
+  A tuple containing:
+    1. An rmse heatmap image with dimensions image_width x image_height.
+    2. A binned version of the RMSE heatmap as a num_rows x num_cols array.
+    3. A num_rows x num_cols array representing the number of features detected
+       in a particular region of the image space.
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacepython_1_1utils_a95bbea75973db244f9b74de9767aa039}\label{namespacepython_1_1utils_a95bbea75973db244f9b74de9767aa039}} 
+\index{python.utils@{python.utils}!DetectionsToCameraMeasurements@{DetectionsToCameraMeasurements}}
+\index{DetectionsToCameraMeasurements@{DetectionsToCameraMeasurements}!python.utils@{python.utils}}
+\doxysubsubsection{\texorpdfstring{DetectionsToCameraMeasurements()}{DetectionsToCameraMeasurements()}}
+{\footnotesize\ttfamily  List\mbox{[}calico.\+Camera\+Measurement\mbox{]} python.\+utils.\+Detections\+To\+Camera\+Measurements (\begin{DoxyParamCaption}\item[{Dict\mbox{[}int, np.\+ndarray\mbox{]}}]{detections,  }\item[{float}]{stamp,  }\item[{int}]{seq }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Convenience function for converting a calibration chart detection into
+camera measurement types.
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacepython_1_1utils_a00b6c3490b3740af5750d9b04e2f49e3}\label{namespacepython_1_1utils_a00b6c3490b3740af5750d9b04e2f49e3}} 
+\index{python.utils@{python.utils}!DrawDetections@{DrawDetections}}
+\index{DrawDetections@{DrawDetections}!python.utils@{python.utils}}
+\doxysubsubsection{\texorpdfstring{DrawDetections()}{DrawDetections()}}
+{\footnotesize\ttfamily  np.\+ndarray python.\+utils.\+Draw\+Detections (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{img,  }\item[{Dict\mbox{[}int, np.\+ndarray\mbox{]} }]{detections }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Small helper function for drawing detections onto the original image.
+
+Args:
+  img: Original grayscale image.
+  detections: Dictionary mapping feature id to its pixel location.
+
+Returns:
+  Color image with detections drawn.
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacepython_1_1utils_a44ec1e8887c4150fb7373a6c21aadd6a}\label{namespacepython_1_1utils_a44ec1e8887c4150fb7373a6c21aadd6a}} 
+\index{python.utils@{python.utils}!InitializePinholeAndPoses@{InitializePinholeAndPoses}}
+\index{InitializePinholeAndPoses@{InitializePinholeAndPoses}!python.utils@{python.utils}}
+\doxysubsubsection{\texorpdfstring{InitializePinholeAndPoses()}{InitializePinholeAndPoses()}}
+{\footnotesize\ttfamily  Tuple\mbox{[}np.\+ndarray, List\mbox{[}np.\+ndarray\mbox{]}, List\mbox{[}np.\+ndarray\mbox{]}\mbox{]} python.\+utils.\+Initialize\+Pinhole\+And\+Poses (\begin{DoxyParamCaption}\item[{List\mbox{[}Dict\mbox{[}int, np.\+ndarray\mbox{]}\mbox{]}}]{all\+\_\+detections,  }\item[{Dict\mbox{[}int, np.\+ndarray\mbox{]} }]{model\+\_\+definition }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Implements Zhang's pinhole estimation algorithm.
+https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr98-71.pdf
+For convenience, we also return the pose of the camera w.r.t. the calibration
+chart.
+
+Args:
+  measurements:
+    List of calibration chart detections where each list element represents
+    detections for one image frame.
+  model_definition:
+    Dictionary mapping feature ID of a calibration chart to its metric
+    coordinate resolved in the chart's frame.
+
+Returns:
+  intrinsics:
+    Pinhole parameters as a 5-vector in the order [fx, fy, s, cx, cy] such that
+    K = [fx  s cx]
+        [ 0 fy cy]
+        [ 0  0  1]
+  R_chart_camera:
+    List of 3x3 
+\end{DoxyVerb}
+ 

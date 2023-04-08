@@ -48,32 +48,29 @@ using {\bfseries Pose3d} = \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3}}$<$ dou
 ceres\+::\+Solver\+::\+Options \mbox{\hyperlink{namespacecalico_aaa1f3edabbaf4a92827f5340a76e37b6}{Default\+Solver\+Options}} ()
 \begin{DoxyCompactList}\small\item\em Default solver options. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_a1bc1ca70bd6cfc6753dfef1ab61adff4}\label{namespacecalico_a1bc1ca70bd6cfc6753dfef1ab61adff4}} 
-{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Skew} (const Eigen\+::\+Vector3$<$ T $>$ \&v)
-\item 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ \mbox{\hyperlink{namespacecalico_a1bc1ca70bd6cfc6753dfef1ab61adff4}{Skew}} (const Eigen\+::\+Vector3$<$ T $>$ \&v)
+\begin{DoxyCompactList}\small\item\em Convert a 3-\/vector to a skew-\/symmetric cross-\/product matrix. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_a68a61002300d80b0d403719b982400eb}\label{namespacecalico_a68a61002300d80b0d403719b982400eb}} 
-{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Vector3$<$ T $>$ {\bfseries i\+Skew} (const Eigen\+::\+Matrix3$<$ T $>$ \&V)
-\item 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Vector3$<$ T $>$ \mbox{\hyperlink{namespacecalico_a68a61002300d80b0d403719b982400eb}{i\+Skew}} (const Eigen\+::\+Matrix3$<$ T $>$ \&V)
+\begin{DoxyCompactList}\small\item\em Converts a skew symmetric matrix back into a vector. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_a98705a3b05fcd2103fa6823528c9cc7d}\label{namespacecalico_a98705a3b05fcd2103fa6823528c9cc7d}} 
-{\footnotesize template$<$typename T $>$ }\\T {\bfseries Small\+Angle\+Sin} (const T theta)
-\item 
+{\footnotesize template$<$typename T $>$ }\\T \mbox{\hyperlink{namespacecalico_a98705a3b05fcd2103fa6823528c9cc7d}{Small\+Angle\+Sin}} (const T theta)
+\begin{DoxyCompactList}\small\item\em Fourth order Taylor expansion of sin(theta). \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_a68a6ed102c3feb3b52f5b9950a6b2bc4}\label{namespacecalico_a68a6ed102c3feb3b52f5b9950a6b2bc4}} 
-{\footnotesize template$<$typename T $>$ }\\T {\bfseries Small\+Angle\+Cos} (const T theta)
-\item 
+{\footnotesize template$<$typename T $>$ }\\T \mbox{\hyperlink{namespacecalico_a68a6ed102c3feb3b52f5b9950a6b2bc4}{Small\+Angle\+Cos}} (const T theta)
+\begin{DoxyCompactList}\small\item\em Fourth order Taylor expansion of cos(theta). \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_aa4a4bab45cfce99938f0b261e5464547}\label{namespacecalico_aa4a4bab45cfce99938f0b261e5464547}} 
-{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Exp\+SO3} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ \mbox{\hyperlink{namespacecalico_aa4a4bab45cfce99938f0b261e5464547}{Exp\+SO3}} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
+\begin{DoxyCompactList}\small\item\em Convert axis-\/angle to rotation matrix. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Vector3$<$ T $>$ \mbox{\hyperlink{namespacecalico_a4b5e83bfad1cc6b767ae5354d5d483c8}{Ln\+SO3}} (const Eigen\+::\+Matrix3$<$ T $>$ \&R)
 \item 
-\mbox{\Hypertarget{namespacecalico_a4b5e83bfad1cc6b767ae5354d5d483c8}\label{namespacecalico_a4b5e83bfad1cc6b767ae5354d5d483c8}} 
-{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Vector3$<$ T $>$ {\bfseries Ln\+SO3} (const Eigen\+::\+Matrix3$<$ T $>$ \&R)
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ \mbox{\hyperlink{namespacecalico_a405ed3df9c4ed8eebcabe5ec92d6717e}{Exp\+SO3\+Jacobian}} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
 \item 
-\mbox{\Hypertarget{namespacecalico_a405ed3df9c4ed8eebcabe5ec92d6717e}\label{namespacecalico_a405ed3df9c4ed8eebcabe5ec92d6717e}} 
-{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Exp\+SO3\+Jacobian} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
-\item 
-\mbox{\Hypertarget{namespacecalico_a3e0aabf168db953b2b5903af43105582}\label{namespacecalico_a3e0aabf168db953b2b5903af43105582}} 
-{\footnotesize template$<$typename T $>$ }\\std\+::vector$<$ Eigen\+::\+Matrix3$<$ T $>$ $>$ {\bfseries Exp\+SO3\+Hessian} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
+{\footnotesize template$<$typename T $>$ }\\std\+::vector$<$ Eigen\+::\+Matrix3$<$ T $>$ $>$ \mbox{\hyperlink{namespacecalico_a3e0aabf168db953b2b5903af43105582}{Exp\+SO3\+Hessian}} (const Eigen\+::\+Vector3$<$ T $>$ \&phi)
 \item 
 \mbox{\Hypertarget{namespacecalico_a7d85e76032e1f2ab3267b64b3992b0d3}\label{namespacecalico_a7d85e76032e1f2ab3267b64b3992b0d3}} 
-{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ {\bfseries Exp\+SO3\+Jacobian\+Dot} (const Eigen\+::\+Vector3$<$ T $>$ \&phi, const Eigen\+::\+Vector3$<$ T $>$ \&phi\+\_\+dot)
-\item 
+{\footnotesize template$<$typename T $>$ }\\Eigen\+::\+Matrix3$<$ T $>$ \mbox{\hyperlink{namespacecalico_a7d85e76032e1f2ab3267b64b3992b0d3}{Exp\+SO3\+Jacobian\+Dot}} (const Eigen\+::\+Vector3$<$ T $>$ \&phi, const Eigen\+::\+Vector3$<$ T $>$ \&phi\+\_\+dot)
+\begin{DoxyCompactList}\small\item\em Compute the time derivative of the Rodrigues formula manifold Jacobian. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_a8df7c12d7331911247e0d769c2365155}\label{namespacecalico_a8df7c12d7331911247e0d769c2365155}} 
 {\bfseries MATCHER\+\_\+\+P2} (Pose\+Is\+Approx, expected\+\_\+pose, tolerance, \char`\"{}\char`\"{})
 \item 
@@ -102,3 +99,27 @@ constexpr int \mbox{\hyperlink{namespacecalico_ad9c824e61a7f2bffd1fca9511474d827
 
 \doxysubsection{Detailed Description}
 Primary calico namespace. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacecalico_a3e0aabf168db953b2b5903af43105582}\label{namespacecalico_a3e0aabf168db953b2b5903af43105582}} 
+\index{calico@{calico}!ExpSO3Hessian@{ExpSO3Hessian}}
+\index{ExpSO3Hessian@{ExpSO3Hessian}!calico@{calico}}
+\doxysubsubsection{\texorpdfstring{ExpSO3Hessian()}{ExpSO3Hessian()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::vector$<$Eigen\+::\+Matrix3$<$T$>$ $>$ calico\+::\+Exp\+SO3\+Hessian (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{phi }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Compute the manifold Hessian matrix of the Rodrigues formula, i.\+e.\+: \[ \mathbf{R}(\boldsymbol{\Phi}) = \exp\left(\left[\boldsymbol{\Phi}\right]_\times\right) = \mathbf{I} + \frac{\sin(\theta)}{\theta}\left[\boldsymbol{\Phi}\right]_\times + \frac{1-\cos(\theta)}{\theta^2} {\left[\boldsymbol{\Phi}\right]_\times}^2\\ \mathbf{H} = \frac{\partial^2 \exp\left(\left[\boldsymbol{\Phi}\right]_\times\right)} {\partial \boldsymbol{\Phi}^2} \] \mbox{\Hypertarget{namespacecalico_a405ed3df9c4ed8eebcabe5ec92d6717e}\label{namespacecalico_a405ed3df9c4ed8eebcabe5ec92d6717e}} 
+\index{calico@{calico}!ExpSO3Jacobian@{ExpSO3Jacobian}}
+\index{ExpSO3Jacobian@{ExpSO3Jacobian}!calico@{calico}}
+\doxysubsubsection{\texorpdfstring{ExpSO3Jacobian()}{ExpSO3Jacobian()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+Eigen\+::\+Matrix3$<$T$>$ calico\+::\+Exp\+SO3\+Jacobian (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{phi }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Compute the manifold Jacobian matrix of the Rodrigues formula, i.\+e.\+: \[ \mathbf{R}\left(\boldsymbol{\Phi}\right) = \exp\left( \mathbf{I} + \frac{\sin(\theta)}{\theta} \left[\boldsymbol{\Phi}\right]_\times + \frac{1 - \cos(\theta)}{\theta^2}{\left[\boldsymbol{\Phi}\right]_\times}^2 \right)\\ \frac{\partial \exp\left(\left[\boldsymbol{\Phi}\right]_\times\right)}{\partial \boldsymbol{\Phi}} = \mathbf{I} + \frac{1-\cos(\theta)}{\theta^2} \left[\boldsymbol{\Phi}\right]_\times + \frac{\theta-\sin(\theta)}{\theta^3} {\left[\boldsymbol{\Phi}\right]_\times}^2\\ \theta = \boldsymbol{\Phi}^T\boldsymbol{\Phi} \] \mbox{\Hypertarget{namespacecalico_a4b5e83bfad1cc6b767ae5354d5d483c8}\label{namespacecalico_a4b5e83bfad1cc6b767ae5354d5d483c8}} 
+\index{calico@{calico}!LnSO3@{LnSO3}}
+\index{LnSO3@{LnSO3}!calico@{calico}}
+\doxysubsubsection{\texorpdfstring{LnSO3()}{LnSO3()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+Eigen\+::\+Vector3$<$T$>$ calico\+::\+Ln\+SO3 (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Matrix3$<$ T $>$ \&}]{R }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Convert rotation matrix to axis-\/angle. Algorithm pulled from this page\+: \href{https://math.stackexchange.com/questions/83874/efficient-and-accurate-numerical-implementation-of-the-inverse-rodrigues-rotatio}{\texttt{ https\+://math.\+stackexchange.\+com/questions/83874/efficient-\/and-\/accurate-\/numerical-\/implementation-\/of-\/the-\/inverse-\/rodrigues-\/rotatio}} 

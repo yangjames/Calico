@@ -180,7 +180,7 @@ $(function() {
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">//                  calculations.</span></div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keyword">const</span> Eigen::Vector3&lt;T&gt; phi_sensorrig_world = -pose_vector.head(3);</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keyword">const</span> Eigen::Vector3&lt;T&gt; phi_dot_sensorrig_world = -pose_dot_vector.head(3);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">const</span> Eigen::Matrix3&lt;T&gt; J = ExpSO3Jacobian(phi_sensorrig_world);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">const</span> Eigen::Matrix3&lt;T&gt; J = <a class="code" href="namespacecalico.html#a405ed3df9c4ed8eebcabe5ec92d6717e">ExpSO3Jacobian</a>(phi_sensorrig_world);</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">const</span> Eigen::Vector3&lt;T&gt; omega_sensorrig_world = J * phi_dot_sensorrig_world;</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keyword">const</span> Eigen::Vector3&lt;T&gt; omega_gyroscope_world =</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        -(q_sensorrig_gyroscope.inverse() * omega_sensorrig_world);</div>
@@ -209,6 +209,7 @@ $(function() {
 <div class="ttc" id="aclasscalico_1_1sensors_1_1GyroscopeCostFunctor_html"><div class="ttname"><a href="classcalico_1_1sensors_1_1GyroscopeCostFunctor.html">calico::sensors::GyroscopeCostFunctor</a></div><div class="ttdef"><b>Definition:</b> gyroscope_cost_functor.h:28</div></div>
 <div class="ttc" id="anamespacecalico_1_1sensors_html"><div class="ttname"><a href="namespacecalico_1_1sensors.html">calico::sensors</a></div><div class="ttdoc">Sensors namespace.</div><div class="ttdef"><b>Definition:</b> accelerometer.cpp:8</div></div>
 <div class="ttc" id="anamespacecalico_1_1sensors_html_a3a17fd4af1cc53c28ec7130fdad5f22d"><div class="ttname"><a href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">calico::sensors::GyroscopeIntrinsicsModel</a></div><div class="ttdeci">GyroscopeIntrinsicsModel</div><div class="ttdoc">Gyroscope model types.</div><div class="ttdef"><b>Definition:</b> gyroscope_models.h:15</div></div>
+<div class="ttc" id="anamespacecalico_html_a405ed3df9c4ed8eebcabe5ec92d6717e"><div class="ttname"><a href="namespacecalico.html#a405ed3df9c4ed8eebcabe5ec92d6717e">calico::ExpSO3Jacobian</a></div><div class="ttdeci">Eigen::Matrix3&lt; T &gt; ExpSO3Jacobian(const Eigen::Vector3&lt; T &gt; &amp;phi)</div><div class="ttdef"><b>Definition:</b> geometry.h:138</div></div>
 <div class="ttc" id="astructcalico_1_1TrajectoryEvaluationParams_html"><div class="ttname"><a href="structcalico_1_1TrajectoryEvaluationParams.html">calico::TrajectoryEvaluationParams</a></div><div class="ttdef"><b>Definition:</b> trajectory.h:14</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

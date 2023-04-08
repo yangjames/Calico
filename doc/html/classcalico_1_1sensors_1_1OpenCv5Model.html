@@ -191,9 +191,7 @@ template&lt;typename T &gt; </div>
 </p>
 <p> <code>intrinsics</code> is a vector of intrinsics parameters the following order: \([f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\)<br  />
 <br  />
-<code>point</code> is the location of the feature resolved in the camera frame \(\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&amp;t_y&amp;t_z\end{matrix}\right]^T\).<br  />
-<br  />
-<b>Note: This implementation produces superior results for high distortions compared to <a href="https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#ga55c716492470bfe86b0ee9bf3a1f0f7e">OpenCV's implementation</a>. If your application requires numerical precision, it is recommend that you use this one.</b> </p>
+<code>point</code> is the location of the feature resolved in the camera frame \(\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&amp;t_y&amp;t_z\end{matrix}\right]^T\). </p>
 
 </div>
 </div>
@@ -242,7 +240,9 @@ template&lt;typename T &gt; </div>
 <br  />
 <code>intrinsics</code> is a vector of intrinsics parameters the following order: \([f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]\)<br  />
 <br  />
-<code>max_iterations</code> specifies the maximum number of Newton steps to take. Optimization will stop automatically if the error is less than 1e-14. </p>
+<code>max_iterations</code> specifies the maximum number of Newton steps to take. Optimization will stop automatically if the error is less than 1e-14.<br  />
+<br  />
+<b>Note: This implementation produces superior results for high distortions compared to <a href="https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#ga55c716492470bfe86b0ee9bf3a1f0f7e">OpenCV's implementation</a>. If your application requires numerical precision, it is recommend that you use this one.</b> </p>
 
 </div>
 </div>

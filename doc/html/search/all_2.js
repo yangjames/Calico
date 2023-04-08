@@ -16,11 +16,12 @@ var searchData=
   ['clearrigidbodies_40',['ClearRigidBodies',['../classcalico_1_1WorldModel.html#a1c0a27afdf03193c8de4fa2f0127e884',1,'calico::WorldModel']]],
   ['code_41',['code',['../structAprilTags_1_1TagDetection.html#ac18467b31ad56faf52e717b77d1af129',1,'AprilTags::TagDetection']]],
   ['codes_42',['codes',['../classAprilTags_1_1TagFamily.html#a68483a11d1c70e1d60c6d21fa5ffc392',1,'AprilTags::TagFamily']]],
-  ['connectnodes_43',['connectNodes',['../classAprilTags_1_1UnionFindSimple.html#a44bb7dbf1c17dabe98af4cac9e752539',1,'AprilTags::UnionFindSimple']]],
-  ['convolvesymmetriccentered_44',['convolveSymmetricCentered',['../classAprilTags_1_1Gaussian.html#aa31e223b55fee8be400e955db2e0222f',1,'AprilTags::Gaussian']]],
-  ['create_45',['Create',['../classcalico_1_1sensors_1_1AccelerometerModel.html#a6086358a97bd91992b92768cb232032e',1,'calico::sensors::AccelerometerModel::Create()'],['../classcalico_1_1sensors_1_1CameraModel.html#aeda2cd0d8d899ba285a7e610b32fd2a4',1,'calico::sensors::CameraModel::Create()'],['../classcalico_1_1sensors_1_1GyroscopeModel.html#acb0d89aed8d6baa8a763f87ead9d91ad',1,'calico::sensors::GyroscopeModel::Create()']]],
-  ['createlossfunction_46',['CreateLossFunction',['../namespacecalico_1_1utils.html#aeee1e1f3baea4f1b75efab0c42923dcf',1,'calico::utils']]],
-  ['cxy_47',['cxy',['../structAprilTags_1_1TagDetection.html#a0be0d15d381f8fa664a29eb682521cac',1,'AprilTags::TagDetection']]],
-  ['sensors_48',['sensors',['../namespacecalico_1_1sensors.html',1,'calico']]],
-  ['utils_49',['utils',['../namespacecalico_1_1utils.html',1,'calico']]]
+  ['computermseheatmapandfeaturecount_43',['ComputeRmseHeatmapAndFeatureCount',['../namespacepython_1_1utils.html#aa9b2525642c6f52cb123793e081d8fbc',1,'python::utils']]],
+  ['connectnodes_44',['connectNodes',['../classAprilTags_1_1UnionFindSimple.html#a44bb7dbf1c17dabe98af4cac9e752539',1,'AprilTags::UnionFindSimple']]],
+  ['convolvesymmetriccentered_45',['convolveSymmetricCentered',['../classAprilTags_1_1Gaussian.html#aa31e223b55fee8be400e955db2e0222f',1,'AprilTags::Gaussian']]],
+  ['create_46',['Create',['../classcalico_1_1sensors_1_1AccelerometerModel.html#a6086358a97bd91992b92768cb232032e',1,'calico::sensors::AccelerometerModel::Create()'],['../classcalico_1_1sensors_1_1CameraModel.html#aeda2cd0d8d899ba285a7e610b32fd2a4',1,'calico::sensors::CameraModel::Create()'],['../classcalico_1_1sensors_1_1GyroscopeModel.html#acb0d89aed8d6baa8a763f87ead9d91ad',1,'calico::sensors::GyroscopeModel::Create()']]],
+  ['createlossfunction_47',['CreateLossFunction',['../namespacecalico_1_1utils.html#aeee1e1f3baea4f1b75efab0c42923dcf',1,'calico::utils']]],
+  ['cxy_48',['cxy',['../structAprilTags_1_1TagDetection.html#a0be0d15d381f8fa664a29eb682521cac',1,'AprilTags::TagDetection']]],
+  ['sensors_49',['sensors',['../namespacecalico_1_1sensors.html',1,'calico']]],
+  ['utils_50',['utils',['../namespacecalico_1_1utils.html',1,'calico']]]
 ];

@@ -70,9 +70,7 @@ static absl\+::\+Status\+Or$<$Eigen\+::\+Vector2$<$T$>$ $>$ calico\+::sensors\+:
 
 Returns projection $\mathbf{p}$, a 2-\/D pixel coordinate such that \[ \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d + \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\ \mathbf{p}_d = s\mathbf{p}_m + \left(2\mathbf{p}_m{\mathbf{p}_m}^T + r^2\mathbf{I}\right) \left[\begin{matrix}p_2\\p_1\end{matrix}\right]\\ s = 1 + k_1r^2 + k_2r^4 + k_3r^6\\ r^2 = {\mathbf{p}_m}^T\mathbf{p}_m\\ \mathbf{p}_m = \left[\begin{matrix}t_x / t_z\\t_y/t_z\end{matrix}\right]\\ \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]$~\newline
 ~\newline
-{\ttfamily point} is the location of the feature resolved in the camera frame $\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T$.~\newline
-~\newline
-{\bfseries{Note\+: This implementation produces superior results for high distortions compared to \href{https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html\#ga55c716492470bfe86b0ee9bf3a1f0f7e}{\texttt{ Open\+CV\textquotesingle{}s implementation}}. If your application requires numerical precision, it is recommend that you use this one.}} \mbox{\Hypertarget{classcalico_1_1sensors_1_1OpenCv5Model_a217beae32c405b834d83d05a6e13dfb1}\label{classcalico_1_1sensors_1_1OpenCv5Model_a217beae32c405b834d83d05a6e13dfb1}} 
+{\ttfamily point} is the location of the feature resolved in the camera frame $\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T$. \mbox{\Hypertarget{classcalico_1_1sensors_1_1OpenCv5Model_a217beae32c405b834d83d05a6e13dfb1}\label{classcalico_1_1sensors_1_1OpenCv5Model_a217beae32c405b834d83d05a6e13dfb1}} 
 \index{calico::sensors::OpenCv5Model@{calico::sensors::OpenCv5Model}!UnprojectPixel@{UnprojectPixel}}
 \index{UnprojectPixel@{UnprojectPixel}!calico::sensors::OpenCv5Model@{calico::sensors::OpenCv5Model}}
 \doxysubsubsection{\texorpdfstring{UnprojectPixel()}{UnprojectPixel()}}
@@ -83,7 +81,9 @@ Inverts the projection model $\mathbf{P}$ to obtain the bearing vector $\mathbf{
 ~\newline
 {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, k_1, k_2, p_1, p_2, k_3]$~\newline
 ~\newline
-{\ttfamily max\+\_\+iterations} specifies the maximum number of Newton steps to take. Optimization will stop automatically if the error is less than 1e-\/14. 
+{\ttfamily max\+\_\+iterations} specifies the maximum number of Newton steps to take. Optimization will stop automatically if the error is less than 1e-\/14.~\newline
+~\newline
+{\bfseries{Note\+: This implementation produces superior results for high distortions compared to \href{https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html\#ga55c716492470bfe86b0ee9bf3a1f0f7e}{\texttt{ Open\+CV\textquotesingle{}s implementation}}. If your application requires numerical precision, it is recommend that you use this one.}} 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
 \item 

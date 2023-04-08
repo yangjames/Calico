@@ -36,6 +36,8 @@ class \mbox{\hyperlink{classcalico_1_1sensors_1_1CameraModel}{Camera\+Model}}
 \begin{DoxyCompactList}\small\item\em Base class for camera models. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1OpenCv5Model}{Open\+Cv5\+Model}}
 \item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1OpenCv8Model}{Open\+Cv8\+Model}}
+\item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1KannalaBrandtModel}{Kannala\+Brandt\+Model}}
 \item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1DoubleSphereModel}{Double\+Sphere\+Model}}
@@ -96,10 +98,11 @@ enum class {\bfseries Camera\+Parameter\+Indices} \+: int \{ \newline
 enum class \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} \+: int \{ \newline
 \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa35c3ace1970663a16e5c65baa5941b13}{k\+None}}
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa5c5d81ff8c055e0af2d4080ca90f3b6d}{k\+Open\+Cv5}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2faf69e1df9c2c0e23b808833cf5d08984f}{k\+Open\+Cv8}}
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}{k\+Kannala\+Brandt}}
-, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2faff638d15c8b2b0f612376181393188fd}{k\+Double\+Sphere}}
 , \newline
-\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fadfc7df0f7b103737f5161a57e8f57c34}{k\+Field\+Of\+View}}
+\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2faff638d15c8b2b0f612376181393188fd}{k\+Double\+Sphere}}
+, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fadfc7df0f7b103737f5161a57e8f57c34}{k\+Field\+Of\+View}}
  \}
 \begin{DoxyCompactList}\small\item\em Camera model types. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{namespacecalico_1_1sensors_a8ab41fd089b77e315a5747103fe688c6}\label{namespacecalico_1_1sensors_a8ab41fd089b77e315a5747103fe688c6}} 
@@ -169,6 +172,10 @@ k\+None&Default no model. \\
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{kOpenCv5@{kOpenCv5}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kOpenCv5@{kOpenCv5}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa5c5d81ff8c055e0af2d4080ca90f3b6d}\label{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fa5c5d81ff8c055e0af2d4080ca90f3b6d}} 
 k\+Open\+Cv5&5-\/parameter Open\+CV model. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{kOpenCv8@{kOpenCv8}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kOpenCv8@{kOpenCv8}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2faf69e1df9c2c0e23b808833cf5d08984f}\label{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2faf69e1df9c2c0e23b808833cf5d08984f}} 
+k\+Open\+Cv8&8-\/parameter Open\+CV model. \\
 \hline
 
 \raisebox{\heightof{T}}[0pt][0pt]{\index{kKannalaBrandt@{kKannalaBrandt}!calico::sensors@{calico::sensors}}\index{calico::sensors@{calico::sensors}!kKannalaBrandt@{kKannalaBrandt}}}\mbox{\Hypertarget{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}\label{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2facdda420f3e6370295024788dcf9e846d}} 
