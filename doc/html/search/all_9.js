@@ -18,5 +18,6 @@ var searchData=
   ['klandmarkframeid_142',['kLandmarkFrameId',['../namespacecalico.html#ad9c824e61a7f2bffd1fca9511474d827',1,'calico']]],
   ['knone_143',['kNone',['../namespacecalico_1_1utils.html#aacede3df540b75d2e131f113380f0ce9a35c3ace1970663a16e5c65baa5941b13',1,'calico::utils::kNone()'],['../namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42a35c3ace1970663a16e5c65baa5941b13',1,'calico::sensors::kNone()'],['../namespacecalico_1_1sensors.html#a1eaf57959273c4ea8dc8899a2e724a2fa35c3ace1970663a16e5c65baa5941b13',1,'calico::sensors::kNone()'],['../namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22da35c3ace1970663a16e5c65baa5941b13',1,'calico::sensors::kNone()']]],
   ['kopencv5_144',['kOpenCv5',['../namespacecalico_1_1sensors.html#a1eaf57959273c4ea8dc8899a2e724a2fa5c5d81ff8c055e0af2d4080ca90f3b6d',1,'calico::sensors']]],
-  ['kopencv8_145',['kOpenCv8',['../namespacecalico_1_1sensors.html#a1eaf57959273c4ea8dc8899a2e724a2faf69e1df9c2c0e23b808833cf5d08984f',1,'calico::sensors']]]
+  ['kopencv8_145',['kOpenCv8',['../namespacecalico_1_1sensors.html#a1eaf57959273c4ea8dc8899a2e724a2faf69e1df9c2c0e23b808833cf5d08984f',1,'calico::sensors']]],
+  ['kunifiedcamera_146',['kUnifiedCamera',['../namespacecalico_1_1sensors.html#a1eaf57959273c4ea8dc8899a2e724a2fad503d78b33140ff594ed435baf9ea03c',1,'calico::sensors']]]
 ];

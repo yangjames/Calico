@@ -1,0 +1,87 @@
+\hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel}{}\doxysection{calico\+::sensors\+::Unified\+Camera\+Model Class Reference}
+\label{classcalico_1_1sensors_1_1UnifiedCameraModel}\index{calico::sensors::UnifiedCameraModel@{calico::sensors::UnifiedCameraModel}}
+
+
+{\ttfamily \#include $<$camera\+\_\+models.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Unified\+Camera\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1UnifiedCameraModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Unified\+Camera\+Model\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{classcalico_1_1sensors_1_1UnifiedCameraModel__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel_acc26897ea7887b3bca923446bb795f2d}\label{classcalico_1_1sensors_1_1UnifiedCameraModel_acc26897ea7887b3bca923446bb795f2d}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1UnifiedCameraModel}{Unified\+Camera\+Model}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1UnifiedCameraModel}{Unified\+Camera\+Model}} \&)=default
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel_a2be1cb30458a922f4617519b9ca8d3d5}\label{classcalico_1_1sensors_1_1UnifiedCameraModel_a2be1cb30458a922f4617519b9ca8d3d5}} 
+\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} \mbox{\hyperlink{classcalico_1_1sensors_1_1UnifiedCameraModel_a2be1cb30458a922f4617519b9ca8d3d5}{Get\+Type}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for camera model type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel_a5b40e5ca2c182674bed0a4b897ce4e77}\label{classcalico_1_1sensors_1_1UnifiedCameraModel_a5b40e5ca2c182674bed0a4b897ce4e77}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1UnifiedCameraModel_a5b40e5ca2c182674bed0a4b897ce4e77}{Number\+Of\+Parameters}} () const final
+\begin{DoxyCompactList}\small\item\em Getter for the number of parameters for this camera model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector2$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1UnifiedCameraModel_ac9dfa3ba030bd1e9c85e3c01deeae3fe}{Project\+Point}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector3$<$ T $>$ \&point)
+\item 
+{\footnotesize template$<$typename T $>$ }\\static absl\+::\+Status\+Or$<$ Eigen\+::\+Vector3$<$ T $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1UnifiedCameraModel_aeb14d14f836f56bd0cab2b0b00668356}{Unproject\+Pixel}} (const Eigen\+::\+VectorX$<$ T $>$ \&intrinsics, const Eigen\+::\+Vector2$<$ T $>$ \&pixel)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel_a574dba08dc3d968f10c2714bfb74a160}\label{classcalico_1_1sensors_1_1UnifiedCameraModel_a574dba08dc3d968f10c2714bfb74a160}} 
+static constexpr int {\bfseries k\+Number\+Of\+Parameters} = 4
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel_a2f62a2778c3b5867937e63b11dd6482d}\label{classcalico_1_1sensors_1_1UnifiedCameraModel_a2f62a2778c3b5867937e63b11dd6482d}} 
+static constexpr \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} {\bfseries k\+Model\+Type} = \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2fad503d78b33140ff594ed435baf9ea03c}{Camera\+Intrinsics\+Model\+::k\+Unified\+Camera}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Unified camera projection model. This model assumes an isotropic pinhole model, i.\+e. $f_x == f_y = f$.~\newline
+Parameters are in the following order\+: $[f, c_x, c_y, \alpha]$~\newline
+~\newline
+ 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel_ac9dfa3ba030bd1e9c85e3c01deeae3fe}\label{classcalico_1_1sensors_1_1UnifiedCameraModel_ac9dfa3ba030bd1e9c85e3c01deeae3fe}} 
+\index{calico::sensors::UnifiedCameraModel@{calico::sensors::UnifiedCameraModel}!ProjectPoint@{ProjectPoint}}
+\index{ProjectPoint@{ProjectPoint}!calico::sensors::UnifiedCameraModel@{calico::sensors::UnifiedCameraModel}}
+\doxysubsubsection{\texorpdfstring{ProjectPoint()}{ProjectPoint()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector2$<$T$>$ $>$ calico\+::sensors\+::\+Unified\+Camera\+Model\+::\+Project\+Point (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector3$<$ T $>$ \&}]{point }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns projection $\mathbf{p}$, a 2-\/D pixel coordinate such that \[ \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d + \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\ \mathbf{p}_d = s\mathbf{p}_m\\ s = \frac{1}{\alpha d + (1-\alpha)t_z}\\ d = \sqrt{{\mathbf{t}^s_{sx}}^T\mathbf{t}^s_{sx}}\\ \mathbf{p}_m = \left[\begin{matrix}t_x\\t_y\end{matrix}\right] \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, \xi, \alpha]$~\newline
+~\newline
+{\ttfamily point} is the location of the feature resolved in the camera frame $\mathbf{t}^s_{sx} = \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T$.~\newline
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1UnifiedCameraModel_aeb14d14f836f56bd0cab2b0b00668356}\label{classcalico_1_1sensors_1_1UnifiedCameraModel_aeb14d14f836f56bd0cab2b0b00668356}} 
+\index{calico::sensors::UnifiedCameraModel@{calico::sensors::UnifiedCameraModel}!UnprojectPixel@{UnprojectPixel}}
+\index{UnprojectPixel@{UnprojectPixel}!calico::sensors::UnifiedCameraModel@{calico::sensors::UnifiedCameraModel}}
+\doxysubsubsection{\texorpdfstring{UnprojectPixel()}{UnprojectPixel()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+static absl\+::\+Status\+Or$<$Eigen\+::\+Vector3$<$T$>$ $>$ calico\+::sensors\+::\+Unified\+Camera\+Model\+::\+Unproject\+Pixel (\begin{DoxyParamCaption}\item[{const Eigen\+::\+VectorX$<$ T $>$ \&}]{intrinsics,  }\item[{const Eigen\+::\+Vector2$<$ T $>$ \&}]{pixel }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Inverts the projection model $\mathbf{P}$ to obtain the bearing vector $\mathbf{p}_m$ of the pixel location $\mathbf{p}$. \[ \mathbf{p}_m = \mathbf{p}_s / \|\mathbf{p}_s\|\\ \mathbf{p}_s = s\left[\begin{matrix} m_x\\m_y\\1 \end{matrix}\right] - \left[\begin{matrix} 0\\0\\\xi \end{matrix}\right]\\ s = \frac{\xi + \sqrt{1+(1-\xi^2)r^2}}{1+r^2}\\ r^2 = m_x^2 + m_y^2,\\ m_x = \frac{p_x - c_x}{f}, m_y = \frac{p_y - c_y}{f}\\ \mathbf{p} = \left[\begin{matrix}p_x\\p_y\end{matrix}\right] \] {\ttfamily intrinsics} is a vector of intrinsics parameters the following order\+: $[f, c_x, c_y, \xi, \alpha]$~\newline
+~\newline
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/camera\+\_\+models.\+h\end{DoxyCompactItemize}
