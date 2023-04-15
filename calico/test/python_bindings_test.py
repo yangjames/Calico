@@ -226,6 +226,7 @@ class TestCalicoPythonBindings(unittest.TestCase):
             (calico.CameraIntrinsicsModel.kKannalaBrandt, 7),
             (calico.CameraIntrinsicsModel.kDoubleSphere, 5),
             (calico.CameraIntrinsicsModel.kFieldOfView, 4),
+            (calico.CameraIntrinsicsModel.kUnifiedCamera, 4),
         ]
         for model_type, num_parameters in camera_models:
             camera = calico.Camera()
