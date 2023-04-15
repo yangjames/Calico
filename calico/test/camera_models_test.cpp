@@ -60,6 +60,11 @@ INSTANTIATE_TEST_SUITE_P(
           CameraIntrinsicsModel::kUnifiedCamera,
           UnifiedCameraModel::kNumberOfParameters,
         },
+        {
+          "ExtendedUnifiedCamera",
+          CameraIntrinsicsModel::kExtendedUnifiedCamera,
+          ExtendedUnifiedCameraModel::kNumberOfParameters,
+        },
       }),
     [](const testing::TestParamInfo<CameraModelCreationTest::ParamType>& info) {
       return info.param.test_name;
@@ -209,7 +214,7 @@ TEST_F(CameraModelTest, UnifiedCameraModelProjectionAndUnprojection) {
   constexpr double kSmallError = 1e-12;
   Eigen::VectorXd intrinsics(UnifiedCameraModel::kNumberOfParameters);
   intrinsics <<
-    785, 640, 400, 0.05;
+    785, 640, 400, 0.5;
   for (const Eigen::Vector3d& t_world_point : t_world_points) {
     // Transform camera point into world coordinates.
     const Eigen::Vector3d t_camera_point =
@@ -220,6 +225,27 @@ TEST_F(CameraModelTest, UnifiedCameraModelProjectionAndUnprojection) {
     // Invert forward projection.
     ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
         UnifiedCameraModel::UnprojectPixel(intrinsics, pixel));
+    // Compare results.
+    const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
+    EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));
+  }
+}
+
+TEST_F(CameraModelTest, ExtendedUnifiedCameraModelProjectionAndUnprojection) {
+  constexpr double kSmallError = 2e-2;
+  Eigen::VectorXd intrinsics(ExtendedUnifiedCameraModel::kNumberOfParameters);
+  intrinsics <<
+    785, 640, 400, 0.5, 0.5;
+  for (const Eigen::Vector3d& t_world_point : t_world_points) {
+    // Transform camera point into world coordinates.
+    const Eigen::Vector3d t_camera_point =
+      R_world_camera.transpose() * (t_world_point - t_world_camera);
+    // Forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector2d pixel,
+        ExtendedUnifiedCameraModel::ProjectPoint(intrinsics, t_camera_point));
+    // Invert forward projection.
+    ASSERT_OK_AND_ASSIGN(const Eigen::Vector3d unprojected_point,
+        ExtendedUnifiedCameraModel::UnprojectPixel(intrinsics, pixel));
     // Compare results.
     const Eigen::Vector3d bearing_vector = t_camera_point.normalized();
     EXPECT_THAT(bearing_vector, EigenIsApprox(unprojected_point, kSmallError));

@@ -28,6 +28,8 @@ enum class CameraIntrinsicsModel : int {
   kFieldOfView,
   /// Unified camera model.
   kUnifiedCamera,
+  /// Extended unified camera model.
+  kExtendedUnifiedCamera,
 };
 
 /// Base class for camera models.
@@ -936,11 +938,128 @@ class UnifiedCameraModel : public CameraModel {
     const T xi = alpha / one_m_alpha;
     // Undistort.
     const T s = (xi + sqrt(T(1.0) + (T(1.0) - xi * xi) * r2)) / (T(1.0) + r2);
-    Eigen::Vector3d pm(mx, my, 1.0);
-    pm *= s;
-    pm.z() -= xi;
-    pm.normalize();
-    return pm;
+    Eigen::Vector3d bearing_vector(mx, my, 1.0);
+    bearing_vector *= s;
+    bearing_vector.z() -= xi;
+    bearing_vector.normalize();
+    return bearing_vector;
+  }
+
+  CameraIntrinsicsModel GetType() const final {
+    return kModelType;
+  }
+
+  int NumberOfParameters() const final {
+    return kNumberOfParameters;
+  }
+};
+
+/// Extended unified camera projection model. This model assumes an isotropic
+/// pinhole model, i.e. \f$f_x == f_y = f\f$.\n
+/// Parameters are in the following order:
+///   \f$[f, c_x, c_y, \alpha, \beta]\f$\n\n
+class ExtendedUnifiedCameraModel : public CameraModel {
+ public:
+  static constexpr int kNumberOfParameters = 5;
+  static constexpr CameraIntrinsicsModel kModelType = CameraIntrinsicsModel::kExtendedUnifiedCamera;
+
+  ExtendedUnifiedCameraModel() = default;
+  ~ExtendedUnifiedCameraModel() override = default;
+  ExtendedUnifiedCameraModel& operator=(const ExtendedUnifiedCameraModel&) = default;
+
+  /// Returns projection \f$\mathbf{p}\f$, a 2-D pixel coordinate such that
+  /// \f[
+  /// \mathbf{p} = \left[\begin{matrix}f&0\\0&f\end{matrix}\right]\mathbf{p}_d +
+  ///    \left[\begin{matrix}c_x\\c_y\end{matrix}\right]\\
+  /// \mathbf{p}_d = s\mathbf{p}_m\\
+  /// s = \frac{1}{\alpha d + (1-\alpha)t_z}\\
+  /// d = \sqrt{\beta({t_x}^2 + {t_y}^2) + {t_z}^2}\\
+  /// \mathbf{p}_m = \left[\begin{matrix}t_x\\t_y\end{matrix}\right]
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, \xi, \alpha]\f$\n\n
+  /// `point` is the location of the feature resolved in the camera frame
+  /// \f$\mathbf{t}^s_{sx} =
+  ///    \left[\begin{matrix}t_x&t_y&t_z\end{matrix}\right]^T\f$.\n
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector2<T>> ProjectPoint(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector3<T>& point) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Invalid number of intrinsics parameters provided. Expected ",
+          kNumberOfParameters, ". Got ", intrinsics.size()));
+    }
+    const T& alpha = intrinsics(3);
+    const T& beta = intrinsics(4);
+    const T d = sqrt(beta * point.head(2).norm() + point.z() * point.z());
+    const T w = alpha > T(0.5) ?
+      (T(1.0) - alpha) / alpha : alpha / (T(1.0) - alpha);
+    if (point.z() <= -w * d) {
+      return absl::InvalidArgumentError(
+          "Invalid point. Cannot project.");
+    }
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    // Prepare values.
+    Eigen::Vector2<T> projection(point.x(), point.y());
+    T s = T(1.0) / (alpha * d + (T(1.0) - alpha) * point.z());
+    // Apply distortion.
+    projection *= s;
+    // Apply pinhole parameters.
+    projection *= f;
+    projection.x() += cx;
+    projection.y() += cy;
+    return projection;
+  }
+
+  /// Inverts the projection model \f$\mathbf{P}\f$ to obtain the bearing vector
+  /// \f$\mathbf{p}_m\f$ of the pixel location \f$\mathbf{p}\f$.
+  /// \f[
+  /// \mathbf{p}_m = \mathbf{p}_s / \|\mathbf{p}_s\|\\
+  /// \mathbf{p}_s = s\left[\begin{matrix}
+  ///     m_x\\m_y\\m_z
+  /// \end{matrix}\right]\\
+  /// s = \frac{1}{\sqrt{m_x^2 + m_y^2 + m_z^2}}\\
+
+  /// m_x = \frac{p_x - c_x}{f}, m_y = \frac{p_y - c_y}{f}\\
+  /// m_z = \frac{1-\beta\alpha^2r^2}
+  ///            {\alpha\sqrt{1 - (2\alpha - 1)\beta r^2}+(1-\alpha)}\\
+  /// r^2 = m_x^2 + m_y^2,\\
+  /// \mathbf{p} = \left[\begin{matrix}p_x\\p_y\end{matrix}\right]
+  /// \f]
+  /// `intrinsics` is a vector of intrinsics parameters the following order:
+  ///   \f$[f, c_x, c_y, \xi, \alpha, \beta]\f$\n\n
+  /// **NOTE: This method is rather imprecise.**
+  template <typename T>
+  static absl::StatusOr<Eigen::Vector3<T>> UnprojectPixel(
+      const Eigen::VectorX<T>& intrinsics,
+      const Eigen::Vector2<T>& pixel) {
+    if (intrinsics.size() != kNumberOfParameters) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Expected ", kNumberOfParameters, " parameters for intrinsics. Got ",
+          intrinsics.size()));
+    }
+    const T& f = intrinsics(0);
+    const T& cx = intrinsics(1);
+    const T& cy = intrinsics(2);
+    const T& alpha = intrinsics(3);
+    const T& beta = intrinsics(4);
+    const T inv_f = T(1.0) / f;
+    // Invert pinhole model from distorted point.
+    const T mx = inv_f * (pixel.x() - cx);
+    const T my = inv_f * (pixel.y() - cy);
+    const T r2 = mx * mx + my * my;
+    const T mz = (T(1.0) - beta * alpha * alpha * r2) /
+      (alpha * sqrt(T(1.0) - (T(2.0) * alpha - T(1.0)) * beta * r2)
+       + (T(1.0) - alpha));
+    // Undistort.
+    const T s = T(1.0) / sqrt(r2 + mz * mz);
+    Eigen::Vector3d bearing_vector(mx, my, mz);
+    bearing_vector *= s;
+    bearing_vector.normalize();
+    return bearing_vector;
   }
 
   CameraIntrinsicsModel GetType() const final {
@@ -975,6 +1094,10 @@ absl::StatusOr<Eigen::Vector2<T>> CameraModel::ProjectPoint(
   if (const auto derived = dynamic_cast<const UnifiedCameraModel*>(this)) {
     return derived->ProjectPoint(intrinsics, point);
   }
+  if (const auto derived =
+          dynamic_cast<const ExtendedUnifiedCameraModel*>(this)) {
+    return derived->ProjectPoint(intrinsics, point);
+  }
   return absl::InvalidArgumentError(absl::StrCat(
       "ProjectPoint for camera model ", this->GetType(), " not supported."));
 }
@@ -999,6 +1122,10 @@ absl::StatusOr<Eigen::Vector3<T>> CameraModel::UnprojectPixel(
     return derived->UnprojectPixel(intrinsics, pixel);
   }
   if (const auto derived = dynamic_cast<const UnifiedCameraModel*>(this)) {
+    return derived->UnprojectPixel(intrinsics, pixel);
+  }
+  if (const auto derived =
+          dynamic_cast<const ExtendedUnifiedCameraModel*>(this)) {
     return derived->UnprojectPixel(intrinsics, pixel);
   }
   return absl::InvalidArgumentError(absl::StrCat(
