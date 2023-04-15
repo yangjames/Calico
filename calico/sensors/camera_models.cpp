@@ -23,6 +23,9 @@ std::unique_ptr<CameraModel> CameraModel::Create(
     case CameraIntrinsicsModel::kUnifiedCamera: {
       return std::make_unique<UnifiedCameraModel>();
     }
+    case CameraIntrinsicsModel::kExtendedUnifiedCamera: {
+      return std::make_unique<ExtendedUnifiedCameraModel>();
+    }
     default: {
       return std::move(std::unique_ptr<CameraModel>{});
     }
