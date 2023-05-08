@@ -263,7 +263,16 @@ PYBIND11_MODULE(_calico, m) {
          },
          py::arg("poses"),
          py::arg("knot_frequency") = Trajectory::kDefaultKnotFrequency,
-         py::arg("spline_order") = Trajectory::kDefaultSplineOrder);
+         py::arg("spline_order") = Trajectory::kDefaultSplineOrder)
+    .def("Interpolate",
+         [](Trajectory& self, const std::vector<double>& stamps) {
+           const auto poses = self.Interpolate(stamps);
+           if (!poses.status().ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(poses.status().message()));
+           }
+           return poses.value();
+         });
 
   // World model class.
   py::class_<Landmark>(m, "Landmark")
@@ -291,7 +300,9 @@ PYBIND11_MODULE(_calico, m) {
              throw std::runtime_error(
                  std::string("Error: ") + std::string(status.message()));
            }
-         });
+         })
+    .def("SetGravity", &WorldModel::SetGravity)
+    .def("GetGravity", &WorldModel::GetGravity);
 
   // ceres::Summary
   py::class_<ceres::Solver::Summary>(m, "Summary")

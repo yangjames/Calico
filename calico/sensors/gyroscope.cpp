@@ -133,6 +133,14 @@ void Gyroscope::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
 }
 
+absl::Status Gyroscope::SetMeasurementNoise(double sigma) {
+  if (sigma <= 0.0) {
+    return absl::InvalidArgumentError("Sigma must be greater than 0.");
+  }
+  sigma_ = sigma;
+  return absl::OkStatus();
+}
+
 void Gyroscope::SetLossFunction(utils::LossFunctionType loss, double scale) {
   loss_function_ = loss;
   loss_scale_ = scale;

@@ -59,6 +59,14 @@ void Camera::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
 }
 
+absl::Status Camera::SetMeasurementNoise(double sigma) {
+  if (sigma <= 0.0) {
+    return absl::InvalidArgumentError("Sigma must be greater than 0.");
+  }
+  sigma_ = sigma;
+  return absl::OkStatus();
+}
+
 absl::Status Camera::UpdateResiduals(ceres::Problem& problem) {
   for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
     Eigen::Vector2d residual;

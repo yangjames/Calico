@@ -77,14 +77,15 @@ class Camera : public Sensor {
   void EnableExtrinsicsEstimation(bool enable) final;
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
-  absl::Status UpdateResiduals(ceres::Problem& problem) final;
-  void ClearResidualInfo() final;
   void SetLossFunction(utils::LossFunctionType loss, double scale) final;
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
   absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem & problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
+  absl::Status SetMeasurementNoise(double sigma) final;
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+  void ClearResidualInfo() final;
 
   /// Compute synthetic camera measurements given a Trajectory and WorldModel.
 
@@ -173,6 +174,7 @@ class Camera : public Sensor {
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   double latency_;
+  double sigma_;
   utils::LossFunctionType loss_function_;
   double loss_scale_;
   absl::flat_hash_map<CameraObservationId, CameraMeasurement>

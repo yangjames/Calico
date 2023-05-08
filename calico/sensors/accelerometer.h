@@ -71,6 +71,7 @@ class Accelerometer : public Sensor {
       ceres::Problem & problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
+  absl::Status SetMeasurementNoise(double sigma) final;
   absl::Status UpdateResiduals(ceres::Problem& problem) final;
   void ClearResidualInfo() final;
 
@@ -127,6 +128,7 @@ class Accelerometer : public Sensor {
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
   double latency_;
+  double sigma_;
   utils::LossFunctionType loss_function_;
   double loss_scale_;
   absl::flat_hash_map<AccelerometerObservationId, AccelerometerMeasurement>
