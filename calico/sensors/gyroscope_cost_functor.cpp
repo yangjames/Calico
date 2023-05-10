@@ -12,9 +12,7 @@ GyroscopeCostFunctor::GyroscopeCostFunctor(
   gyroscope_model_ = GyroscopeModel::Create(gyroscope_model);
   trajectory_evaluation_params_
       = trajectory_world_sensorrig.GetEvaluationParams(stamp);
-  const double information = sigma > 0.0 ? 1.0 / std::sqrt(sigma) : 1.0;
-  measurement_information_.setIdentity();
-  measurement_information_ *= information;
+  information_ = sigma > 0.0 ? 1.0 / std::sqrt(sigma) : 1.0;
 }
 
 ceres::CostFunction* GyroscopeCostFunctor::CreateCostFunction(

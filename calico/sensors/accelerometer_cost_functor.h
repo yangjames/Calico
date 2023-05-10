@@ -140,7 +140,7 @@ class AccelerometerCostFunctor {
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector3<T>> error(residual);
       const Eigen::Vector3<T> measurement = measurement_.template cast<T>();
-      error = measurement - *projection;
+      error = (measurement - *projection) * static_cast<T>(information_);
       return true;
     }
     return false;
@@ -148,7 +148,7 @@ class AccelerometerCostFunctor {
 
  private:
   Eigen::Vector3d measurement_;
-  Eigen::Matrix3d measurement_information_;
+  double information_;
   std::unique_ptr<AccelerometerModel> accelerometer_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };

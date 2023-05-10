@@ -111,7 +111,7 @@ class GyroscopeCostFunctor {
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector3<T>> error(residual);
       const Eigen::Vector3<T> measurement = measurement_.template cast<T>();
-      error = measurement - *projection;
+      error = (measurement - *projection) * static_cast<T>(information_);
       return true;
     }
     return false;
@@ -119,7 +119,7 @@ class GyroscopeCostFunctor {
 
  private:
   Eigen::Vector3d measurement_;
-  Eigen::Matrix3d measurement_information_;
+  double information_;
   std::unique_ptr<GyroscopeModel> gyroscope_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };

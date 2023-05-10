@@ -140,7 +140,7 @@ class CameraCostFunctor {
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector2<T>> error(residual);
       const Eigen::Vector2<T> pixel = pixel_.template cast<T>();
-      error = pixel - *projection;
+      error = (pixel - *projection) * static_cast<T>(information_);
       return true;
     }
     return false;
@@ -148,7 +148,7 @@ class CameraCostFunctor {
 
  private:
   Eigen::Vector2d pixel_;
-  Eigen::Matrix2d measurement_information_;
+  double information_;
   std::unique_ptr<CameraModel> camera_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };
