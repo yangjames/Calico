@@ -157,6 +157,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a7b60ca0610c6caa6a3278f7da5a251d8"><td class="memItemLeft" align="right" valign="top">virtual absl::StatusOr&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#a7b60ca0610c6caa6a3278f7da5a251d8">AddResidualsToProblem</a> (ceres::Problem &amp;problem, <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sensorrig_trajectory, <a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a> &amp;world_model)=0</td></tr>
 <tr class="memdesc:a7b60ca0610c6caa6a3278f7da5a251d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contribue this sensor's residuals to the ceres problem.  <a href="classcalico_1_1sensors_1_1Sensor.html#a7b60ca0610c6caa6a3278f7da5a251d8">More...</a><br /></td></tr>
 <tr class="separator:a7b60ca0610c6caa6a3278f7da5a251d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd3eac9105c7168c64212bfdf20f04fa"><td class="memItemLeft" align="right" valign="top">virtual absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#afd3eac9105c7168c64212bfdf20f04fa">SetMeasurementNoise</a> (double sigma)=0</td></tr>
+<tr class="memdesc:afd3eac9105c7168c64212bfdf20f04fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the measurement noise \(\sigma\).  <a href="classcalico_1_1sensors_1_1Sensor.html#afd3eac9105c7168c64212bfdf20f04fa">More...</a><br /></td></tr>
+<tr class="separator:afd3eac9105c7168c64212bfdf20f04fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base class for sensors. For the sake of readability, we make this a purely virtual class, so setters and getters must be implemented at the derived class level. </p>
@@ -236,6 +239,39 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p><code>sensorrig_trajectory</code> is the world-from-sensorrig trajectory \(\mathbf{T}^w_r(t)\). </p>
 
 <p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#ae882341a2ea6aa26bee515ca45d5424f">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#ade8c66c0e1e8a1e18b8a42ebeec5b2f2">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#a18f345438e5d1c919e8a2842491552fd">calico::sensors::Accelerometer</a>.</p>
+
+</div>
+</div>
+<a id="afd3eac9105c7168c64212bfdf20f04fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd3eac9105c7168c64212bfdf20f04fa">&#9670;&nbsp;</a></span>SetMeasurementNoise()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual absl::Status calico::sensors::Sensor::SetMeasurementNoise </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>sigma</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the measurement noise \(\sigma\). </p>
+<p>This value is used to weight the sensor's residuals such that: </p><p class="formulaDsp">
+\[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \]
+</p>
+ 
+<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#aa9e8f2f9f740605af3230309ea1d2fb2">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#aa87667f9855c3777686456a94e7ca341">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#a1939986d8304f60a1ed2d67dfd6efd1e">calico::sensors::Accelerometer</a>.</p>
 
 </div>
 </div>

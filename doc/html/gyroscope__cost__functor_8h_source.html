@@ -109,12 +109,12 @@ $(function() {
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">int</span> kGyroscopeResidualSize = 3;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classcalico_1_1sensors_1_1GyroscopeCostFunctor.html">GyroscopeCostFunctor</a>(</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      <a class="code" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> gyroscope_model,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      <span class="keyword">const</span> Eigen::Vector3d&amp; measurement, <span class="keywordtype">double</span> stamp,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      <span class="keyword">const</span> Eigen::Vector3d&amp; measurement, <span class="keywordtype">double</span> sigma, <span class="keywordtype">double</span> stamp,</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;      <span class="keyword">const</span> <a class="code" href="classcalico_1_1Trajectory.html">Trajectory</a>&amp; sp_T_world_sensorrig);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="comment">// Convenience function for creating a gyroscope cost function.</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keyword">static</span> ceres::CostFunction* CreateCostFunction(</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      <span class="keyword">const</span> Eigen::Vector3d&amp; measurement,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      <span class="keyword">const</span> Eigen::Vector3d&amp; measurement, <span class="keywordtype">double</span> sigma,</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      <a class="code" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> gyroscope_model, Eigen::VectorXd&amp; intrinsics,</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      <a class="code" href="classcalico_1_1Pose3.html">Pose3d</a>&amp; extrinsics, <span class="keywordtype">double</span>&amp; latency,</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      <a class="code" href="classcalico_1_1Trajectory.html">Trajectory</a>&amp; trajectory_world_sensorrig, <span class="keywordtype">double</span> stamp,</div>
@@ -190,7 +190,7 @@ $(function() {
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">if</span> (projection.ok()) {</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;      Eigen::Map&lt;Eigen::Vector3&lt;T&gt;&gt; error(residual);</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;      <span class="keyword">const</span> Eigen::Vector3&lt;T&gt; measurement = measurement_.template cast&lt;T&gt;();</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;      error = measurement - *projection;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;      error = (measurement - *projection) * <span class="keyword">static_cast&lt;</span>T<span class="keyword">&gt;</span>(information_);</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    }</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
@@ -198,11 +198,12 @@ $(function() {
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  Eigen::Vector3d measurement_;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  std::unique_ptr&lt;GyroscopeModel&gt; gyroscope_model_;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <a class="code" href="structcalico_1_1TrajectoryEvaluationParams.html">TrajectoryEvaluationParams</a> trajectory_evaluation_params_;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;};</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;} <span class="comment">// namespace calico::sensors</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// CALICO_SENSORS_GYROSCOPE_COST_FUNCTOR_H_</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keywordtype">double</span> information_;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  std::unique_ptr&lt;GyroscopeModel&gt; gyroscope_model_;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <a class="code" href="structcalico_1_1TrajectoryEvaluationParams.html">TrajectoryEvaluationParams</a> trajectory_evaluation_params_;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;};</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;} <span class="comment">// namespace calico::sensors</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// CALICO_SENSORS_GYROSCOPE_COST_FUNCTOR_H_</span></div>
 <div class="ttc" id="aclasscalico_1_1BSpline_html"><div class="ttname"><a href="classcalico_1_1BSpline.html">calico::BSpline</a></div><div class="ttdef"><b>Definition:</b> bspline.h:17</div></div>
 <div class="ttc" id="aclasscalico_1_1Pose3_html"><div class="ttname"><a href="classcalico_1_1Pose3.html">calico::Pose3&lt; double &gt;</a></div></div>
 <div class="ttc" id="aclasscalico_1_1Trajectory_html"><div class="ttname"><a href="classcalico_1_1Trajectory.html">calico::Trajectory</a></div><div class="ttdef"><b>Definition:</b> trajectory.h:25</div></div>

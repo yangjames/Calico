@@ -71,11 +71,6 @@ void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a474b22e15bb9abb686fb7ec2
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a11089f69528b17f77a53101c98d32b26}\label{classcalico_1_1sensors_1_1Camera_a11089f69528b17f77a53101c98d32b26}} 
 void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a11089f69528b17f77a53101c98d32b26}{Enable\+Latency\+Estimation}} (bool enable) final
 \begin{DoxyCompactList}\small\item\em Enable or disable latency estimation. \end{DoxyCompactList}\item 
-absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a9baffab8e9436f340279bababa7647eb}{Update\+Residuals}} (ceres\+::\+Problem \&problem) final
-\begin{DoxyCompactList}\small\item\em Update residuals for this sensor. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_ac3dd051f602022c4ef6fbed017097cb8}\label{classcalico_1_1sensors_1_1Camera_ac3dd051f602022c4ef6fbed017097cb8}} 
-void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_ac3dd051f602022c4ef6fbed017097cb8}{Clear\+Residual\+Info}} () final
-\begin{DoxyCompactList}\small\item\em Clear all stored info about residuals. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a9c9b553f27cf9bec5bf7a246a880e22b}\label{classcalico_1_1sensors_1_1Camera_a9c9b553f27cf9bec5bf7a246a880e22b}} 
 void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a9c9b553f27cf9bec5bf7a246a880e22b}{Set\+Loss\+Function}} (\mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{utils\+::\+Loss\+Function\+Type}} loss, double scale) final
 \begin{DoxyCompactList}\small\item\em Setter for loss function and scale. \end{DoxyCompactList}\item 
@@ -83,6 +78,13 @@ absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Camer
 \begin{DoxyCompactList}\small\item\em Add this sensor\textquotesingle{}s calibration parameters to the ceres problem. \end{DoxyCompactList}\item 
 absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_ade8c66c0e1e8a1e18b8a42ebeec5b2f2}{Add\+Residuals\+To\+Problem}} (ceres\+::\+Problem \&problem, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) final
 \begin{DoxyCompactList}\small\item\em Contribue this sensor\textquotesingle{}s residuals to the ceres problem. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_aa87667f9855c3777686456a94e7ca341}{Set\+Measurement\+Noise}} (double sigma) final
+\begin{DoxyCompactList}\small\item\em Set the measurement noise $\sigma$. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a9baffab8e9436f340279bababa7647eb}{Update\+Residuals}} (ceres\+::\+Problem \&problem) final
+\begin{DoxyCompactList}\small\item\em Update residuals for this sensor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_ac3dd051f602022c4ef6fbed017097cb8}\label{classcalico_1_1sensors_1_1Camera_ac3dd051f602022c4ef6fbed017097cb8}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_ac3dd051f602022c4ef6fbed017097cb8}{Clear\+Residual\+Info}} () final
+\begin{DoxyCompactList}\small\item\em Clear all stored info about residuals. \end{DoxyCompactList}\item 
 absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_ae0e9befdb75b27e43995b5f1761be065}{Project}} (const std\+::vector$<$ double $>$ \&interp\+\_\+times, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, const \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) const
 \begin{DoxyCompactList}\small\item\em Compute synthetic camera measurements given a \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} and \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_ace7ca82c229cd4de0e058e3a0456bb6c}\label{classcalico_1_1sensors_1_1Camera_ace7ca82c229cd4de0e058e3a0456bb6c}} 
@@ -231,7 +233,21 @@ This method projects the world model through the kinematic chain at given timest
 ~\newline
 {\ttfamily sensorrig\+\_\+trajectory} is the world-\/from-\/sensorrig trajectory $\mathbf{T}^w_r(t)$.~\newline
 ~\newline
- \mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a9baffab8e9436f340279bababa7647eb}\label{classcalico_1_1sensors_1_1Camera_a9baffab8e9436f340279bababa7647eb}} 
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_aa87667f9855c3777686456a94e7ca341}\label{classcalico_1_1sensors_1_1Camera_aa87667f9855c3777686456a94e7ca341}} 
+\index{calico::sensors::Camera@{calico::sensors::Camera}!SetMeasurementNoise@{SetMeasurementNoise}}
+\index{SetMeasurementNoise@{SetMeasurementNoise}!calico::sensors::Camera@{calico::sensors::Camera}}
+\doxysubsubsection{\texorpdfstring{SetMeasurementNoise()}{SetMeasurementNoise()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Camera\+::\+Set\+Measurement\+Noise (\begin{DoxyParamCaption}\item[{double}]{sigma }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Set the measurement noise $\sigma$. 
+
+This value is used to weight the sensor\textquotesingle{}s residuals such that\+: \[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \] 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_afd3eac9105c7168c64212bfdf20f04fa}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a9baffab8e9436f340279bababa7647eb}\label{classcalico_1_1sensors_1_1Camera_a9baffab8e9436f340279bababa7647eb}} 
 \index{calico::sensors::Camera@{calico::sensors::Camera}!UpdateResiduals@{UpdateResiduals}}
 \index{UpdateResiduals@{UpdateResiduals}!calico::sensors::Camera@{calico::sensors::Camera}}
 \doxysubsubsection{\texorpdfstring{UpdateResiduals()}{UpdateResiduals()}}

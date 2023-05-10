@@ -85,9 +85,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1202b48a4d958bb42aa968b3eaa0a423"><td class="memItemLeft" align="right" valign="top"><a id="a1202b48a4d958bb42aa968b3eaa0a423"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>AccelerometerCostFunctor</b> (<a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42">AccelerometerIntrinsicsModel</a> accelerometer_model, const Eigen::Vector3d &amp;measurement, double stamp, const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sp_T_world_sensorrig)</td></tr>
-<tr class="separator:a1202b48a4d958bb42aa968b3eaa0a423"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0a01380fff4319c11a22002b4f7b5de"><td class="memItemLeft" align="right" valign="top"><a id="ac0a01380fff4319c11a22002b4f7b5de"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>AccelerometerCostFunctor</b> (<a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42">AccelerometerIntrinsicsModel</a> accelerometer_model, const Eigen::Vector3d &amp;measurement, double sigma, double stamp, const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sp_T_world_sensorrig)</td></tr>
+<tr class="separator:ac0a01380fff4319c11a22002b4f7b5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed7c838072eb89fb4a8ca5f379dbf430"><td class="memTemplParams" colspan="2"><a id="aed7c838072eb89fb4a8ca5f379dbf430"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:aed7c838072eb89fb4a8ca5f379dbf430"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator()</b> (T const *const *parameters, T *residual)</td></tr>
@@ -95,9 +95,9 @@ template&lt;typename T &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a7528bf86247bbfd3aadc1eb9a92ded15"><td class="memItemLeft" align="right" valign="top"><a id="a7528bf86247bbfd3aadc1eb9a92ded15"></a>
-static ceres::CostFunction *&#160;</td><td class="memItemRight" valign="bottom"><b>CreateCostFunction</b> (const Eigen::Vector3d &amp;measurement, <a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42">AccelerometerIntrinsicsModel</a> accelerometer_model, Eigen::VectorXd &amp;intrinsics, <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;extrinsics, double &amp;latency, Eigen::Vector3d &amp;gravity, <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;trajectory_world_sensorrig, double stamp, std::vector&lt; double * &gt; &amp;parameters)</td></tr>
-<tr class="separator:a7528bf86247bbfd3aadc1eb9a92ded15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6091deec78d2c30421af272ad0cf073c"><td class="memItemLeft" align="right" valign="top"><a id="a6091deec78d2c30421af272ad0cf073c"></a>
+static ceres::CostFunction *&#160;</td><td class="memItemRight" valign="bottom"><b>CreateCostFunction</b> (const Eigen::Vector3d &amp;measurement, double sigma, <a class="el" href="namespacecalico_1_1sensors.html#a911841171d662dc3e4bf4b39463a4c42">AccelerometerIntrinsicsModel</a> accelerometer_model, Eigen::VectorXd &amp;intrinsics, <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;extrinsics, double &amp;latency, Eigen::Vector3d &amp;gravity, <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;trajectory_world_sensorrig, double stamp, std::vector&lt; double * &gt; &amp;parameters)</td></tr>
+<tr class="separator:a6091deec78d2c30421af272ad0cf073c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>

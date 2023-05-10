@@ -71,11 +71,6 @@ void \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a909ecc1295ba326161ab6
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a69fa454ad9f419a5fe83bff114984575}\label{classcalico_1_1sensors_1_1Gyroscope_a69fa454ad9f419a5fe83bff114984575}} 
 void \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a69fa454ad9f419a5fe83bff114984575}{Enable\+Latency\+Estimation}} (bool enable) final
 \begin{DoxyCompactList}\small\item\em Enable or disable latency estimation. \end{DoxyCompactList}\item 
-absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a7fa5504f378220271a8ffdfadc9e6fff}{Update\+Residuals}} (ceres\+::\+Problem \&problem) final
-\begin{DoxyCompactList}\small\item\em Update residuals for this sensor. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a141b53139c9580fb6fbe8d85e5d6e848}\label{classcalico_1_1sensors_1_1Gyroscope_a141b53139c9580fb6fbe8d85e5d6e848}} 
-void \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a141b53139c9580fb6fbe8d85e5d6e848}{Clear\+Residual\+Info}} () final
-\begin{DoxyCompactList}\small\item\em Clear all stored info about residuals. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a1524b88c642d9cb5cd7f6a6ef3f6d55f}\label{classcalico_1_1sensors_1_1Gyroscope_a1524b88c642d9cb5cd7f6a6ef3f6d55f}} 
 void \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a1524b88c642d9cb5cd7f6a6ef3f6d55f}{Set\+Loss\+Function}} (\mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{utils\+::\+Loss\+Function\+Type}} loss, double scale) final
 \begin{DoxyCompactList}\small\item\em Setter for loss function and scale. \end{DoxyCompactList}\item 
@@ -83,7 +78,14 @@ absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyros
 \begin{DoxyCompactList}\small\item\em Add this sensor\textquotesingle{}s calibration parameters to the ceres problem. \end{DoxyCompactList}\item 
 absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_ae882341a2ea6aa26bee515ca45d5424f}{Add\+Residuals\+To\+Problem}} (ceres\+::\+Problem \&problem, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) final
 \begin{DoxyCompactList}\small\item\em Contribue this sensor\textquotesingle{}s residuals to the ceres problem. \end{DoxyCompactList}\item 
-absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1GyroscopeMeasurement}{Gyroscope\+Measurement}} $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a4a038ed43970ecb4e975937ceaa687e1}{Project}} (const std\+::vector$<$ double $>$ \&interp\+\_\+times, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory) const
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_aa9e8f2f9f740605af3230309ea1d2fb2}{Set\+Measurement\+Noise}} (double sigma) final
+\begin{DoxyCompactList}\small\item\em Set the measurement noise $\sigma$. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a7fa5504f378220271a8ffdfadc9e6fff}{Update\+Residuals}} (ceres\+::\+Problem \&problem) final
+\begin{DoxyCompactList}\small\item\em Update residuals for this sensor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a141b53139c9580fb6fbe8d85e5d6e848}\label{classcalico_1_1sensors_1_1Gyroscope_a141b53139c9580fb6fbe8d85e5d6e848}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a141b53139c9580fb6fbe8d85e5d6e848}{Clear\+Residual\+Info}} () final
+\begin{DoxyCompactList}\small\item\em Clear all stored info about residuals. \end{DoxyCompactList}\item 
+absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1GyroscopeMeasurement}{Gyroscope\+Measurement}} $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a7362b4339e32c1cd220d0a857540dc83}{Project}} (const std\+::vector$<$ double $>$ \&interp\+\_\+times, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, const \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) const
 \begin{DoxyCompactList}\small\item\em Compute synthetic gyroscope measurements at given a sensorrig trajectory. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a4cc453c576268ca4980d14e1ca33470a}\label{classcalico_1_1sensors_1_1Gyroscope_a4cc453c576268ca4980d14e1ca33470a}} 
 absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Gyroscope_a4cc453c576268ca4980d14e1ca33470a}{Set\+Model}} (\mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22d}{Gyroscope\+Intrinsics\+Model}} gyroscope\+\_\+model)
@@ -155,11 +157,11 @@ Contribue this sensor\textquotesingle{}s residuals to the ceres problem.
 
 Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_a7b60ca0610c6caa6a3278f7da5a251d8}{calico\+::sensors\+::\+Sensor}}.
 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a4a038ed43970ecb4e975937ceaa687e1}\label{classcalico_1_1sensors_1_1Gyroscope_a4a038ed43970ecb4e975937ceaa687e1}} 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a7362b4339e32c1cd220d0a857540dc83}\label{classcalico_1_1sensors_1_1Gyroscope_a7362b4339e32c1cd220d0a857540dc83}} 
 \index{calico::sensors::Gyroscope@{calico::sensors::Gyroscope}!Project@{Project}}
 \index{Project@{Project}!calico::sensors::Gyroscope@{calico::sensors::Gyroscope}}
 \doxysubsubsection{\texorpdfstring{Project()}{Project()}}
-{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1GyroscopeMeasurement}{Gyroscope\+Measurement}} $>$ $>$ calico\+::sensors\+::\+Gyroscope\+::\+Project (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{interp\+\_\+times,  }\item[{const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&}]{sensorrig\+\_\+trajectory }\end{DoxyParamCaption}) const}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1GyroscopeMeasurement}{Gyroscope\+Measurement}} $>$ $>$ calico\+::sensors\+::\+Gyroscope\+::\+Project (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{interp\+\_\+times,  }\item[{const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&}]{sensorrig\+\_\+trajectory,  }\item[{const \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&}]{world\+\_\+model }\end{DoxyParamCaption}) const}
 
 
 
@@ -171,7 +173,21 @@ This method interpolates the sensorrig trajectory at given timestamps and genera
 ~\newline
 {\ttfamily sensorrig\+\_\+trajectory} is the world-\/from-\/sensorrig trajectory $\mathbf{T}^w_r(t)$.~\newline
 ~\newline
- \mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a7fa5504f378220271a8ffdfadc9e6fff}\label{classcalico_1_1sensors_1_1Gyroscope_a7fa5504f378220271a8ffdfadc9e6fff}} 
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_aa9e8f2f9f740605af3230309ea1d2fb2}\label{classcalico_1_1sensors_1_1Gyroscope_aa9e8f2f9f740605af3230309ea1d2fb2}} 
+\index{calico::sensors::Gyroscope@{calico::sensors::Gyroscope}!SetMeasurementNoise@{SetMeasurementNoise}}
+\index{SetMeasurementNoise@{SetMeasurementNoise}!calico::sensors::Gyroscope@{calico::sensors::Gyroscope}}
+\doxysubsubsection{\texorpdfstring{SetMeasurementNoise()}{SetMeasurementNoise()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Gyroscope\+::\+Set\+Measurement\+Noise (\begin{DoxyParamCaption}\item[{double}]{sigma }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Set the measurement noise $\sigma$. 
+
+This value is used to weight the sensor\textquotesingle{}s residuals such that\+: \[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \] 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_afd3eac9105c7168c64212bfdf20f04fa}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Gyroscope_a7fa5504f378220271a8ffdfadc9e6fff}\label{classcalico_1_1sensors_1_1Gyroscope_a7fa5504f378220271a8ffdfadc9e6fff}} 
 \index{calico::sensors::Gyroscope@{calico::sensors::Gyroscope}!UpdateResiduals@{UpdateResiduals}}
 \index{UpdateResiduals@{UpdateResiduals}!calico::sensors::Gyroscope@{calico::sensors::Gyroscope}}
 \doxysubsubsection{\texorpdfstring{UpdateResiduals()}{UpdateResiduals()}}

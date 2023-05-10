@@ -78,6 +78,8 @@ absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Accel
 \begin{DoxyCompactList}\small\item\em Add this sensor\textquotesingle{}s calibration parameters to the ceres problem. \end{DoxyCompactList}\item 
 absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a18f345438e5d1c919e8a2842491552fd}{Add\+Residuals\+To\+Problem}} (ceres\+::\+Problem \&problem, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) final
 \begin{DoxyCompactList}\small\item\em Contribue this sensor\textquotesingle{}s residuals to the ceres problem. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_a1939986d8304f60a1ed2d67dfd6efd1e}{Set\+Measurement\+Noise}} (double sigma) final
+\begin{DoxyCompactList}\small\item\em Set the measurement noise $\sigma$. \end{DoxyCompactList}\item 
 absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}{Update\+Residuals}} (ceres\+::\+Problem \&problem) final
 \begin{DoxyCompactList}\small\item\em Update residuals for this sensor. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a7a7b63e21eb8358ba98f78ee9cdb5d25}\label{classcalico_1_1sensors_1_1Accelerometer_a7a7b63e21eb8358ba98f78ee9cdb5d25}} 
@@ -167,7 +169,21 @@ Compute synthetic accelerometer measurements at given a sensorrig trajectory. Th
 ~\newline
 {\ttfamily sensorrig\+\_\+trajectory} is the world-\/from-\/sensorrig trajectory $\mathbf{T}^w_r(t)$.~\newline
 ~\newline
- \mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}\label{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}} 
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_a1939986d8304f60a1ed2d67dfd6efd1e}\label{classcalico_1_1sensors_1_1Accelerometer_a1939986d8304f60a1ed2d67dfd6efd1e}} 
+\index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!SetMeasurementNoise@{SetMeasurementNoise}}
+\index{SetMeasurementNoise@{SetMeasurementNoise}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
+\doxysubsubsection{\texorpdfstring{SetMeasurementNoise()}{SetMeasurementNoise()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Accelerometer\+::\+Set\+Measurement\+Noise (\begin{DoxyParamCaption}\item[{double}]{sigma }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Set the measurement noise $\sigma$. 
+
+This value is used to weight the sensor\textquotesingle{}s residuals such that\+: \[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \] 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_afd3eac9105c7168c64212bfdf20f04fa}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}\label{classcalico_1_1sensors_1_1Accelerometer_aa6bd00426c947a719e8889a8c9671447}} 
 \index{calico::sensors::Accelerometer@{calico::sensors::Accelerometer}!UpdateResiduals@{UpdateResiduals}}
 \index{UpdateResiduals@{UpdateResiduals}!calico::sensors::Accelerometer@{calico::sensors::Accelerometer}}
 \doxysubsubsection{\texorpdfstring{UpdateResiduals()}{UpdateResiduals()}}

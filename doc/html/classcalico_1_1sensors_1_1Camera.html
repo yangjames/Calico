@@ -156,13 +156,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a11089f69528b17f77a53101c98d32b26">EnableLatencyEstimation</a> (bool enable) final</td></tr>
 <tr class="memdesc:a11089f69528b17f77a53101c98d32b26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable latency estimation. <br /></td></tr>
 <tr class="separator:a11089f69528b17f77a53101c98d32b26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9baffab8e9436f340279bababa7647eb"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a9baffab8e9436f340279bababa7647eb">UpdateResiduals</a> (ceres::Problem &amp;problem) final</td></tr>
-<tr class="memdesc:a9baffab8e9436f340279bababa7647eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update residuals for this sensor.  <a href="classcalico_1_1sensors_1_1Camera.html#a9baffab8e9436f340279bababa7647eb">More...</a><br /></td></tr>
-<tr class="separator:a9baffab8e9436f340279bababa7647eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3dd051f602022c4ef6fbed017097cb8"><td class="memItemLeft" align="right" valign="top"><a id="ac3dd051f602022c4ef6fbed017097cb8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#ac3dd051f602022c4ef6fbed017097cb8">ClearResidualInfo</a> () final</td></tr>
-<tr class="memdesc:ac3dd051f602022c4ef6fbed017097cb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all stored info about residuals. <br /></td></tr>
-<tr class="separator:ac3dd051f602022c4ef6fbed017097cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c9b553f27cf9bec5bf7a246a880e22b"><td class="memItemLeft" align="right" valign="top"><a id="a9c9b553f27cf9bec5bf7a246a880e22b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a9c9b553f27cf9bec5bf7a246a880e22b">SetLossFunction</a> (<a class="el" href="namespacecalico_1_1utils.html#aacede3df540b75d2e131f113380f0ce9">utils::LossFunctionType</a> loss, double scale) final</td></tr>
 <tr class="memdesc:a9c9b553f27cf9bec5bf7a246a880e22b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for loss function and scale. <br /></td></tr>
@@ -173,6 +166,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ade8c66c0e1e8a1e18b8a42ebeec5b2f2"><td class="memItemLeft" align="right" valign="top">absl::StatusOr&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#ade8c66c0e1e8a1e18b8a42ebeec5b2f2">AddResidualsToProblem</a> (ceres::Problem &amp;problem, <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sensorrig_trajectory, <a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a> &amp;world_model) final</td></tr>
 <tr class="memdesc:ade8c66c0e1e8a1e18b8a42ebeec5b2f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contribue this sensor's residuals to the ceres problem.  <a href="classcalico_1_1sensors_1_1Camera.html#ade8c66c0e1e8a1e18b8a42ebeec5b2f2">More...</a><br /></td></tr>
 <tr class="separator:ade8c66c0e1e8a1e18b8a42ebeec5b2f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa87667f9855c3777686456a94e7ca341"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#aa87667f9855c3777686456a94e7ca341">SetMeasurementNoise</a> (double sigma) final</td></tr>
+<tr class="memdesc:aa87667f9855c3777686456a94e7ca341"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the measurement noise \(\sigma\).  <a href="classcalico_1_1sensors_1_1Camera.html#aa87667f9855c3777686456a94e7ca341">More...</a><br /></td></tr>
+<tr class="separator:aa87667f9855c3777686456a94e7ca341"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9baffab8e9436f340279bababa7647eb"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a9baffab8e9436f340279bababa7647eb">UpdateResiduals</a> (ceres::Problem &amp;problem) final</td></tr>
+<tr class="memdesc:a9baffab8e9436f340279bababa7647eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update residuals for this sensor.  <a href="classcalico_1_1sensors_1_1Camera.html#a9baffab8e9436f340279bababa7647eb">More...</a><br /></td></tr>
+<tr class="separator:a9baffab8e9436f340279bababa7647eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3dd051f602022c4ef6fbed017097cb8"><td class="memItemLeft" align="right" valign="top"><a id="ac3dd051f602022c4ef6fbed017097cb8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#ac3dd051f602022c4ef6fbed017097cb8">ClearResidualInfo</a> () final</td></tr>
+<tr class="memdesc:ac3dd051f602022c4ef6fbed017097cb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all stored info about residuals. <br /></td></tr>
+<tr class="separator:ac3dd051f602022c4ef6fbed017097cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0e9befdb75b27e43995b5f1761be065"><td class="memItemLeft" align="right" valign="top">absl::StatusOr&lt; std::vector&lt; <a class="el" href="structcalico_1_1sensors_1_1CameraMeasurement.html">CameraMeasurement</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#ae0e9befdb75b27e43995b5f1761be065">Project</a> (const std::vector&lt; double &gt; &amp;interp_times, const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sensorrig_trajectory, const <a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a> &amp;world_model) const</td></tr>
 <tr class="memdesc:ae0e9befdb75b27e43995b5f1761be065"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute synthetic camera measurements given a <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> and <a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a>.  <a href="classcalico_1_1sensors_1_1Camera.html#ae0e9befdb75b27e43995b5f1761be065">More...</a><br /></td></tr>
 <tr class="separator:ae0e9befdb75b27e43995b5f1761be065"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -480,6 +483,39 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <code>sensorrig_trajectory</code> is the world-from-sensorrig trajectory \(\mathbf{T}^w_r(t)\).<br  />
 <br  />
  </p>
+
+</div>
+</div>
+<a id="aa87667f9855c3777686456a94e7ca341"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa87667f9855c3777686456a94e7ca341">&#9670;&nbsp;</a></span>SetMeasurementNoise()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">absl::Status calico::sensors::Camera::SetMeasurementNoise </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>sigma</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">final</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the measurement noise \(\sigma\). </p>
+<p>This value is used to weight the sensor's residuals such that: </p><p class="formulaDsp">
+\[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \]
+</p>
+ 
+<p>Implements <a class="el" href="classcalico_1_1sensors_1_1Sensor.html#afd3eac9105c7168c64212bfdf20f04fa">calico::sensors::Sensor</a>.</p>
 
 </div>
 </div>

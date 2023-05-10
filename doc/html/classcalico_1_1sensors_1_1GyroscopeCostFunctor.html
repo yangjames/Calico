@@ -85,9 +85,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa21e13d133c4041ead8ae32f205313c3"><td class="memItemLeft" align="right" valign="top"><a id="aa21e13d133c4041ead8ae32f205313c3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>GyroscopeCostFunctor</b> (<a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> gyroscope_model, const Eigen::Vector3d &amp;measurement, double stamp, const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sp_T_world_sensorrig)</td></tr>
-<tr class="separator:aa21e13d133c4041ead8ae32f205313c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a598880fc3e81a7b7b3510aa6eae96140"><td class="memItemLeft" align="right" valign="top"><a id="a598880fc3e81a7b7b3510aa6eae96140"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>GyroscopeCostFunctor</b> (<a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> gyroscope_model, const Eigen::Vector3d &amp;measurement, double sigma, double stamp, const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sp_T_world_sensorrig)</td></tr>
+<tr class="separator:a598880fc3e81a7b7b3510aa6eae96140"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef7ff147f68566be7cdc8e06ee48e113"><td class="memTemplParams" colspan="2"><a id="aef7ff147f68566be7cdc8e06ee48e113"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:aef7ff147f68566be7cdc8e06ee48e113"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator()</b> (T const *const *parameters, T *residual)</td></tr>
@@ -95,9 +95,9 @@ template&lt;typename T &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aae07494e85b01a09504a64d33622737f"><td class="memItemLeft" align="right" valign="top"><a id="aae07494e85b01a09504a64d33622737f"></a>
-static ceres::CostFunction *&#160;</td><td class="memItemRight" valign="bottom"><b>CreateCostFunction</b> (const Eigen::Vector3d &amp;measurement, <a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> gyroscope_model, Eigen::VectorXd &amp;intrinsics, <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;extrinsics, double &amp;latency, <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;trajectory_world_sensorrig, double stamp, std::vector&lt; double * &gt; &amp;parameters)</td></tr>
-<tr class="separator:aae07494e85b01a09504a64d33622737f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a795b704a89ae92cf7b1d976e24704124"><td class="memItemLeft" align="right" valign="top"><a id="a795b704a89ae92cf7b1d976e24704124"></a>
+static ceres::CostFunction *&#160;</td><td class="memItemRight" valign="bottom"><b>CreateCostFunction</b> (const Eigen::Vector3d &amp;measurement, double sigma, <a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> gyroscope_model, Eigen::VectorXd &amp;intrinsics, <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;extrinsics, double &amp;latency, <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;trajectory_world_sensorrig, double stamp, std::vector&lt; double * &gt; &amp;parameters)</td></tr>
+<tr class="separator:a795b704a89ae92cf7b1d976e24704124"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>

@@ -156,13 +156,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a69fa454ad9f419a5fe83bff114984575">EnableLatencyEstimation</a> (bool enable) final</td></tr>
 <tr class="memdesc:a69fa454ad9f419a5fe83bff114984575"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable latency estimation. <br /></td></tr>
 <tr class="separator:a69fa454ad9f419a5fe83bff114984575"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fa5504f378220271a8ffdfadc9e6fff"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a7fa5504f378220271a8ffdfadc9e6fff">UpdateResiduals</a> (ceres::Problem &amp;problem) final</td></tr>
-<tr class="memdesc:a7fa5504f378220271a8ffdfadc9e6fff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update residuals for this sensor.  <a href="classcalico_1_1sensors_1_1Gyroscope.html#a7fa5504f378220271a8ffdfadc9e6fff">More...</a><br /></td></tr>
-<tr class="separator:a7fa5504f378220271a8ffdfadc9e6fff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a141b53139c9580fb6fbe8d85e5d6e848"><td class="memItemLeft" align="right" valign="top"><a id="a141b53139c9580fb6fbe8d85e5d6e848"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a141b53139c9580fb6fbe8d85e5d6e848">ClearResidualInfo</a> () final</td></tr>
-<tr class="memdesc:a141b53139c9580fb6fbe8d85e5d6e848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all stored info about residuals. <br /></td></tr>
-<tr class="separator:a141b53139c9580fb6fbe8d85e5d6e848"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1524b88c642d9cb5cd7f6a6ef3f6d55f"><td class="memItemLeft" align="right" valign="top"><a id="a1524b88c642d9cb5cd7f6a6ef3f6d55f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a1524b88c642d9cb5cd7f6a6ef3f6d55f">SetLossFunction</a> (<a class="el" href="namespacecalico_1_1utils.html#aacede3df540b75d2e131f113380f0ce9">utils::LossFunctionType</a> loss, double scale) final</td></tr>
 <tr class="memdesc:a1524b88c642d9cb5cd7f6a6ef3f6d55f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for loss function and scale. <br /></td></tr>
@@ -173,9 +166,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ae882341a2ea6aa26bee515ca45d5424f"><td class="memItemLeft" align="right" valign="top">absl::StatusOr&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#ae882341a2ea6aa26bee515ca45d5424f">AddResidualsToProblem</a> (ceres::Problem &amp;problem, <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sensorrig_trajectory, <a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a> &amp;world_model) final</td></tr>
 <tr class="memdesc:ae882341a2ea6aa26bee515ca45d5424f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contribue this sensor's residuals to the ceres problem.  <a href="classcalico_1_1sensors_1_1Gyroscope.html#ae882341a2ea6aa26bee515ca45d5424f">More...</a><br /></td></tr>
 <tr class="separator:ae882341a2ea6aa26bee515ca45d5424f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a038ed43970ecb4e975937ceaa687e1"><td class="memItemLeft" align="right" valign="top">absl::StatusOr&lt; std::vector&lt; <a class="el" href="structcalico_1_1sensors_1_1GyroscopeMeasurement.html">GyroscopeMeasurement</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a4a038ed43970ecb4e975937ceaa687e1">Project</a> (const std::vector&lt; double &gt; &amp;interp_times, const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sensorrig_trajectory) const</td></tr>
-<tr class="memdesc:a4a038ed43970ecb4e975937ceaa687e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute synthetic gyroscope measurements at given a sensorrig trajectory.  <a href="classcalico_1_1sensors_1_1Gyroscope.html#a4a038ed43970ecb4e975937ceaa687e1">More...</a><br /></td></tr>
-<tr class="separator:a4a038ed43970ecb4e975937ceaa687e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9e8f2f9f740605af3230309ea1d2fb2"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#aa9e8f2f9f740605af3230309ea1d2fb2">SetMeasurementNoise</a> (double sigma) final</td></tr>
+<tr class="memdesc:aa9e8f2f9f740605af3230309ea1d2fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the measurement noise \(\sigma\).  <a href="classcalico_1_1sensors_1_1Gyroscope.html#aa9e8f2f9f740605af3230309ea1d2fb2">More...</a><br /></td></tr>
+<tr class="separator:aa9e8f2f9f740605af3230309ea1d2fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fa5504f378220271a8ffdfadc9e6fff"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a7fa5504f378220271a8ffdfadc9e6fff">UpdateResiduals</a> (ceres::Problem &amp;problem) final</td></tr>
+<tr class="memdesc:a7fa5504f378220271a8ffdfadc9e6fff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update residuals for this sensor.  <a href="classcalico_1_1sensors_1_1Gyroscope.html#a7fa5504f378220271a8ffdfadc9e6fff">More...</a><br /></td></tr>
+<tr class="separator:a7fa5504f378220271a8ffdfadc9e6fff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a141b53139c9580fb6fbe8d85e5d6e848"><td class="memItemLeft" align="right" valign="top"><a id="a141b53139c9580fb6fbe8d85e5d6e848"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a141b53139c9580fb6fbe8d85e5d6e848">ClearResidualInfo</a> () final</td></tr>
+<tr class="memdesc:a141b53139c9580fb6fbe8d85e5d6e848"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all stored info about residuals. <br /></td></tr>
+<tr class="separator:a141b53139c9580fb6fbe8d85e5d6e848"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7362b4339e32c1cd220d0a857540dc83"><td class="memItemLeft" align="right" valign="top">absl::StatusOr&lt; std::vector&lt; <a class="el" href="structcalico_1_1sensors_1_1GyroscopeMeasurement.html">GyroscopeMeasurement</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a7362b4339e32c1cd220d0a857540dc83">Project</a> (const std::vector&lt; double &gt; &amp;interp_times, const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;sensorrig_trajectory, const <a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a> &amp;world_model) const</td></tr>
+<tr class="memdesc:a7362b4339e32c1cd220d0a857540dc83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute synthetic gyroscope measurements at given a sensorrig trajectory.  <a href="classcalico_1_1sensors_1_1Gyroscope.html#a7362b4339e32c1cd220d0a857540dc83">More...</a><br /></td></tr>
+<tr class="separator:a7362b4339e32c1cd220d0a857540dc83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cc453c576268ca4980d14e1ca33470a"><td class="memItemLeft" align="right" valign="top"><a id="a4cc453c576268ca4980d14e1ca33470a"></a>
 absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a4cc453c576268ca4980d14e1ca33470a">SetModel</a> (<a class="el" href="namespacecalico_1_1sensors.html#a3a17fd4af1cc53c28ec7130fdad5f22d">GyroscopeIntrinsicsModel</a> gyroscope_model)</td></tr>
 <tr class="memdesc:a4cc453c576268ca4980d14e1ca33470a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for gyroscope model. <br /></td></tr>
@@ -322,8 +325,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 </div>
 </div>
-<a id="a4a038ed43970ecb4e975937ceaa687e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a038ed43970ecb4e975937ceaa687e1">&#9670;&nbsp;</a></span>Project()</h2>
+<a id="a7362b4339e32c1cd220d0a857540dc83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7362b4339e32c1cd220d0a857540dc83">&#9670;&nbsp;</a></span>Project()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -338,7 +341,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classcalico_1_1Trajectory.html">Trajectory</a> &amp;&#160;</td>
-          <td class="paramname"><em>sensorrig_trajectory</em>&#160;</td>
+          <td class="paramname"><em>sensorrig_trajectory</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a> &amp;&#160;</td>
+          <td class="paramname"><em>world_model</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -356,6 +365,39 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 <code>sensorrig_trajectory</code> is the world-from-sensorrig trajectory \(\mathbf{T}^w_r(t)\).<br  />
 <br  />
  </p>
+
+</div>
+</div>
+<a id="aa9e8f2f9f740605af3230309ea1d2fb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9e8f2f9f740605af3230309ea1d2fb2">&#9670;&nbsp;</a></span>SetMeasurementNoise()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">absl::Status calico::sensors::Gyroscope::SetMeasurementNoise </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>sigma</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">final</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the measurement noise \(\sigma\). </p>
+<p>This value is used to weight the sensor's residuals such that: </p><p class="formulaDsp">
+\[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \]
+</p>
+ 
+<p>Implements <a class="el" href="classcalico_1_1sensors_1_1Sensor.html#afd3eac9105c7168c64212bfdf20f04fa">calico::sensors::Sensor</a>.</p>
 
 </div>
 </div>

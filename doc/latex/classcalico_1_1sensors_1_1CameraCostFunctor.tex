@@ -3,8 +3,8 @@
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraCostFunctor_a0f166f14a962e84eb0888eb97de43097}\label{classcalico_1_1sensors_1_1CameraCostFunctor_a0f166f14a962e84eb0888eb97de43097}} 
-{\bfseries Camera\+Cost\+Functor} (\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model, const Eigen\+::\+Vector2d \&pixel, double stamp, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sp\+\_\+\+T\+\_\+world\+\_\+sensorrig)
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraCostFunctor_a4e3afc93728fcfbc673414aad7428f7a}\label{classcalico_1_1sensors_1_1CameraCostFunctor_a4e3afc93728fcfbc673414aad7428f7a}} 
+{\bfseries Camera\+Cost\+Functor} (\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model, const Eigen\+::\+Vector2d \&pixel, double sigma, double stamp, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sp\+\_\+\+T\+\_\+world\+\_\+sensorrig)
 \item 
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraCostFunctor_ae65f8d29c5a67e49234d0c1f5816356d}\label{classcalico_1_1sensors_1_1CameraCostFunctor_ae65f8d29c5a67e49234d0c1f5816356d}} 
 {\footnotesize template$<$typename T $>$ }\\bool {\bfseries operator()} (T const $\ast$const $\ast$parameters, T $\ast$residual)
@@ -12,8 +12,8 @@
 \doxysubsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraCostFunctor_a7b2ca9c3fb981943e6f5a5cdc406958b}\label{classcalico_1_1sensors_1_1CameraCostFunctor_a7b2ca9c3fb981943e6f5a5cdc406958b}} 
-static ceres\+::\+Cost\+Function $\ast$ {\bfseries Create\+Cost\+Function} (const Eigen\+::\+Vector2d \&pixel, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model, Eigen\+::\+Vector\+Xd \&intrinsics, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&extrinsics, double \&latency, Eigen\+::\+Vector3d \&t\+\_\+model\+\_\+point, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&T\+\_\+world\+\_\+model, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&trajectory\+\_\+world\+\_\+sensorrig, double stamp, std\+::vector$<$ double $\ast$ $>$ \&parameters)
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1CameraCostFunctor_a5c80aabc10fc5c64460067ef0f9ffa41}\label{classcalico_1_1sensors_1_1CameraCostFunctor_a5c80aabc10fc5c64460067ef0f9ffa41}} 
+static ceres\+::\+Cost\+Function $\ast$ {\bfseries Create\+Cost\+Function} (const Eigen\+::\+Vector2d \&pixel, double sigma, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model, Eigen\+::\+Vector\+Xd \&intrinsics, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&extrinsics, double \&latency, Eigen\+::\+Vector3d \&t\+\_\+model\+\_\+point, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&T\+\_\+world\+\_\+model, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&trajectory\+\_\+world\+\_\+sensorrig, double stamp, std\+::vector$<$ double $\ast$ $>$ \&parameters)
 \end{DoxyCompactItemize}
 \doxysubsection*{Static Public Attributes}
 \begin{DoxyCompactItemize}
