@@ -12,7 +12,7 @@ AccelerometerCostFunctor::AccelerometerCostFunctor(
   accelerometer_model_ = AccelerometerModel::Create(accelerometer_model);
   trajectory_evaluation_params_
       = trajectory_world_sensorrig.GetEvaluationParams(stamp);
-  information_ = sigma > 0.0 ? 1.0 / std::sqrt(sigma) : 1.0;
+  information_ = (sigma > 0.0) ? (1.0 / sigma) : 1.0;
 }
 
 ceres::CostFunction* AccelerometerCostFunctor::CreateCostFunction(

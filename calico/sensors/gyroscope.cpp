@@ -55,7 +55,8 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
 
 absl::StatusOr<std::vector<GyroscopeMeasurement>> Gyroscope::Project(
     const std::vector<double>& interp_times,
-    const Trajectory& sensorrig_trajectory) const {
+    const Trajectory& sensorrig_trajectory,
+    const WorldModel& world_model) const {
   std::vector<Eigen::Vector<double, 6>> pose_vectors;
   ASSIGN_OR_RETURN(pose_vectors, sensorrig_trajectory.spline().Interpolate(
       interp_times, /*derivative=*/0));

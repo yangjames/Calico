@@ -111,7 +111,7 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   EXPECT_OK(true_gyroscope.SetLatency(kGyroscopeLatency));
   std::vector<sensors::GyroscopeMeasurement> measurements_gyroscope;
   ASSERT_OK_AND_ASSIGN(measurements_gyroscope,
-      true_gyroscope.Project(stamps, *trajectory_world_sensorrig));
+      true_gyroscope.Project(stamps, *trajectory_world_sensorrig, *world_model));
   sensors::Accelerometer true_accelerometer;
   EXPECT_OK(true_accelerometer.SetModel(kAccelerometerModel));
   EXPECT_OK(true_accelerometer.SetIntrinsics(true_accelerometer_intrinsics));

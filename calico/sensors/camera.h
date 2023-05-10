@@ -173,10 +173,10 @@ class Camera : public Sensor {
   std::unique_ptr<CameraModel> camera_model_;
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
-  double latency_;
-  double sigma_;
+  double latency_ = 0.0;
+  double sigma_ = 1.0;
   utils::LossFunctionType loss_function_;
-  double loss_scale_;
+  double loss_scale_ = 1.0;
   absl::flat_hash_map<CameraObservationId, CameraMeasurement>
       id_to_measurement_;
   absl::flat_hash_map<CameraObservationId, Eigen::Vector2d> id_to_residual_;

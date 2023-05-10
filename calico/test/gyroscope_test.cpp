@@ -111,6 +111,7 @@ TEST_P(GyroscopeTest, AnalyticallyVsNumericallyDiffedKinematicsMatch) {
       T_sensorrig_gyro.rotation().toRotationMatrix();
   const Eigen::Vector3d t_sensorrig_gyro = T_sensorrig_gyro.translation();
 
+  WorldModel world_model;
   Gyroscope gyroscope;
   ASSERT_OK(gyroscope.SetModel(GyroscopeIntrinsicsModel::kGyroscopeScaleOnly));
   Eigen::VectorXd intrinsics(GyroscopeScaleOnlyModel::kNumberOfParameters);
@@ -119,7 +120,7 @@ TEST_P(GyroscopeTest, AnalyticallyVsNumericallyDiffedKinematicsMatch) {
   gyroscope.SetExtrinsics(T_sensorrig_gyro);
   std::vector<GyroscopeMeasurement> measurements;
   ASSERT_OK_AND_ASSIGN(measurements,
-      gyroscope.Project(stamps, trajectory_world_sensorrig));
+      gyroscope.Project(stamps, trajectory_world_sensorrig, world_model));
 
   const double dt = 1e-5;
   const double dt_inv = 1.0 / dt;
@@ -161,16 +162,16 @@ TEST_P(GyroscopeTest, PerfectDataPerfectResiduals) {
   intrinsics.setRandom();
   Pose3d extrinsics(Eigen::Quaterniond::UnitRandom(),
                            Eigen::Vector3d::Random());
+  WorldModel world_model;
   Gyroscope gyroscope;
   EXPECT_OK(gyroscope.SetModel(params.gyroscope_model));
   EXPECT_OK(gyroscope.SetIntrinsics(intrinsics));
   gyroscope.SetExtrinsics(extrinsics);
   std::vector<GyroscopeMeasurement> measurements;
   ASSERT_OK_AND_ASSIGN(measurements,
-                       gyroscope.Project(stamps, trajectory_world_sensorrig));
+      gyroscope.Project(stamps, trajectory_world_sensorrig, world_model));
   ASSERT_OK(gyroscope.AddMeasurements(measurements));
   ceres::Problem problem;
-  WorldModel world_model;
   ASSERT_OK_AND_ASSIGN(const int num_residuals,
       gyroscope.AddResidualsToProblem(problem, trajectory_world_sensorrig,
                                       world_model));
