@@ -38,15 +38,15 @@ class CameraCostFunctor {
   static constexpr int kCameraResidualSize = 2;
   explicit CameraCostFunctor(
       CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
-      double stamp, const Trajectory& sp_T_world_sensorrig);
+      double sigma, double stamp, const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a camera cost function.
   static ceres::CostFunction* CreateCostFunction(
-      const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
-      Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
-      Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
-      Trajectory& trajectory_world_sensorrig, double stamp,
-      std::vector<double*>& parameters);
+      const Eigen::Vector2d& pixel, double sigma,
+      CameraIntrinsicsModel camera_model, Eigen::VectorXd& intrinsics,
+      Pose3d& extrinsics, double& latency, Eigen::Vector3d& t_model_point,
+      Pose3d& T_world_model, Trajectory& trajectory_world_sensorrig,
+      double stamp, std::vector<double*>& parameters);
 
   // Parameters to the cost function:
   //   intrinsics:
@@ -140,7 +140,7 @@ class CameraCostFunctor {
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector2<T>> error(residual);
       const Eigen::Vector2<T> pixel = pixel_.template cast<T>();
-      error = pixel - *projection;
+      error = (pixel - *projection) * static_cast<T>(information_);
       return true;
     }
     return false;
@@ -148,6 +148,7 @@ class CameraCostFunctor {
 
  private:
   Eigen::Vector2d pixel_;
+  double information_;
   std::unique_ptr<CameraModel> camera_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };

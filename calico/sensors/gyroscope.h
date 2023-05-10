@@ -64,14 +64,15 @@ class Gyroscope : public Sensor {
   void EnableExtrinsicsEstimation(bool enable) final;
   void EnableIntrinsicsEstimation(bool enable) final;
   void EnableLatencyEstimation(bool enable) final;
-  absl::Status UpdateResiduals(ceres::Problem& problem) final;
-  void ClearResidualInfo() final;
   void SetLossFunction(utils::LossFunctionType loss, double scale) final;
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
   absl::StatusOr<int> AddResidualsToProblem(
       ceres::Problem & problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) final;
+  absl::Status SetMeasurementNoise(double sigma) final;
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
+  void ClearResidualInfo() final;
 
   /// Compute synthetic gyroscope measurements at given a sensorrig trajectory.
 
@@ -85,7 +86,8 @@ class Gyroscope : public Sensor {
   /// \f$\mathbf{T}^w_r(t)\f$.\n\n
   absl::StatusOr<std::vector<GyroscopeMeasurement>> Project(
       const std::vector<double>& interp_times,
-      const Trajectory& sensorrig_trajectory) const;
+      const Trajectory& sensorrig_trajectory,
+      const WorldModel& world_model) const;
 
   /// Setter for gyroscope model.
   absl::Status SetModel(GyroscopeIntrinsicsModel gyroscope_model);
@@ -122,9 +124,10 @@ class Gyroscope : public Sensor {
   std::unique_ptr<GyroscopeModel> gyroscope_model_;
   Pose3d T_sensorrig_sensor_;
   Eigen::VectorXd intrinsics_;
-  double latency_;
+  double latency_ = 0.0;
+  double sigma_ = 1.0;
   utils::LossFunctionType loss_function_;
-  double loss_scale_;
+  double loss_scale_ = 1.0;
   absl::flat_hash_map<GyroscopeObservationId, GyroscopeMeasurement>
       id_to_measurement_;
   absl::flat_hash_map<GyroscopeObservationId, Eigen::Vector3d> id_to_residual_;

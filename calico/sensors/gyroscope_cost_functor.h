@@ -30,12 +30,12 @@ class GyroscopeCostFunctor {
   static constexpr int kGyroscopeResidualSize = 3;
   explicit GyroscopeCostFunctor(
       GyroscopeIntrinsicsModel gyroscope_model,
-      const Eigen::Vector3d& measurement, double stamp,
+      const Eigen::Vector3d& measurement, double sigma, double stamp,
       const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a gyroscope cost function.
   static ceres::CostFunction* CreateCostFunction(
-      const Eigen::Vector3d& measurement,
+      const Eigen::Vector3d& measurement, double sigma,
       GyroscopeIntrinsicsModel gyroscope_model, Eigen::VectorXd& intrinsics,
       Pose3d& extrinsics, double& latency,
       Trajectory& trajectory_world_sensorrig, double stamp,
@@ -111,7 +111,7 @@ class GyroscopeCostFunctor {
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector3<T>> error(residual);
       const Eigen::Vector3<T> measurement = measurement_.template cast<T>();
-      error = measurement - *projection;
+      error = (measurement - *projection) * static_cast<T>(information_);
       return true;
     }
     return false;
@@ -119,6 +119,7 @@ class GyroscopeCostFunctor {
 
  private:
   Eigen::Vector3d measurement_;
+  double information_;
   std::unique_ptr<GyroscopeModel> gyroscope_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };

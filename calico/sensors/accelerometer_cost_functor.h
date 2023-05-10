@@ -32,12 +32,12 @@ class AccelerometerCostFunctor {
   static constexpr int kAccelerometerResidualSize = 3;
   explicit AccelerometerCostFunctor(
       AccelerometerIntrinsicsModel accelerometer_model,
-      const Eigen::Vector3d& measurement, double stamp,
+      const Eigen::Vector3d& measurement, double sigma, double stamp,
       const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a accelerometer cost function.
   static ceres::CostFunction* CreateCostFunction(
-      const Eigen::Vector3d& measurement,
+      const Eigen::Vector3d& measurement, double sigma,
       AccelerometerIntrinsicsModel accelerometer_model,
       Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
       Eigen::Vector3d& gravity, Trajectory& trajectory_world_sensorrig, 
@@ -140,7 +140,7 @@ class AccelerometerCostFunctor {
     if (projection.ok()) {
       Eigen::Map<Eigen::Vector3<T>> error(residual);
       const Eigen::Vector3<T> measurement = measurement_.template cast<T>();
-      error = measurement - *projection;
+      error = (measurement - *projection) * static_cast<T>(information_);
       return true;
     }
     return false;
@@ -148,6 +148,7 @@ class AccelerometerCostFunctor {
 
  private:
   Eigen::Vector3d measurement_;
+  double information_;
   std::unique_ptr<AccelerometerModel> accelerometer_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };

@@ -97,6 +97,14 @@ const Eigen::Vector3d& WorldModel::gravity() const {
   return gravity_;
 }
 
+void WorldModel::SetGravity(const Eigen::Vector3d& gravity) {
+  gravity_ = gravity;
+}
+
+const Eigen::Vector3d& WorldModel::GetGravity() const {
+  return gravity_;
+}
+
 int WorldModel::NumberOfLandmarks() const {
   return landmark_id_to_landmark_.size();
 }

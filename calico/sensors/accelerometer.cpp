@@ -42,7 +42,7 @@ absl::StatusOr<int> Accelerometer::AddResidualsToProblem(
     std::vector<double*> parameters;
     ceres::CostFunction* cost_function =
         AccelerometerCostFunctor::CreateCostFunction(
-            measurement.measurement, accelerometer_model_->GetType(),
+            measurement.measurement, sigma_, accelerometer_model_->GetType(),
             intrinsics_, T_sensorrig_sensor_, latency_, world_model.gravity(),
             sensorrig_trajectory, observation_id.stamp, parameters);
     ceres::LossFunction* loss_function = CreateLossFunction(
@@ -173,6 +173,14 @@ void Accelerometer::EnableIntrinsicsEstimation(bool enable) {
 
 void Accelerometer::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
+}
+
+absl::Status Accelerometer::SetMeasurementNoise(double sigma) {
+  if (sigma <= 0.0) {
+    return absl::InvalidArgumentError("Sigma must be greater than 0.");
+  }
+  sigma_ = sigma;
+  return absl::OkStatus();
 }
 
 void Accelerometer::SetLossFunction(utils::LossFunctionType loss, double scale) {

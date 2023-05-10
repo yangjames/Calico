@@ -59,6 +59,14 @@ void Camera::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
 }
 
+absl::Status Camera::SetMeasurementNoise(double sigma) {
+  if (sigma <= 0.0) {
+    return absl::InvalidArgumentError("Sigma must be greater than 0.");
+  }
+  sigma_ = sigma;
+  return absl::OkStatus();
+}
+
 absl::Status Camera::UpdateResiduals(ceres::Problem& problem) {
   for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
     Eigen::Vector2d residual;
@@ -130,7 +138,7 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
 
     ceres::CostFunction* cost_function =
         CameraCostFunctor::CreateCostFunction(
-            measurement.pixel, camera_model_->GetType(), intrinsics_,
+            measurement.pixel, sigma_, camera_model_->GetType(), intrinsics_,
             T_sensorrig_sensor_, latency_, t_model_point,
             rigidbody_ref.T_world_rigidbody, sensorrig_trajectory,
             observation_id.stamp, parameters);

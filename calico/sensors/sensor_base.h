@@ -86,6 +86,19 @@ class Sensor {
       ceres::Problem& problem,
       Trajectory& sensorrig_trajectory,
       WorldModel& world_model) = 0;
+
+
+  /// Set the measurement noise \f$\sigma\f$.
+
+  /// This value is used to weight the
+  /// sensor's residuals such that:
+  /// \f\[
+  ///   \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\
+  ///   \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\
+  ///   \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\
+  ///   \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon}
+  /// \f\]
+  virtual absl::Status SetMeasurementNoise(double sigma) = 0;
 };
 } // namespace calico::sensors
 

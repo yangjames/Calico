@@ -106,6 +106,13 @@ class WorldModel {
   const Eigen::Vector3d& gravity() const;
   Eigen::Vector3d& gravity();
 
+  /// Setter for gravity for easy pybind integration.
+  void SetGravity(const Eigen::Vector3d& gravity);
+
+  /// Getter for gravity for easy pybind integration.
+  const Eigen::Vector3d& GetGravity() const;
+
+
   /// Get the number of landmarks currently in this world model.
   int NumberOfLandmarks() const;
 

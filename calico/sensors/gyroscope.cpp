@@ -40,7 +40,7 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
     std::vector<double*> parameters;
     ceres::CostFunction* cost_function =
         GyroscopeCostFunctor::CreateCostFunction(
-            measurement.measurement, gyroscope_model_->GetType(), intrinsics_,
+            measurement.measurement, sigma_, gyroscope_model_->GetType(), intrinsics_,
             T_sensorrig_sensor_, latency_, sensorrig_trajectory,
             observation_id.stamp, parameters);
     ceres::LossFunction* loss_function = CreateLossFunction(
@@ -55,7 +55,8 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
 
 absl::StatusOr<std::vector<GyroscopeMeasurement>> Gyroscope::Project(
     const std::vector<double>& interp_times,
-    const Trajectory& sensorrig_trajectory) const {
+    const Trajectory& sensorrig_trajectory,
+    const WorldModel& world_model) const {
   std::vector<Eigen::Vector<double, 6>> pose_vectors;
   ASSIGN_OR_RETURN(pose_vectors, sensorrig_trajectory.spline().Interpolate(
       interp_times, /*derivative=*/0));
@@ -131,6 +132,14 @@ void Gyroscope::EnableIntrinsicsEstimation(bool enable) {
 
 void Gyroscope::EnableLatencyEstimation(bool enable) {
   latency_enabled_ = enable;
+}
+
+absl::Status Gyroscope::SetMeasurementNoise(double sigma) {
+  if (sigma <= 0.0) {
+    return absl::InvalidArgumentError("Sigma must be greater than 0.");
+  }
+  sigma_ = sigma;
+  return absl::OkStatus();
 }
 
 void Gyroscope::SetLossFunction(utils::LossFunctionType loss, double scale) {

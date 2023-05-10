@@ -7,23 +7,24 @@ namespace calico::sensors {
 
 AccelerometerCostFunctor::AccelerometerCostFunctor(
     AccelerometerIntrinsicsModel accelerometer_model, const Eigen::Vector3d& measurement,
-    double stamp, const Trajectory& trajectory_world_sensorrig)
+    double sigma, double stamp, const Trajectory& trajectory_world_sensorrig)
   : measurement_(measurement) {
   accelerometer_model_ = AccelerometerModel::Create(accelerometer_model);
   trajectory_evaluation_params_
       = trajectory_world_sensorrig.GetEvaluationParams(stamp);
+  information_ = (sigma > 0.0) ? (1.0 / sigma) : 1.0;
 }
 
 ceres::CostFunction* AccelerometerCostFunctor::CreateCostFunction(
-    const Eigen::Vector3d& measurement,
+    const Eigen::Vector3d& measurement, double sigma,
     AccelerometerIntrinsicsModel accelerometer_model,
     Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
     Eigen::Vector3d& gravity, Trajectory& trajectory_world_sensorrig,
     double stamp, std::vector<double*>& parameters) {
   auto* cost_function =
       new ceres::DynamicAutoDiffCostFunction<AccelerometerCostFunctor>(
-          new AccelerometerCostFunctor(accelerometer_model, measurement, stamp,
-                                       trajectory_world_sensorrig));
+          new AccelerometerCostFunctor(accelerometer_model, measurement, sigma,
+                                       stamp, trajectory_world_sensorrig));
   // intrinsics
   parameters.push_back(intrinsics.data());
   cost_function->AddParameterBlock(intrinsics.size());
