@@ -32,7 +32,7 @@ class AccelerometerCostFunctor {
   static constexpr int kAccelerometerResidualSize = 3;
   explicit AccelerometerCostFunctor(
       AccelerometerIntrinsicsModel accelerometer_model,
-      const Eigen::Vector3d& measurement, double stamp,
+      const Eigen::Vector3d& measurement, double sigma, double stamp,
       const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a accelerometer cost function.
@@ -148,6 +148,7 @@ class AccelerometerCostFunctor {
 
  private:
   Eigen::Vector3d measurement_;
+  Eigen::Matrix3d measurement_information_;
   std::unique_ptr<AccelerometerModel> accelerometer_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };

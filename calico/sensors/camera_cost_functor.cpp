@@ -7,7 +7,7 @@ namespace calico::sensors {
 
 CameraCostFunctor::CameraCostFunctor(
     CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
-    double stamp, const Trajectory& trajectory_world_sensorrig)
+    double sigma, double stamp, const Trajectory& trajectory_world_sensorrig)
   : pixel_(pixel) {
   camera_model_ = CameraModel::Create(camera_model);
   trajectory_evaluation_params_
@@ -22,7 +22,7 @@ ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
     std::vector<double*>& parameters) {
   auto* cost_function =
       new ceres::DynamicAutoDiffCostFunction<CameraCostFunctor>(
-          new CameraCostFunctor(camera_model, pixel, stamp,
+          new CameraCostFunctor(camera_model, pixel, sigma, stamp,
                                 trajectory_world_sensorrig));
   // intrinsics
   parameters.push_back(intrinsics.data());

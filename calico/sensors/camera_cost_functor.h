@@ -38,7 +38,7 @@ class CameraCostFunctor {
   static constexpr int kCameraResidualSize = 2;
   explicit CameraCostFunctor(
       CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
-      double stamp, const Trajectory& sp_T_world_sensorrig);
+      double sigma, double stamp, const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a camera cost function.
   static ceres::CostFunction* CreateCostFunction(
@@ -148,6 +148,7 @@ class CameraCostFunctor {
 
  private:
   Eigen::Vector2d pixel_;
+  Eigen::Matrix2d measurement_information_;
   std::unique_ptr<CameraModel> camera_model_;
   TrajectoryEvaluationParams trajectory_evaluation_params_;
 };
