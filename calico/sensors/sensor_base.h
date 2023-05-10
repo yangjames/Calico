@@ -93,7 +93,7 @@ class Sensor {
   /// This value is used to weight the
   /// sensor's residuals such that:
   /// \f\[
-  ///   \boldsymbol{\Sigma} = \sigma\mathbf{I}\\
+  ///   \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\
   ///   \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\
   ///   \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\
   ///   \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon}
