@@ -42,11 +42,11 @@ class CameraCostFunctor {
 
   // Convenience function for creating a camera cost function.
   static ceres::CostFunction* CreateCostFunction(
-      const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
-      Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
-      Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
-      Trajectory& trajectory_world_sensorrig, double stamp,
-      std::vector<double*>& parameters);
+      const Eigen::Vector2d& pixel, double sigma,
+      CameraIntrinsicsModel camera_model, Eigen::VectorXd& intrinsics,
+      Pose3d& extrinsics, double& latency, Eigen::Vector3d& t_model_point,
+      Pose3d& T_world_model, Trajectory& trajectory_world_sensorrig,
+      double stamp, std::vector<double*>& parameters);
 
   // Parameters to the cost function:
   //   intrinsics:

@@ -40,7 +40,7 @@ absl::StatusOr<int> Gyroscope::AddResidualsToProblem(
     std::vector<double*> parameters;
     ceres::CostFunction* cost_function =
         GyroscopeCostFunctor::CreateCostFunction(
-            measurement.measurement, gyroscope_model_->GetType(), intrinsics_,
+            measurement.measurement, sigma_, gyroscope_model_->GetType(), intrinsics_,
             T_sensorrig_sensor_, latency_, sensorrig_trajectory,
             observation_id.stamp, parameters);
     ceres::LossFunction* loss_function = CreateLossFunction(

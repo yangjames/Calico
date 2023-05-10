@@ -138,7 +138,7 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
 
     ceres::CostFunction* cost_function =
         CameraCostFunctor::CreateCostFunction(
-            measurement.pixel, camera_model_->GetType(), intrinsics_,
+            measurement.pixel, sigma_, camera_model_->GetType(), intrinsics_,
             T_sensorrig_sensor_, latency_, t_model_point,
             rigidbody_ref.T_world_rigidbody, sensorrig_trajectory,
             observation_id.stamp, parameters);

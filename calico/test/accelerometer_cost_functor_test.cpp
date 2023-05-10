@@ -13,6 +13,7 @@ struct AccelerometerCostFunctionCreationTestCase {
   std::string test_name;
   AccelerometerIntrinsicsModel accelerometer_model;
   Eigen::Vector3d measurement;
+  double sigma;
   Eigen::VectorXd intrinsics;
   Pose3d extrinsics;
   double latency;
@@ -42,7 +43,7 @@ TEST_P(AccelerometerCostFunctionCreationTest, Instantiation) {
         trajectory_world_sensorrig.GetEvaluationParams(stamp);
     auto* cost_function =
         AccelerometerCostFunctor::CreateCostFunction(
-            test_case.measurement, test_case.accelerometer_model,
+            test_case.measurement, test_case.sigma, test_case.accelerometer_model,
             test_case.intrinsics, test_case.extrinsics, test_case.latency,
             test_case.gravity, trajectory_world_sensorrig, stamp, parameters);
     ASSERT_NE(cost_function, nullptr);
@@ -56,7 +57,7 @@ INSTANTIATE_TEST_SUITE_P(
         {
           "AccelerometerScaleOnly",
           AccelerometerIntrinsicsModel::kAccelerometerScaleOnly,
-          Eigen::Vector3d::Random(),
+          Eigen::Vector3d::Random(), 1,
           Eigen::VectorXd::Random(
               AccelerometerScaleOnlyModel::kNumberOfParameters),
           Pose3d(),

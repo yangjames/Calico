@@ -13,6 +13,7 @@ struct GyroscopeCostFunctionCreationTestCase {
   std::string test_name;
   GyroscopeIntrinsicsModel gyroscope_model;
   Eigen::Vector3d measurement;
+  double sigma;
   Eigen::VectorXd intrinsics;
   Pose3d extrinsics;
   double latency;
@@ -41,7 +42,7 @@ TEST_P(GyroscopeCostFunctionCreationTest, Instantiation) {
         trajectory_world_sensorrig.GetEvaluationParams(stamp);
     auto* cost_function =
         GyroscopeCostFunctor::CreateCostFunction(
-            test_case.measurement, test_case.gyroscope_model,
+            test_case.measurement, test_case.sigma, test_case.gyroscope_model,
             test_case.intrinsics, test_case.extrinsics, test_case.latency,
             trajectory_world_sensorrig, stamp, parameters);
     ASSERT_NE(cost_function, nullptr);
@@ -55,7 +56,7 @@ INSTANTIATE_TEST_SUITE_P(
         {
           "ScaleOnly",
           GyroscopeIntrinsicsModel::kGyroscopeScaleOnly,
-          Eigen::Vector3d::Random(),
+          Eigen::Vector3d::Random(), 1,
           Eigen::VectorXd::Random(GyroscopeScaleOnlyModel::kNumberOfParameters),
           Pose3d(),
           5,

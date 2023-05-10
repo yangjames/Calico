@@ -15,10 +15,10 @@ CameraCostFunctor::CameraCostFunctor(
 }
 
 ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
-    const Eigen::Vector2d& pixel, CameraIntrinsicsModel camera_model,
-    Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
-    Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
-    Trajectory& trajectory_world_sensorrig, double stamp,
+    const Eigen::Vector2d& pixel, double sigma,
+    CameraIntrinsicsModel camera_model, Eigen::VectorXd& intrinsics,
+    Pose3d& extrinsics, double& latency, Eigen::Vector3d& t_model_point,
+    Pose3d& T_world_model, Trajectory& trajectory_world_sensorrig, double stamp,
     std::vector<double*>& parameters) {
   auto* cost_function =
       new ceres::DynamicAutoDiffCostFunction<CameraCostFunctor>(

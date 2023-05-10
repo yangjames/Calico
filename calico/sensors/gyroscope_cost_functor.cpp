@@ -15,7 +15,7 @@ GyroscopeCostFunctor::GyroscopeCostFunctor(
 }
 
 ceres::CostFunction* GyroscopeCostFunctor::CreateCostFunction(
-    const Eigen::Vector3d& measurement,
+    const Eigen::Vector3d& measurement, double sigma,
     GyroscopeIntrinsicsModel gyroscope_model, Eigen::VectorXd& intrinsics,
     Pose3d& extrinsics, double& latency, Trajectory& trajectory_world_sensorrig,
     double stamp, std::vector<double*>& parameters) {

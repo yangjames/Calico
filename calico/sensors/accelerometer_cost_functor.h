@@ -37,7 +37,7 @@ class AccelerometerCostFunctor {
 
   // Convenience function for creating a accelerometer cost function.
   static ceres::CostFunction* CreateCostFunction(
-      const Eigen::Vector3d& measurement,
+      const Eigen::Vector3d& measurement, double sigma,
       AccelerometerIntrinsicsModel accelerometer_model,
       Eigen::VectorXd& intrinsics, Pose3d& extrinsics, double& latency,
       Eigen::Vector3d& gravity, Trajectory& trajectory_world_sensorrig, 

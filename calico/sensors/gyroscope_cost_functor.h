@@ -35,7 +35,7 @@ class GyroscopeCostFunctor {
 
   // Convenience function for creating a gyroscope cost function.
   static ceres::CostFunction* CreateCostFunction(
-      const Eigen::Vector3d& measurement,
+      const Eigen::Vector3d& measurement, double sigma,
       GyroscopeIntrinsicsModel gyroscope_model, Eigen::VectorXd& intrinsics,
       Pose3d& extrinsics, double& latency,
       Trajectory& trajectory_world_sensorrig, double stamp,
