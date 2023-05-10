@@ -12,6 +12,9 @@ CameraCostFunctor::CameraCostFunctor(
   camera_model_ = CameraModel::Create(camera_model);
   trajectory_evaluation_params_
       = trajectory_world_sensorrig.GetEvaluationParams(stamp);
+  const double information = sigma > 0.0 ? 1.0 / std::sqrt(sigma) : 1.0;
+  measurement_information_.setIdentity();
+  measurement_information_ *= information;
 }
 
 ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
