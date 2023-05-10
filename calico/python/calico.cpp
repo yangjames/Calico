@@ -99,7 +99,19 @@ PYBIND11_MODULE(_calico, m) {
     .def("GetModel", &Accelerometer::GetModel)
     .def("SetLossFunction", &Accelerometer::SetLossFunction)
     .def("AddMeasurement", &Accelerometer::AddMeasurement)
-    .def("AddMeasurements", &Accelerometer::AddMeasurements);
+    .def("AddMeasurements", &Accelerometer::AddMeasurements)
+    .def("SetMeasurementNoise", &Accelerometer::SetMeasurementNoise)
+    .def("Project",
+         [](const Accelerometer& self, const std::vector<double>& interp_times,
+            const Trajectory& sensorrig_trajectory, const WorldModel& world_model) {
+           const auto interp_vals = self.Project(
+               interp_times, sensorrig_trajectory, world_model);
+           if (!interp_vals.status().ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(interp_vals.status().message()));
+           }
+           return interp_vals.value();
+         });
 
   // Gyroscope class.
   py::enum_<GyroscopeIntrinsicsModel>(m, "GyroscopeIntrinsicsModel")
@@ -146,7 +158,19 @@ PYBIND11_MODULE(_calico, m) {
     .def("GetModel", &Gyroscope::GetModel)
     .def("SetLossFunction", &Gyroscope::SetLossFunction)
     .def("AddMeasurement", &Gyroscope::AddMeasurement)
-    .def("AddMeasurements", &Gyroscope::AddMeasurements);
+    .def("AddMeasurements", &Gyroscope::AddMeasurements)
+    .def("SetMeasurementNoise", &Gyroscope::SetMeasurementNoise)
+    .def("Project",
+         [](const Gyroscope& self, const std::vector<double>& interp_times,
+            const Trajectory& sensorrig_trajectory, const WorldModel& world_model) {
+           const auto interp_vals = self.Project(
+               interp_times, sensorrig_trajectory, world_model);
+           if (!interp_vals.status().ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(interp_vals.status().message()));
+           }
+           return interp_vals.value();
+         });
 
 
   // Camera class.
@@ -242,7 +266,8 @@ PYBIND11_MODULE(_calico, m) {
              throw std::runtime_error(
                  std::string("Error: ") + std::string(status.message()));
            }
-         });
+         })
+    .def("SetMeasurementNoise", &Camera::SetMeasurementNoise);
 
   // Trajectory class.
   py::class_<Trajectory, std::shared_ptr<Trajectory>>(m, "Trajectory")
@@ -302,7 +327,8 @@ PYBIND11_MODULE(_calico, m) {
            }
          })
     .def("SetGravity", &WorldModel::SetGravity)
-    .def("GetGravity", &WorldModel::GetGravity);
+    .def("GetGravity", &WorldModel::GetGravity)
+    .def("EnableGravityEstimation", &WorldModel::EnableGravityEstimation);
 
   // ceres::Summary
   py::class_<ceres::Solver::Summary>(m, "Summary")
