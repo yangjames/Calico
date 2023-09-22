@@ -99,6 +99,7 @@ target_link_libraries(
   absl::status
   absl::statusor
   absl::flat_hash_map
+  absl::strings
   Ceres::ceres
 )
 add_executable(

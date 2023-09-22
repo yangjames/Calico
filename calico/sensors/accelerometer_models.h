@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "absl/status/statusor.h"
+#include "absl/strings/str_cat.h"
 #include "Eigen/Dense"
 
 
