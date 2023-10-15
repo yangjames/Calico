@@ -15,7 +15,6 @@ readme = "README.md"
 authors = [
   {name = "James Yang", email = "james.yang92@gmail.com"},
 ]
-
 license = {file = "LICENSE"}
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -25,3 +24,6 @@ classifiers = [
   "Operating System :: Linux",
   "Programming Language :: Python",
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/yangjames/Calico.git"
