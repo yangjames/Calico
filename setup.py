@@ -1,89 +1,88 @@
 import os
+import re
 import sys
-from typing import List
+import sysconfig
+import platform
+import subprocess
+import shutil
+from pathlib import Path
 
-from setuptools import Extension, setup, find_packages
+from distutils.version import LooseVersion
+from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
-from pybind11.setup_helpers import Pybind11Extension
+from setuptools.command.test import test as TestCommand
 
 
-class custom_build_ext(build_ext):
-    def build_extensions(self):
-        # Override the compiler executables. Importantly, this
-        # removes the "default" compiler flags that would
-        # otherwise get passed on to to the compiler, i.e.,
-        # distutils.sysconfig.get_var("CFLAGS").
-        self.compiler.set_executable("compiler_so", "g++")
-        self.compiler.set_executable("compiler_cxx", "g++")
-        self.compiler.set_executable("linker_so", "g++")
-        build_ext.build_extensions(self)
-
-def get_libnames(libname: str, root_dir: str) -> List[str]:
-  libnames = [
-    f.split(".")[0][3:] for f in os.listdir(root_dir) if libname in f
-  ]
-  return libnames
+class CMakeExtension(Extension):
+  def __init__(self, name, sources=[]):
+    Extension.__init__(self, name, sources=sources)
 
 
-if __name__ == "__main__":
-  # Construct include directories.
-  usr_include = "/usr/include/"
-  usr_local_include = "/usr/local/include/"
-  include_libs = ["", "eigen3", "absl", "opencv4", "ceres", "yaml-cpp", "glog", "pybind11"]
+class CMakeBuild(build_ext):
+  def run(self):
+    try:
+      out = subprocess.check_output(['cmake', '--version'])
+    except OSError:
+      raise RuntimeError(
+        "CMake must be installed to build the following extensions: " +
+        ", ".join(e.name for e in self.extensions))
 
-  include_dirs = []
-  for lib in include_libs:
-    for lib_dir in [usr_include, usr_local_include]:
-      include_dirs += [os.path.join(lib_dir, lib) for lib in include_libs]
-  include_dirs += [
-    ".", "calico/third_party/apriltags",
-  ]
+    build_directory = os.path.abspath(self.build_temp)
 
-  # Construct library directories and linker flags.
-  usr_lib_dir = "/usr/lib/x86_64-linux-gnu"
-  usr_local_lib_dir = "/usr/local/lib"
-  library_dirs = [
-    usr_lib_dir, usr_local_lib_dir
-  ]
-  libs = ["absl", "opencv", "ceres", "yaml-cpp", "glog"]
-  lib_names = ["stdc++", "pthread"]
-  for lib_dir in library_dirs:
-    for lib in libs:
-      lib_names += get_libnames(lib, lib_dir)
-  lib_names = sorted(lib_names)
+    cmake_args = [
+      '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + build_directory,
+      '-DPYTHON_EXECUTABLE=' + sys.executable
+    ]
 
-  # Construct source files.
-  src_files = list()
-  for root, dirs, files in os.walk(".", topdown=False):
-    for name in files:
-      if ((name.endswith(".cpp") or name.endswith(".cc")) and "test" not in name):
-        src_files.append(os.path.join(root, name))
+    cfg = 'Debug' if self.debug else 'Release'
+    build_args = ['--config', cfg]
 
-  # Construct pybind11 extensions.
-  extensions = [
-    Pybind11Extension(
-      "calico",
-      src_files,
-      language="c++",
-      include_dirs=include_dirs,
-      library_dirs=library_dirs,
-      runtime_library_dirs=library_dirs,
-      libraries=lib_names,
-      cxx_std="17",
-      extra_compile_args=["-fPIC", "-O3", "-pthread"],
-      extra_link_args=["-undefined", "-dynamic_lookup", "-shared"]
-    ),
-  ]
+    cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
 
-  setup(
-    name="calico",
-    url="https://github.com/yangjames/Calico.git",
-    packages=find_packages(where="calico"),
-    package_dir={"": "calico"},
-    ext_modules=extensions,
-    package_data={
-      "": ["README.md", "LICENSE"]
-    },
-    include_package_data=True,
-    cmdclass=dict(build_ext=custom_build_ext),
-  )
+    # Assuming Makefiles
+    build_args += ['--']
+
+    self.build_args = build_args
+
+    env = os.environ.copy()
+    env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(
+      env.get('CXXFLAGS', ''),
+      self.distribution.get_version())
+    if not os.path.exists(self.build_temp):
+      os.makedirs(self.build_temp)
+
+    # CMakeLists.txt is in the same directory as this setup.py file
+    cmake_list_dir = os.path.abspath(os.path.dirname(__file__))
+    print('-'*10, 'Running CMake prepare', '-'*40)
+    subprocess.check_call(['cmake', cmake_list_dir] + cmake_args,
+                          cwd=self.build_temp, env=env)
+
+    print('-'*10, 'Building extensions', '-'*40)
+    cmake_cmd = ['cmake', '--build', '.'] + self.build_args
+    subprocess.check_call(cmake_cmd,
+                          cwd=self.build_temp)
+
+    # Move from build temp to final position
+    for ext in self.extensions:
+      self.move_output(ext)
+
+  def move_output(self, ext):
+    build_temp = Path(self.build_temp).resolve()
+    dest_path = Path(self.get_ext_fullpath(ext.name)).resolve()
+    source_path = build_temp / self.get_ext_filename(ext.name)
+    dest_directory = dest_path.parents[0]
+    dest_directory.mkdir(parents=True, exist_ok=True)
+    self.copy_file(source_path, dest_path)
+        
+ext_modules = [
+  CMakeExtension('calico._calico'),
+]
+
+setup(
+  packages=find_packages(),
+  py_modules=["calico/utils", "calico/__init__"],
+  package_dir={"": "."},
+  ext_modules=ext_modules,
+  cmdclass=dict(build_ext=CMakeBuild),
+  zip_safe=False,
+)
