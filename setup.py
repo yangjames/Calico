@@ -1,20 +1,35 @@
-import os, sys
-from setuptools import Extension, setup, find_packages
+import os
+import sys
 from typing import List
 
+from setuptools import Extension, setup, find_packages
+from setuptools.command.build_ext import build_ext
+from pybind11.setup_helpers import Pybind11Extension
+
+
+class custom_build_ext(build_ext):
+    def build_extensions(self):
+        # Override the compiler executables. Importantly, this
+        # removes the "default" compiler flags that would
+        # otherwise get passed on to to the compiler, i.e.,
+        # distutils.sysconfig.get_var("CFLAGS").
+        self.compiler.set_executable("compiler_so", "g++")
+        self.compiler.set_executable("compiler_cxx", "g++")
+        self.compiler.set_executable("linker_so", "g++")
+        build_ext.build_extensions(self)
 
 def get_libnames(libname: str, root_dir: str) -> List[str]:
-  opencv_libs = [
+  libnames = [
     f.split(".")[0][3:] for f in os.listdir(root_dir) if libname in f
   ]
-  return opencv_libs
+  return libnames
 
 
 if __name__ == "__main__":
   # Construct include directories.
   usr_include = "/usr/include/"
   usr_local_include = "/usr/local/include/"
-  include_libs = ["", "eigen3", "absl", "opencv4", "ceres", "yaml-cpp"]
+  include_libs = ["", "eigen3", "absl", "opencv4", "ceres", "yaml-cpp", "glog", "pybind11"]
 
   include_dirs = []
   for lib in include_libs:
@@ -30,13 +45,12 @@ if __name__ == "__main__":
   library_dirs = [
     usr_lib_dir, usr_local_lib_dir
   ]
-  libs = ["absl", "opencv", "ceres", "yaml-cpp"]
-  lib_names = ["stdc++"]
+  libs = ["absl", "opencv", "ceres", "yaml-cpp", "glog"]
+  lib_names = ["stdc++", "pthread"]
   for lib_dir in library_dirs:
     for lib in libs:
       lib_names += get_libnames(lib, lib_dir)
-
-  print(sorted(lib_names))
+  lib_names = sorted(lib_names)
 
   # Construct source files.
   src_files = list()
@@ -46,7 +60,6 @@ if __name__ == "__main__":
         src_files.append(os.path.join(root, name))
 
   # Construct pybind11 extensions.
-  from pybind11.setup_helpers import Pybind11Extension, build_ext
   extensions = [
     Pybind11Extension(
       "calico",
@@ -57,7 +70,8 @@ if __name__ == "__main__":
       runtime_library_dirs=library_dirs,
       libraries=lib_names,
       cxx_std="17",
-      extra_compile_args=["-fPIC", "-O3"]
+      extra_compile_args=["-fPIC", "-O3", "-pthread"],
+      extra_link_args=["-undefined", "-dynamic_lookup", "-shared"]
     ),
   ]
 
@@ -71,5 +85,5 @@ if __name__ == "__main__":
       "": ["README.md", "LICENSE"]
     },
     include_package_data=True,
-    cmdclass=dict(build_ext=build_ext),
+    cmdclass=dict(build_ext=custom_build_ext),
   )
