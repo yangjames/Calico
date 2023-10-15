@@ -298,8 +298,8 @@ install(
 )
 install(
   FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
   DESTINATION ${Python_SITELIB}/calico
 )
 

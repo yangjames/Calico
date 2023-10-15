@@ -35,7 +35,7 @@ class CMakeBuild(build_ext):
     cfg = 'Debug' if self.debug else 'Release'
     build_args = ['--config', cfg]
 
-    cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
+    cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg, '-DBUILD_TESTING=OFF']
 
     # Assuming Makefiles
     build_args += ['--']
