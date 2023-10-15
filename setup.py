@@ -1,10 +1,8 @@
 import os
-import re
 import sys
 import sysconfig
 import platform
 import subprocess
-import shutil
 from pathlib import Path
 
 from distutils.version import LooseVersion
