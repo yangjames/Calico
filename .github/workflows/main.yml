@@ -86,3 +86,5 @@ jobs:
 
       - name: Pull Request
         uses: peter-evans/create-pull-request@v5
+        with:
+          github_token: "${{ secrets.SECRET_TOKEN }}"
