@@ -84,8 +84,7 @@ jobs:
             git commit -m "create clone count badge"
           fi
 
-      - name: Push
-        uses: ad-m/github-push-action@master
+      - name: Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          force_with_lease: true
