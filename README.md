@@ -1,5 +1,4 @@
 <p align="center">
-    <img alt="ViewCount" src="https://views.whatilearened.today/views/github/MShawon/github-clone-count-badge.svg">
     <a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.github.com/yangjames/76734b6ff683c36299b8efb86438dfc9/raw/clone.json&logo=github'></a>
 </p>
 
