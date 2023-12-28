@@ -1,4 +1,9 @@
 <p align="center">
+    <img alt="ViewCount" src="https://views.whatilearened.today/views/github/MShawon/github-clone-count-badge.svg">
+    <a href='https://github.com/MShawon/github-clone-count-badge'><img alt='GitHub Clones' src='https://img.shields.io/badge/dynamic/json?color=success&label=Clone&query=count&url=https://gist.github.com/yangjames/76734b6ff683c36299b8efb86438dfc9/raw/clone.json&logo=github'></a>
+</p>
+
+<p align="center">
 <img src="https://user-images.githubusercontent.com/4121640/229179345-57bafb62-6391-498c-8d01-dbe86f8d54d1.png" width="300">
 </p>
 
