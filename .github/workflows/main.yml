@@ -84,7 +84,7 @@ jobs:
             git commit -m "create clone count badge"
           fi
 
-      - name: Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          github_token: "${{ secrets.SECRET_TOKEN }}"
+      # - name: Pull Request
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     github_token: "${{ secrets.SECRET_TOKEN }}"
