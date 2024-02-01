@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 project (Calico)
 
 # Turn off testing by default.
-option(BUILD_TESTING "Build unit tests." OFF)
 include(CTest)
 
 # std=c++17 or higher required for Abseil.
@@ -208,7 +207,7 @@ target_link_libraries(
 # Python bindings.
 pybind11_add_module(
   _calico
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/calico.cpp
 )
 target_link_libraries(
   _calico PUBLIC
@@ -227,8 +226,8 @@ set_target_properties(
 )
 file(
   COPY
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
   DESTINATION ${PROJECT_BINARY_DIR}/calico
 )
 
@@ -299,8 +298,8 @@ install(
 )
 install(
   FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
   DESTINATION ${Python_SITELIB}/calico
 )
 

@@ -6,3 +6,4 @@ __pycache__
 Testing
 .ipynb_checkpoints
 doc
+calico_python.egg-info

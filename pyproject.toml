@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "wheel", "pybind11", "opencv-python", "scipy", "pyyaml"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["."]
+exclude = ["demos"]
+
+[project]
+name = "calico-python"
+version = "0.1.0"
+description="A visual-inertial calibration library designed for rapid problem construction and debugging."
+readme = "README.md"
+authors = [
+  {name = "James Yang", email = "james.yang92@gmail.com"},
+]
+license = {file = "LICENSE"}
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yangjames/Calico.git"
