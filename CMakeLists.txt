@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 project (Calico)
 
 # Turn off testing by default.
-option(BUILD_TESTING "Build unit tests." OFF)
 include(CTest)
 
 # std=c++17 or higher required for Abseil.
@@ -205,33 +204,6 @@ target_link_libraries(
   ${YAML_CPP_LIBRARIES}
 )
 
-# Python bindings.
-# pybind11_add_module(
-#   calico
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
-# )
-# target_link_libraries(
-#   calico PUBLIC
-#   accelerometer
-#   aprilgrid_detector
-#   batch_optimizer
-#   camera
-#   gyroscope
-#   trajectory
-#   world_model
-#   Eigen3::Eigen
-# )
-# set_target_properties(
-#   calico PROPERTIES
-#   LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
-# )
-# file(
-#   COPY
-#   #${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
-#   DESTINATION ${PROJECT_BINARY_DIR}/calico
-# )
-
 # Install cpp library.
 install(
   TARGETS
@@ -292,17 +264,6 @@ install(
   FILES ${sensor_headers}
   DESTINATION include/calico/sensors/
 )
-# Install python library.
-# install(
-#   TARGETS calico
-#   DESTINATION ${Python_SITELIB}/calico
-# )
-# install(
-#   FILES
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
-#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
-#   DESTINATION ${Python_SITELIB}/calico
-# )
 
 if (BUILD_TESTING)
   # Typedefs test.
