@@ -7,13 +7,15 @@
 # SuiteSparse (optional)
 sudo apt-get install -y cmake libgoogle-glog-dev \
     libgflags-dev libatlas-base-dev libeigen3-dev \
-    libsuitesparse-dev
+    libsuitesparse-dev nvidia-cuda-toolkit
 
 cd /tmp || exit
 git clone https://ceres-solver.googlesource.com/ceres-solver
-cd ceres-solver || exit
 
-cmake .
+mkdir ceres-bin
+cd ceres-bin || exit
+USE_CUDA=off cmake ../ceres-solver
+
 make -j3
 #make test
 # Optionally install Ceres, it can also be exported using CMake which

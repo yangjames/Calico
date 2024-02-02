@@ -1,5 +1,6 @@
 [project]
-name = "pycalico"
+name = "calico"
+version = "0.0.1"
 authors= [
  {name = "James Yang", email = "james.yang92@gmail.com"}
 ]
