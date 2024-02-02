@@ -24,8 +24,8 @@ Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more in
 # Dependencies
 
 * Calico is not compatible with Ubuntu 20.04 the minimum supported version is 22.04.
-* Install the latest version of the CUDA sdk
 * The version of Ceres that ships with 22.04 is too old for Calico, run `./scripts/install-ceres.sh` to install the latest version.
+* * Optional: Install the latest version of the CUDA sdk before you install Ceres
 
 You will also need the following dependencies:
 
@@ -38,7 +38,7 @@ sudo apt install libeigen3-dev libgtest-dev libabsl-dev \
 
 ## Native
 
-```
+```bash
 cmake .
 make -j3
 make install
@@ -46,8 +46,7 @@ make install
 
 ## Python
 
-```
-cd python
+```bash
 pip wheel --no-deps .
 ```
 

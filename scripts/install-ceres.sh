@@ -7,7 +7,7 @@
 # SuiteSparse (optional)
 sudo apt-get install -y cmake libgoogle-glog-dev \
     libgflags-dev libatlas-base-dev libeigen3-dev \
-    libsuitesparse-dev nvidia-cuda-toolkit
+    libsuitesparse-dev
 
 cd /tmp || exit
 git clone https://ceres-solver.googlesource.com/ceres-solver

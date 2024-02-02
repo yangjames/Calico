@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel", "pybind11", "opencv-python", "scipy", "pyyaml"]
+requires = ["setuptools", "wheel", "pybind11"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -24,6 +24,18 @@ classifiers = [
   "Operating System :: Unix",
   "Programming Language :: Python",
 ]
+dependencies = [
+  'numpy ~= 1.26.0',
+  "opencv-python",
+  "pyyaml",
+]
+
+[project.optional-dependencies] # Optional
+test = [
+  'pytest>=6.0',
+  "scipy"
+]
+
 
 [project.urls]
 "Homepage" = "https://github.com/yangjames/Calico.git"
