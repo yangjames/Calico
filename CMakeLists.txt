@@ -14,8 +14,8 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(GTest REQUIRED)
 find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
-find_package(pybind11 REQUIRED)
-find_package(Python REQUIRED)
+# find_package(pybind11 REQUIRED)
+# find_package(Python REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
@@ -206,31 +206,31 @@ target_link_libraries(
 )
 
 # Python bindings.
-pybind11_add_module(
-  calico
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
-)
-target_link_libraries(
-  calico PUBLIC
-  accelerometer
-  aprilgrid_detector
-  batch_optimizer
-  camera
-  gyroscope
-  trajectory
-  world_model
-  Eigen3::Eigen
-)
-set_target_properties(
-  calico PROPERTIES
-  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
-)
-file(
-  COPY
-  #${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
-  DESTINATION ${PROJECT_BINARY_DIR}/calico
-)
+# pybind11_add_module(
+#   calico
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
+# )
+# target_link_libraries(
+#   calico PUBLIC
+#   accelerometer
+#   aprilgrid_detector
+#   batch_optimizer
+#   camera
+#   gyroscope
+#   trajectory
+#   world_model
+#   Eigen3::Eigen
+# )
+# set_target_properties(
+#   calico PROPERTIES
+#   LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
+# )
+# file(
+#   COPY
+#   #${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
+#   DESTINATION ${PROJECT_BINARY_DIR}/calico
+# )
 
 # Install cpp library.
 install(
@@ -293,16 +293,16 @@ install(
   DESTINATION include/calico/sensors/
 )
 # Install python library.
-install(
-  TARGETS calico
-  DESTINATION ${Python_SITELIB}/calico
-)
-install(
-  FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
-  DESTINATION ${Python_SITELIB}/calico
-)
+# install(
+#   TARGETS calico
+#   DESTINATION ${Python_SITELIB}/calico
+# )
+# install(
+#   FILES
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+#   DESTINATION ${Python_SITELIB}/calico
+# )
 
 if (BUILD_TESTING)
   # Typedefs test.

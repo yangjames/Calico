@@ -24,8 +24,8 @@ Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more in
 # Dependencies
 
 ```
-sudo apt install libeigen3-dev libgtest-dev libabsl-dev libceres-dev \
-   python3-pybind11 libopencv-dev libyaml-cpp-dev libgmock-dev
+sudo apt install libeigen3-dev libgtest-dev libabsl-dev \
+  libopencv-dev libyaml-cpp-dev libgmock-dev python3-pybind11
 ./scripts/install-ceres.sh
 ```
 

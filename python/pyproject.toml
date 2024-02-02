@@ -1,6 +1,5 @@
 [project]
-name = "calico"
-version = "0.0.1"
+name = "pycalico"
 authors= [
  {name = "James Yang", email = "james.yang92@gmail.com"}
 ]
@@ -15,5 +14,8 @@ dependencies = [
 test = ['pytest>=6.0']
 
 [build-system]
-requires = ["setuptools>=42", "wheel", "pybind11~=2.6.1"]
+requires = ["setuptools>=42", "wheel", "pybind11>=2.10.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+target-version = "py39"
