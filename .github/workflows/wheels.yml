@@ -49,13 +49,12 @@ jobs:
         submodules: true
 
     - name: Dependencies
-      run: sudo apt update && \
+      run: |
+        sudo apt update
         sudo apt install libeigen3-dev libgtest-dev \
-        libabsl-dev libceres-dev \
-        libopencv-dev libyaml-cpp-dev libgmock-dev
-
-    - name: Ceres
-      run: ./scripts/install_ceres.sh
+          libabsl-dev libceres-dev \
+          libopencv-dev libyaml-cpp-dev libgmock-dev
+        ./scripts/install_ceres.sh
 
     - uses: pypa/cibuildwheel@v2.16
       env:
