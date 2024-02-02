@@ -11,3 +11,4 @@ CMakeFiles
 *.a
 *.whl
 Makefile
+venv

@@ -13,5 +13,5 @@ RUN apt update && \
 COPY scripts/install-ceres.sh /tmp/install-ceres.sh
 RUN /tmp/install-ceres.sh
 
-WORKDIR /workdir
-RUN chmod 777 /workdir
+WORKDIR /calico
+RUN chmod 777 /calico

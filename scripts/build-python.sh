@@ -11,6 +11,6 @@ export GID=$(id -g)
 
 docker run --rm \
     --user $USER_ID:$GID \
-    -v ./:/workdir/calico:rw \
+    -v ./:/calico:rw \
     ghcr.io/yangjames/calico:latest \
-    /bin/bash -c "python3 -m venv venv && . ./venv/bin/activate && cd calico && pip wheel --no-deps -w ./calico/wheels ."
+    /bin/bash -c "python3 -m venv venv && . ./venv/bin/activate && pip wheel --no-deps -w wheels ."
