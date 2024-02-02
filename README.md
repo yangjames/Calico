@@ -34,6 +34,23 @@ sudo apt install libeigen3-dev libgtest-dev libabsl-dev \
   libopencv-dev libyaml-cpp-dev libgmock-dev
 ```
 
+# Building
+
+## Native
+
+```
+cmake .
+make -j3
+make install
+```
+
+## Python
+
+```
+cd python
+pip wheel --no-deps .
+```
+
 # License
 Poor sensor calibration is a problem endemic to robotics, yet it's typically not given enough attention because it tends to detract from higher level project goals. The purpose of this library is to help roboticists quickly resolve their calibration issues so that they can move on to more interesting things. This library is hereby granted the MIT license, to be used free of charge by anyone within academia or industry.
 
