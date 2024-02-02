@@ -21,6 +21,14 @@ Calico features:
 
 Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info.
 
+# Dependencies
+
+```
+sudo apt install libeigen3-dev libgtest-dev libabsl-dev libceres-dev \
+   python3-pybind11 libopencv-dev libyaml-cpp-dev libgmock-dev
+./scripts/install-ceres.sh
+```
+
 # License
 Poor sensor calibration is a problem endemic to robotics, yet it's typically not given enough attention because it tends to detract from higher level project goals. The purpose of this library is to help roboticists quickly resolve their calibration issues so that they can move on to more interesting things. This library is hereby granted the MIT license, to be used free of charge by anyone within academia or industry.
 

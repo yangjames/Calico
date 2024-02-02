@@ -1,0 +1,19 @@
+[project]
+name = "calico"
+version = "0.0.1"
+authors= [
+ {name = "James Yang", email = "james.yang92@gmail.com"}
+]
+requires-python = ">=3.8"
+description="Calico calibration library"
+dependencies = [
+  'numpy ~= 1.26.0',
+  'opencv-python-headless>=4.8.0.74',
+]
+
+[project.optional-dependencies] # Optional
+test = ['pytest>=6.0']
+
+[build-system]
+requires = ["setuptools>=42", "wheel", "pybind11~=2.6.1"]
+build-backend = "setuptools.build_meta"

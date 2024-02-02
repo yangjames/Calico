@@ -85,7 +85,7 @@ target_link_libraries(
   trajectory
   world_model
 )
-  
+
 # Accelerometer library and tests.
 add_library(
   accelerometer_models
@@ -207,11 +207,11 @@ target_link_libraries(
 
 # Python bindings.
 pybind11_add_module(
-  _calico
+  calico
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/calico.cpp
 )
 target_link_libraries(
-  _calico PUBLIC
+  calico PUBLIC
   accelerometer
   aprilgrid_detector
   batch_optimizer
@@ -222,12 +222,12 @@ target_link_libraries(
   Eigen3::Eigen
 )
 set_target_properties(
-  _calico PROPERTIES
+  calico PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
 )
 file(
   COPY
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
+  #${CMAKE_CURRENT_SOURCE_DIR}/calico/python/__init__.py
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/python/utils.py
   DESTINATION ${PROJECT_BINARY_DIR}/calico
 )
@@ -294,7 +294,7 @@ install(
 )
 # Install python library.
 install(
-  TARGETS _calico
+  TARGETS calico
   DESTINATION ${Python_SITELIB}/calico
 )
 install(
