@@ -3,6 +3,8 @@ project(calico)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../CMakeLists.txt)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PYBIND_LIBRARY_OUTPUT_DIRECTORY})
+
 # # Load dependencies.
 find_package(pybind11 REQUIRED)
 
