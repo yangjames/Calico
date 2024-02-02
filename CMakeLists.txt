@@ -6,7 +6,6 @@ project (Calico)
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/build/bin)
 
 # Turn off testing by default.
-option(BUILD_TESTING "Build unit tests." OFF)
 include(CTest)
 
 # std=c++17 or higher required for Abseil.
