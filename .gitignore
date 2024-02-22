@@ -6,4 +6,13 @@ __pycache__
 Testing
 .ipynb_checkpoints
 doc
-calico_python.egg-info
+*.egg-info
+CMakeFiles
+*.a
+*.whl
+Makefile
+venv
+cmake_install.cmake
+CMakeCache.txt
+CTestTestfile.cmake
+DartConfiguration.tcl

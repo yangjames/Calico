@@ -1,7 +1,7 @@
 """@package Python utils
 Utility functions for calico python bindings.
 """
-import calico
+import calico.native as calico
 
 import cv2
 import numpy as np
@@ -123,7 +123,7 @@ def InitializePinholeAndPoses(
           [ 0 fy cy]
           [ 0  0  1]
     R_chart_camera:
-      List of 3x3 
+      List of 3x3
   """
   V = np.zeros((2*len(all_detections), 6))
   H_camera_chart = []

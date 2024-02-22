@@ -21,6 +21,50 @@ Calico features:
 
 Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more info.
 
+# Dependencies
+
+* The minimum supported version of Ubuntu is 22.04.
+* * This is because Ubuntu 20.04 and older do not ship with libabsl-dev.
+* The version of Ceres that ships with 22.04 is too old for Calico, run `./scripts/install-ceres.sh` to install the latest version.
+* * Optional: Install the latest version of the CUDA sdk before you install Ceres
+
+You will also need the following dependencies:
+
+```
+sudo apt install -y libeigen3-dev libgtest-dev libabsl-dev \
+  libopencv-dev libyaml-cpp-dev libgmock-dev
+```
+
+# Building
+
+## Native
+
+```bash
+mkdir build
+cd build
+cmake ..
+make -j3
+make install
+```
+
+## Python
+
+Note: For the Python wheel you do _not_ need to compile the native code first. The wheel is self-contained.
+
+From main directory:
+
+```bash
+pip wheel --no-deps -w wheels .
+```
+
+### Docker
+
+If you have docker and just want the python wheel, you don't need to install any dependencies and can simply run:
+
+./scripts/build-python.sh
+
+and sit back and relax. Eventually you'll find the wheel in the `wheels` folder.
+
 # License
 Poor sensor calibration is a problem endemic to robotics, yet it's typically not given enough attention because it tends to detract from higher level project goals. The purpose of this library is to help roboticists quickly resolve their calibration issues so that they can move on to more interesting things. This library is hereby granted the MIT license, to be used free of charge by anyone within academia or industry.
 

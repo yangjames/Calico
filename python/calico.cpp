@@ -15,8 +15,8 @@
 #include "pybind11/stl.h"
 
 
-PYBIND11_MODULE(_calico, m) {
-  m.doc() = "Calico";
+PYBIND11_MODULE(native, m) {
+  m.doc() = "Native code for calico";
   namespace py = pybind11;
   using namespace calico;
   using namespace calico::chart_detectors;

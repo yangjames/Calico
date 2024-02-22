@@ -1,14 +1,19 @@
 [build-system]
-requires = ["setuptools", "wheel", "pybind11", "opencv-python", "scipy", "pyyaml"]
+requires = [
+  "setuptools",
+  "wheel",
+  "pybind11",
+  "pybind11[global]",
+  "cmake>=3.12"
+]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["."]
-exclude = ["demos"]
+[tool.setuptools]
+packages= ["calico"]
+package-dir = {"" = "python"}
 
 [project]
-name = "calico-python"
+name = "calico"
 version = "0.1.0"
 description="A visual-inertial calibration library designed for rapid problem construction and debugging."
 readme = "README.md"
@@ -24,6 +29,18 @@ classifiers = [
   "Operating System :: Unix",
   "Programming Language :: Python",
 ]
+dependencies = [
+  'numpy ~= 1.26.0',
+  "opencv-python",
+  "pyyaml",
+]
+
+[project.optional-dependencies] # Optional
+test = [
+  'pytest>=6.0',
+  "scipy"
+]
+
 
 [project.urls]
 "Homepage" = "https://github.com/yangjames/Calico.git"
