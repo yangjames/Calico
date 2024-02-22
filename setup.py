@@ -125,7 +125,7 @@ class CMakeBuild(build_ext):
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
-    ext_modules=[CMakeExtension("calico", "python")],
+    ext_modules=[CMakeExtension("calico.native", "python")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
 )

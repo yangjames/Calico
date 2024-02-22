@@ -8,13 +8,12 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["."]
-exclude = ["demos"]
+[tool.setuptools]
+packages= ["calico"]
+package-dir = {"" = "python"}
 
 [project]
-name = "calico-python"
+name = "calico"
 version = "0.1.0"
 description="A visual-inertial calibration library designed for rapid problem construction and debugging."
 readme = "README.md"
