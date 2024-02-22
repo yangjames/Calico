@@ -23,7 +23,8 @@ Check out our [wiki pages](https://github.com/yangjames/Calico/wiki) for more in
 
 # Dependencies
 
-* Calico is not compatible with Ubuntu 20.04 the minimum supported version is 22.04.
+* The minimum supported version of Ubuntu is 22.04.
+* * This is because Ubuntu 20.04 and older do not ship with libabsl-dev.
 * The version of Ceres that ships with 22.04 is too old for Calico, run `./scripts/install-ceres.sh` to install the latest version.
 * * Optional: Install the latest version of the CUDA sdk before you install Ceres
 
@@ -39,20 +40,26 @@ sudo apt install -y libeigen3-dev libgtest-dev libabsl-dev \
 ## Native
 
 ```bash
-cmake .
+mkdir build
+cd build
+cmake ..
 make -j3
 make install
 ```
 
 ## Python
 
+Note: For the Python wheel you do _not_ need to compile the native code first. The wheel is self-contained.
+
+From main directory:
+
 ```bash
-pip wheel --no-deps .
+pip wheel --no-deps -w wheels .
 ```
 
-## Docker
+### Docker
 
-If you have docker and just want the python wheel, you can simply run:
+If you have docker and just want the python wheel, you don't need to install any dependencies and can simply run:
 
 ./scripts/build-python.sh
 
