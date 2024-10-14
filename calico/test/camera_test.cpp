@@ -4,6 +4,7 @@
 #include "calico/typedefs.h"
 #include "calico/sensors/camera_cost_functor.h"
 #include "calico/sensors/camera_models.h"
+#include "calico/world_model.h"
 #include "Eigen/Dense"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -109,5 +110,130 @@ TEST_F(CameraContainerTest, AddCalibrationParametersToProblem) {
   EXPECT_EQ(problem.NumParameters(), num_parameters);
 }
 
+TEST(CameraProjectionTest, LandmarkInView) {
+  // Construct a scene where a camera is sitting still, hovering 1m above the origin for 1 second.
+  Eigen::Quaterniond q_world_camera(/*w=*/0.0, /*x=*/1.0, /*y=*/0.0, /*z=*/0.0);
+  Eigen::Vector3d t_world_camera(0.0, 0.0, 1.0);
+  Trajectory trajectory;
+  ASSERT_OK(trajectory.FitSpline({
+    {0.0, Pose3d(q_world_camera, t_world_camera)},
+    {1.0, Pose3d(q_world_camera, t_world_camera)},
+  }));
+  // Construct a landmark placed at the origin.
+  Landmark landmark;
+  WorldModel world_model;
+  ASSERT_OK(world_model.AddLandmark(landmark));
+  // Construct the camera.
+  Camera camera;
+  ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));
+  Eigen::VectorXd intrinsics(OpenCv5Model::kNumberOfParameters);
+  intrinsics << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+  ASSERT_OK(camera.SetIntrinsics(intrinsics));
+
+  // Project the landmark into the camera.
+  ASSERT_OK_AND_ASSIGN(
+    const std::vector<CameraMeasurement> measurements,
+    camera.Project(std::vector<double>{0.0}, trajectory, world_model)
+  );
+  ASSERT_EQ(measurements.size(), 1);
+}
+
+TEST(CameraProjectionTest, LandmarkOutOfView) {
+  // Construct a scene where a camera is sitting still, hovering 1m above the origin for 1 second.
+  const Eigen::Quaterniond q_world_camera(/*w=*/0.0, /*x=*/1.0, /*y=*/0.0, /*z=*/0.0);
+  const Eigen::Vector3d t_world_camera(0.0, 0.0, 1.0);
+  Trajectory trajectory;
+  ASSERT_OK(trajectory.FitSpline({
+    {0.0, Pose3d(q_world_camera, t_world_camera)},
+    {1.0, Pose3d(q_world_camera, t_world_camera)},
+  }));
+  // Construct a landmark placed behind the camera.
+  const Landmark landmark{.point = Eigen::Vector3d(0.0, 0.0, 2.0)};
+  WorldModel world_model;
+  ASSERT_OK(world_model.AddLandmark(landmark));
+  // Construct the camera.
+  Camera camera;
+  ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));
+  Eigen::VectorXd intrinsics(OpenCv5Model::kNumberOfParameters);
+  intrinsics << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+  ASSERT_OK(camera.SetIntrinsics(intrinsics));
+  // Project the landmark into the camera.
+  ASSERT_OK_AND_ASSIGN(
+    const std::vector<CameraMeasurement> measurements,
+    camera.Project(std::vector<double>{0.0}, trajectory, world_model)
+  );
+  ASSERT_EQ(measurements.size(), 0);
+}
+
+TEST(CameraProjectionTest, RigidBodyInView) {
+  // Construct a scene where a camera is sitting still, hovering 1m above the origin for 1 second.
+  const Eigen::Quaterniond q_world_camera(/*w=*/0.0, /*x=*/1.0, /*y=*/0.0, /*z=*/0.0);
+  const Eigen::Vector3d t_world_camera(0.0, 0.0, 1.0);
+  Trajectory trajectory;
+  ASSERT_OK(trajectory.FitSpline({
+    {0.0, Pose3d(q_world_camera, t_world_camera)},
+    {1.0, Pose3d(q_world_camera, t_world_camera)},
+  }));
+  // Construct a rigidbody placed at the origin.
+  const RigidBody rigidbody {
+    .model_definition = {
+      {0, Eigen::Vector3d(-0.5, -0.5, 0.0)},
+      {1, Eigen::Vector3d(-0.5, 0.5, 0.0)},
+      {2, Eigen::Vector3d(0.5, 0.5, 0.0)},
+      {3, Eigen::Vector3d(0.5, -0.5, 0.0)},
+    },
+    .id = 0
+  };
+  WorldModel world_model;
+  ASSERT_OK(world_model.AddRigidBody(rigidbody));
+  // Construct the camera.
+  Camera camera;
+  ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));
+  Eigen::VectorXd intrinsics(OpenCv5Model::kNumberOfParameters);
+  intrinsics << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+  ASSERT_OK(camera.SetIntrinsics(intrinsics));
+  // Project the landmark into the camera.
+  ASSERT_OK_AND_ASSIGN(
+    const std::vector<CameraMeasurement> measurements,
+    camera.Project(std::vector<double>{0.0}, trajectory, world_model)
+  );
+  ASSERT_EQ(measurements.size(), 4);
+}
+
+TEST(CameraProjectionTest, RigidBodyOutOfView) {
+  // Construct a scene where a camera is sitting still, hovering 1m above the origin for 1 second.
+  const Eigen::Quaterniond q_world_camera(/*w=*/0.0, /*x=*/1.0, /*y=*/0.0, /*z=*/0.0);
+  const Eigen::Vector3d t_world_camera(0.0, 0.0, 1.0);
+  Trajectory trajectory;
+  ASSERT_OK(trajectory.FitSpline({
+    {0.0, Pose3d(q_world_camera, t_world_camera)},
+    {1.0, Pose3d(q_world_camera, t_world_camera)},
+  }));
+  // Construct a rigidbody placed at the origin.
+  const RigidBody rigidbody {
+    .model_definition = {
+      {0, Eigen::Vector3d(-0.5, -0.5, 0.0)},
+      {1, Eigen::Vector3d(-0.5, 0.5, 0.0)},
+      {2, Eigen::Vector3d(0.5, 0.5, 0.0)},
+      {3, Eigen::Vector3d(0.5, -0.5, 0.0)},
+    },
+    .T_world_rigidbody = Pose3d(Eigen::Quaterniond::Identity(), Eigen::Vector3d(0.0, 0.0, 2.0)),
+    .id = 0
+  };
+  WorldModel world_model;
+  ASSERT_OK(world_model.AddRigidBody(rigidbody));
+  // Construct the camera.
+  Camera camera;
+  ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));
+  Eigen::VectorXd intrinsics(OpenCv5Model::kNumberOfParameters);
+  intrinsics << 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+  ASSERT_OK(camera.SetIntrinsics(intrinsics));
+  // Project the landmark into the camera.
+  ASSERT_OK_AND_ASSIGN(
+    const std::vector<CameraMeasurement> measurements,
+    camera.Project(std::vector<double>{0.0}, trajectory, world_model)
+  );
+  ASSERT_EQ(measurements.size(), 0);
+}
 } // namespace
 } // namespace calico::sensors
