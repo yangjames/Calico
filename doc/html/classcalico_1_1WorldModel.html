@@ -86,26 +86,26 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7d0c51dd6c2fe1a7f238df970706d3c4"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#a7d0c51dd6c2fe1a7f238df970706d3c4">AddLandmark</a> (const <a class="el" href="structcalico_1_1Landmark.html">Landmark</a> &amp;landmark)</td></tr>
-<tr class="separator:a7d0c51dd6c2fe1a7f238df970706d3c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afec3f48ea4e103843ee1af45a522406d"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#afec3f48ea4e103843ee1af45a522406d">AddRigidBody</a> (const <a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> &amp;rigidbody)</td></tr>
-<tr class="separator:afec3f48ea4e103843ee1af45a522406d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd4a907cae652f141e5ec99fc3bc1fdc"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#afd4a907cae652f141e5ec99fc3bc1fdc">AddLandmark</a> (<a class="el" href="structcalico_1_1Landmark.html">Landmark</a> *landmark, bool take_ownership=true)</td></tr>
+<tr class="separator:afd4a907cae652f141e5ec99fc3bc1fdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91c0845b071a8e64a304943417e9d0ca"><td class="memItemLeft" align="right" valign="top">absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#a91c0845b071a8e64a304943417e9d0ca">AddRigidBody</a> (<a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> *rigidbody, bool take_ownership=true)</td></tr>
+<tr class="separator:a91c0845b071a8e64a304943417e9d0ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf704782e9329ec635dd92e5eec5a628"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#acf704782e9329ec635dd92e5eec5a628">AddParametersToProblem</a> (ceres::Problem &amp;problem)</td></tr>
 <tr class="separator:acf704782e9329ec635dd92e5eec5a628"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32b9752a56c0a9bb1ef4d9dc698e4323"><td class="memItemLeft" align="right" valign="top"><a id="a32b9752a56c0a9bb1ef4d9dc698e4323"></a>
-const absl::flat_hash_map&lt; int, <a class="el" href="structcalico_1_1Landmark.html">Landmark</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#a32b9752a56c0a9bb1ef4d9dc698e4323">landmarks</a> () const</td></tr>
-<tr class="memdesc:a32b9752a56c0a9bb1ef4d9dc698e4323"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor for landmarks. <br /></td></tr>
-<tr class="separator:a32b9752a56c0a9bb1ef4d9dc698e4323"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a490f4cf7f0e08f41b340b6bb6e43af21"><td class="memItemLeft" align="right" valign="top"><a id="a490f4cf7f0e08f41b340b6bb6e43af21"></a>
-absl::flat_hash_map&lt; int, <a class="el" href="structcalico_1_1Landmark.html">Landmark</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>landmarks</b> ()</td></tr>
-<tr class="separator:a490f4cf7f0e08f41b340b6bb6e43af21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d2c7b3e9846096ef6cc09aba3ef0a9b"><td class="memItemLeft" align="right" valign="top"><a id="a0d2c7b3e9846096ef6cc09aba3ef0a9b"></a>
-const absl::flat_hash_map&lt; int, <a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#a0d2c7b3e9846096ef6cc09aba3ef0a9b">rigidbodies</a> () const</td></tr>
-<tr class="memdesc:a0d2c7b3e9846096ef6cc09aba3ef0a9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor for rigid bodies. <br /></td></tr>
-<tr class="separator:a0d2c7b3e9846096ef6cc09aba3ef0a9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e9aebbe3c5df6c0b4536451d1ef2480"><td class="memItemLeft" align="right" valign="top"><a id="a1e9aebbe3c5df6c0b4536451d1ef2480"></a>
-absl::flat_hash_map&lt; int, <a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>rigidbodies</b> ()</td></tr>
-<tr class="separator:a1e9aebbe3c5df6c0b4536451d1ef2480"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb53d0d6c62e00865f788e0bd1ca2f05"><td class="memItemLeft" align="right" valign="top"><a id="acb53d0d6c62e00865f788e0bd1ca2f05"></a>
+const absl::flat_hash_map&lt; int, std::unique_ptr&lt; <a class="el" href="structcalico_1_1Landmark.html">Landmark</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#acb53d0d6c62e00865f788e0bd1ca2f05">landmarks</a> () const</td></tr>
+<tr class="memdesc:acb53d0d6c62e00865f788e0bd1ca2f05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor for landmarks. <br /></td></tr>
+<tr class="separator:acb53d0d6c62e00865f788e0bd1ca2f05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07c41aefd3750441c9e99470e5dc9ab5"><td class="memItemLeft" align="right" valign="top"><a id="a07c41aefd3750441c9e99470e5dc9ab5"></a>
+absl::flat_hash_map&lt; int, std::unique_ptr&lt; <a class="el" href="structcalico_1_1Landmark.html">Landmark</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>landmarks</b> ()</td></tr>
+<tr class="separator:a07c41aefd3750441c9e99470e5dc9ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6075b5294ddcd0baea9ab78aa2cc1f2a"><td class="memItemLeft" align="right" valign="top"><a id="a6075b5294ddcd0baea9ab78aa2cc1f2a"></a>
+const absl::flat_hash_map&lt; int, std::unique_ptr&lt; <a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#a6075b5294ddcd0baea9ab78aa2cc1f2a">rigidbodies</a> () const</td></tr>
+<tr class="memdesc:a6075b5294ddcd0baea9ab78aa2cc1f2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accessor for rigid bodies. <br /></td></tr>
+<tr class="separator:a6075b5294ddcd0baea9ab78aa2cc1f2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94de558c77896f19172ebcee9b6c0b12"><td class="memItemLeft" align="right" valign="top"><a id="a94de558c77896f19172ebcee9b6c0b12"></a>
+absl::flat_hash_map&lt; int, std::unique_ptr&lt; <a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>rigidbodies</b> ()</td></tr>
+<tr class="separator:a94de558c77896f19172ebcee9b6c0b12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d74e3083470d9ce42e76c0c18232352"><td class="memItemLeft" align="right" valign="top"><a id="a0d74e3083470d9ce42e76c0c18232352"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1WorldModel.html#a0d74e3083470d9ce42e76c0c18232352">EnableGravityEstimation</a> (bool enable)</td></tr>
 <tr class="memdesc:a0d74e3083470d9ce42e76c0c18232352"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable flag for gravity estimation. <br /></td></tr>
@@ -154,8 +154,8 @@ Static Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><code><a class="el" href="classcalico_1_1WorldModel.html">WorldModel</a></code> manages all <code><a class="el" href="structcalico_1_1Landmark.html">Landmark</a></code> and <code><a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a></code> objects in an optimization problem. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7d0c51dd6c2fe1a7f238df970706d3c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d0c51dd6c2fe1a7f238df970706d3c4">&#9670;&nbsp;</a></span>AddLandmark()</h2>
+<a id="afd4a907cae652f141e5ec99fc3bc1fdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd4a907cae652f141e5ec99fc3bc1fdc">&#9670;&nbsp;</a></span>AddLandmark()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -163,9 +163,19 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">absl::Status calico::WorldModel::AddLandmark </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcalico_1_1Landmark.html">Landmark</a> &amp;&#160;</td>
-          <td class="paramname"><em>landmark</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structcalico_1_1Landmark.html">Landmark</a> *&#160;</td>
+          <td class="paramname"><em>landmark</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>take_ownership</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -192,8 +202,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afec3f48ea4e103843ee1af45a522406d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afec3f48ea4e103843ee1af45a522406d">&#9670;&nbsp;</a></span>AddRigidBody()</h2>
+<a id="a91c0845b071a8e64a304943417e9d0ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91c0845b071a8e64a304943417e9d0ca">&#9670;&nbsp;</a></span>AddRigidBody()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,9 +211,19 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">absl::Status calico::WorldModel::AddRigidBody </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> &amp;&#160;</td>
-          <td class="paramname"><em>rigidbody</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structcalico_1_1RigidBody.html">RigidBody</a> *&#160;</td>
+          <td class="paramname"><em>rigidbody</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>take_ownership</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

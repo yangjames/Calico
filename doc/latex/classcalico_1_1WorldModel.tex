@@ -7,23 +7,23 @@
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-absl\+::\+Status \mbox{\hyperlink{classcalico_1_1WorldModel_a7d0c51dd6c2fe1a7f238df970706d3c4}{Add\+Landmark}} (const \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} \&landmark)
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1WorldModel_afd4a907cae652f141e5ec99fc3bc1fdc}{Add\+Landmark}} (\mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $\ast$landmark, bool take\+\_\+ownership=true)
 \item 
-absl\+::\+Status \mbox{\hyperlink{classcalico_1_1WorldModel_afec3f48ea4e103843ee1af45a522406d}{Add\+Rigid\+Body}} (const \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} \&rigidbody)
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1WorldModel_a91c0845b071a8e64a304943417e9d0ca}{Add\+Rigid\+Body}} (\mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $\ast$rigidbody, bool take\+\_\+ownership=true)
 \item 
 int \mbox{\hyperlink{classcalico_1_1WorldModel_acf704782e9329ec635dd92e5eec5a628}{Add\+Parameters\+To\+Problem}} (ceres\+::\+Problem \&problem)
 \item 
-\mbox{\Hypertarget{classcalico_1_1WorldModel_a32b9752a56c0a9bb1ef4d9dc698e4323}\label{classcalico_1_1WorldModel_a32b9752a56c0a9bb1ef4d9dc698e4323}} 
-const absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $>$ \& \mbox{\hyperlink{classcalico_1_1WorldModel_a32b9752a56c0a9bb1ef4d9dc698e4323}{landmarks}} () const
+\mbox{\Hypertarget{classcalico_1_1WorldModel_acb53d0d6c62e00865f788e0bd1ca2f05}\label{classcalico_1_1WorldModel_acb53d0d6c62e00865f788e0bd1ca2f05}} 
+const absl\+::flat\+\_\+hash\+\_\+map$<$ int, std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $>$ $>$ \& \mbox{\hyperlink{classcalico_1_1WorldModel_acb53d0d6c62e00865f788e0bd1ca2f05}{landmarks}} () const
 \begin{DoxyCompactList}\small\item\em Accessor for landmarks. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1WorldModel_a490f4cf7f0e08f41b340b6bb6e43af21}\label{classcalico_1_1WorldModel_a490f4cf7f0e08f41b340b6bb6e43af21}} 
-absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $>$ \& {\bfseries landmarks} ()
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a07c41aefd3750441c9e99470e5dc9ab5}\label{classcalico_1_1WorldModel_a07c41aefd3750441c9e99470e5dc9ab5}} 
+absl\+::flat\+\_\+hash\+\_\+map$<$ int, std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $>$ $>$ \& {\bfseries landmarks} ()
 \item 
-\mbox{\Hypertarget{classcalico_1_1WorldModel_a0d2c7b3e9846096ef6cc09aba3ef0a9b}\label{classcalico_1_1WorldModel_a0d2c7b3e9846096ef6cc09aba3ef0a9b}} 
-const absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $>$ \& \mbox{\hyperlink{classcalico_1_1WorldModel_a0d2c7b3e9846096ef6cc09aba3ef0a9b}{rigidbodies}} () const
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a6075b5294ddcd0baea9ab78aa2cc1f2a}\label{classcalico_1_1WorldModel_a6075b5294ddcd0baea9ab78aa2cc1f2a}} 
+const absl\+::flat\+\_\+hash\+\_\+map$<$ int, std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $>$ $>$ \& \mbox{\hyperlink{classcalico_1_1WorldModel_a6075b5294ddcd0baea9ab78aa2cc1f2a}{rigidbodies}} () const
 \begin{DoxyCompactList}\small\item\em Accessor for rigid bodies. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1WorldModel_a1e9aebbe3c5df6c0b4536451d1ef2480}\label{classcalico_1_1WorldModel_a1e9aebbe3c5df6c0b4536451d1ef2480}} 
-absl\+::flat\+\_\+hash\+\_\+map$<$ int, \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $>$ \& {\bfseries rigidbodies} ()
+\mbox{\Hypertarget{classcalico_1_1WorldModel_a94de558c77896f19172ebcee9b6c0b12}\label{classcalico_1_1WorldModel_a94de558c77896f19172ebcee9b6c0b12}} 
+absl\+::flat\+\_\+hash\+\_\+map$<$ int, std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $>$ $>$ \& {\bfseries rigidbodies} ()
 \item 
 \mbox{\Hypertarget{classcalico_1_1WorldModel_a0d74e3083470d9ce42e76c0c18232352}\label{classcalico_1_1WorldModel_a0d74e3083470d9ce42e76c0c18232352}} 
 void \mbox{\hyperlink{classcalico_1_1WorldModel_a0d74e3083470d9ce42e76c0c18232352}{Enable\+Gravity\+Estimation}} (bool enable)
@@ -66,11 +66,11 @@ static constexpr double \mbox{\hyperlink{classcalico_1_1WorldModel_ad1ea2db6d798
 {\ttfamily \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}} manages all {\ttfamily \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}}} and {\ttfamily \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}}} objects in an optimization problem. 
 
 \doxysubsection{Member Function Documentation}
-\mbox{\Hypertarget{classcalico_1_1WorldModel_a7d0c51dd6c2fe1a7f238df970706d3c4}\label{classcalico_1_1WorldModel_a7d0c51dd6c2fe1a7f238df970706d3c4}} 
+\mbox{\Hypertarget{classcalico_1_1WorldModel_afd4a907cae652f141e5ec99fc3bc1fdc}\label{classcalico_1_1WorldModel_afd4a907cae652f141e5ec99fc3bc1fdc}} 
 \index{calico::WorldModel@{calico::WorldModel}!AddLandmark@{AddLandmark}}
 \index{AddLandmark@{AddLandmark}!calico::WorldModel@{calico::WorldModel}}
 \doxysubsubsection{\texorpdfstring{AddLandmark()}{AddLandmark()}}
-{\footnotesize\ttfamily absl\+::\+Status calico\+::\+World\+Model\+::\+Add\+Landmark (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} \&}]{landmark }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::\+World\+Model\+::\+Add\+Landmark (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}} $\ast$}]{landmark,  }\item[{bool}]{take\+\_\+ownership = {\ttfamily true} }\end{DoxyParamCaption})}
 
 Add a {\ttfamily \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}}} object to the world model. Returns an Invalid\+Argument status code if the landmark id is not unique. \mbox{\Hypertarget{classcalico_1_1WorldModel_acf704782e9329ec635dd92e5eec5a628}\label{classcalico_1_1WorldModel_acf704782e9329ec635dd92e5eec5a628}} 
 \index{calico::WorldModel@{calico::WorldModel}!AddParametersToProblem@{AddParametersToProblem}}
@@ -78,11 +78,11 @@ Add a {\ttfamily \mbox{\hyperlink{structcalico_1_1Landmark}{Landmark}}} object t
 \doxysubsubsection{\texorpdfstring{AddParametersToProblem()}{AddParametersToProblem()}}
 {\footnotesize\ttfamily int calico\+::\+World\+Model\+::\+Add\+Parameters\+To\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem }\end{DoxyParamCaption})}
 
-Add internal parameters to a ceres problem. Any internal parameters set to constant are marked as such in the problem. Returns the total number of parameters added to the problem. \mbox{\Hypertarget{classcalico_1_1WorldModel_afec3f48ea4e103843ee1af45a522406d}\label{classcalico_1_1WorldModel_afec3f48ea4e103843ee1af45a522406d}} 
+Add internal parameters to a ceres problem. Any internal parameters set to constant are marked as such in the problem. Returns the total number of parameters added to the problem. \mbox{\Hypertarget{classcalico_1_1WorldModel_a91c0845b071a8e64a304943417e9d0ca}\label{classcalico_1_1WorldModel_a91c0845b071a8e64a304943417e9d0ca}} 
 \index{calico::WorldModel@{calico::WorldModel}!AddRigidBody@{AddRigidBody}}
 \index{AddRigidBody@{AddRigidBody}!calico::WorldModel@{calico::WorldModel}}
 \doxysubsubsection{\texorpdfstring{AddRigidBody()}{AddRigidBody()}}
-{\footnotesize\ttfamily absl\+::\+Status calico\+::\+World\+Model\+::\+Add\+Rigid\+Body (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} \&}]{rigidbody }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::\+World\+Model\+::\+Add\+Rigid\+Body (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}} $\ast$}]{rigidbody,  }\item[{bool}]{take\+\_\+ownership = {\ttfamily true} }\end{DoxyParamCaption})}
 
 Add a {\ttfamily \mbox{\hyperlink{structcalico_1_1RigidBody}{Rigid\+Body}}} object to the world model. Returns an Invalid\+Argument status code if the rigid body id is not unique. 
 
