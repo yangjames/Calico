@@ -188,6 +188,9 @@ absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
           T_camera_world * rigidbody.T_world_rigidbody;
       for (const auto& [point_id, point] : rigidbody.model_definition) {
         const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
+        if (point_camera.z() <= 0) {
+          continue;
+        }
         const absl::StatusOr<Eigen::Vector2d> projection =
           camera_model_->ProjectPoint(intrinsics_, point_camera);
         measurements.push_back({

@@ -267,7 +267,18 @@ PYBIND11_MODULE(_calico, m) {
                  std::string("Error: ") + std::string(status.message()));
            }
          })
-    .def("SetMeasurementNoise", &Camera::SetMeasurementNoise);
+    .def("SetMeasurementNoise", &Camera::SetMeasurementNoise)
+    .def("Project",
+         [](const Camera& self, const std::vector<double>& interp_times,
+            const Trajectory& sensorrig_trajectory, const WorldModel& world_model) {
+           const auto interp_vals = self.Project(
+               interp_times, sensorrig_trajectory, world_model);
+           if (!interp_vals.status().ok()) {
+             throw std::runtime_error(
+                 std::string("Error: ") + std::string(interp_vals.status().message()));
+           }
+           return interp_vals.value();
+         });
 
   // Trajectory class.
   py::class_<Trajectory, std::shared_ptr<Trajectory>>(m, "Trajectory")
