@@ -130,9 +130,9 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
           "the world model."));
     }
     // Get the right rigidbody reference from the world model.
-    RigidBody& rigidbody_ref = world_model.rigidbodies().at(rigidbody_id);
+    std::unique_ptr<RigidBody>& rigidbody_ref = world_model.rigidbodies().at(rigidbody_id);
     Eigen::Vector3d& t_model_point =
-        rigidbody_ref.model_definition.at(observation_id.feature_id);
+        rigidbody_ref->model_definition.at(observation_id.feature_id);
     // Construct a cost function and supply parameters for this residual.
     std::vector<double*> parameters;
 
@@ -140,7 +140,7 @@ absl::StatusOr<int> Camera::AddResidualsToProblem(
         CameraCostFunctor::CreateCostFunction(
             measurement.pixel, sigma_, camera_model_->GetType(), intrinsics_,
             T_sensorrig_sensor_, latency_, t_model_point,
-            rigidbody_ref.T_world_rigidbody, sensorrig_trajectory,
+            rigidbody_ref->T_world_rigidbody, sensorrig_trajectory,
             observation_id.stamp, parameters);
     ceres::LossFunction* loss_function = CreateLossFunction(
         loss_function_, loss_scale_);
@@ -168,7 +168,7 @@ absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
         (T_world_sensorrig * T_sensorrig_sensor_).inverse();
     // Project all landmarks.
     for (const auto& [landmark_id, landmark] : world_model.landmarks()) {
-      const Eigen::Vector3d point_camera = T_camera_world * landmark.point;
+      const Eigen::Vector3d point_camera = T_camera_world * landmark->point;
       if (point_camera.z() <= 0) {
         continue;
       }
@@ -185,8 +185,8 @@ absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
     // Project all rigid bodies.
     for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
       const Pose3d T_camera_rigidbody =
-          T_camera_world * rigidbody.T_world_rigidbody;
-      for (const auto& [point_id, point] : rigidbody.model_definition) {
+          T_camera_world * rigidbody->T_world_rigidbody;
+      for (const auto& [point_id, point] : rigidbody->model_definition) {
         const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
         if (point_camera.z() <= 0) {
           continue;

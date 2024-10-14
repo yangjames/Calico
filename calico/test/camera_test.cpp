@@ -122,7 +122,7 @@ TEST(CameraProjectionTest, LandmarkInView) {
   // Construct a landmark placed at the origin.
   Landmark landmark;
   WorldModel world_model;
-  ASSERT_OK(world_model.AddLandmark(landmark));
+  ASSERT_OK(world_model.AddLandmark(&landmark, /*take_ownership=*/false));
   // Construct the camera.
   Camera camera;
   ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));
@@ -148,9 +148,9 @@ TEST(CameraProjectionTest, LandmarkOutOfView) {
     {1.0, Pose3d(q_world_camera, t_world_camera)},
   }));
   // Construct a landmark placed behind the camera.
-  const Landmark landmark{.point = Eigen::Vector3d(0.0, 0.0, 2.0)};
+  Landmark landmark{.point = Eigen::Vector3d(0.0, 0.0, 2.0)};
   WorldModel world_model;
-  ASSERT_OK(world_model.AddLandmark(landmark));
+  ASSERT_OK(world_model.AddLandmark(&landmark, /*take_ownership=*/false));
   // Construct the camera.
   Camera camera;
   ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));
@@ -175,7 +175,7 @@ TEST(CameraProjectionTest, RigidBodyInView) {
     {1.0, Pose3d(q_world_camera, t_world_camera)},
   }));
   // Construct a rigidbody placed at the origin.
-  const RigidBody rigidbody {
+  RigidBody rigidbody {
     .model_definition = {
       {0, Eigen::Vector3d(-0.5, -0.5, 0.0)},
       {1, Eigen::Vector3d(-0.5, 0.5, 0.0)},
@@ -185,7 +185,7 @@ TEST(CameraProjectionTest, RigidBodyInView) {
     .id = 0
   };
   WorldModel world_model;
-  ASSERT_OK(world_model.AddRigidBody(rigidbody));
+  ASSERT_OK(world_model.AddRigidBody(&rigidbody, /*take_ownership=*/false));
   // Construct the camera.
   Camera camera;
   ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));
@@ -210,7 +210,7 @@ TEST(CameraProjectionTest, RigidBodyOutOfView) {
     {1.0, Pose3d(q_world_camera, t_world_camera)},
   }));
   // Construct a rigidbody placed at the origin.
-  const RigidBody rigidbody {
+  RigidBody rigidbody {
     .model_definition = {
       {0, Eigen::Vector3d(-0.5, -0.5, 0.0)},
       {1, Eigen::Vector3d(-0.5, 0.5, 0.0)},
@@ -221,7 +221,7 @@ TEST(CameraProjectionTest, RigidBodyOutOfView) {
     .id = 0
   };
   WorldModel world_model;
-  ASSERT_OK(world_model.AddRigidBody(rigidbody));
+  ASSERT_OK(world_model.AddRigidBody(&rigidbody, /*take_ownership=*/false));
   // Construct the camera.
   Camera camera;
   ASSERT_OK(camera.SetModel(CameraIntrinsicsModel::kOpenCv5));

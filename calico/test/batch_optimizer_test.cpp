@@ -40,7 +40,7 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   }
   WorldModel* world_model = new WorldModel;
   const Eigen::Vector3d true_gravity = world_model->gravity();
-  EXPECT_OK(world_model->AddRigidBody(planar_target));
+  EXPECT_OK(world_model->AddRigidBody(&planar_target, /*take_ownership=*/false));
   // Construct the sensorrig trajectory.
   Trajectory* trajectory_world_sensorrig = new Trajectory;
   ASSERT_OK(trajectory_world_sensorrig->FitSpline(poses_world_sensorrig));

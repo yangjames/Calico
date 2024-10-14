@@ -1,6 +1,8 @@
 #ifndef CALICO_WORLD_MODEL_H_
 #define CALICO_WORLD_MODEL_H_
 
+#include <memory>
+
 #include "calico/typedefs.h"
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
@@ -76,15 +78,15 @@ class WorldModel {
   static constexpr double kGravityDefaultZ = -9.80665;
 
   WorldModel();
-  ~WorldModel() = default;
+  ~WorldModel();
 
   /// Add a `Landmark` object to the world model. Returns an InvalidArgument status
   /// code if the landmark id is not unique.
-  absl::Status AddLandmark(const Landmark& landmark);
+  absl::Status AddLandmark(Landmark* landmark, bool take_ownership = true);
 
   /// Add a `RigidBody` object to the world model. Returns an InvalidArgument
   /// status code if the rigid body id is not unique.
-  absl::Status AddRigidBody(const RigidBody& rigidbody);
+  absl::Status AddRigidBody(RigidBody* rigidbody, bool take_ownership = true);
 
   /// Add internal parameters to a ceres problem. Any internal parameters set to
   /// constant are marked as such in the problem. Returns the total number of
@@ -92,12 +94,12 @@ class WorldModel {
   int AddParametersToProblem(ceres::Problem& problem);
 
   /// Accessor for landmarks.
-  const absl::flat_hash_map<int, Landmark>& landmarks() const;
-  absl::flat_hash_map<int, Landmark>& landmarks();
+  const absl::flat_hash_map<int, std::unique_ptr<Landmark>>& landmarks() const;
+  absl::flat_hash_map<int, std::unique_ptr<Landmark>>& landmarks();
 
   /// Accessor for rigid bodies.
-  const absl::flat_hash_map<int, RigidBody>& rigidbodies() const;
-  absl::flat_hash_map<int, RigidBody>& rigidbodies();
+  const absl::flat_hash_map<int, std::unique_ptr<RigidBody>>& rigidbodies() const;
+  absl::flat_hash_map<int, std::unique_ptr<RigidBody>>& rigidbodies();
 
   /// Enable flag for gravity estimation.
   void EnableGravityEstimation(bool enable);
@@ -129,8 +131,11 @@ class WorldModel {
   void Clear();
 
  private:
-  absl::flat_hash_map<int, RigidBody> rigidbody_id_to_rigidbody_;
-  absl::flat_hash_map<int, Landmark> landmark_id_to_landmark_;
+  absl::flat_hash_map<int, bool> rigidbody_id_to_own_rigidbody_;
+  absl::flat_hash_map<int, bool> landmark_id_to_own_landmark_;
+  absl::flat_hash_map<int, std::unique_ptr<RigidBody>> rigidbody_id_to_rigidbody_;
+  absl::flat_hash_map<int, std::unique_ptr<Landmark>> landmark_id_to_landmark_;
+
   Eigen::Vector3d gravity_;
   bool gravity_enabled_;
 };

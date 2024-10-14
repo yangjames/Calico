@@ -7,27 +7,33 @@
 
 namespace calico {
 
-  WorldModel::WorldModel() {
-    gravity_.setZero();
-    gravity_.z() = kGravityDefaultZ;
-    gravity_enabled_ = false;
-  }
+WorldModel::WorldModel() {
+  gravity_.setZero();
+  gravity_.z() = kGravityDefaultZ;
+  gravity_enabled_ = false;
+}
 
-absl::Status WorldModel::AddLandmark(const Landmark& landmark) {
-  if (landmark_id_to_landmark_.contains(landmark.id)) {
+WorldModel::~WorldModel() {
+  this->Clear();
+}
+
+absl::Status WorldModel::AddLandmark(Landmark* landmark, bool take_ownership) {
+  if (landmark_id_to_landmark_.contains(landmark->id)) {
     return absl::InvalidArgumentError(absl::StrCat(
-        "Landmark with id ", landmark.id, " already exists in world model."));
+        "Landmark with id ", landmark->id, " already exists in world model."));
   }
-  landmark_id_to_landmark_[landmark.id] = landmark;
+  landmark_id_to_landmark_[landmark->id] = std::unique_ptr<Landmark>(landmark);
+  landmark_id_to_own_landmark_[landmark->id] = take_ownership;
   return absl::OkStatus();
 }
 
-absl::Status WorldModel::AddRigidBody(const RigidBody& rigidbody) {
-  if (rigidbody_id_to_rigidbody_.contains(rigidbody.id)) {
+absl::Status WorldModel::AddRigidBody(RigidBody* rigidbody, bool take_ownership) {
+  if (rigidbody_id_to_rigidbody_.contains(rigidbody->id)) {
     return absl::InvalidArgumentError(absl::StrCat(
-        "Rigid body with id ", rigidbody.id, "already exists in world model."));
+        "Rigid body with id ", rigidbody->id, "already exists in world model."));
   }
-  rigidbody_id_to_rigidbody_[rigidbody.id] = rigidbody;
+  rigidbody_id_to_rigidbody_[rigidbody->id] = std::unique_ptr<RigidBody>(rigidbody);
+  rigidbody_id_to_own_rigidbody_[rigidbody->id] = take_ownership;
   return absl::OkStatus();
 }
 
@@ -35,30 +41,30 @@ int WorldModel::AddParametersToProblem(ceres::Problem& problem) {
   int num_parameters_added = 0;
   // Add all landmarks to problem.
   for (auto& [_, landmark] : landmark_id_to_landmark_) {
-    problem.AddParameterBlock(landmark.point.data(), landmark.point.size());
-    num_parameters_added += landmark.point.size();
+    problem.AddParameterBlock(landmark->point.data(), landmark->point.size());
+    num_parameters_added += landmark->point.size();
     // Set this landmark as constant if flagged.
-    if (landmark.point_is_constant) {
-      problem.SetParameterBlockConstant(landmark.point.data());
+    if (landmark->point_is_constant) {
+      problem.SetParameterBlockConstant(landmark->point.data());
     }
   }
   // Add all rigidbodies to problem.
   for (auto& [_, rigidbody] : rigidbody_id_to_rigidbody_) {
-    for (auto& [_, point] : rigidbody.model_definition) {
+    for (auto& [_, point] : rigidbody->model_definition) {
       problem.AddParameterBlock(point.data(), point.size());
       num_parameters_added += point.size();
     }
     num_parameters_added += utils::AddPoseToProblem(
-        problem, rigidbody.T_world_rigidbody);
+        problem, rigidbody->T_world_rigidbody);
     // Set this rigidbody's model definition as constant if flagged.
-    if (rigidbody.model_definition_is_constant) {
-      for (auto& [_, point] : rigidbody.model_definition) {
+    if (rigidbody->model_definition_is_constant) {
+      for (auto& [_, point] : rigidbody->model_definition) {
         problem.SetParameterBlockConstant(point.data());
       }
     }
     // Set this rigidbody's world pose constant if flagged.
-    if (rigidbody.world_pose_is_constant) {
-      utils::SetPoseConstantInProblem(problem, rigidbody.T_world_rigidbody);
+    if (rigidbody->world_pose_is_constant) {
+      utils::SetPoseConstantInProblem(problem, rigidbody->T_world_rigidbody);
     }
   }
   // Add gravity vector.
@@ -74,19 +80,19 @@ void WorldModel::EnableGravityEstimation(bool enable) {
   gravity_enabled_;
 }
 
-absl::flat_hash_map<int, Landmark>& WorldModel::landmarks() {
+absl::flat_hash_map<int, std::unique_ptr<Landmark>>& WorldModel::landmarks() {
   return landmark_id_to_landmark_;
 }
 
-const absl::flat_hash_map<int, Landmark>& WorldModel::landmarks() const {
+const absl::flat_hash_map<int, std::unique_ptr<Landmark>>& WorldModel::landmarks() const {
   return landmark_id_to_landmark_;
 }
 
-absl::flat_hash_map<int, RigidBody>& WorldModel::rigidbodies() {
+absl::flat_hash_map<int, std::unique_ptr<RigidBody>>& WorldModel::rigidbodies() {
   return rigidbody_id_to_rigidbody_;
 }
 
-const absl::flat_hash_map<int, RigidBody>& WorldModel::rigidbodies() const {
+const absl::flat_hash_map<int, std::unique_ptr<RigidBody>>& WorldModel::rigidbodies() const {
   return rigidbody_id_to_rigidbody_;
 }
 
@@ -115,11 +121,23 @@ int WorldModel::NumberOfRigidBodies() const {
 }
 
 void WorldModel::ClearLandmarks() {
+  for (auto& [landmark_id, landmark] : landmark_id_to_landmark_) {
+    if (!landmark_id_to_own_landmark_.at(landmark_id)) {
+      landmark.release();
+    }
+  }
   landmark_id_to_landmark_.clear();
+  landmark_id_to_own_landmark_.clear();
 }
 
 void WorldModel::ClearRigidBodies() {
+  for (auto& [rigidbody_id, rigidbody] : rigidbody_id_to_rigidbody_) {
+    if (!rigidbody_id_to_own_rigidbody_.at(rigidbody_id)) {
+      rigidbody.release();
+    }
+  }
   rigidbody_id_to_rigidbody_.clear();
+  rigidbody_id_to_own_rigidbody_.clear();
 }
 
 void WorldModel::Clear() {

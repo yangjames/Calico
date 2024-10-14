@@ -311,13 +311,13 @@ PYBIND11_MODULE(_calico, m) {
          });
 
   // World model class.
-  py::class_<Landmark>(m, "Landmark")
+  py::class_<Landmark, std::shared_ptr<Landmark>>(m, "Landmark")
     .def(py::init<>())
     .def_readwrite("point", &Landmark::point)
     .def_readwrite("id", &Landmark::id)
     .def_readwrite("point_is_constant", &Landmark::point_is_constant);
 
-  py::class_<RigidBody>(m, "RigidBody")
+  py::class_<RigidBody, std::shared_ptr<RigidBody>>(m, "RigidBody")
     .def(py::init<>())
     .def_readwrite("model_definition", &RigidBody::model_definition)
     .def_readwrite("T_world_rigidbody", &RigidBody::T_world_rigidbody)
@@ -328,13 +328,20 @@ PYBIND11_MODULE(_calico, m) {
 
   py::class_<WorldModel, std::shared_ptr<WorldModel>>(m, "WorldModel")
     .def(py::init<>())
-    .def("AddLandmark", &WorldModel::AddLandmark)
+    .def("AddLandmark",
+         [](WorldModel& self, std::shared_ptr<Landmark> landmark) {
+           const auto status = self.AddLandmark(landmark.get(), /*take_ownership=*/false);
+           if (!status.ok()) {
+            throw std::runtime_error(
+              std::string("Error: ") + std::string(status.message()));
+            }
+          })
     .def("AddRigidBody",
-         [](WorldModel& self, const RigidBody& rigidbody) {
-           const auto status = self.AddRigidBody(rigidbody);
+         [](WorldModel& self, std::shared_ptr<RigidBody> rigidbody) {
+           const auto status = self.AddRigidBody(rigidbody.get(), /*take_ownership=*/false);
            if (!status.ok()) {
              throw std::runtime_error(
-                 std::string("Error: ") + std::string(status.message()));
+              std::string("Error: ") + std::string(status.message()));
            }
          })
     .def("SetGravity", &WorldModel::SetGravity)
@@ -396,7 +403,6 @@ PYBIND11_MODULE(_calico, m) {
          [](BatchOptimizer& self, std::shared_ptr<Sensor> sensor) {
            self.AddSensor(sensor.get(), /*take_ownership=*/false);
          })
-
     .def("AddTrajectory",
          [](BatchOptimizer& self, std::shared_ptr<Trajectory> trajectory) {
            self.AddTrajectory(trajectory.get(), /*take_ownership=*/false);
