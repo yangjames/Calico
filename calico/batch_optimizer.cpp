@@ -18,7 +18,7 @@ ceres::Solver::Options DefaultSolverOptions() {
 
 BatchOptimizer::~BatchOptimizer() {
   // If we don't own an object, release the pointer so it doesn't get
-  // de-allocated it.
+  // de-allocated.
   for (int i = 0; i < sensors_.size(); ++i) {
     if (!own_sensors_[i]) {
       sensors_.at(i).release();
