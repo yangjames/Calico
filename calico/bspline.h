@@ -43,8 +43,19 @@ class BSpline {
 
   // Interpolate the spline at given times for the given derivative. If no
   // derivative is specified, it defaults to direct interpolation.
-  absl::StatusOr<std::vector<Eigen::Vector<T,N>>>
+  absl::StatusOr<std::vector<Eigen::Vector<T, N>>>
   Interpolate(const std::vector<T>& times, int derivative = 0) const;
+
+  // Interpolate the spline at single time for the given derivative.
+  absl::StatusOr<Eigen::Vector<T, N>>
+  Interpolate(T time, int derivative = 0) const {
+    const absl::StatusOr<std::vector<Eigen::Vector<T, N>>> statusor =
+        Interpolate(std::vector{time}, derivative);
+    if (!statusor.ok()) {
+      return statusor.status();
+    }
+    return statusor->front();
+  }
 
   // TODO(yangjames): Description
   Eigen::MatrixX<T>
