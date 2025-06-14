@@ -57,17 +57,18 @@ absl::StatusOr<std::vector<GyroscopeMeasurement>> Gyroscope::Project(
     const std::vector<double>& interp_times,
     const Trajectory& sensorrig_trajectory,
     const WorldModel& world_model) const {
-  std::vector<Eigen::Vector<double, 6>> pose_vectors;
-  ASSIGN_OR_RETURN(pose_vectors, sensorrig_trajectory.spline().Interpolate(
+  ASSIGN_OR_RETURN(std::vector<Eigen::Vector3d> phi_world_sensorrig_vector,
+    sensorrig_trajectory.rotation_spline().Interpolate(
       interp_times, /*derivative=*/0));
-  std::vector<Eigen::Vector<double, 6>> pose_dot_vectors;
-  ASSIGN_OR_RETURN(pose_dot_vectors, sensorrig_trajectory.spline().Interpolate(
+  ASSIGN_OR_RETURN(std::vector<Eigen::Vector3d> phi_dot_world_sensorrig_vector,
+    sensorrig_trajectory.rotation_spline().Interpolate(
       interp_times, /*derivative=*/1));
   std::vector<GyroscopeMeasurement> measurements(interp_times.size());
   for (int i = 0; i < interp_times.size(); ++i) {
-    const Eigen::Vector3d phi_sensorrig_world = -pose_vectors.at(i).head(3);
-    const Eigen::Vector3d phi_dot_sensorrig_world =
-        -pose_dot_vectors.at(i).head(3);
+    const Eigen::Vector3d& phi_sensorrig_world =
+        -phi_world_sensorrig_vector.at(i);
+    const Eigen::Vector3d& phi_dot_sensorrig_world =
+        -phi_dot_world_sensorrig_vector.at(i);
     const Eigen::Matrix3d J = ExpSO3Jacobian(phi_sensorrig_world);
     const Eigen::Vector3d omega_sensorrig_world = J * phi_dot_sensorrig_world;
     const Eigen::Vector3d omega_gyroscope_world =

@@ -43,13 +43,18 @@ absl::Status Trajectory::FitSpline(
     pose_world_body[i].tail(3) = t_world_body[i];
   }
 
-  RETURN_IF_ERROR(spline_pose_world_body_.FitToData(
-      stamps, pose_world_body, spline_order, knot_frequency));
+  RETURN_IF_ERROR(spline_rotation_world_from_body_.FitToData(
+    stamps, phi_world_body, spline_order, knot_frequency));
+  RETURN_IF_ERROR(spline_position_world_to_body_.FitToData(
+    stamps, t_world_body, spline_order, knot_frequency));
   return absl::OkStatus();
 }
 
 int Trajectory::AddParametersToProblem(ceres::Problem& problem) {
-  return spline_pose_world_body_.AddParametersToProblem(problem);
+  int num_parameters;
+  num_parameters += spline_position_world_to_body_.AddParametersToProblem(problem);
+  num_parameters += spline_rotation_world_from_body_.AddParametersToProblem(problem);
+  return num_parameters;
 }
 
 const absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() const {
@@ -60,21 +65,39 @@ absl::flat_hash_map<double, Pose3d>& Trajectory::trajectory() {
   return pose_id_to_pose_world_body_;
 }
 
-TrajectoryEvaluationParams Trajectory::GetEvaluationParams(double stamp) const {
+TrajectoryEvaluationParams Trajectory::GetEvaluationParamsPosition(double stamp) const {
   const int control_point_idx =
-      spline_pose_world_body_.GetSplineIndex(stamp);
+      spline_position_world_to_body_.GetSplineIndex(stamp);
   const int knot_idx =
-      spline_pose_world_body_.GetKnotIndexFromSplineIndex(
+      spline_position_world_to_body_.GetKnotIndexFromSplineIndex(
           control_point_idx);
-  const int num_control_points = spline_pose_world_body_.GetSplineOrder();
+  const int num_control_points = spline_position_world_to_body_.GetSplineOrder();
   return TrajectoryEvaluationParams {
     .spline_index = control_point_idx,
-    .knot0 = spline_pose_world_body_.knots().at(knot_idx),
-    .knot1 = spline_pose_world_body_.knots().at(knot_idx + 1),
+    .knot0 = spline_position_world_to_body_.knots().at(knot_idx),
+    .knot1 = spline_position_world_to_body_.knots().at(knot_idx + 1),
     .stamp = stamp,
     .num_control_points = num_control_points,
     .basis_matrix =
-        spline_pose_world_body_.basis_matrices().at(control_point_idx),
+        spline_position_world_to_body_.basis_matrices().at(control_point_idx),
+  };
+}
+
+TrajectoryEvaluationParams Trajectory::GetEvaluationParamsRotation(double stamp) const {
+  const int control_point_idx =
+      spline_rotation_world_from_body_.GetSplineIndex(stamp);
+  const int knot_idx =
+      spline_rotation_world_from_body_.GetKnotIndexFromSplineIndex(
+          control_point_idx);
+  const int num_control_points = spline_rotation_world_from_body_.GetSplineOrder();
+  return TrajectoryEvaluationParams {
+    .spline_index = control_point_idx,
+    .knot0 = spline_rotation_world_from_body_.knots().at(knot_idx),
+    .knot1 = spline_rotation_world_from_body_.knots().at(knot_idx + 1),
+    .stamp = stamp,
+    .num_control_points = num_control_points,
+    .basis_matrix =
+        spline_rotation_world_from_body_.basis_matrices().at(control_point_idx),
   };
 }
 
@@ -94,12 +117,18 @@ void Trajectory::UnwrapPhaseLogMap(std::vector<Eigen::Vector3d>& phi) {
 
 absl::StatusOr<std::vector<Pose3d>>
 Trajectory::Interpolate(const std::vector<double>& interp_times) const {
-  std::vector<Eigen::Vector<double, 6>> pose_vectors_interp;
-  ASSIGN_OR_RETURN(pose_vectors_interp,
-                   spline_pose_world_body_.Interpolate(interp_times));
+  std::vector<Eigen::Vector3d> position_vectors_interp;
+  std::vector<Eigen::Vector3d> rotation_vectors_interp;
+  ASSIGN_OR_RETURN(position_vectors_interp,
+                   spline_position_world_to_body_.Interpolate(interp_times));
+  ASSIGN_OR_RETURN(rotation_vectors_interp,
+                   spline_rotation_world_from_body_.Interpolate(interp_times));
   std::vector<Pose3d> interpolated_poses(interp_times.size());
   for (int i = 0; i < interp_times.size(); ++i) {
-    interpolated_poses[i] = VectorToPose3(pose_vectors_interp[i]);
+    Eigen::Vector<double, 6> pose_vector;
+    pose_vector.head<3>() = rotation_vectors_interp[i];
+    pose_vector.tail<3>() = position_vectors_interp[i];
+    interpolated_poses[i] = VectorToPose3(pose_vector);
   }
   return interpolated_poses;
 }

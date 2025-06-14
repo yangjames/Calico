@@ -63,9 +63,13 @@ class Trajectory {
   /// parameters added to the problem.
   int AddParametersToProblem(ceres::Problem& problem);
 
-  /// Accessors for the spline.
-  const BSpline<6>& spline() const { return spline_pose_world_body_; }
-  BSpline<6>& spline() { return spline_pose_world_body_; }
+  /// Accessors for the rotation spline.
+  const BSpline<3>& rotation_spline() const { return spline_rotation_world_from_body_; }
+  BSpline<3>& rotation_spline() { return spline_rotation_world_from_body_; }
+
+  /// Accesors for the position spline.
+  const BSpline<3>& position_spline() const { return spline_position_world_to_body_; }
+  BSpline<3>& position_spline() { return spline_position_world_to_body_; }
 
   /// Interpolate the trajectory at given timestamps. Returns a vector of
   /// world-from-sensorrig poses evaluated in the order of the timestamps.
@@ -104,12 +108,16 @@ class Trajectory {
   const absl::flat_hash_map<double, Pose3d>& trajectory() const;
   absl::flat_hash_map<double, Pose3d>& trajectory();
 
-  /// Get the parameters needed to evaluate the spline for a given timestamp.
-  TrajectoryEvaluationParams GetEvaluationParams(double stamp) const;
+  /// Get the parameters needed to evaluate the position spline for a given timestamp.
+  TrajectoryEvaluationParams GetEvaluationParamsPosition(double stamp) const;
+
+  /// Get the parameters needed to evaluate the rotation spline for a given timestamp.
+  TrajectoryEvaluationParams GetEvaluationParamsRotation(double stamp) const;
 
  private:
   absl::flat_hash_map<double, Pose3d> pose_id_to_pose_world_body_;
-  BSpline<6> spline_pose_world_body_;
+  BSpline<3> spline_rotation_world_from_body_;
+  BSpline<3> spline_position_world_to_body_;
 
   // Convenience function for unwrapping discrete axis-angle vectors in order to
   // get a more continuous signal.

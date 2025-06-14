@@ -85,84 +85,84 @@ target_link_libraries(
   world_model
 )
   
-# Accelerometer library and tests.
-add_library(
-  accelerometer_models
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models.cpp
-)
-target_link_libraries(
-  accelerometer_models
-  absl::statusor
-  Eigen3::Eigen
-)
+# # Accelerometer library and tests.
+# add_library(
+#   accelerometer_models
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models.cpp
+# )
+# target_link_libraries(
+#   accelerometer_models
+#   absl::statusor
+#   Eigen3::Eigen
+# )
 
-add_library(
-  accelerometer_cost_functor
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor.cpp
-)
-target_link_libraries(
-  accelerometer_cost_functor
-  accelerometer_models
-  trajectory
-)
+# add_library(
+#   accelerometer_cost_functor
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor.cpp
+# )
+# target_link_libraries(
+#   accelerometer_cost_functor
+#   accelerometer_models
+#   trajectory
+# )
 
-add_library(
-  accelerometer
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.cpp
-)
-target_link_libraries(
-  accelerometer
-  accelerometer_cost_functor
-  accelerometer_models
-  trajectory
-  world_model
-)
+# add_library(
+#   accelerometer
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.cpp
+# )
+# target_link_libraries(
+#   accelerometer
+#   accelerometer_cost_functor
+#   accelerometer_models
+#   trajectory
+#   world_model
+# )
 
-# Camera library.
-add_library(
-  camera_models
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
-)
-target_link_libraries(
-  camera_models
-  absl::statusor
-  Eigen3::Eigen
-)
+# # Camera library.
+# add_library(
+#   camera_models
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.cpp
+# )
+# target_link_libraries(
+#   camera_models
+#   absl::statusor
+#   Eigen3::Eigen
+# )
 
-add_library(
-  camera_cost_functor
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.cpp
-)
-target_link_libraries(
-  camera_cost_functor
-  camera_models
-  trajectory
-)
+# add_library(
+#   camera_cost_functor
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.cpp
+# )
+# target_link_libraries(
+#   camera_cost_functor
+#   camera_models
+#   trajectory
+# )
 
-add_library(
-  camera
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
-)
-target_link_libraries(
-  camera
-  camera_models
-  camera_cost_functor
-  trajectory
-  world_model
-)
+# add_library(
+#   camera
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.cpp
+# )
+# target_link_libraries(
+#   camera
+#   camera_models
+#   camera_cost_functor
+#   trajectory
+#   world_model
+# )
 
-# Batch optimizer.
-add_library(
-  batch_optimizer
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer.cpp
-)
-target_link_libraries(
-  batch_optimizer
-  accelerometer
-  camera
-  gyroscope
-  world_model
-)
+# # Batch optimizer.
+# add_library(
+#   batch_optimizer
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer.cpp
+# )
+# target_link_libraries(
+#   batch_optimizer
+#   accelerometer
+#   camera
+#   gyroscope
+#   world_model
+# )
 
 # AprilTags c++ library.
 include_directories(
@@ -204,104 +204,104 @@ target_link_libraries(
   ${YAML_CPP_LIBRARIES}
 )
 
-# Python bindings.
-pybind11_add_module(
-  _calico
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/calico.cpp
-)
-target_link_libraries(
-  _calico PUBLIC
-  accelerometer
-  aprilgrid_detector
-  batch_optimizer
-  camera
-  gyroscope
-  trajectory
-  world_model
-  Eigen3::Eigen
-)
-set_target_properties(
-  _calico PROPERTIES
-  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
-)
-file(
-  COPY
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
-  DESTINATION ${PROJECT_BINARY_DIR}/calico
-)
+# # Python bindings.
+# pybind11_add_module(
+#   _calico
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/calico.cpp
+# )
+# target_link_libraries(
+#   _calico PUBLIC
+#   accelerometer
+#   aprilgrid_detector
+#   batch_optimizer
+#   camera
+#   gyroscope
+#   trajectory
+#   world_model
+#   Eigen3::Eigen
+# )
+# set_target_properties(
+#   _calico PROPERTIES
+#   LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
+# )
+# file(
+#   COPY
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
+#   DESTINATION ${PROJECT_BINARY_DIR}/calico
+# )
 
-# Install cpp library.
-install(
-  TARGETS
-  accelerometer
-  accelerometer_cost_functor
-  accelerometer_models
-  apriltags
-  batch_optimizer
-  camera
-  camera_cost_functor
-  camera_models
-  gyroscope
-  gyroscope_cost_functor
-  gyroscope_models
-  trajectory
-  world_model
-  aprilgrid_detector
-  EXPORT
-  CalicoConfig
-  DESTINATION lib/calico
-)
-install(
-  EXPORT
-  CalicoConfig
-  DESTINATION lib/cmake/calico
-)
-set(top_level_headers
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/profiler.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/bspline.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/test_utils.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/optimization_utils.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/typedefs.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/matchers.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/status_builder.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/geometry.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/world_model.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/statusor_macros.h
-)
-install(
-  FILES ${top_level_headers}
-  DESTINATION include/calico
-)
-set(sensor_headers
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_models.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/sensor_base.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_cost_functor.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.h
-)
-install(
-  FILES ${sensor_headers}
-  DESTINATION include/calico/sensors/
-)
-# Install python library.
-install(
-  TARGETS _calico
-  DESTINATION ${Python_SITELIB}/calico
-)
-install(
-  FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
-  DESTINATION ${Python_SITELIB}/calico
-)
+# # Install cpp library.
+# install(
+#   TARGETS
+#   accelerometer
+#   accelerometer_cost_functor
+#   accelerometer_models
+#   apriltags
+#   batch_optimizer
+#   camera
+#   camera_cost_functor
+#   camera_models
+#   gyroscope
+#   gyroscope_cost_functor
+#   gyroscope_models
+#   trajectory
+#   world_model
+#   aprilgrid_detector
+#   EXPORT
+#   CalicoConfig
+#   DESTINATION lib/calico
+# )
+# install(
+#   EXPORT
+#   CalicoConfig
+#   DESTINATION lib/cmake/calico
+# )
+# set(top_level_headers
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/profiler.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/trajectory.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/bspline.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test_utils.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/optimization_utils.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/batch_optimizer.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/typedefs.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/matchers.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/status_builder.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/geometry.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/world_model.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/statusor_macros.h
+# )
+# install(
+#   FILES ${top_level_headers}
+#   DESTINATION include/calico
+# )
+# set(sensor_headers
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_models.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_cost_functor.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/sensor_base.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope_cost_functor.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_cost_functor.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/camera_models.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer_models.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/gyroscope.h
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/accelerometer.h
+# )
+# install(
+#   FILES ${sensor_headers}
+#   DESTINATION include/calico/sensors/
+# )
+# # Install python library.
+# install(
+#   TARGETS _calico
+#   DESTINATION ${Python_SITELIB}/calico
+# )
+# install(
+#   FILES
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
+#   ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
+#   DESTINATION ${Python_SITELIB}/calico
+# )
 
 if (BUILD_TESTING)
   # Typedefs test.
@@ -403,106 +403,106 @@ if (BUILD_TESTING)
     gmock
     )
   add_test(GyroscopeLibTest gyroscope_test)
-  # Accelerometer models test.
-  add_executable(
-    accelerometer_models_test
-    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_models_test.cpp
-    )
-  target_link_libraries(
-    accelerometer_models_test
-    accelerometer_models
-    GTest::Main
-    gmock
-    )
-  add_test(AccelerometerModelsTest accelerometer_models_test)
-  # Accelerometer cost functor test.
-  add_executable(
-    accelerometer_cost_functor_test
-    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_cost_functor_test.cpp
-    )
-  target_link_libraries(
-    accelerometer_cost_functor_test
-    accelerometer_cost_functor
-    GTest::Main
-    gmock
-    )
-  add_test(AccelerometerCostFunctorTest accelerometer_cost_functor_test)
-  # Accelerometer test.
-  add_executable(
-    accelerometer_test
-    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_test.cpp
-    )
-  target_link_libraries(
-    accelerometer_test
-    accelerometer
-    GTest::Main
-    gmock
-    )
-  add_test(AccelerometerLibTest accelerometer_test)
-  # Camera models test.
-  add_executable(
-    camera_models_test
-    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_models_test.cpp
-    )
-  target_link_libraries(
-    camera_models_test
-    camera_models
-    GTest::Main
-    gmock
-    )
-  add_test(CameraModelsTest camera_models_test)
-  # Camera cost functor test.
-  add_executable(
-    camera_cost_functor_test
-    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_cost_functor_test.cpp
-    )
-  target_link_libraries(
-    camera_cost_functor_test
-    camera_cost_functor
-    GTest::Main
-    gmock
-    )
-  add_test(CameraCostFunctorTest camera_cost_functor_test)
-  # Camera test.
-  add_executable(
-    camera_test
-    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_test.cpp
-    )
-  target_link_libraries(
-    camera_test
-    camera
-    GTest::Main
-    gmock
-    )
-  add_test(CameraLibTest camera_test)
-  # Batch optimizer test.
-  add_executable(
-    batch_optimizer_test
-    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/batch_optimizer_test.cpp
-    )
-  target_link_libraries(
-    batch_optimizer_test
-    camera
-    world_model
-    batch_optimizer
-    GTest::Main
-    gmock
-    )
-  add_test(BatchOptimizerTest batch_optimizer_test)
-  # Python bindings test.
-  add_test(
-    NAME python_bindings_test
-    COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
-    )
-  # Python utilities test.
-  add_test(
-    NAME python_utils_test
-    COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
-    )
-  set_tests_properties(
-    python_bindings_test python_utils_test
-    PROPERTIES ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}:$ENV{PYTHONPATH}"
-    )
+  # # Accelerometer models test.
+  # add_executable(
+  #   accelerometer_models_test
+  #   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_models_test.cpp
+  #   )
+  # target_link_libraries(
+  #   accelerometer_models_test
+  #   accelerometer_models
+  #   GTest::Main
+  #   gmock
+  #   )
+  # add_test(AccelerometerModelsTest accelerometer_models_test)
+  # # Accelerometer cost functor test.
+  # add_executable(
+  #   accelerometer_cost_functor_test
+  #   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_cost_functor_test.cpp
+  #   )
+  # target_link_libraries(
+  #   accelerometer_cost_functor_test
+  #   accelerometer_cost_functor
+  #   GTest::Main
+  #   gmock
+  #   )
+  # add_test(AccelerometerCostFunctorTest accelerometer_cost_functor_test)
+  # # Accelerometer test.
+  # add_executable(
+  #   accelerometer_test
+  #   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/accelerometer_test.cpp
+  #   )
+  # target_link_libraries(
+  #   accelerometer_test
+  #   accelerometer
+  #   GTest::Main
+  #   gmock
+  #   )
+  # add_test(AccelerometerLibTest accelerometer_test)
+  # # Camera models test.
+  # add_executable(
+  #   camera_models_test
+  #   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_models_test.cpp
+  #   )
+  # target_link_libraries(
+  #   camera_models_test
+  #   camera_models
+  #   GTest::Main
+  #   gmock
+  #   )
+  # add_test(CameraModelsTest camera_models_test)
+  # # Camera cost functor test.
+  # add_executable(
+  #   camera_cost_functor_test
+  #   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_cost_functor_test.cpp
+  #   )
+  # target_link_libraries(
+  #   camera_cost_functor_test
+  #   camera_cost_functor
+  #   GTest::Main
+  #   gmock
+  #   )
+  # add_test(CameraCostFunctorTest camera_cost_functor_test)
+  # # Camera test.
+  # add_executable(
+  #   camera_test
+  #   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/camera_test.cpp
+  #   )
+  # target_link_libraries(
+  #   camera_test
+  #   camera
+  #   GTest::Main
+  #   gmock
+  #   )
+  # add_test(CameraLibTest camera_test)
+  # # Batch optimizer test.
+  # add_executable(
+  #   batch_optimizer_test
+  #   ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/batch_optimizer_test.cpp
+  #   )
+  # target_link_libraries(
+  #   batch_optimizer_test
+  #   camera
+  #   world_model
+  #   batch_optimizer
+  #   GTest::Main
+  #   gmock
+  #   )
+  # add_test(BatchOptimizerTest batch_optimizer_test)
+  # # Python bindings test.
+  # add_test(
+  #   NAME python_bindings_test
+  #   COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
+  #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
+  #   )
+  # # Python utilities test.
+  # add_test(
+  #   NAME python_utils_test
+  #   COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
+  #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
+  #   )
+  # set_tests_properties(
+  #   python_bindings_test python_utils_test
+  #   PROPERTIES ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}:$ENV{PYTHONPATH}"
+    # )
 endif()
