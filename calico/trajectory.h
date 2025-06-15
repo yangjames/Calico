@@ -63,6 +63,9 @@ class Trajectory {
   /// parameters added to the problem.
   int AddParametersToProblem(ceres::Problem& problem);
 
+  void EnablePositionEstimation(bool enable);
+  void EnableRotationEstimation(bool enable);
+
   /// Accessors for the rotation spline.
   const BSpline<3>& rotation_spline() const { return spline_rotation_world_from_body_; }
   BSpline<3>& rotation_spline() { return spline_rotation_world_from_body_; }
@@ -118,6 +121,8 @@ class Trajectory {
   absl::flat_hash_map<double, Pose3d> pose_id_to_pose_world_body_;
   BSpline<3> spline_rotation_world_from_body_;
   BSpline<3> spline_position_world_to_body_;
+  bool position_enabled_;
+  bool rotation_enabled_;
 
   // Convenience function for unwrapping discrete axis-angle vectors in order to
   // get a more continuous signal.
