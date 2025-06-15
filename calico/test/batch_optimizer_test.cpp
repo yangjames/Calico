@@ -179,7 +179,10 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   optimizer.AddSensor(accelerometer);
   optimizer.AddWorldModel(world_model);
   optimizer.AddTrajectory(trajectory_world_sensorrig);
-  ASSERT_OK_AND_ASSIGN(auto summary, optimizer.Optimize());
+  const auto statusor_summary = optimizer.Optimize();
+  EXPECT_OK(statusor_summary.status())
+        << statusor_summary.status().ToString();
+  const auto summary = statusor_summary.value();
 
   // Expect near perfect calibration results due to perfect data.
   constexpr double kSmallNumber = 1e-7;

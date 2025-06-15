@@ -82,7 +82,8 @@ class GyroscopeCostFunctor {
     for (int i = 0; i < num_rotation_control_points; ++i) {
       rotation_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
           &(parameters[static_cast<int>(
-              GyroscopeParameterIndices::kSensorRigPoseSplineControlPointsIndex) + i
+              GyroscopeParameterIndices::kSensorRigPoseSplineControlPointsIndex)
+                + i
               ][0]));
     }
     const int num_position_control_points =

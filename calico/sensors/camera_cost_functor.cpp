@@ -51,21 +51,21 @@ ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
   parameters.push_back(t_world_model.data());
   cost_function->AddParameterBlock(t_world_model.size());
   // trajectory spline control points.
-  const int position_idx = trajectory_world_sensorrig.position_spline().GetSplineIndex(stamp);
   const int rotation_idx = trajectory_world_sensorrig.rotation_spline().GetSplineIndex(stamp);
-  const int position_spline_order = trajectory_world_sensorrig.position_spline().GetSplineOrder();
   const int rotation_spline_order = trajectory_world_sensorrig.rotation_spline().GetSplineOrder();
-  for (int i = 0; i < position_spline_order; ++i) {
-    parameters.push_back(
-        trajectory_world_sensorrig.position_spline().control_points().at(position_idx + i).data());
-    cost_function->AddParameterBlock(
-        trajectory_world_sensorrig.position_spline().control_points().at(position_idx + i).size());
-  }
   for (int i = 0; i < rotation_spline_order; ++i) {
     parameters.push_back(
         trajectory_world_sensorrig.rotation_spline().control_points().at(rotation_idx + i).data());
     cost_function->AddParameterBlock(
         trajectory_world_sensorrig.rotation_spline().control_points().at(rotation_idx + i).size());
+  }
+  const int position_idx = trajectory_world_sensorrig.position_spline().GetSplineIndex(stamp);
+  const int position_spline_order = trajectory_world_sensorrig.position_spline().GetSplineOrder();
+  for (int i = 0; i < position_spline_order; ++i) {
+    parameters.push_back(
+        trajectory_world_sensorrig.position_spline().control_points().at(position_idx + i).data());
+    cost_function->AddParameterBlock(
+        trajectory_world_sensorrig.position_spline().control_points().at(position_idx + i).size());
   }
   // Residual
   cost_function->SetNumResiduals(kCameraResidualSize);

@@ -100,22 +100,22 @@ class CameraCostFunctor {
     // Parse sensor rig spline resolved in the world frame.
     const int num_rotation_control_points =
         rotation_trajectory_evaluation_params_.num_control_points;
-    Eigen::MatrixX<T> rotation_control_points(num_rotation_control_points, 6);
+    Eigen::MatrixX<T> rotation_control_points(num_rotation_control_points, 3);
     for (int i = 0; i < num_rotation_control_points; ++i) {
-      rotation_control_points.row(i) = Eigen::Map<const Eigen::Vector<T, 6>>(
+      rotation_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
           &(parameters[static_cast<int>(
-              CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex) + i
+              CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex)
+                + i
               ][0]));
     }
     const int num_position_control_points =
         position_trajectory_evaluation_params_.num_control_points;
-    Eigen::MatrixX<T> position_control_points(num_position_control_points, 6);
-    for (int i = num_rotation_control_points;
-        i < num_rotation_control_points + num_position_control_points;
-        ++i) {
-      position_control_points.row(i) = Eigen::Map<const Eigen::Vector<T, 6>>(
+    Eigen::MatrixX<T> position_control_points(num_position_control_points, 3);
+    for (int i = 0; i < num_position_control_points; ++i) {
+      position_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
           &(parameters[static_cast<int>(
-              CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex) + i
+              CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex)
+                + i + num_rotation_control_points
               ][0]));
     }
 
