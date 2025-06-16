@@ -308,7 +308,9 @@ PYBIND11_MODULE(_calico, m) {
                  std::string("Error: ") + std::string(poses.status().message()));
            }
            return poses.value();
-         });
+         })
+    .def("EnablePositionEstimation", &Trajectory::EnablePositionEstimation)
+    .def("EnableRotationEstimation", &Trajectory::EnableRotationEstimation);
 
   // World model class.
   py::class_<Landmark, std::shared_ptr<Landmark>>(m, "Landmark")
