@@ -489,20 +489,20 @@ if (BUILD_TESTING)
     gmock
     )
   add_test(BatchOptimizerTest batch_optimizer_test)
-  # # Python bindings test.
-  # add_test(
-  #   NAME python_bindings_test
-  #   COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
-  #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
-  #   )
-  # # Python utilities test.
-  # add_test(
-  #   NAME python_utils_test
-  #   COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
-  #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
-  #   )
-  # set_tests_properties(
-  #   python_bindings_test python_utils_test
-  #   PROPERTIES ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}:$ENV{PYTHONPATH}"
-  #   )
+  # Python bindings test.
+  add_test(
+    NAME python_bindings_test
+    COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_bindings_test.py
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
+    )
+  # Python utilities test.
+  add_test(
+    NAME python_utils_test
+    COMMAND python3 -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/python_utils_test.py
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/calico/test
+    )
+  set_tests_properties(
+    python_bindings_test python_utils_test
+    PROPERTIES ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}:$ENV{PYTHONPATH}"
+    )
 endif()
