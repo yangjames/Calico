@@ -17,6 +17,7 @@ AprilGridDetector::AprilGridDetector(const std::string& config_filename) {
       .tagRows = config_yaml["tagRows"].as<int>(),
       .tagSize = config_yaml["tagSize"].as<double>(),
       .tagSpacing = config_yaml["tagSpacing"].as<double>(),
+      .startId = config_yaml["startId"].as<int>(),
   };
   SetupDetector();
 }
@@ -38,7 +39,7 @@ void AprilGridDetector::SetupDetector() {
     for (int col = 0; col < config_.tagCols; ++col) {
       const double tag_origin_x = tag_width_with_spacing * col;
       const double tag_origin_y = tag_width_with_spacing * row;
-      const int tag_number = row * config_.tagCols + col;
+      const int tag_number = row * config_.tagCols + col + config_.startId;
       for (int k = 0; k < 4; ++k) {
         const double corner_x = tag_origin_x + tag_width * (k == 1 || k == 2);
         const double corner_y = tag_origin_y + tag_width * (k == 2 || k == 3);

@@ -10,8 +10,10 @@ CameraCostFunctor::CameraCostFunctor(
     double sigma, double stamp, const Trajectory& trajectory_world_sensorrig)
   : pixel_(pixel) {
   camera_model_ = CameraModel::Create(camera_model);
-  trajectory_evaluation_params_
-      = trajectory_world_sensorrig.GetEvaluationParams(stamp);
+  position_trajectory_evaluation_params_
+      = trajectory_world_sensorrig.GetEvaluationParamsPosition(stamp);
+  rotation_trajectory_evaluation_params_
+      = trajectory_world_sensorrig.GetEvaluationParamsRotation(stamp);
   information_ = (sigma > 0.0) ? (1.0 / sigma) : 1.0;
 }
 
@@ -49,13 +51,21 @@ ceres::CostFunction* CameraCostFunctor::CreateCostFunction(
   parameters.push_back(t_world_model.data());
   cost_function->AddParameterBlock(t_world_model.size());
   // trajectory spline control points.
-  const int idx = trajectory_world_sensorrig.spline().GetSplineIndex(stamp);
-  const int spline_order = trajectory_world_sensorrig.spline().GetSplineOrder();
-  for (int i = 0; i < spline_order; ++i) {
+  const int rotation_idx = trajectory_world_sensorrig.rotation_spline().GetSplineIndex(stamp);
+  const int rotation_spline_order = trajectory_world_sensorrig.rotation_spline().GetSplineOrder();
+  for (int i = 0; i < rotation_spline_order; ++i) {
     parameters.push_back(
-        trajectory_world_sensorrig.spline().control_points().at(idx + i).data());
+        trajectory_world_sensorrig.rotation_spline().control_points().at(rotation_idx + i).data());
     cost_function->AddParameterBlock(
-        trajectory_world_sensorrig.spline().control_points().at(idx + i).size());
+        trajectory_world_sensorrig.rotation_spline().control_points().at(rotation_idx + i).size());
+  }
+  const int position_idx = trajectory_world_sensorrig.position_spline().GetSplineIndex(stamp);
+  const int position_spline_order = trajectory_world_sensorrig.position_spline().GetSplineOrder();
+  for (int i = 0; i < position_spline_order; ++i) {
+    parameters.push_back(
+        trajectory_world_sensorrig.position_spline().control_points().at(position_idx + i).data());
+    cost_function->AddParameterBlock(
+        trajectory_world_sensorrig.position_spline().control_points().at(position_idx + i).size());
   }
   // Residual
   cost_function->SetNumResiduals(kCameraResidualSize);

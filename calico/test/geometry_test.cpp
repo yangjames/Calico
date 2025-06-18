@@ -55,17 +55,18 @@ TEST(GeometryTest, TestComputeRodriguesFormulaJacobians) {
     const double stamp_i = timestamps.at(i);
     const double stamp_ii = stamp_i + dt;
     const double stamp_iii = stamp_ii + dt;
-    const Eigen::Vector<double, 6> pose_vector_i =
-        trajectory.spline().Interpolate({stamp_i}, /*derivative=*/0).value()[0];
-    const Eigen::Vector<double, 6> pose_vector_ii =
-        trajectory.spline().Interpolate(
-            {stamp_ii}, /*derivative=*/0).value()[0];
-    const Eigen::Vector<double, 6> pose_vector_iii =
-        trajectory.spline().Interpolate(
-            {stamp_iii}, /*derivative=*/0).value()[0];
-    const Eigen::Vector3d phi_world_body_i = pose_vector_i.head(3);
-    const Eigen::Vector3d phi_world_body_ii = pose_vector_ii.head(3);
-    const Eigen::Vector3d phi_world_body_iii = pose_vector_iii.head(3);
+    ASSERT_OK_AND_ASSIGN(
+        Eigen::Vector3d phi_world_body_i,
+        trajectory.rotation_spline().Interpolate(stamp_i,
+        /*derivative=*/0));
+    ASSERT_OK_AND_ASSIGN(
+        Eigen::Vector3d phi_world_body_ii,
+        trajectory.rotation_spline().Interpolate(stamp_ii,
+        /*derivative=*/0));
+    ASSERT_OK_AND_ASSIGN(
+        Eigen::Vector3d phi_world_body_iii,
+        trajectory.rotation_spline().Interpolate(stamp_iii,
+        /*derivative=*/0));
     const Eigen::Vector3d phi_body_world_i = -phi_world_body_i;
     const Eigen::Vector3d phi_body_world_ii = -phi_world_body_ii;
     const Eigen::Vector3d phi_body_world_iii = -phi_world_body_iii;
@@ -116,13 +117,13 @@ TEST(GeometryTest, TestComputeRodriguesFormulaJacobians) {
     const Eigen::Vector3d expected_alpha_body_world =
         dt_inv * (expected_omega_body_world_ii - expected_omega_body_world_i);
     // Compute analytical first and second time derivatives.
-    const Eigen::Vector<double, 6> pose_dot_vector_i =
-        trajectory.spline().Interpolate({stamp_i}, /*derivative=*/1).value()[0];
-    const Eigen::Vector<double, 6> pose_ddot_vector_i =
-        trajectory.spline().Interpolate({stamp_i}, /*derivative=*/2).value()[0];
-    const Eigen::Vector3d phi_dot_world_body_i = pose_dot_vector_i.head(3);
+    ASSERT_OK_AND_ASSIGN(
+        Eigen::Vector3d phi_dot_world_body_i,
+        trajectory.rotation_spline().Interpolate(stamp_i, /*derivative=*/1));
+    ASSERT_OK_AND_ASSIGN(
+        Eigen::Vector3d phi_ddot_world_body_i,
+        trajectory.rotation_spline().Interpolate(stamp_i, /*derivative=*/2));
     const Eigen::Vector3d phi_dot_body_world_i = -phi_dot_world_body_i;
-    const Eigen::Vector3d phi_ddot_world_body_i = pose_ddot_vector_i.head(3);
     const Eigen::Vector3d phi_ddot_body_world_i = -phi_ddot_world_body_i;
     // Compute angular velocity.
     const Eigen::Matrix3d J_world_body = ExpSO3Jacobian(phi_world_body_i);

@@ -84,40 +84,69 @@ class AccelerometerCostFunctor {
         &(parameters[static_cast<int>(
             AccelerometerParameterIndices::kGravityIndex)][0]));
     // Parse sensor rig spline resolved in the world frame.
-    const int& num_control_points =
-        trajectory_evaluation_params_.num_control_points;
-    Eigen::MatrixX<T> control_points(num_control_points, 6);
-    for (int i = 0; i < num_control_points; ++i) {
-      control_points.row(i) = Eigen::Map<const Eigen::Vector<T, 6>>(&(parameters[
-          static_cast<int>(
-              AccelerometerParameterIndices::kSensorRigPoseSplineControlPointsIndex
-          ) + i][0]));
+    const int num_rotation_control_points =
+        rotation_trajectory_evaluation_params_.num_control_points;
+    Eigen::MatrixX<T> rotation_control_points(num_rotation_control_points, 3);
+    for (int i = 0; i < num_rotation_control_points; ++i) {
+      rotation_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
+          &(parameters[static_cast<int>(
+              AccelerometerParameterIndices::kSensorRigPoseSplineControlPointsIndex)
+                + i
+              ][0]));
     }
-    const Eigen::MatrixX<T> basis_matrix =
-        trajectory_evaluation_params_.basis_matrix.template cast<T>();
-    const T knot0 = static_cast<T>(trajectory_evaluation_params_.knot0);
-    const T knot1 = static_cast<T>(trajectory_evaluation_params_.knot1);
-    const T stamp =
-        static_cast<T>(trajectory_evaluation_params_.stamp) - latency;
+    const int num_position_control_points =
+        position_trajectory_evaluation_params_.num_control_points;
+    Eigen::MatrixX<T> position_control_points(num_position_control_points, 3);
+    for (int i = 0; i < num_position_control_points; ++i) {
+      position_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
+          &(parameters[static_cast<int>(
+              AccelerometerParameterIndices::kSensorRigPoseSplineControlPointsIndex)
+                + i + num_rotation_control_points
+              ][0]));
+    }
+
+    const Eigen::MatrixX<T> rotation_basis_matrix =
+        rotation_trajectory_evaluation_params_.basis_matrix.template cast<T>();
+    const T rotation_knot0 = static_cast<T>(
+        rotation_trajectory_evaluation_params_.knot0);
+    const T rotation_knot1 = static_cast<T>(
+        rotation_trajectory_evaluation_params_.knot1);
+    const T rotation_stamp =
+        static_cast<T>(rotation_trajectory_evaluation_params_.stamp) - latency;
+
+    const Eigen::MatrixX<T> position_basis_matrix =
+        position_trajectory_evaluation_params_.basis_matrix.template cast<T>();
+    const T position_knot0 = static_cast<T>(
+        position_trajectory_evaluation_params_.knot0);
+    const T position_knot1 = static_cast<T>(
+        position_trajectory_evaluation_params_.knot1);
+    const T position_stamp =
+        static_cast<T>(position_trajectory_evaluation_params_.stamp) - latency;
+
     // Evaluate the pose, pose rate, and pose acceleration.
-    const Eigen::Vector<T, 6> pose_vector = BSpline<6, T>::Evaluate(
-        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/0);
-    const Eigen::Vector<T, 6> pose_dot_vector = BSpline<6, T>::Evaluate(
-        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/1);
-    const Eigen::Vector<T, 6> pose_ddot_vector = BSpline<6, T>::Evaluate(
-        control_points, knot0, knot1, basis_matrix, stamp, /*derivative=*/2);
-    // Compute the kinematics of the accelerometer.
-    const Eigen::Vector3<T> phi_sensorrig_world = -pose_vector.head(3);
-    const Eigen::Vector3<T> phi_dot_sensorrig_world = -pose_dot_vector.head(3);
-    const Eigen::Vector3<T> phi_ddot_sensorrig_world = -pose_ddot_vector.head(3);
-    const Eigen::Vector3<T> ddt_world_sensorrig = pose_ddot_vector.tail(3);
+    const Eigen::Vector3<T> phi_sensorrig_world = -BSpline<3, T>::Evaluate(
+        rotation_control_points, rotation_knot0, rotation_knot1,
+        rotation_basis_matrix, rotation_stamp, 0);
     T q_sensorrig_world_array[4];
-    ceres::AngleAxisToQuaternion(phi_sensorrig_world.data(),
-                                 q_sensorrig_world_array);
+    ceres::AngleAxisToQuaternion(
+        phi_sensorrig_world.data(), q_sensorrig_world_array);
     const Eigen::Quaternion<T> q_sensorrig_world(
         q_sensorrig_world_array[0], q_sensorrig_world_array[1],
         q_sensorrig_world_array[2], q_sensorrig_world_array[3]);
+    const Eigen::Vector3<T> t_world_sensorrig = BSpline<3, T>::Evaluate(
+        position_control_points, position_knot0, position_knot1,
+        position_basis_matrix, position_stamp, 0);
+    const Eigen::Vector3<T> phi_dot_sensorrig_world = -BSpline<3, T>::Evaluate(
+        rotation_control_points, rotation_knot0, rotation_knot1,
+        rotation_basis_matrix, rotation_stamp, 1);
+    const Eigen::Vector3<T> phi_ddot_sensorrig_world = -BSpline<3, T>::Evaluate(
+        rotation_control_points, rotation_knot0, rotation_knot1,
+        rotation_basis_matrix, rotation_stamp, 2);
+    const Eigen::Vector3<T> ddt_world_sensorrig = BSpline<3, T>::Evaluate(
+        position_control_points, position_knot0, position_knot1,
+        position_basis_matrix, position_stamp, 2);
 
+    // Compute the kinematics of the accelerometer.
     const Eigen::Matrix3<T> J_sensorrig_world =
         ExpSO3Jacobian(phi_sensorrig_world);
     const Eigen::Matrix3<T> J_dot_sensorrig_world =
@@ -150,7 +179,8 @@ class AccelerometerCostFunctor {
   Eigen::Vector3d measurement_;
   double information_;
   std::unique_ptr<AccelerometerModel> accelerometer_model_;
-  TrajectoryEvaluationParams trajectory_evaluation_params_;
+  TrajectoryEvaluationParams position_trajectory_evaluation_params_;
+  TrajectoryEvaluationParams rotation_trajectory_evaluation_params_;
 };
 } // namespace calico::sensors
 #endif // CALICO_SENSORS_ACCELEROMETER_COST_FUNCTOR_H_

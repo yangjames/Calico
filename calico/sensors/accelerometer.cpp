@@ -77,29 +77,34 @@ absl::StatusOr<std::vector<AccelerometerMeasurement>> Accelerometer::Project(
     const std::vector<double>& interp_times,
     const Trajectory& sensorrig_trajectory,
     const WorldModel& world_model) const {
-  std::vector<Eigen::Vector<double, 6>> pose_vectors;
-  ASSIGN_OR_RETURN(pose_vectors, sensorrig_trajectory.spline().Interpolate(
-      interp_times, /*derivative=*/0));
-  std::vector<Eigen::Vector<double, 6>> pose_dot_vectors;
-  ASSIGN_OR_RETURN(pose_dot_vectors, sensorrig_trajectory.spline().Interpolate(
-      interp_times, /*derivative=*/1));
-  std::vector<Eigen::Vector<double, 6>> pose_ddot_vectors;
-  ASSIGN_OR_RETURN(pose_ddot_vectors, sensorrig_trajectory.spline().Interpolate(
+  ASSIGN_OR_RETURN(
+    std::vector<Eigen::Vector3d> ddt_world_sensorrig_vector,
+    sensorrig_trajectory.position_spline().Interpolate(
       interp_times, /*derivative=*/2));
+  ASSIGN_OR_RETURN(std::vector<Eigen::Vector3d> phi_world_sensorrig_vector,
+    sensorrig_trajectory.rotation_spline().Interpolate(
+      interp_times, /*derivative=*/0));
+  ASSIGN_OR_RETURN(std::vector<Eigen::Vector3d> phi_dot_world_sensorrig_vector,
+    sensorrig_trajectory.rotation_spline().Interpolate(
+      interp_times, /*derivative=*/1));
+  ASSIGN_OR_RETURN(std::vector<Eigen::Vector3d> phi_ddot_world_sensorrig_vector,
+    sensorrig_trajectory.rotation_spline().Interpolate(
+      interp_times, /*derivative=*/2));
+
   std::vector<AccelerometerMeasurement> measurements(interp_times.size());
   for (int i = 0; i < interp_times.size(); ++i) {
-    const Eigen::Vector3d phi_sensorrig_world = -pose_vectors.at(i).head(3);
+    const Eigen::Vector3d phi_sensorrig_world = -phi_world_sensorrig_vector[i];
     const Eigen::Vector3d phi_dot_sensorrig_world =
-        -pose_dot_vectors.at(i).head(3);
+        -phi_dot_world_sensorrig_vector[i];
     const Eigen::Vector3d phi_ddot_sensorrig_world =
-        -pose_ddot_vectors.at(i).head(3);
+        -phi_ddot_world_sensorrig_vector[i];
     double q_sensorrig_world_array[4];
     ceres::AngleAxisToQuaternion(phi_sensorrig_world.data(),
                                  q_sensorrig_world_array);
     const Eigen::Quaterniond q_sensorrig_world(
         q_sensorrig_world_array[0], q_sensorrig_world_array[1],
         q_sensorrig_world_array[2], q_sensorrig_world_array[3]);
-    const Eigen::Vector3d ddt_world_sensorrig = pose_ddot_vectors.at(i).tail(3);
+    const Eigen::Vector3d& ddt_world_sensorrig = ddt_world_sensorrig_vector[i];
     const Eigen::Matrix3d J = ExpSO3Jacobian(phi_sensorrig_world);
     const Eigen::Matrix3d Jdot = ExpSO3JacobianDot(phi_sensorrig_world,
                                                    phi_dot_sensorrig_world);

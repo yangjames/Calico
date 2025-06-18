@@ -40,8 +40,6 @@ TEST_P(CameraCostFunctionCreationTest, Instantiation) {
   CameraCostFunctionCreationTestCase test_case = GetParam();
   std::vector<double*> parameters;
   for (const auto& stamp : timestamps) {
-    TrajectoryEvaluationParams segment =
-        trajectory_world_sensorrig.GetEvaluationParams(stamp);
     auto* cost_function =
         CameraCostFunctor::CreateCostFunction(
             test_case.pixel, test_case.sigma, test_case.camera_model,

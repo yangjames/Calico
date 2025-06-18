@@ -19,6 +19,7 @@ struct AprilGridConfig {
   double tagSpacing;  // Ratio of space between tags to their size.
                       // For example:
                       //   space between tags=0.5m, tagSize=2m -> tagSpacing=0.25
+  int startId = 0;  // The id of the first tag in the grid. Zero by default.
 };
 
 class AprilGridDetector {
