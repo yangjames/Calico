@@ -52,10 +52,10 @@ absl::Status Trajectory::FitSpline(
 
 int Trajectory::AddParametersToProblem(ceres::Problem& problem) {
   int num_parameters;
-  num_parameters += spline_rotation_world_from_body_.AddParametersToProblem(problem);
-  num_parameters += spline_position_world_to_body_.AddParametersToProblem(problem);
   spline_rotation_world_from_body_.EnableControlPointsEstimation(rotation_enabled_);
   spline_position_world_to_body_.EnableControlPointsEstimation(position_enabled_);
+  num_parameters += spline_rotation_world_from_body_.AddParametersToProblem(problem);
+  num_parameters += spline_position_world_to_body_.AddParametersToProblem(problem);
   return num_parameters;
 }
 
