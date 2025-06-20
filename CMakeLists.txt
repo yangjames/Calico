@@ -287,7 +287,6 @@ set(
   PYTHON_INSTALL_DIR
   lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/calico
 )
-message(STATUS "Python install directory: ${PYTHON_INSTALL_DIR}")
 install(
   TARGETS _calico
   LIBRARY DESTINATION ${PYTHON_INSTALL_DIR}
