@@ -14,7 +14,7 @@ find_package(GTest REQUIRED)
 find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(pybind11 REQUIRED)
-find_package(Python REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
@@ -220,16 +220,6 @@ target_link_libraries(
   world_model
   Eigen3::Eigen
 )
-set_target_properties(
-  _calico PROPERTIES
-  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
-)
-file(
-  COPY
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
-  DESTINATION ${PROJECT_BINARY_DIR}/calico
-)
 
 # Install cpp library.
 install(
@@ -291,16 +281,22 @@ install(
   FILES ${sensor_headers}
   DESTINATION include/calico/sensors/
 )
+
 # Install python library.
+set(
+  PYTHON_INSTALL_DIR
+  lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/calico
+)
+message(STATUS "Python install directory: ${PYTHON_INSTALL_DIR}")
 install(
   TARGETS _calico
-  DESTINATION ${Python_SITELIB}/calico
+  LIBRARY DESTINATION ${PYTHON_INSTALL_DIR}
 )
 install(
   FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
-  DESTINATION ${Python_SITELIB}/calico
+  DESTINATION ${PYTHON_INSTALL_DIR}
 )
 
 if (BUILD_TESTING)
