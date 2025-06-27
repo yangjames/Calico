@@ -10,7 +10,7 @@ sudo apt-get install -y cmake libgoogle-glog-dev \
     libsuitesparse-dev
 
 cd /tmp || exit
-git clone https://ceres-solver.googlesource.com/ceres-solver
+git clone https://ceres-solver.googlesource.com/ceres-solver -b 2.1.0
 
 mkdir ceres-bin
 cd ceres-bin || exit
