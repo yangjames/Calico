@@ -12,6 +12,11 @@ sudo apt-get install -y cmake libgoogle-glog-dev \
 cd /tmp || exit
 git clone https://ceres-solver.googlesource.com/ceres-solver -b 2.1.0
 
+(
+    cd ceres-solver || exit
+    git checkout 2.1.0
+)
+
 mkdir ceres-bin
 cd ceres-bin || exit
 USE_CUDA=off cmake ../ceres-solver

@@ -2,7 +2,7 @@
 requires = [
   "setuptools",
   "build",
-  "pybind11[global]>=2.11.1",
+  "pybind11[global]>=2.12",
   "ninja",
   "auditwheel",
   "cmake>=3.12"
