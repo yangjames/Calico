@@ -1,7 +1,3 @@
-# if compiling on jetson, ignore this repo
-# if (NOT "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
-#   return()
-# endif()
 cmake_minimum_required(VERSION 3.5)
 project (Calico)
 
@@ -289,7 +285,7 @@ install(
 # Install python library.
 set(
   PYTHON_INSTALL_DIR
-  lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/dist-packages/calico
+  /usr/local/lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/dist-packages/calico
 )
 install(
   TARGETS _calico
