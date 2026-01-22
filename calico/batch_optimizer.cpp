@@ -4,7 +4,6 @@
 
 #include "calico/statusor_macros.h"
 
-
 namespace calico {
 
 ceres::Solver::Options DefaultSolverOptions() {
@@ -32,20 +31,19 @@ BatchOptimizer::~BatchOptimizer() {
   }
 }
 
-void BatchOptimizer::AddSensor(
-    sensors::Sensor* sensor, bool take_ownership) {
+void BatchOptimizer::AddSensor(sensors::Sensor* sensor, bool take_ownership) {
   sensors_.push_back(std::unique_ptr<sensors::Sensor>(sensor));
   own_sensors_.push_back(take_ownership);
 }
 
-void BatchOptimizer::AddWorldModel(
-    WorldModel* world_model, bool take_ownership) {
+void BatchOptimizer::AddWorldModel(WorldModel* world_model,
+                                   bool take_ownership) {
   world_model_ = std::unique_ptr<WorldModel>(world_model);
   own_world_model_ = take_ownership;
 }
 
-void BatchOptimizer::AddTrajectory(
-    Trajectory* trajectory_world_body, bool take_ownership) {
+void BatchOptimizer::AddTrajectory(Trajectory* trajectory_world_body,
+                                   bool take_ownership) {
   trajectory_world_body_ = std::unique_ptr<Trajectory>(trajectory_world_body);
   own_trajectory_world_body_ = take_ownership;
 }
@@ -55,6 +53,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
   int num_parameters = 0;
   int num_residuals = 0;
   ceres::Problem problem;
+
   // Add world model and trajectory to problem.
   num_parameters += world_model_->AddParametersToProblem(problem);
   num_parameters += trajectory_world_body_->AddParametersToProblem(problem);
@@ -64,8 +63,8 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
                      sensor->AddParametersToProblem(problem));
     num_parameters += num_parameters_added;
     ASSIGN_OR_RETURN(const auto num_residuals_added,
-        sensor->AddResidualsToProblem(problem, *trajectory_world_body_,
-                                      *world_model_));
+                     sensor->AddResidualsToProblem(
+                         problem, *trajectory_world_body_, *world_model_));
     num_residuals += num_residuals_added;
   }
   // Run solver.
@@ -73,11 +72,12 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
   ceres::Solve(options, &problem, &summary);
 
   // Update residuals for every sensor.
-  for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
-    RETURN_IF_ERROR(sensor->UpdateResiduals(problem));
+  if (summary.termination_type != ceres::TerminationType::FAILURE) {
+    for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
+      RETURN_IF_ERROR(sensor->UpdateResiduals(problem));
+    }
   }
-
   return summary;
 }
 
-} // namespace calico
+}  // namespace calico

@@ -1,4 +1,7 @@
+#include <memory>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
@@ -12,6 +15,21 @@
 #include "pybind11/numpy.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
+
+auto VecToEigen = [](const std::vector<double>& v) {
+  Eigen::VectorXd x(static_cast<int>(v.size()));
+  for (int i = 0; i < x.size(); ++i) x[i] = v[i];
+  return x;
+};
+
+auto Arr2ToEigen = [](const std::array<double, 2>& v) {
+  Eigen::Vector2d x(v[0], v[1]);
+  return x;
+};
+
+auto EigenToVec = [](const Eigen::VectorXd& x) {
+  return std::vector<double>(x.data(), x.data() + x.size());
+};
 
 PYBIND11_MODULE(_calico, m) {
   m.doc() = "Calico";
@@ -220,7 +238,14 @@ PYBIND11_MODULE(_calico, m) {
 
   py::class_<CameraMeasurement>(m, "CameraMeasurement")
       .def(py::init<>())
-      .def_readwrite("pixel", &CameraMeasurement::pixel)
+      .def_property(
+          "pixel",
+          [](const CameraMeasurement& self) {
+            return std::array<double, 2>{self.pixel.x(), self.pixel.y()};
+          },
+          [](CameraMeasurement& self, const std::array<double, 2>& pixel) {
+            self.pixel = Arr2ToEigen(pixel);
+          })
       .def_readwrite("id", &CameraMeasurement::id);
 
   py::class_<Camera, std::shared_ptr<Camera>, Sensor>(m, "Camera")
@@ -228,16 +253,20 @@ PYBIND11_MODULE(_calico, m) {
       .def("SetName", &Camera::SetName)
       .def("GetName", &Camera::GetName)
       .def("SetExtrinsics", &Camera::SetExtrinsics)
-      .def("GetExtrinsics", &Camera::GetExtrinsics)
+      .def("GetExtrinsics", &Camera::GetExtrinsics,
+           py::return_value_policy::reference_internal)
       .def("SetIntrinsics",
-           [](Camera& self, const Eigen::VectorXd& intrinsics) {
-             const auto status = self.SetIntrinsics(intrinsics);
+           [VecToEigen](Camera& self, const std::vector<double>& intrinsics) {
+             const auto status = self.SetIntrinsics(VecToEigen(intrinsics));
              if (!status.ok()) {
                throw std::runtime_error(std::string("Error: ") +
                                         std::string(status.message()));
              }
            })
-      .def("GetIntrinsics", &Camera::GetIntrinsics)
+      .def("GetIntrinsics",
+           [EigenToVec](const Camera& self) {
+             return EigenToVec(self.GetIntrinsics());
+           })
       .def("SetLatency", &Camera::SetLatency)
       .def("GetLatency", &Camera::GetLatency)
       .def("EnableExtrinsicsEstimation", &Camera::EnableExtrinsicsEstimation)
