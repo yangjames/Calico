@@ -1,6 +1,8 @@
 #include "calico/sensors/camera.h"
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "calico/optimization_utils.h"
 #include "calico/sensors/camera_cost_functor.h"

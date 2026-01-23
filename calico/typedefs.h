@@ -5,7 +5,6 @@
 
 #include "Eigen/Dense"
 
-
 namespace Eigen {
 
 template <typename T>
@@ -29,7 +28,7 @@ using Matrix3 = Matrix<T, 3, 3>;
 template <typename T, int N>
 using Vector = Matrix<T, N, 1>;
 
-} // namespace Eigen
+}  // namespace Eigen
 
 namespace calico {
 
@@ -38,31 +37,21 @@ namespace calico {
 template <typename T>
 class Pose3 {
  public:
-
   Pose3() {
     q_.setIdentity();
     t_.setZero();
   }
 
-  Pose3(const Eigen::Quaternion<T>& q,
-        const Eigen::Vector3<T>& t)
-    : q_(q), t_(t) {}
-  
+  Pose3(const Eigen::Quaternion<T>& q, const Eigen::Vector3<T>& t)
+      : q_(q), t_(t) {}
+
   /// Rotation accessor.
-  Eigen::Quaternion<T>& rotation() {
-    return q_;
-  }
-  const Eigen::Quaternion<T>& rotation() const {
-    return q_;
-  }
+  Eigen::Quaternion<T>& rotation() { return q_; }
+  const Eigen::Quaternion<T>& rotation() const { return q_; }
 
   /// Translation accessor.
-  Eigen::Vector3<T>& translation() {
-    return t_;
-  }
-  const Eigen::Vector3<T>& translation() const {
-    return t_;
-  }
+  Eigen::Vector3<T>& translation() { return t_; }
+  const Eigen::Vector3<T>& translation() const { return t_; }
 
   /// Rotation setter as a 4-vector quaternion for python bindings. Quaternion
   /// vector must be in the order \f$\left[w, x, y, z\right]\f$
@@ -74,21 +63,17 @@ class Pose3 {
     q_.z() = qn(3);
   }
 
-  /// Rotation getter as a 4-vector for python bindings. Returned quaternion will
-  /// be in the order \f$\left[w, x, y, z\right]\f$
+  /// Rotation getter as a 4-vector for python bindings. Returned quaternion
+  /// will be in the order \f$\left[w, x, y, z\right]\f$
   Eigen::Vector4<T> GetRotation() const {
     return Eigen::Vector4<T>(q_.w(), q_.x(), q_.y(), q_.z());
   }
 
   /// Translation setter for python bindings.
-  void SetTranslation(const Eigen::Vector3<T>& t) {
-    t_ = t;
-  }
+  void SetTranslation(const Eigen::Vector3<T>& t) { t_ = t; }
 
   /// Translation getter for python bindings.
-  Eigen::Vector3<T> GetTranslation() const {
-    return t_;
-  }
+  Eigen::Vector3<T> GetTranslation() const { return t_; }
 
   /// Operator for multiplying two Pose3 objects. Usage:
   /// ```
@@ -114,7 +99,7 @@ class Pose3 {
   /// Eigen::Vector3<T> t_world_point = T_world_rigidbody * t_rigidbody_point;
   /// ```
   Eigen::Vector3<T> operator*(const Eigen::Vector3<T>& p) const {
-    return this->rotation()*p + this->translation();
+    return this->rotation() * p + this->translation();
   }
 
   /// Returns the inverse of this transform \f$\mathbf{T}^{-1}\f$. Usage:
@@ -140,10 +125,9 @@ class Pose3 {
   /// >> q: w, x, y, z, t: x, y, z
   /// ```
   friend std::ostream& operator<<(std::ostream& os, const Pose3<T>& pose) {
-    os
-      << "q: " << pose.rotation().w() << " " << pose.rotation().x() << " " <<
-      pose.rotation().y() << " " << pose.rotation().z() <<
-      ", t: " << pose.translation().transpose();
+    os << "q: " << pose.rotation().w() << " " << pose.rotation().x() << " "
+       << pose.rotation().y() << " " << pose.rotation().z()
+       << ", t: " << pose.translation().transpose();
     return os;
   }
 
@@ -154,7 +138,6 @@ class Pose3 {
 
 using Pose3d = Pose3<double>;
 
+}  // namespace calico
 
-} // namespace calico
-
-#endif // CALICO_TYPEDEFS_H_
+#endif  // CALICO_TYPEDEFS_H_

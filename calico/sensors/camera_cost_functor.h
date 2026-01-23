@@ -1,10 +1,14 @@
 #ifndef CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
 #define CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
 
+#include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "calico/sensors/camera_models.h"
 #include "calico/trajectory.h"
 #include "ceres/cost_function.h"
-
 
 namespace calico::sensors {
 
@@ -26,7 +30,7 @@ enum class CameraParameterIndices : int {
   kModelPointIndex = 4,
   kModelRotationIndex = 5,
   kModelTranslationIndex = 6,
-  // Rotation and position control points of the associated spline segment as 
+  // Rotation and position control points of the associated spline segment as
   // two Nx3 matrices (rotation then position) where N is the spline order.
   kSensorRigPoseSplineControlPointsIndex = 7,
 };
@@ -36,9 +40,10 @@ enum class CameraParameterIndices : int {
 class CameraCostFunctor {
  public:
   static constexpr int kCameraResidualSize = 2;
-  explicit CameraCostFunctor(
-      CameraIntrinsicsModel camera_model, const Eigen::Vector2d& pixel,
-      double sigma, double stamp, const Trajectory& sp_T_world_sensorrig);
+  explicit CameraCostFunctor(CameraIntrinsicsModel camera_model,
+                             const Eigen::Vector2d& pixel, double sigma,
+                             double stamp,
+                             const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a camera cost function.
   static ceres::CostFunction* CreateCostFunction(
@@ -71,12 +76,12 @@ class CameraCostFunctor {
   template <typename T>
   bool operator()(T const* const* parameters, T* residual) {
     // Parse intrinsics.
-    const T* intrinsics_ptr =
-      static_cast<const T*>(&(parameters[static_cast<int>(
-          CameraParameterIndices::kIntrinsicsIndex)][0]));
+    const T* intrinsics_ptr = static_cast<const T*>(
+        &(parameters[static_cast<int>(CameraParameterIndices::kIntrinsicsIndex)]
+                    [0]));
     const int parameter_size = camera_model_->NumberOfParameters();
-    const Eigen::VectorX<T> intrinsics = Eigen::Map<const Eigen::VectorX<T>>(
-        intrinsics_ptr, parameter_size);
+    const Eigen::VectorX<T> intrinsics =
+        Eigen::Map<const Eigen::VectorX<T>>(intrinsics_ptr, parameter_size);
     // Parse extrinsics.
     const Eigen::Map<const Eigen::Quaternion<T>> q_sensorrig_camera(
         &(parameters[static_cast<int>(
@@ -89,8 +94,8 @@ class CameraCostFunctor {
         parameters[static_cast<int>(CameraParameterIndices::kLatencyIndex)][0];
     // Parse model point and model pose resolved in the world frame.
     const Eigen::Map<const Eigen::Vector3<T>> t_model_point(
-        &(parameters[static_cast<int>(
-            CameraParameterIndices::kModelPointIndex)][0]));
+        &(parameters[static_cast<int>(CameraParameterIndices::kModelPointIndex)]
+                    [0]));
     const Eigen::Map<const Eigen::Quaternion<T>> q_world_model(
         &(parameters[static_cast<int>(
             CameraParameterIndices::kModelRotationIndex)][0]));
@@ -104,9 +109,9 @@ class CameraCostFunctor {
     for (int i = 0; i < num_rotation_control_points; ++i) {
       rotation_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
           &(parameters[static_cast<int>(
-              CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex)
-                + i
-              ][0]));
+                           CameraParameterIndices::
+                               kSensorRigPoseSplineControlPointsIndex) +
+                       i][0]));
     }
     const int num_position_control_points =
         position_trajectory_evaluation_params_.num_control_points;
@@ -114,26 +119,26 @@ class CameraCostFunctor {
     for (int i = 0; i < num_position_control_points; ++i) {
       position_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
           &(parameters[static_cast<int>(
-              CameraParameterIndices::kSensorRigPoseSplineControlPointsIndex)
-                + i + num_rotation_control_points
-              ][0]));
+                           CameraParameterIndices::
+                               kSensorRigPoseSplineControlPointsIndex) +
+                       i + num_rotation_control_points][0]));
     }
 
     const Eigen::MatrixX<T> rotation_basis_matrix =
         rotation_trajectory_evaluation_params_.basis_matrix.template cast<T>();
-    const T rotation_knot0 = static_cast<T>(
-        rotation_trajectory_evaluation_params_.knot0);
-    const T rotation_knot1 = static_cast<T>(
-        rotation_trajectory_evaluation_params_.knot1);
+    const T rotation_knot0 =
+        static_cast<T>(rotation_trajectory_evaluation_params_.knot0);
+    const T rotation_knot1 =
+        static_cast<T>(rotation_trajectory_evaluation_params_.knot1);
     const T rotation_stamp =
         static_cast<T>(rotation_trajectory_evaluation_params_.stamp) - latency;
 
     const Eigen::MatrixX<T> position_basis_matrix =
         position_trajectory_evaluation_params_.basis_matrix.template cast<T>();
-    const T position_knot0 = static_cast<T>(
-        position_trajectory_evaluation_params_.knot0);
-    const T position_knot1 = static_cast<T>(
-        position_trajectory_evaluation_params_.knot1);
+    const T position_knot0 =
+        static_cast<T>(position_trajectory_evaluation_params_.knot0);
+    const T position_knot1 =
+        static_cast<T>(position_trajectory_evaluation_params_.knot1);
     const T position_stamp =
         static_cast<T>(position_trajectory_evaluation_params_.stamp) - latency;
     // Evaluate the pose.
@@ -141,8 +146,8 @@ class CameraCostFunctor {
         rotation_control_points, rotation_knot0, rotation_knot1,
         rotation_basis_matrix, rotation_stamp, 0);
     T q_sensorrig_world_array[4];
-    ceres::AngleAxisToQuaternion(
-        phi_sensorrig_world.data(), q_sensorrig_world_array);
+    ceres::AngleAxisToQuaternion(phi_sensorrig_world.data(),
+                                 q_sensorrig_world_array);
     const Eigen::Quaternion<T> q_sensorrig_world(
         q_sensorrig_world_array[0], q_sensorrig_world_array[1],
         q_sensorrig_world_array[2], q_sensorrig_world_array[3]);
@@ -159,16 +164,22 @@ class CameraCostFunctor {
         q_world_model.inverse() * (t_world_camera - t_world_model);
     const Eigen::Vector3<T> t_camera_point =
         q_camera_model * (t_model_point - t_model_camera);
-    // Project the point through the camera model.
     const absl::StatusOr<Eigen::Vector2<T>> projection =
         camera_model_->ProjectPoint(intrinsics, t_camera_point);
-    // Assign the residual, or return boolean indicating success/failure.
+    // Assign the residual. If projection fails, it means the point is behind
+    // the camera or at infinity. In this case, set the residual to zero so that
+    // the optimizer can effectively ignore it. We do this because this point
+    // might come back into the field of view.
+    Eigen::Map<Eigen::Vector2<T>> error(residual);
     if (projection.ok()) {
-      Eigen::Map<Eigen::Vector2<T>> error(residual);
       const Eigen::Vector2<T> pixel = pixel_.template cast<T>();
       error = (pixel - *projection) * static_cast<T>(information_);
       return true;
     }
+    std::cerr << "projection failed inside cost functor: "
+              << projection.status().message()
+              << " stamp=" << rotation_trajectory_evaluation_params_.stamp
+              << " t_camera_point=" << t_camera_point.transpose() << std::endl;
     return false;
   }
 
@@ -179,6 +190,6 @@ class CameraCostFunctor {
   TrajectoryEvaluationParams position_trajectory_evaluation_params_;
   TrajectoryEvaluationParams rotation_trajectory_evaluation_params_;
 };
-} // namespace calico::sensors
+}  // namespace calico::sensors
 
-#endif // CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
+#endif  // CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_

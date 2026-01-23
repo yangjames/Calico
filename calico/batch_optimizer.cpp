@@ -1,5 +1,6 @@
 #include "calico/batch_optimizer.h"
 
+#include <memory>
 #include <thread>
 
 #include "calico/statusor_macros.h"
@@ -55,8 +56,12 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
   ceres::Problem problem;
 
   // Add world model and trajectory to problem.
-  num_parameters += world_model_->AddParametersToProblem(problem);
-  num_parameters += trajectory_world_body_->AddParametersToProblem(problem);
+  auto num_world_model_parameters =
+      world_model_->AddParametersToProblem(problem);
+  num_parameters += num_world_model_parameters;
+  auto num_trajectory_parameters =
+      trajectory_world_body_->AddParametersToProblem(problem);
+  num_parameters += num_trajectory_parameters;
   for (std::unique_ptr<sensors::Sensor>& sensor : sensors_) {
     sensor->ClearResidualInfo();
     ASSIGN_OR_RETURN(const auto num_parameters_added,
@@ -67,6 +72,7 @@ absl::StatusOr<ceres::Solver::Summary> BatchOptimizer::Optimize(
                          problem, *trajectory_world_body_, *world_model_));
     num_residuals += num_residuals_added;
   }
+
   // Run solver.
   ceres::Solver::Summary summary;
   ceres::Solve(options, &problem, &summary);

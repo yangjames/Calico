@@ -58,12 +58,13 @@ PYBIND11_MODULE(_calico, m) {
       .def_property(
           "rotation",
           [](const Pose3d& self) -> std::array<double, 4> {
-            const auto q = self.GetRotation();
+            const auto q = self.rotation();
             return {q.w(), q.x(), q.y(), q.z()};
           },
           [](Pose3d& self, const std::array<double, 4>& q) {
-            Eigen::Vector4d v(q[0], q[1], q[2], q[3]);
-            self.SetRotation(v);
+            Eigen::Quaterniond v(/*w=*/q[0], /*x=*/q[1], /*y=*/q[2],
+                                 /*z=*/q[3]);
+            self.rotation() = v;
           })
       .def_property(
           "translation",
@@ -430,6 +431,8 @@ PYBIND11_MODULE(_calico, m) {
       .def_readwrite("minimizer_type", &ceres::Solver::Options::minimizer_type)
       .def_readwrite("max_num_iterations",
                      &ceres::Solver::Options::max_num_iterations)
+      .def_readwrite("max_num_consecutive_invalid_steps",
+                     &ceres::Solver::Options::max_num_consecutive_invalid_steps)
       .def_readwrite("num_threads", &ceres::Solver::Options::num_threads)
       .def_readwrite("function_tolerance",
                      &ceres::Solver::Options::function_tolerance)
