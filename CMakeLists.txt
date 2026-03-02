@@ -151,6 +151,20 @@ target_link_libraries(
   world_model
 )
 
+# Multi-camera library.
+add_library(
+  multi_camera
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/multi_camera.cpp
+)
+target_link_libraries(
+  multi_camera
+  camera
+  camera_models
+  camera_cost_functor
+  trajectory
+  world_model
+)
+
 # Batch optimizer.
 add_library(
   batch_optimizer
@@ -230,6 +244,7 @@ install(
   apriltags
   batch_optimizer
   camera
+  multi_camera
   camera_cost_functor
   camera_models
   gyroscope
@@ -470,6 +485,18 @@ if (BUILD_TESTING)
     gmock
     )
   add_test(CameraLibTest camera_test)
+  # Multi-camera test.
+  add_executable(
+    multi_camera_test
+    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/multi_camera_test.cpp
+  )
+  target_link_libraries(
+    multi_camera_test
+    multi_camera
+    GTest::Main
+    gmock
+  )
+  add_test(MultiCameraLibTest multi_camera_test)
   # Batch optimizer test.
   add_executable(
     batch_optimizer_test
