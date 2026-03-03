@@ -22,22 +22,38 @@ namespace calico::sensors {
 /// a single module, for example, stereo cameras.
 class MultiCamera : public Sensor {
  public:
-  explicit MultiCamera() = default;
+  MultiCamera() = delete; // Require instantiation with imager names.
+  explicit MultiCamera(const absl::flat_hash_set<std::string>& imagers) {
+    imagers_ = imagers;
+    for (const auto& imager : imagers) {
+      imager_to_intrinsics_enabled_[imager] = false;
+      imager_to_extrinsics_enabled_[imager] = false;
+      imager_to_latency_enabled_[imager] = false;
+      imager_to_camera_model_[imager] = nullptr;
+      imager_to_pose_sensor_from_imager_[imager] = Pose3d();
+      imager_to_intrinsics_[imager] = Eigen::VectorXd(0);
+      imager_to_latency_[imager] = 0.0;
+      imager_to_id_to_measurement_.insert({imager, {}});
+      imager_to_id_to_residual_.insert({imager, {}});
+      imager_to_id_to_residual_id_.insert({imager, {}});
+      imager_to_outlier_ids_.insert({imager, {}});
+    }
+  }
   MultiCamera(const MultiCamera&) = delete;
   MultiCamera& operator=(const MultiCamera&) = delete;
   ~MultiCamera() = default;
 
   // /// Top-level sensor module name.
-  void SetName(const std::string& name) { name_ = name; }
-  const std::string& GetName() const { return name_; }
+  void SetName(const std::string& sensor_name) { sensor_name_ = sensor_name; }
+  const std::string& GetName() const { return sensor_name_; }
 
   /// Setter for the camera model.
   absl::Status SetModel(
-      const absl::flat_hash_map<std::string, CameraIntrinsicsModel>&
+      const std::string& imager, CameraIntrinsicsModel
           camera_model);
 
   /// Getter for the camera model.
-  absl::flat_hash_map<std::string, CameraIntrinsicsModel> GetModel() const;
+  absl::StatusOr<CameraIntrinsicsModel> GetModel(const std::string& imager) const;
 
   /// Sets extrinsics for the camera module itself. Each sensor will internally
   /// have an additional extrinsics offset relative to this one. This can be set
@@ -52,20 +68,14 @@ class MultiCamera : public Sensor {
   /// Set the extrinsics for each internal sensor. This transform will be
   /// applied on top of pose_sensorrig_from_sensor which is held constant during
   /// optimization.
-  void SetImagerExtrinsics(const absl::flat_hash_map<std::string, Pose3d>&
-                               imager_to_pose_sensor_from_imager) {
-    imager_to_pose_sensor_from_imager_ = imager_to_pose_sensor_from_imager;
-  }
-  const absl::flat_hash_map<std::string, Pose3d>& GetImagerExtrinsics() const {
-    return imager_to_pose_sensor_from_imager_;
-  }
+  absl::Status SetImagerExtrinsics(const std::string& imager, const Pose3d&
+                               pose_sensor_from_imager);
+  absl::StatusOr<Pose3d> GetImagerExtrinsics(const std::string& imager) const;
 
   absl::Status SetIntrinsics(
-      const absl::flat_hash_map<std::string, Eigen::VectorXd>& intrinsics);
-  const absl::flat_hash_map<std::string, Eigen::VectorXd>& GetIntrinsics()
-      const {
-    return imager_to_intrinsics_;
-  }
+      const std::string& imager, const Eigen::VectorXd& intrinsics);
+  absl::StatusOr<Eigen::VectorXd> GetIntrinsics(const std::string& imager) const;
+
   // absl::Status SetLatency(double latency) {
   //   latency_ = latency;
   //   return absl::OkStatus();
@@ -137,31 +147,18 @@ class MultiCamera : public Sensor {
   //         const Trajectory& sensorrig_trajectory,
   //         const WorldModel& world_model) const;
 
-  // /// Setter for the camera models.
-  // absl::Status SetMultiCameraModel(
-  //     const absl::flat_hash_map<std::string, CameraIntrinsicsModel>&
-  //         imager_name_to_camera_model);
+  /// Add a single camera measurement to the measurement list.
+  /// Returns an error if the measurement's id is duplicated without adding.
+  absl::Status AddMeasurement(const std::string& imager, const CameraMeasurement& measurement);
 
-  // /// Getter for the camera model.
-  // absl::flat_hash_map<std::string, CameraIntrinsicsModel>&
-  // GetMultiCameraModel()
-  //     const;
-
-  // /// Add a single camera measurement to the measurement list.
-
-  // /// Returns an error if the measurement's id is duplicated without adding.
-  // absl::Status AddMeasurement(const CameraMeasurement& measurement);
-
-  // /// Add multiple measurements to the measurement list.
-
-  // /// Returns an error status if any measurements are duplicates within its
-  // /// internally managed set of measurements.\n\n
-  // /// **Note: If this method encounters any duplicates, it will STILL attempt
-  // to
-  // /// add the entire vector. If it returns an error status, it means that all
-  // /// unique measurements have been added, but duplicates have been
-  // skipped.** absl::Status AddMeasurements(
-  //     const std::vector<CameraMeasurement>& measurements);
+  /// Add multiple measurements to the measurement list.
+  /// Returns an error status if any measurements are duplicates within its
+  /// internally managed set of measurements.\n\n
+  /// **Note: If this method encounters any duplicates, it will STILL attempt to
+  /// add the entire vector. If it returns an error status, it means that all
+  /// unique measurements have been added, but duplicates have been skipped.**
+  absl::Status AddMeasurements(const std::string& imager,
+      const std::vector<CameraMeasurement>& measurements);
 
   // /// Getter for all measurements. Returns a map of observation ids to
   // /// measurements. Will be empty if there are no measurements.
@@ -198,18 +195,20 @@ class MultiCamera : public Sensor {
 
   // /// Clear all measurements.
 
-  // /// This will also clear any internally stored residuals and marked
-  // outliers. void ClearMeasurements();
+  /// This will also clear any internally stored residuals and marked outliers.
+  void ClearMeasurements();
 
-  // /// Get current number of measurements stored.
-  // int NumberOfMeasurements() const;
+  /// Get current number of measurements stored for a given imager.
+  int NumberOfMeasurements(const std::string& imager) const;
 
  private:
-  std::string name_;
+  std::string sensor_name_;
+  absl::flat_hash_set<std::string> imagers_;
+
   Pose3d pose_sensorrig_from_sensor_;
-  absl::flat_hash_map<std::string, bool> intrinsics_enabled_;
-  absl::flat_hash_map<std::string, bool> extrinsics_enabled_;
-  absl::flat_hash_map<std::string, bool> latency_enabled_;
+  absl::flat_hash_map<std::string, bool> imager_to_intrinsics_enabled_;
+  absl::flat_hash_map<std::string, bool> imager_to_extrinsics_enabled_;
+  absl::flat_hash_map<std::string, bool> imager_to_latency_enabled_;
   absl::flat_hash_map<std::string, std::unique_ptr<CameraModel>>
       imager_to_camera_model_;
   absl::flat_hash_map<std::string, Pose3d> imager_to_pose_sensor_from_imager_;

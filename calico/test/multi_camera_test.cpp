@@ -15,17 +15,10 @@ namespace {
 class MultiCameraContainerTest : public ::testing::Test {
  protected:
   const std::string kCameraName = "multi_camera";
-  const std::vector<std::string> kImagerNames{"left", "right", "middle"};
-  const absl::flat_hash_map<std::string, CameraIntrinsicsModel>
-      kImagerToCameraModel = [this]() {
-        absl::flat_hash_map<std::string, CameraIntrinsicsModel>
-            imager_to_intrinsics_model;
-        for (const auto& imager_name : kImagerNames) {
-          imager_to_intrinsics_model[imager_name] =
+  const absl::flat_hash_set<std::string> kImagerNames{"left", "right", "middle"};
+  const CameraIntrinsicsModel
+      kCameraModel = 
               CameraIntrinsicsModel::kOpenCv5;
-        }
-        return imager_to_intrinsics_model;
-      }();
   const absl::flat_hash_map<std::string, Pose3d> kImagerToExtrinsics =
       [this]() {
         absl::flat_hash_map<std::string, Pose3d> imager_to_extrinsics;
@@ -51,82 +44,106 @@ class MultiCameraContainerTest : public ::testing::Test {
   static constexpr int kNumImages = 10;
 
   void SetUp() override {
-    for (const auto& imager_name : kImagerNames) {
-      imager_to_measurements_.insert({imager_name, {}});
-      for (int image_id = 0; image_id < kNumImages; ++image_id) {
-        for (int model_id = 0; model_id < kNumModels; ++model_id) {
-          for (int feature_id = 0; feature_id < kNumFeatures; ++feature_id) {
-            imager_to_measurements_[imager_name].push_back(
-                CameraMeasurement{.id = {.stamp = static_cast<double>(image_id),
-                                         .image_id = image_id,
-                                         .model_id = model_id,
-                                         .feature_id = feature_id}});
-          }
+    for (int image_id = 0; image_id < kNumImages; ++image_id) {
+      for (int model_id = 0; model_id < kNumModels; ++model_id) {
+        for (int feature_id = 0; feature_id < kNumFeatures; ++feature_id) {
+          measurements_.push_back(
+              CameraMeasurement{.id = {.stamp = static_cast<double>(image_id),
+                                        .image_id = image_id,
+                                        .model_id = model_id,
+                                        .feature_id = feature_id}});
         }
       }
     }
   }
 
-  MultiCamera camera_;
-  absl::flat_hash_map<std::string, std::vector<CameraMeasurement>>
-      imager_to_measurements_;
+  MultiCamera camera_{kImagerNames};
+  std::vector<CameraMeasurement> measurements_;
 };
 
 TEST_F(MultiCameraContainerTest, SettersAndGetters) {
   // Pre-assignment.
   EXPECT_THAT(camera_.GetName(), ::testing::IsEmpty());
-  EXPECT_TRUE(camera_.GetModel().empty());
-  EXPECT_THAT(camera_.GetSensorExtrinsics(), PoseEq(Pose3d()));
-  EXPECT_TRUE(camera_.GetImagerExtrinsics().empty());
-  EXPECT_TRUE(camera_.GetIntrinsics().empty());
+  for (const auto& imager : kImagerNames) {
+    ASSERT_OK_AND_ASSIGN(auto model, camera_.GetModel(imager));
+    EXPECT_EQ(model, CameraIntrinsicsModel::kNone);
+    EXPECT_THAT(camera_.GetSensorExtrinsics(), PoseEq(Pose3d()));
+    ASSERT_OK_AND_ASSIGN(const Pose3d imager_extrinsics, camera_.GetImagerExtrinsics(imager));
+    EXPECT_THAT(imager_extrinsics, PoseEq(Pose3d()));
+    ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd intrinsics, camera_.GetIntrinsics(imager));
+    EXPECT_THAT(intrinsics, EigenEq(Eigen::VectorXd()));
+  }
   // Post-assignment.
   camera_.SetName(kCameraName);
-  EXPECT_OK(camera_.SetModel(kImagerToCameraModel));
-  camera_.SetImagerExtrinsics(kImagerToExtrinsics);
-  EXPECT_OK(camera_.SetIntrinsics(kImagerToIntrinsics));
+  for (const auto& imager : kImagerNames) {
+    EXPECT_OK(camera_.SetModel(imager, kCameraModel));
+    EXPECT_OK(camera_.SetImagerExtrinsics(imager, kImagerToExtrinsics.at(imager)));
+    EXPECT_OK(camera_.SetIntrinsics(imager, kImagerToIntrinsics.at(imager)));
+  }
   EXPECT_EQ(camera_.GetName(), kCameraName);
-  for (const auto& [imager, model] : camera_.GetModel()) {
-    EXPECT_EQ(model, kImagerToCameraModel.at(imager));
-  }
-  for (const auto& [imager, extrinsics] : camera_.GetImagerExtrinsics()) {
+  for (const auto& imager : kImagerNames) {
+    ASSERT_OK_AND_ASSIGN(auto model, camera_.GetModel(imager));
+    EXPECT_EQ(model, kCameraModel);
+    ASSERT_OK_AND_ASSIGN(const Pose3d extrinsics, camera_.GetImagerExtrinsics(imager));
     EXPECT_THAT(extrinsics, PoseEq(kImagerToExtrinsics.at(imager)));
-  }
-  for (const auto& [imager, intrinsics] : camera_.GetIntrinsics()) {
+    ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd intrinsics, camera_.GetIntrinsics(imager));
     EXPECT_THAT(intrinsics, EigenEq(kImagerToIntrinsics.at(imager)));
   }
 }
 
-// TEST_F(CameraContainerTest, AddSingleMeasurementOnlyUniqueAllowed) {
-//   const CameraMeasurement measurement{
-//       .pixel = Eigen::Vector2d::Random(),
-//       .id = {.image_id = 0, .model_id = 1, .feature_id = 2},
-//   };
-//   camera_.ClearMeasurements();
-//   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-//   EXPECT_OK(camera_.AddMeasurement(measurement));
-//   EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
-//   // Add the same measurement and expect an error.
-//   EXPECT_THAT(camera_.AddMeasurement(measurement),
-//               StatusCodeIs(absl::StatusCode::kInvalidArgument));
-//   EXPECT_EQ(camera_.NumberOfMeasurements(), 1);
-// }
+TEST_F(MultiCameraContainerTest, AddSingleMeasurementOnlyUniqueAllowed) {
+  camera_.ClearMeasurements();
+  for (const auto& imager : kImagerNames) {
+    EXPECT_EQ(camera_.NumberOfMeasurements(imager), 0);
+  }
+  for (const auto& imager : kImagerNames) {
+      EXPECT_OK(camera_.AddMeasurement(
+          imager,
+           CameraMeasurement{.pixel = Eigen::Vector2d::Random(),
+            .id = {.stamp = static_cast<double>(0),
+                                    .image_id = 0,
+                                    .model_id = 1,
+                                    .feature_id = 2}}));
+  }
+  for (const auto& imager : kImagerNames) {
+    EXPECT_EQ(camera_.NumberOfMeasurements(imager), 1);
+  }
+  // Add the same measurement and expect an error.
+  for (const auto& imager : kImagerNames) {
+    EXPECT_THAT(camera_.AddMeasurement(
+                    imager,
+                    CameraMeasurement{.pixel = Eigen::Vector2d::Random(),
+                                      .id = {.stamp = static_cast<double>(0),
+                                             .image_id = 0,
+                                             .model_id = 1,
+                                             .feature_id = 2}}),
+                StatusCodeIs(absl::StatusCode::kInvalidArgument));
+  }
+  for (const auto& imager : kImagerNames) {
+    EXPECT_EQ(camera_.NumberOfMeasurements(imager), 1);
+  }
+}
 
-// TEST_F(CameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
-//   std::vector<CameraMeasurement> measurements = measurements_;
-//   camera_.ClearMeasurements();
-//   EXPECT_EQ(camera_.NumberOfMeasurements(), 0);
-//   EXPECT_OK(camera_.AddMeasurements(measurements));
-//   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size());
-//   const CameraMeasurement redundant_measurement{
-//       .id = {.stamp = 0, .image_id = 0, .model_id = 0, .feature_id = 0}};
-//   measurements.push_back(redundant_measurement);
-//   camera_.ClearMeasurements();
-//   EXPECT_THAT(camera_.AddMeasurements(measurements),
-//               StatusCodeIs(absl::StatusCode::kInvalidArgument));
-//   EXPECT_EQ(camera_.NumberOfMeasurements(), measurements.size() - 1);
-// }
+TEST_F(MultiCameraContainerTest, AddMultipleMeasurementsOnlyUniqueAllowed) {
+  std::vector<CameraMeasurement> measurements = measurements_;
+  camera_.ClearMeasurements();
+  for (const auto& imager : kImagerNames) {
+    EXPECT_EQ(camera_.NumberOfMeasurements(imager), 0);
+    EXPECT_OK(camera_.AddMeasurements(imager, measurements));
+    EXPECT_EQ(camera_.NumberOfMeasurements(imager), measurements.size());
+  }
+  const CameraMeasurement redundant_measurement{
+      .id = {.stamp = 0, .image_id = 0, .model_id = 0, .feature_id = 0}};
+  measurements.push_back(redundant_measurement);
+  camera_.ClearMeasurements();
+  for (const auto& imager : kImagerNames) {
+    EXPECT_THAT(camera_.AddMeasurements(imager, measurements),
+                StatusCodeIs(absl::StatusCode::kInvalidArgument));
+    EXPECT_EQ(camera_.NumberOfMeasurements(imager), measurements.size() - 1);
+  }
+}
 
-// TEST_F(CameraContainerTest, AddCalibrationParametersToProblem) {
+// TEST_F(MultiCameraContainerTest, AddCalibrationParametersToProblem) {
 //   EXPECT_OK(camera_.SetModel(kCameraModel));
 //   EXPECT_OK(camera_.SetIntrinsics(kIntrinsics));
 //   camera_.SetExtrinsics(kExtrinsics);

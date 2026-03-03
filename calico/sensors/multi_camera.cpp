@@ -6,49 +6,77 @@
 namespace calico::sensors {
 
 absl::Status MultiCamera::SetModel(
-    const absl::flat_hash_map<std::string, CameraIntrinsicsModel>&
-        imager_to_camera_model) {
-  for (const auto& [imager, camera_model] : imager_to_camera_model) {
-    imager_to_camera_model_[imager] = CameraModel::Create(camera_model);
-    imager_to_intrinsics_[imager] = Eigen::VectorXd::Zero(
-        imager_to_camera_model_[imager]->NumberOfParameters());
-    if (!imager_to_camera_model_[imager]) {
-      return absl::InvalidArgumentError(
-          absl::StrCat("Could not create camera model for type ", camera_model,
-                       ". It is likely not yet implemented."));
-    }
+    const std::string& imager, CameraIntrinsicsModel
+        camera_model) {
+  if (!imagers_.contains(imager)) {
+    return absl::InvalidArgumentError(absl::StrCat("Imager ", imager, " not found in multi-camera set."));
+  }
+  imager_to_camera_model_[imager] = CameraModel::Create(camera_model);
+  imager_to_intrinsics_[imager] = Eigen::VectorXd::Zero(
+      imager_to_camera_model_[imager]->NumberOfParameters());
+  if (!imager_to_camera_model_[imager]) {
+    return absl::InvalidArgumentError(
+        absl::StrCat("Could not create camera model for type ", camera_model,
+                      ". It is likely not yet implemented."));
   }
   return absl::OkStatus();
 }
 
-absl::flat_hash_map<std::string, CameraIntrinsicsModel> MultiCamera::GetModel()
+absl::StatusOr<CameraIntrinsicsModel> MultiCamera::GetModel(const std::string& imager)
     const {
-  absl::flat_hash_map<std::string, CameraIntrinsicsModel> imager_to_model;
-  for (const auto& [imager, model] : imager_to_camera_model_) {
-    imager_to_model[imager] = model->GetType();
+  if (!imagers_.contains(imager)) {
+    return absl::InvalidArgumentError(absl::StrCat("Imager ", imager, " not found in multi-camera set."));
   }
-  return imager_to_model;
+  const auto& model = imager_to_camera_model_.at(imager);
+  if (!model) {
+    return CameraIntrinsicsModel::kNone;
+  }
+  return imager_to_camera_model_.at(imager)->GetType();
+}
+
+absl::Status MultiCamera::SetImagerExtrinsics(const std::string& imager, const Pose3d& pose_sensor_from_imager) {
+  if (!imagers_.contains(imager)) {
+    return absl::InvalidArgumentError(
+        absl::StrCat("Imager ", imager, " not found in MultiCamera."));
+  }
+  imager_to_pose_sensor_from_imager_[imager] = pose_sensor_from_imager;
+  return absl::OkStatus();
+}
+
+absl::StatusOr<Pose3d> MultiCamera::GetImagerExtrinsics(const std::string& imager) const {
+  if (!imagers_.contains(imager)) {
+    return absl::InvalidArgumentError(
+        absl::StrCat("Imager ", imager, " not found in MultiCamera."));
+  }
+  return imager_to_pose_sensor_from_imager_.at(imager);
 }
 
 absl::Status MultiCamera::SetIntrinsics(
-    const absl::flat_hash_map<std::string, Eigen::VectorXd>&
-        imager_to_intrinsics) {
-  for (const auto& [imager, intrinsics] : imager_to_intrinsics) {
-    const auto& camera_model = imager_to_camera_model_[imager];
-    if (!camera_model) {
-      return absl::InvalidArgumentError("Camera model has not been set!");
-    }
-    if (intrinsics.size() != camera_model->NumberOfParameters()) {
-      return absl::InvalidArgumentError(absl::StrCat(
-          "Tried to set intrinsics of size ", intrinsics.size(), " for camera ",
-          GetName(), ".Expected intrinsics size of ",
-          camera_model->NumberOfParameters()));
-    }
-    imager_to_intrinsics_[imager] = intrinsics;
+    const std::string& imager, const Eigen::VectorXd& intrinsics) {
+  if (!imagers_.contains(imager)) {
+    return absl::InvalidArgumentError(absl::StrCat("Imager ", imager, " not found in multi-camera set."));
   }
+  
+  const auto& camera_model = imager_to_camera_model_[imager];
+  if (!camera_model) {
+    return absl::InvalidArgumentError("Camera model has not been set!");
+  }
+  if (intrinsics.size() != camera_model->NumberOfParameters()) {
+    return absl::InvalidArgumentError(absl::StrCat(
+        "Tried to set intrinsics of size ", intrinsics.size(), " for camera ",
+        GetName(), ".Expected intrinsics size of ",
+        camera_model->NumberOfParameters()));
+  }
+  imager_to_intrinsics_[imager] = intrinsics;
   return absl::OkStatus();
 }
 
+absl::StatusOr<Eigen::VectorXd> MultiCamera::GetIntrinsics(const std::string& imager) const {
+  if (!imagers_.contains(imager)) {
+    return absl::InvalidArgumentError(absl::StrCat("Imager ", imager, " not found in multi-camera set."));
+  }
+  return imager_to_intrinsics_.at(imager);
+}
 // void Camera::EnableLatencyEstimation(bool enable) { latency_enabled_ =
 // enable; }
 
@@ -196,31 +224,35 @@ absl::Status MultiCamera::SetIntrinsics(
 //   return measurements;
 // }
 
-// absl::Status Camera::AddMeasurement(const CameraMeasurement& measurement) {
-//   if (id_to_measurement_.contains(measurement.id)) {
-//     return absl::InvalidArgumentError(absl::StrCat(
-//         "Tried to add redundant measurement - Image id: ",
-//         measurement.id.image_id, ", model id: ", measurement.id.model_id,
-//         ", feature id: ", measurement.id.feature_id));
-//   }
-//   id_to_measurement_[measurement.id] = measurement;
-//   return absl::OkStatus();
-// }
+absl::Status MultiCamera::AddMeasurement(const std::string& imager, const CameraMeasurement& measurement) {
+  if (!imager_to_id_to_measurement_.contains(imager)) {
+    imager_to_id_to_measurement_.insert({imager, {}});
+  }
+  auto& id_to_measurement = imager_to_id_to_measurement_.at(imager);
+  if (id_to_measurement.contains(measurement.id)) {
+    return absl::InvalidArgumentError(absl::StrCat(
+        "Tried to add redundant measurement - Image id: ",
+        measurement.id.image_id, ", model id: ", measurement.id.model_id,
+        ", feature id: ", measurement.id.feature_id));
+  }
+  id_to_measurement[measurement.id] = measurement;
+  return absl::OkStatus();
+}
 
-// absl::Status Camera::AddMeasurements(
-//     const std::vector<CameraMeasurement>& measurements) {
-//   std::string message;
-//   for (const auto& measurement : measurements) {
-//     absl::Status status = AddMeasurement(measurement);
-//     if (!status.ok()) {
-//       message += std::string(status.message()) + "\n";
-//     }
-//   }
-//   if (message.empty()) {
-//     return absl::OkStatus();
-//   }
-//   return absl::InvalidArgumentError(message);
-// }
+absl::Status MultiCamera::AddMeasurements(const std::string& imager,
+    const std::vector<CameraMeasurement>& measurements) {
+  std::string message;
+  for (const auto& measurement : measurements) {
+    absl::Status status = AddMeasurement(imager, measurement);
+    if (!status.ok()) {
+      message += std::string(status.message()) + "\n";
+    }
+  }
+  if (message.empty()) {
+    return absl::OkStatus();
+  }
+  return absl::InvalidArgumentError(message);
+}
 
 // const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
 // Camera::GetMeasurementIdToMeasurement() const {
@@ -271,14 +303,26 @@ absl::Status MultiCamera::SetIntrinsics(
 
 // void Camera::ClearOutliersList() { outlier_ids_.clear(); }
 
-// void Camera::ClearMeasurements() {
-//   id_to_measurement_.clear();
-//   id_to_residual_id_.clear();
-//   id_to_residual_.clear();
-//   outlier_ids_.clear();
-// }
+void MultiCamera::ClearMeasurements() {
+  for (auto& [_, id_to_measurement] : imager_to_id_to_measurement_) {
+    id_to_measurement.clear();
+  }
+  for (auto& [_, id_to_residual_id] : imager_to_id_to_residual_id_) {
+    id_to_residual_id.clear();
+  }
+  for (auto& [_, id_to_residual] : imager_to_id_to_residual_) {
+    id_to_residual.clear();
+  }
+  for (auto& [_, outlier_ids] : imager_to_outlier_ids_) {
+    outlier_ids.clear();
+  }
+}
 
-// int Camera::NumberOfMeasurements() const { return id_to_measurement_.size();
-// }
+int MultiCamera::NumberOfMeasurements(const std::string& imager) const {
+  if (imager_to_id_to_measurement_.contains(imager)) {
+    return imager_to_id_to_measurement_.at(imager).size();
+  }
+  return 0;
+}
 
 }  // namespace calico::sensors
