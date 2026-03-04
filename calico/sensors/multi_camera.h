@@ -76,26 +76,28 @@ class MultiCamera : public Sensor {
       const std::string& imager, const Eigen::VectorXd& intrinsics);
   absl::StatusOr<Eigen::VectorXd> GetIntrinsics(const std::string& imager) const;
 
-  // absl::Status SetLatency(double latency) {
-  //   latency_ = latency;
-  //   return absl::OkStatus();
-  // }
-  // double GetLatency() const { return latency_; }
-  // void EnableExtrinsicsEstimation(
-  //     const absl::flat_hash_map<std::string, bool> imager_to_enable) {}
-  // void EnableIntrinsicsEstimation(
-  //     const absl::flat_hash_map<std::string, bool>& enable) {
-  //   extrinsics_enabled_ = false;
-  // }
-  // void EnableLatencyEstimation(bool enable);
+  absl::Status SetLatency(const std::string& imager, double latency) {
+    imager_to_latency_[imager] = latency;
+    return absl::OkStatus();
+  }
+  double GetLatency(const std::string& imager) const { return imager_to_latency_.at(imager); }
+  void EnableExtrinsicsEstimation(
+    const std::string& imager, bool enable) {
+      imager_to_extrinsics_enabled_[imager] = enable;
+    }
+      
+  void EnableIntrinsicsEstimation(
+    const std::string& imager, bool enable) {
+    imager_to_intrinsics_enabled_[imager] = enable;
+  }
+  void EnableLatencyEstimation(const std::string& imager, bool enable) {
+    imager_to_latency_enabled_[imager] = enable;
+  }
   void SetLossFunction(utils::LossFunctionType loss, double scale) final {
     loss_function_ = loss;
     loss_scale_ = scale;
   }
-  absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final {
-    return absl::UnimplementedError(
-        "AddParametersToProblem not implemented for MultiCamera.");
-  }
+  absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
   absl::StatusOr<int> AddResidualsToProblem(ceres::Problem& problem,
                                             Trajectory& sensorrig_trajectory,
                                             WorldModel& world_model) final {
@@ -124,28 +126,22 @@ class MultiCamera : public Sensor {
     }
   }
 
-  // /// Compute synthetic camera measurements given a Trajectory and
-  // WorldModel.
-
-  // /// This method projects the world model through the kinematic chain at
-  // given
-  // /// timestamps. This method returns only valid synthetic measurements as
-  // would
-  // /// be observed by the actual sensor, complying with physicality such as
-  // /// features being in front of the camera. Returns measurements in the
-  // order
-  // /// of the interpolation timestamps.\n\n
-  // /// `interp_times` is a vector of timestamps in seconds at which
-  // /// `sensorrig_trajectory` will be interpolated. No assumptions are made
-  // about
-  // /// timestamp uniqueness or order.\n\n
-  // /// `sensorrig_trajectory` is the world-from-sensorrig trajectory
-  // /// \f$\mathbf{T}^w_r(t)\f$.\n\n
-  // absl::StatusOr<
-  //     absl::flat_hash_map<std::string, std::vector<CameraMeasurement>>>
-  // Project(const std::vector<double>& interp_times,
-  //         const Trajectory& sensorrig_trajectory,
-  //         const WorldModel& world_model) const;
+  /// Compute synthetic camera measurements given a Trajectory and WorldModel.
+  /// This method projects the world model through the kinematic chain at given
+  /// timestamps. This method returns only valid synthetic measurements as would
+  /// be observed by the actual sensor, complying with physicality such as
+  /// features being in front of the camera. Returns measurements in the order
+  /// of the interpolation timestamps.\n\n
+  /// `interp_times` is a vector of timestamps in seconds at which
+  /// `sensorrig_trajectory` will be interpolated. No assumptions are made about
+  /// timestamp uniqueness or order.\n\n
+  /// `sensorrig_trajectory` is the world-from-sensorrig trajectory
+  /// \f$\mathbf{T}^w_r(t)\f$.\n\n
+  absl::StatusOr<
+      absl::flat_hash_map<std::string, std::vector<CameraMeasurement>>>
+  Project(const std::vector<double>& interp_times,
+          const Trajectory& sensorrig_trajectory,
+          const WorldModel& world_model) const;
 
   /// Add a single camera measurement to the measurement list.
   /// Returns an error if the measurement's id is duplicated without adding.
@@ -160,21 +156,25 @@ class MultiCamera : public Sensor {
   absl::Status AddMeasurements(const std::string& imager,
       const std::vector<CameraMeasurement>& measurements);
 
-  // /// Getter for all measurements. Returns a map of observation ids to
-  // /// measurements. Will be empty if there are no measurements.
-  // const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
-  // GetMeasurementIdToMeasurement() const;
+  /// Getter for all measurements. Returns a map of observation ids to
+  /// measurements. Will be empty if there are no measurements.
+  const absl::flat_hash_map<
+    std::string, absl::flat_hash_map<CameraObservationId, CameraMeasurement>>&
+  GetMeasurementIdToMeasurement() const {
+    return imager_to_id_to_measurement_;
+  }
 
-  // /// Returns a vector of measurement-residual pairs.
+  /// Returns a vector of measurement-residual pairs.
 
-  // /// Only returns for measurements that have residuals. Returns an error if
-  // /// there are more residuals than measurements, or if there are no
-  // /// measurements.\n\n
-  // /// **Note: This method will only return residuals for measurements that
-  // have
-  // /// NOT been marked as outliers.**
-  // absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
-  // GetMeasurementResidualPairs() const;
+  /// Only returns for measurements that have residuals. Returns an error if
+  /// there are more residuals than measurements, or if there are no
+  /// measurements.\n\n
+  /// **Note: This method will only return residuals for measurements that have
+  /// NOT been marked as outliers.**
+  absl::StatusOr<
+    absl::flat_hash_map<
+      std::string, std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>>
+  GetMeasurementResidualPairs() const;
 
   // /// Tag a single measurement as an outlier by its measurement ID.
 

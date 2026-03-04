@@ -77,16 +77,6 @@ absl::StatusOr<Eigen::VectorXd> MultiCamera::GetIntrinsics(const std::string& im
   }
   return imager_to_intrinsics_.at(imager);
 }
-// void Camera::EnableLatencyEstimation(bool enable) { latency_enabled_ =
-// enable; }
-
-// absl::Status Camera::SetMeasurementNoise(double sigma) {
-//   if (sigma <= 0.0) {
-//     return absl::InvalidArgumentError("Sigma must be greater than 0.");
-//   }
-//   sigma_ = sigma;
-//   return absl::OkStatus();
-// }
 
 // absl::Status Camera::UpdateResiduals(ceres::Problem& problem) {
 //   for (const auto [measurement_id, residual_id] : id_to_residual_id_) {
@@ -112,28 +102,31 @@ absl::StatusOr<Eigen::VectorXd> MultiCamera::GetIntrinsics(const std::string& im
 //   loss_scale_ = scale;
 // }
 
-// absl::StatusOr<int> Camera::AddParametersToProblem(ceres::Problem& problem) {
-//   int num_parameters_added = 0;
-//   if (!camera_model_) {
-//     return absl::FailedPreconditionError(
-//         "Cannot add camera parameters. Camera model is not yet defined.");
-//   }
-//   problem.AddParameterBlock(intrinsics_.data(), intrinsics_.size());
-//   num_parameters_added += intrinsics_.size();
-//   num_parameters_added += utils::AddPoseToProblem(problem,
-//   T_sensorrig_sensor_); problem.AddParameterBlock(&latency_, 1);
-//   ++num_parameters_added;
-//   if (!intrinsics_enabled_) {
-//     problem.SetParameterBlockConstant(intrinsics_.data());
-//   }
-//   if (!extrinsics_enabled_) {
-//     utils::SetPoseConstantInProblem(problem, T_sensorrig_sensor_);
-//   }
-//   if (!latency_enabled_) {
-//     problem.SetParameterBlockConstant(&latency_);
-//   }
-//   return num_parameters_added;
-// }
+absl::StatusOr<int> MultiCamera::AddParametersToProblem(ceres::Problem& problem) {
+  int num_parameters_added = 0;
+  for (const auto& imager : imagers_) {
+    if (!imager_to_camera_model_[imager]) {
+      return absl::FailedPreconditionError(
+          absl::StrCat("Cannot add parameters for imager ", imager,
+                       ". Camera model is not yet defined."));
+    }
+    problem.AddParameterBlock(imager_to_intrinsics_[imager].data(), imager_to_intrinsics_[imager].size());
+    num_parameters_added += imager_to_intrinsics_[imager].size();
+    num_parameters_added += utils::AddPoseToProblem(problem, imager_to_pose_sensor_from_imager_[imager]);
+    problem.AddParameterBlock(&imager_to_latency_[imager], 1);
+    ++num_parameters_added;
+  }
+  
+  for (const auto& imager : imagers_) {
+    if (!imager_to_intrinsics_enabled_.at(imager))
+      problem.SetParameterBlockConstant(imager_to_intrinsics_[imager].data());
+    if (!imager_to_extrinsics_enabled_.at(imager))
+      utils::SetPoseConstantInProblem(problem, imager_to_pose_sensor_from_imager_[imager]);
+    if (!imager_to_latency_enabled_.at(imager))
+      problem.SetParameterBlockConstant(&imager_to_latency_[imager]);
+  }
+  return num_parameters_added;
+}
 
 // absl::StatusOr<int> Camera::AddResidualsToProblem(
 //     ceres::Problem& problem, Trajectory& sensorrig_trajectory,
@@ -177,52 +170,59 @@ absl::StatusOr<Eigen::VectorXd> MultiCamera::GetIntrinsics(const std::string& im
 //   return num_residuals_added;
 // }
 
-// absl::StatusOr<std::vector<CameraMeasurement>> Camera::Project(
-//     const std::vector<double>& interp_times,
-//     const Trajectory& sensorrig_trajectory,
-//     const WorldModel& world_model) const {
-//   std::vector<Pose3d> poses_world_sensorrig;
-//   ASSIGN_OR_RETURN(poses_world_sensorrig,
-//                    sensorrig_trajectory.Interpolate(interp_times));
-//   std::vector<CameraMeasurement> measurements;
-//   int image_id = 0;
-//   for (int i = 0; i < interp_times.size(); ++i) {
-//     const Pose3d& T_world_sensorrig = poses_world_sensorrig.at(i);
-//     const double& stamp = interp_times.at(i);
-//     const Pose3d T_camera_world =
-//         (T_world_sensorrig * T_sensorrig_sensor_).inverse();
-//     // Project all landmarks.
-//     for (const auto& [landmark_id, landmark] : world_model.landmarks()) {
-//       const Eigen::Vector3d point_camera = T_camera_world * landmark->point;
-//       if (point_camera.z() <= 0) {
-//         continue;
-//       }
-//       const absl::StatusOr<Eigen::Vector2d> projection =
-//           camera_model_->ProjectPoint(intrinsics_, point_camera);
-//       measurements.push_back(
-//           {*projection,
-//            {stamp + latency_, image_id, kLandmarkFrameId, landmark_id}});
-//     }
-//     // Project all rigid bodies.
-//     for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
-//       const Pose3d T_camera_rigidbody =
-//           T_camera_world * rigidbody->T_world_rigidbody;
-//       for (const auto& [point_id, point] : rigidbody->model_definition) {
-//         const Eigen::Vector3d point_camera = T_camera_rigidbody * point;
-//         if (point_camera.z() <= 0) {
-//           continue;
-//         }
-//         const absl::StatusOr<Eigen::Vector2d> projection =
-//             camera_model_->ProjectPoint(intrinsics_, point_camera);
-//         measurements.push_back(
-//             {*projection,
-//              {stamp + latency_, image_id, rigidbody_id, point_id}});
-//       }
-//     }
-//     ++image_id;
-//   }
-//   return measurements;
-// }
+absl::StatusOr<absl::flat_hash_map<std::string, std::vector<CameraMeasurement>>> MultiCamera::Project(
+    const std::vector<double>& interp_times,
+    const Trajectory& sensorrig_trajectory,
+    const WorldModel& world_model) const {
+  std::vector<Pose3d> poses_world_from_sensorrig;
+  ASSIGN_OR_RETURN(poses_world_from_sensorrig,
+                   sensorrig_trajectory.Interpolate(interp_times));
+  absl::flat_hash_map<std::string, std::vector<CameraMeasurement>> imager_to_measurements;
+  int image_id = 0;
+  for (int i = 0; i < interp_times.size(); ++i) {
+    const Pose3d& pose_world_from_sensorrig = poses_world_from_sensorrig.at(i);
+    const double& stamp = interp_times.at(i);
+    const Pose3d pose_world_from_sensor = pose_world_from_sensorrig * pose_sensorrig_from_sensor_;
+    for (const auto& imager : imagers_) {
+      auto& measurements = imager_to_measurements[imager];
+      auto& camera_model = imager_to_camera_model_.at(imager);
+      const Pose3d& pose_sensor_from_imager = imager_to_pose_sensor_from_imager_.at(imager);
+      const Pose3d pose_camera_from_world = (pose_world_from_sensor * pose_sensor_from_imager).inverse();
+      const double latency = imager_to_latency_.at(imager);
+      const Eigen::VectorXd& intrinsics = imager_to_intrinsics_.at(imager);
+      // Project all landmarks.
+      for (const auto& [landmark_id, landmark] : world_model.landmarks()) {
+        const Eigen::Vector3d point_camera = pose_camera_from_world * landmark->point;
+        if (point_camera.z() <= 0) {
+          continue;
+        }
+        const absl::StatusOr<Eigen::Vector2d> projection =
+            camera_model->ProjectPoint(intrinsics, point_camera);
+        measurements.push_back(
+            {*projection,
+            {stamp + latency, image_id, kLandmarkFrameId, landmark_id}});
+      }
+      // Project all rigid bodies.
+      for (const auto& [rigidbody_id, rigidbody] : world_model.rigidbodies()) {
+        const Pose3d pose_camera_rigidbody =
+            pose_camera_from_world * rigidbody->T_world_rigidbody;
+        for (const auto& [point_id, point] : rigidbody->model_definition) {
+          const Eigen::Vector3d point_camera = pose_camera_rigidbody * point;
+          if (point_camera.z() <= 0) {
+            continue;
+          }
+          const absl::StatusOr<Eigen::Vector2d> projection =
+              camera_model->ProjectPoint(intrinsics, point_camera);
+          measurements.push_back(
+              {*projection,
+              {stamp + latency, image_id, rigidbody_id, point_id}});
+        }
+      }
+    }
+    ++image_id;
+  }
+  return imager_to_measurements;
+}
 
 absl::Status MultiCamera::AddMeasurement(const std::string& imager, const CameraMeasurement& measurement) {
   if (!imager_to_id_to_measurement_.contains(imager)) {
@@ -254,33 +254,35 @@ absl::Status MultiCamera::AddMeasurements(const std::string& imager,
   return absl::InvalidArgumentError(message);
 }
 
-// const absl::flat_hash_map<CameraObservationId, CameraMeasurement>&
-// Camera::GetMeasurementIdToMeasurement() const {
-//   return id_to_measurement_;
-// }
-
-// absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
-// Camera::GetMeasurementResidualPairs() const {
-//   if (id_to_residual_.size() > id_to_measurement_.size()) {
-//     return absl::InternalError("There are more residuals than
-//     measurements.");
-//   }
-//   if (id_to_measurement_.empty()) {
-//     return absl::FailedPreconditionError(
-//         "Measurements are empty. Nothing to return.");
-//   }
-//   std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>> pairs;
-//   for (const auto [id, residual] : id_to_residual_) {
-//     auto it = id_to_measurement_.find(id);
-//     if (it != id_to_measurement_.end()) {
-//       pairs.push_back({it->second, residual});
-//     } else {
-//       return absl::InternalError(
-//           "Found a residual that doesn't correspond to any measurement.");
-//     }
-//   }
-//   return pairs;
-// }
+absl::StatusOr<absl::flat_hash_map<std::string, std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>>
+MultiCamera::GetMeasurementResidualPairs() const {
+  for (const auto& imager : imagers_) {
+    if (imager_to_id_to_residual_.at(imager).size() > imager_to_id_to_measurement_.at(imager).size()) {
+      return absl::InternalError("There are more residuals than measurements.");
+    }
+    if (imager_to_id_to_measurement_.at(imager).empty()) {
+      return absl::FailedPreconditionError(
+          "Measurements are empty. Nothing to return.");
+    }
+  }
+    
+  absl::flat_hash_map<std::string, std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>> imager_to_pairs;
+  for (const auto& imager : imagers_) {
+    auto& pairs = imager_to_pairs[imager];
+    const auto& id_to_measurement = imager_to_id_to_measurement_.at(imager);
+    const auto& id_to_residual = imager_to_id_to_residual_.at(imager);
+    for (const auto [id, residual] : id_to_residual) {
+      auto it = id_to_measurement.find(id);
+      if (it != id_to_measurement.end()) {
+        pairs.push_back({it->second, residual});
+      } else {
+        return absl::InternalError(
+            "Found a residual that doesn't correspond to any measurement.");
+      }
+    }
+  }
+  return imager_to_pairs;
+}
 
 // absl::Status Camera::MarkOutlierById(const CameraObservationId& id) {
 //   if (!id_to_measurement_.contains(id)) {
