@@ -15,10 +15,9 @@ namespace {
 class MultiCameraContainerTest : public ::testing::Test {
  protected:
   const std::string kCameraName = "multi_camera";
-  const absl::flat_hash_set<std::string> kImagerNames{"left", "right", "middle"};
-  const CameraIntrinsicsModel
-      kCameraModel = 
-              CameraIntrinsicsModel::kOpenCv5;
+  const absl::flat_hash_set<std::string> kImagerNames{"left", "right",
+                                                      "middle"};
+  const CameraIntrinsicsModel kCameraModel = CameraIntrinsicsModel::kOpenCv5;
   const absl::flat_hash_map<std::string, Pose3d> kImagerToExtrinsics =
       [this]() {
         absl::flat_hash_map<std::string, Pose3d> imager_to_extrinsics;
@@ -49,9 +48,9 @@ class MultiCameraContainerTest : public ::testing::Test {
         for (int feature_id = 0; feature_id < kNumFeatures; ++feature_id) {
           measurements_.push_back(
               CameraMeasurement{.id = {.stamp = static_cast<double>(image_id),
-                                        .image_id = image_id,
-                                        .model_id = model_id,
-                                        .feature_id = feature_id}});
+                                       .image_id = image_id,
+                                       .model_id = model_id,
+                                       .feature_id = feature_id}});
         }
       }
     }
@@ -68,25 +67,30 @@ TEST_F(MultiCameraContainerTest, SettersAndGetters) {
     ASSERT_OK_AND_ASSIGN(auto model, camera_.GetModel(imager));
     EXPECT_EQ(model, CameraIntrinsicsModel::kNone);
     EXPECT_THAT(camera_.GetSensorExtrinsics(), PoseEq(Pose3d()));
-    ASSERT_OK_AND_ASSIGN(const Pose3d imager_extrinsics, camera_.GetImagerExtrinsics(imager));
+    ASSERT_OK_AND_ASSIGN(const Pose3d imager_extrinsics,
+                         camera_.GetImagerExtrinsics(imager));
     EXPECT_THAT(imager_extrinsics, PoseEq(Pose3d()));
-    ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd intrinsics, camera_.GetIntrinsics(imager));
+    ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd intrinsics,
+                         camera_.GetIntrinsics(imager));
     EXPECT_THAT(intrinsics, EigenEq(Eigen::VectorXd()));
   }
   // Post-assignment.
   camera_.SetName(kCameraName);
   for (const auto& imager : kImagerNames) {
     EXPECT_OK(camera_.SetModel(imager, kCameraModel));
-    EXPECT_OK(camera_.SetImagerExtrinsics(imager, kImagerToExtrinsics.at(imager)));
+    EXPECT_OK(
+        camera_.SetImagerExtrinsics(imager, kImagerToExtrinsics.at(imager)));
     EXPECT_OK(camera_.SetIntrinsics(imager, kImagerToIntrinsics.at(imager)));
   }
   EXPECT_EQ(camera_.GetName(), kCameraName);
   for (const auto& imager : kImagerNames) {
     ASSERT_OK_AND_ASSIGN(auto model, camera_.GetModel(imager));
     EXPECT_EQ(model, kCameraModel);
-    ASSERT_OK_AND_ASSIGN(const Pose3d extrinsics, camera_.GetImagerExtrinsics(imager));
+    ASSERT_OK_AND_ASSIGN(const Pose3d extrinsics,
+                         camera_.GetImagerExtrinsics(imager));
     EXPECT_THAT(extrinsics, PoseEq(kImagerToExtrinsics.at(imager)));
-    ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd intrinsics, camera_.GetIntrinsics(imager));
+    ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd intrinsics,
+                         camera_.GetIntrinsics(imager));
     EXPECT_THAT(intrinsics, EigenEq(kImagerToIntrinsics.at(imager)));
   }
 }
@@ -97,27 +101,26 @@ TEST_F(MultiCameraContainerTest, AddSingleMeasurementOnlyUniqueAllowed) {
     EXPECT_EQ(camera_.NumberOfMeasurements(imager), 0);
   }
   for (const auto& imager : kImagerNames) {
-      EXPECT_OK(camera_.AddMeasurement(
-          imager,
-           CameraMeasurement{.pixel = Eigen::Vector2d::Random(),
-            .id = {.stamp = static_cast<double>(0),
-                                    .image_id = 0,
-                                    .model_id = 1,
-                                    .feature_id = 2}}));
+    EXPECT_OK(camera_.AddMeasurement(
+        imager, CameraMeasurement{.pixel = Eigen::Vector2d::Random(),
+                                  .id = {.stamp = static_cast<double>(0),
+                                         .image_id = 0,
+                                         .model_id = 1,
+                                         .feature_id = 2}}));
   }
   for (const auto& imager : kImagerNames) {
     EXPECT_EQ(camera_.NumberOfMeasurements(imager), 1);
   }
   // Add the same measurement and expect an error.
   for (const auto& imager : kImagerNames) {
-    EXPECT_THAT(camera_.AddMeasurement(
-                    imager,
-                    CameraMeasurement{.pixel = Eigen::Vector2d::Random(),
+    EXPECT_THAT(
+        camera_.AddMeasurement(
+            imager, CameraMeasurement{.pixel = Eigen::Vector2d::Random(),
                                       .id = {.stamp = static_cast<double>(0),
                                              .image_id = 0,
                                              .model_id = 1,
                                              .feature_id = 2}}),
-                StatusCodeIs(absl::StatusCode::kInvalidArgument));
+        StatusCodeIs(absl::StatusCode::kInvalidArgument));
   }
   for (const auto& imager : kImagerNames) {
     EXPECT_EQ(camera_.NumberOfMeasurements(imager), 1);
@@ -147,7 +150,8 @@ TEST_F(MultiCameraContainerTest, AddCalibrationParametersToProblem) {
   for (const auto& imager : kImagerNames) {
     EXPECT_OK(camera_.SetModel(imager, kCameraModel));
     EXPECT_OK(camera_.SetIntrinsics(imager, kImagerToIntrinsics.at(imager)));
-    EXPECT_OK(camera_.SetImagerExtrinsics(imager, kImagerToExtrinsics.at(imager)));
+    EXPECT_OK(
+        camera_.SetImagerExtrinsics(imager, kImagerToExtrinsics.at(imager)));
   }
   ceres::Problem problem;
   ASSERT_OK_AND_ASSIGN(const int num_parameters,

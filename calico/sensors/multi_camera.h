@@ -22,7 +22,7 @@ namespace calico::sensors {
 /// a single module, for example, stereo cameras.
 class MultiCamera : public Sensor {
  public:
-  MultiCamera() = delete; // Require instantiation with imager names.
+  MultiCamera() = delete;  // Require instantiation with imager names.
   explicit MultiCamera(const absl::flat_hash_set<std::string>& imagers) {
     imagers_ = imagers;
     for (const auto& imager : imagers) {
@@ -48,12 +48,12 @@ class MultiCamera : public Sensor {
   const std::string& GetName() const { return sensor_name_; }
 
   /// Setter for the camera model.
-  absl::Status SetModel(
-      const std::string& imager, CameraIntrinsicsModel
-          camera_model);
+  absl::Status SetModel(const std::string& imager,
+                        CameraIntrinsicsModel camera_model);
 
   /// Getter for the camera model.
-  absl::StatusOr<CameraIntrinsicsModel> GetModel(const std::string& imager) const;
+  absl::StatusOr<CameraIntrinsicsModel> GetModel(
+      const std::string& imager) const;
 
   /// Sets extrinsics for the camera module itself. Each sensor will internally
   /// have an additional extrinsics offset relative to this one. This can be set
@@ -68,26 +68,27 @@ class MultiCamera : public Sensor {
   /// Set the extrinsics for each internal sensor. This transform will be
   /// applied on top of pose_sensorrig_from_sensor which is held constant during
   /// optimization.
-  absl::Status SetImagerExtrinsics(const std::string& imager, const Pose3d&
-                               pose_sensor_from_imager);
+  absl::Status SetImagerExtrinsics(const std::string& imager,
+                                   const Pose3d& pose_sensor_from_imager);
   absl::StatusOr<Pose3d> GetImagerExtrinsics(const std::string& imager) const;
 
-  absl::Status SetIntrinsics(
-      const std::string& imager, const Eigen::VectorXd& intrinsics);
-  absl::StatusOr<Eigen::VectorXd> GetIntrinsics(const std::string& imager) const;
+  absl::Status SetIntrinsics(const std::string& imager,
+                             const Eigen::VectorXd& intrinsics);
+  absl::StatusOr<Eigen::VectorXd> GetIntrinsics(
+      const std::string& imager) const;
 
   absl::Status SetLatency(const std::string& imager, double latency) {
     imager_to_latency_[imager] = latency;
     return absl::OkStatus();
   }
-  double GetLatency(const std::string& imager) const { return imager_to_latency_.at(imager); }
-  void EnableExtrinsicsEstimation(
-    const std::string& imager, bool enable) {
-      imager_to_extrinsics_enabled_[imager] = enable;
-    }
-      
-  void EnableIntrinsicsEstimation(
-    const std::string& imager, bool enable) {
+  double GetLatency(const std::string& imager) const {
+    return imager_to_latency_.at(imager);
+  }
+  void EnableExtrinsicsEstimation(const std::string& imager, bool enable) {
+    imager_to_extrinsics_enabled_[imager] = enable;
+  }
+
+  void EnableIntrinsicsEstimation(const std::string& imager, bool enable) {
     imager_to_intrinsics_enabled_[imager] = enable;
   }
   void EnableLatencyEstimation(const std::string& imager, bool enable) {
@@ -145,7 +146,8 @@ class MultiCamera : public Sensor {
 
   /// Add a single camera measurement to the measurement list.
   /// Returns an error if the measurement's id is duplicated without adding.
-  absl::Status AddMeasurement(const std::string& imager, const CameraMeasurement& measurement);
+  absl::Status AddMeasurement(const std::string& imager,
+                              const CameraMeasurement& measurement);
 
   /// Add multiple measurements to the measurement list.
   /// Returns an error status if any measurements are duplicates within its
@@ -153,13 +155,14 @@ class MultiCamera : public Sensor {
   /// **Note: If this method encounters any duplicates, it will STILL attempt to
   /// add the entire vector. If it returns an error status, it means that all
   /// unique measurements have been added, but duplicates have been skipped.**
-  absl::Status AddMeasurements(const std::string& imager,
+  absl::Status AddMeasurements(
+      const std::string& imager,
       const std::vector<CameraMeasurement>& measurements);
 
   /// Getter for all measurements. Returns a map of observation ids to
   /// measurements. Will be empty if there are no measurements.
   const absl::flat_hash_map<
-    std::string, absl::flat_hash_map<CameraObservationId, CameraMeasurement>>&
+      std::string, absl::flat_hash_map<CameraObservationId, CameraMeasurement>>&
   GetMeasurementIdToMeasurement() const {
     return imager_to_id_to_measurement_;
   }
@@ -171,8 +174,7 @@ class MultiCamera : public Sensor {
   /// measurements.\n\n
   /// **Note: This method will only return residuals for measurements that have
   /// NOT been marked as outliers.**
-  absl::StatusOr<
-    absl::flat_hash_map<
+  absl::StatusOr<absl::flat_hash_map<
       std::string, std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>>
   GetMeasurementResidualPairs() const;
 
