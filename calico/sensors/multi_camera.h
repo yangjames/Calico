@@ -1,6 +1,7 @@
 #ifndef CALICO_SENSORS_MULTI_CAMERA_H_
 #define CALICO_SENSORS_MULTI_CAMERA_H_
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -23,9 +24,9 @@ namespace calico::sensors {
 class MultiCamera : public Sensor {
  public:
   MultiCamera() = delete;  // Require instantiation with imager names.
-  explicit MultiCamera(const absl::flat_hash_set<std::string>& imagers) {
-    imagers_ = imagers;
-    for (const auto& imager : imagers) {
+  explicit MultiCamera(const absl::flat_hash_set<std::string>& imagers)
+      : imagers_(imagers) {
+    for (const auto& imager : imagers_) {
       imager_to_intrinsics_enabled_[imager] = false;
       imager_to_extrinsics_enabled_[imager] = false;
       imager_to_latency_enabled_[imager] = false;
@@ -75,24 +76,55 @@ class MultiCamera : public Sensor {
   absl::Status SetIntrinsics(const std::string& imager,
                              const Eigen::VectorXd& intrinsics);
   absl::StatusOr<Eigen::VectorXd> GetIntrinsics(
-      const std::string& imager) const;
+      const std::string& imager) const {
+    if (!imagers_.contains(imager)) {
+      return absl::InvalidArgumentError(
+          absl::StrCat("Imager ", imager, " not found in multi-camera set."));
+    }
+    return imager_to_intrinsics_.at(imager);
+  }
 
   absl::Status SetLatency(const std::string& imager, double latency) {
     imager_to_latency_[imager] = latency;
     return absl::OkStatus();
   }
-  double GetLatency(const std::string& imager) const {
+  absl::StatusOr<double> GetLatency(const std::string& imager) const {
+    if (!imagers_.contains(imager)) {
+      return absl::InvalidArgumentError(
+          absl::StrCat("Imager ", imager, " not found in MultiCamera."));
+    }
     return imager_to_latency_.at(imager);
   }
-  void EnableExtrinsicsEstimation(const std::string& imager, bool enable) {
+
+  void EnableExtrinsicsEstimation(bool enable) {
+    sensor_extrinsics_enabled_ = enable;
+  }
+  absl::Status EnableExtrinsicsEstimation(const std::string& imager,
+                                          bool enable) {
+    if (!imagers_.contains(imager)) {
+      return absl::InvalidArgumentError(
+          absl::StrCat("Imager ", imager, " not found in MultiCamera."));
+    }
     imager_to_extrinsics_enabled_[imager] = enable;
+    return absl::OkStatus();
   }
 
-  void EnableIntrinsicsEstimation(const std::string& imager, bool enable) {
+  absl::Status EnableIntrinsicsEstimation(const std::string& imager,
+                                          bool enable) {
+    if (!imagers_.contains(imager)) {
+      return absl::InvalidArgumentError(
+          absl::StrCat("Imager ", imager, " not found in MultiCamera."));
+    }
     imager_to_intrinsics_enabled_[imager] = enable;
+    return absl::OkStatus();
   }
-  void EnableLatencyEstimation(const std::string& imager, bool enable) {
+  absl::Status EnableLatencyEstimation(const std::string& imager, bool enable) {
+    if (!imagers_.contains(imager)) {
+      return absl::InvalidArgumentError(
+          absl::StrCat("Imager ", imager, " not found in MultiCamera."));
+    }
     imager_to_latency_enabled_[imager] = enable;
+    return absl::OkStatus();
   }
   void SetLossFunction(utils::LossFunctionType loss, double scale) final {
     loss_function_ = loss;
@@ -101,10 +133,7 @@ class MultiCamera : public Sensor {
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
   absl::StatusOr<int> AddResidualsToProblem(ceres::Problem& problem,
                                             Trajectory& sensorrig_trajectory,
-                                            WorldModel& world_model) final {
-    return absl::UnimplementedError(
-        "AddResidualsToProblem not implemented for MultiCamera.");
-  }
+                                            WorldModel& world_model) final;
   absl::Status SetMeasurementNoise(double sigma) final {
     if (sigma > 0) {
       sigma_ = sigma;
@@ -114,10 +143,7 @@ class MultiCamera : public Sensor {
         absl::StrCat("Cannot set ", GetName(), " measurement noise to ", sigma,
                      ". Measurement noise must be positive."));
   }
-  absl::Status UpdateResiduals(ceres::Problem& problem) final {
-    return absl::UnimplementedError(
-        "UpdateResiduals not implemented for MultiCamera.");
-  }
+  absl::Status UpdateResiduals(ceres::Problem& problem) final;
   void ClearResidualInfo() final {
     for (auto& [_, id_to_residual_] : imager_to_id_to_residual_) {
       id_to_residual_.clear();
@@ -205,9 +231,10 @@ class MultiCamera : public Sensor {
 
  private:
   std::string sensor_name_;
-  absl::flat_hash_set<std::string> imagers_;
+  const absl::flat_hash_set<std::string> imagers_;
 
   Pose3d pose_sensorrig_from_sensor_;
+  bool sensor_extrinsics_enabled_ = false;
   absl::flat_hash_map<std::string, bool> imager_to_intrinsics_enabled_;
   absl::flat_hash_map<std::string, bool> imager_to_extrinsics_enabled_;
   absl::flat_hash_map<std::string, bool> imager_to_latency_enabled_;

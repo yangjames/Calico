@@ -1,13 +1,17 @@
 #include "calico/batch_optimizer.h"
 
+#include <iostream>
+#include <vector>
+
+#include "Eigen/Dense"
 #include "calico/matchers.h"
-#include "calico/test_utils.h"
 #include "calico/sensors/accelerometer.h"
 #include "calico/sensors/camera.h"
 #include "calico/sensors/gyroscope.h"
+#include "calico/sensors/multi_camera.h"
+#include "calico/test_utils.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-
 
 namespace calico {
 namespace {
@@ -26,21 +30,23 @@ class BatchOptimizerTest : public ::testing::Test {
   }
 };
 
-// Proof of concept test where we estimate a whole mess of things simultaneously.
-// This test is NOT a reflection of how this library should be used. Better
-// workflows involve cascading optimizations rather than doing them in bulk.
+// Proof of concept test where we estimate a whole mess of things
+// simultaneously. This test is NOT a reflection of how this library should be
+// used. Better workflows involve cascading optimizations rather than doing them
+// in bulk.
 TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   // Construct a world model consisting of a single planar object.
   RigidBody planar_target{
-    .world_pose_is_constant = true,
-    .model_definition_is_constant = true,
+      .world_pose_is_constant = true,
+      .model_definition_is_constant = true,
   };
   for (int i = 0; i < t_world_points.size(); ++i) {
     planar_target.model_definition[i] = t_world_points[i];
   }
   WorldModel* world_model = new WorldModel;
   const Eigen::Vector3d true_gravity = world_model->gravity();
-  EXPECT_OK(world_model->AddRigidBody(&planar_target, /*take_ownership=*/false));
+  EXPECT_OK(
+      world_model->AddRigidBody(&planar_target, /*take_ownership=*/false));
   // Construct the sensorrig trajectory.
   Trajectory* trajectory_world_sensorrig = new Trajectory;
   ASSERT_OK(trajectory_world_sensorrig->FitSpline(poses_world_sensorrig));
@@ -51,15 +57,14 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   constexpr double kStereoRotationAngle = 2.0 * M_PI / 180.0;
   constexpr double kStereoBaseline = 0.05;
   constexpr double kRightCameraLatency = 0.01;
-  Eigen::VectorXd true_camera_intrinsics(sensors::OpenCv5Model::kNumberOfParameters);
-  true_camera_intrinsics <<
-    785, 640, 400, -3.149e-1, 1.069e-1, 1.616e-4, 1.141e-4, -1.853e-2;
+  Eigen::VectorXd true_camera_intrinsics(
+      sensors::OpenCv5Model::kNumberOfParameters);
+  true_camera_intrinsics << 785, 640, 400, -3.149e-1, 1.069e-1, 1.616e-4,
+      1.141e-4, -1.853e-2;
   Pose3d true_extrinsics_left;
   Pose3d true_extrinsics_right;
-  true_extrinsics_right.rotation() =
-      Eigen::Quaterniond(
-          Eigen::AngleAxisd(
-              kStereoRotationAngle, Eigen::Vector3d::Random().normalized()));
+  true_extrinsics_right.rotation() = Eigen::Quaterniond(Eigen::AngleAxisd(
+      kStereoRotationAngle, Eigen::Vector3d::Random().normalized()));
   true_extrinsics_right.translation() =
       kStereoBaseline * Eigen::Vector3d::Random();
   sensors::Camera true_camera_left;
@@ -73,11 +78,24 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   EXPECT_OK(true_camera_right.SetLatency(kRightCameraLatency));
   std::vector<sensors::CameraMeasurement> measurements_left, measurements_right;
   ASSERT_OK_AND_ASSIGN(measurements_left,
-      true_camera_left.Project(stamps, *trajectory_world_sensorrig,
-                               *world_model));
+                       true_camera_left.Project(
+                           stamps, *trajectory_world_sensorrig, *world_model));
   ASSERT_OK_AND_ASSIGN(measurements_right,
-      true_camera_right.Project(stamps, *trajectory_world_sensorrig,
-                                *world_model));
+                       true_camera_right.Project(
+                           stamps, *trajectory_world_sensorrig, *world_model));
+
+  sensors::MultiCamera true_multi_camera({"Left", "Right"});
+  true_multi_camera.SetName("StereoCamera");
+  EXPECT_OK(true_multi_camera.SetModel("Left", kCameraModel));
+  EXPECT_OK(true_multi_camera.SetModel("Right", kCameraModel));
+  EXPECT_OK(true_multi_camera.SetIntrinsics("Left", true_camera_intrinsics));
+  EXPECT_OK(true_multi_camera.SetIntrinsics("Right", true_camera_intrinsics));
+  EXPECT_OK(
+      true_multi_camera.SetImagerExtrinsics("Left", true_extrinsics_left));
+  EXPECT_OK(
+      true_multi_camera.SetImagerExtrinsics("Right", true_extrinsics_right));
+  EXPECT_OK(true_multi_camera.SetLatency("Right", kRightCameraLatency));
+
   // Construct ground truth IMU and measurements.
   const sensors::GyroscopeIntrinsicsModel kGyroscopeModel =
       sensors::GyroscopeIntrinsicsModel::kGyroscopeScaleAndBias;
@@ -94,16 +112,13 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
       sensors::AccelerometerScaleAndBiasModel::kNumberOfParameters);
   true_accelerometer_intrinsics << 1.3, 0.01, -0.01, 0.01;
   Pose3d true_extrinsics_gyroscope;
-  true_extrinsics_gyroscope.rotation() =
-      Eigen::Quaterniond(
-          Eigen::AngleAxisd(
-              kGyroscopeRotationAngle, Eigen::Vector3d::Random().normalized()));
+  true_extrinsics_gyroscope.rotation() = Eigen::Quaterniond(Eigen::AngleAxisd(
+      kGyroscopeRotationAngle, Eigen::Vector3d::Random().normalized()));
   Pose3d true_extrinsics_accelerometer;
   true_extrinsics_accelerometer.rotation() =
-      Eigen::Quaterniond(
-          Eigen::AngleAxisd(
-              kAccelerometerRotationAngle, Eigen::Vector3d::Random().normalized()));
-  
+      Eigen::Quaterniond(Eigen::AngleAxisd(
+          kAccelerometerRotationAngle, Eigen::Vector3d::Random().normalized()));
+
   sensors::Gyroscope true_gyroscope;
   EXPECT_OK(true_gyroscope.SetModel(kGyroscopeModel));
   EXPECT_OK(true_gyroscope.SetIntrinsics(true_gyroscope_intrinsics));
@@ -111,7 +126,8 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   EXPECT_OK(true_gyroscope.SetLatency(kGyroscopeLatency));
   std::vector<sensors::GyroscopeMeasurement> measurements_gyroscope;
   ASSERT_OK_AND_ASSIGN(measurements_gyroscope,
-      true_gyroscope.Project(stamps, *trajectory_world_sensorrig, *world_model));
+                       true_gyroscope.Project(
+                           stamps, *trajectory_world_sensorrig, *world_model));
   sensors::Accelerometer true_accelerometer;
   EXPECT_OK(true_accelerometer.SetModel(kAccelerometerModel));
   EXPECT_OK(true_accelerometer.SetIntrinsics(true_accelerometer_intrinsics));
@@ -119,7 +135,8 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   EXPECT_OK(true_accelerometer.SetLatency(kAccelerometerLatency));
   std::vector<sensors::AccelerometerMeasurement> measurements_accelerometer;
   ASSERT_OK_AND_ASSIGN(measurements_accelerometer,
-      true_accelerometer.Project(stamps, *trajectory_world_sensorrig, *world_model));
+                       true_accelerometer.Project(
+                           stamps, *trajectory_world_sensorrig, *world_model));
 
   // Create optimization sensors.
   Eigen::VectorXd initial_camera_intrinsics = 1.01 * true_camera_intrinsics;
@@ -143,6 +160,28 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   camera_right->EnableIntrinsicsEstimation(true);
   camera_right->EnableLatencyEstimation(true);
   EXPECT_OK(camera_right->AddMeasurements(measurements_right));
+
+  sensors::MultiCamera* multi_camera =
+      new sensors::MultiCamera({"Left", "Right"});
+  multi_camera->SetName("StereoCamera");
+  EXPECT_OK(multi_camera->SetModel("Left", kCameraModel));
+  EXPECT_OK(multi_camera->SetModel("Right", kCameraModel));
+  EXPECT_OK(multi_camera->SetIntrinsics("Left", initial_camera_intrinsics));
+  EXPECT_OK(multi_camera->SetIntrinsics("Right", initial_camera_intrinsics));
+  EXPECT_OK(multi_camera->SetImagerExtrinsics("Left", true_extrinsics_left));
+  EXPECT_OK(
+      multi_camera->SetImagerExtrinsics("Right", initial_extrinsics_right));
+  EXPECT_OK(multi_camera->SetLatency("Right", kRightCameraLatency));
+  EXPECT_OK(multi_camera->AddMeasurements("Left", measurements_left));
+  EXPECT_OK(multi_camera->AddMeasurements("Right", measurements_right));
+  EXPECT_OK(multi_camera->EnableIntrinsicsEstimation("Left", true));
+  EXPECT_OK(multi_camera->EnableIntrinsicsEstimation("Right", true));
+  EXPECT_OK(multi_camera->EnableExtrinsicsEstimation("Left", true));
+  EXPECT_OK(multi_camera->EnableExtrinsicsEstimation("Right", true));
+  EXPECT_OK(multi_camera->EnableLatencyEstimation("Left", false));
+  EXPECT_OK(multi_camera->EnableLatencyEstimation("Right", true));
+  multi_camera->EnableExtrinsicsEstimation(false);
+
   Eigen::VectorXd initial_gyroscope_intrinsics =
       1.01 * true_gyroscope_intrinsics;
   Pose3d initial_gyroscope_extrinsics = true_extrinsics_gyroscope;
@@ -157,7 +196,7 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   EXPECT_OK(gyroscope->AddMeasurements(measurements_gyroscope));
 
   Eigen::VectorXd initial_accelerometer_intrinsics =
-    1.01 * true_accelerometer_intrinsics;
+      1.01 * true_accelerometer_intrinsics;
   Pose3d initial_accelerometer_extrinsics = true_extrinsics_accelerometer;
   initial_accelerometer_extrinsics.translation() +=
       (0.05 * Eigen::Vector3d::Random());
@@ -175,13 +214,13 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   BatchOptimizer optimizer;
   optimizer.AddSensor(camera_left);
   optimizer.AddSensor(camera_right);
+  optimizer.AddSensor(multi_camera);
   optimizer.AddSensor(gyroscope);
   optimizer.AddSensor(accelerometer);
   optimizer.AddWorldModel(world_model);
   optimizer.AddTrajectory(trajectory_world_sensorrig);
   const auto statusor_summary = optimizer.Optimize();
-  EXPECT_OK(statusor_summary.status())
-        << statusor_summary.status().ToString();
+  EXPECT_OK(statusor_summary.status()) << statusor_summary.status().ToString();
   const auto summary = statusor_summary.value();
 
   // Expect near perfect calibration results due to perfect data.
@@ -194,9 +233,30 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
   // Right camera.
   EXPECT_THAT(true_camera_intrinsics,
               EigenIsApprox(camera_right->GetIntrinsics(), kSmallNumber));
-  EXPECT_THAT(true_extrinsics_right, PoseIsApprox(camera_right->GetExtrinsics(),
-                                                  kSmallNumber));
+  EXPECT_THAT(true_extrinsics_right,
+              PoseIsApprox(camera_right->GetExtrinsics(), kSmallNumber));
   EXPECT_NEAR(kRightCameraLatency, camera_right->GetLatency(), kSmallNumber);
+  // MultiCamera left imager.
+  ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd left_camera_intrinsics,
+                       multi_camera->GetIntrinsics("Left"));
+  EXPECT_THAT(true_camera_intrinsics,
+              EigenIsApprox(left_camera_intrinsics, kSmallNumber));
+  ASSERT_OK_AND_ASSIGN(const Pose3d left_camera_extrinsics,
+                       multi_camera->GetImagerExtrinsics("Left"));
+  EXPECT_THAT(true_extrinsics_left,
+              PoseIsApprox(left_camera_extrinsics, kSmallNumber));
+  // MultiCamera right imager.
+  ASSERT_OK_AND_ASSIGN(const Eigen::VectorXd right_camera_intrinsics,
+                       multi_camera->GetIntrinsics("Right"));
+  EXPECT_THAT(true_camera_intrinsics,
+              EigenIsApprox(right_camera_intrinsics, kSmallNumber));
+  ASSERT_OK_AND_ASSIGN(const Pose3d right_camera_extrinsics,
+                       multi_camera->GetImagerExtrinsics("Right"));
+  EXPECT_THAT(true_extrinsics_right,
+              PoseIsApprox(right_camera_extrinsics, kSmallNumber));
+  ASSERT_OK_AND_ASSIGN(const double right_camera_latency,
+                       multi_camera->GetLatency("Right"));
+  EXPECT_NEAR(kRightCameraLatency, right_camera_latency, kSmallNumber);
   // Gyroscope.
   EXPECT_THAT(true_gyroscope_intrinsics,
               EigenIsApprox(gyroscope->GetIntrinsics(), kSmallNumber));
@@ -210,10 +270,11 @@ TEST_F(BatchOptimizerTest, ToyStereoCameraAndImuCalibration) {
               PoseIsApprox(accelerometer->GetExtrinsics(), kSmallNumber));
   EXPECT_NEAR(kAccelerometerLatency, accelerometer->GetLatency(), kSmallNumber);
   // Gravity.
-  EXPECT_THAT(world_model->gravity(), EigenIsApprox(true_gravity, kSmallNumber));
+  EXPECT_THAT(world_model->gravity(),
+              EigenIsApprox(true_gravity, kSmallNumber));
 
   std::cout << summary.FullReport() << std::endl;
 }
 
-} // namespace
-} // namespace calico
+}  // namespace
+}  // namespace calico

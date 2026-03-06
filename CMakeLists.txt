@@ -158,9 +158,20 @@ add_library(
 )
 target_link_libraries(
   multi_camera
-  camera
   camera_models
-  camera_cost_functor
+  imager_cost_functor
+  trajectory
+  world_model
+)
+
+add_library(
+  imager_cost_functor
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/imager_cost_functor.cpp
+)
+target_link_libraries(
+  imager_cost_functor
+  absl::flat_hash_map
+  camera_models
   trajectory
   world_model
 )
@@ -175,6 +186,7 @@ target_link_libraries(
   accelerometer
   camera
   gyroscope
+  multi_camera
   world_model
 )
 
@@ -246,6 +258,7 @@ install(
   camera
   multi_camera
   camera_cost_functor
+  imager_cost_functor
   camera_models
   gyroscope
   gyroscope_cost_functor
@@ -485,6 +498,18 @@ if (BUILD_TESTING)
     gmock
     )
   add_test(CameraLibTest camera_test)
+  # Imager cost functor test.
+  add_executable(
+    imager_cost_functor_test
+    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/imager_cost_functor_test.cpp
+    )
+  target_link_libraries(
+    imager_cost_functor_test
+    imager_cost_functor
+    GTest::Main
+    gmock
+  )
+  add_test(ImagerCostFunctorTest imager_cost_functor_test)
   # Multi-camera test.
   add_executable(
     multi_camera_test
