@@ -241,6 +241,7 @@ target_link_libraries(
   aprilgrid_detector
   batch_optimizer
   camera
+  multi_camera
   gyroscope
   trajectory
   world_model
