@@ -40,9 +40,17 @@ PYBIND11_MODULE(_calico, m) {
   py::class_<Pose3d>(m, "Pose3d")
       .def(py::init<>())
       .def(py::init<Pose3d const&>())
-      .def_property("rotation", &Pose3d::GetRotation, &Pose3d::SetRotation)
+      .def_property("rotation", &Pose3d::GetRotation,
+                    [](Pose3d& self, const std::array<double, 4>& rotation) {
+                      Eigen::Vector4d q;
+                      q << rotation[0], rotation[1], rotation[2], rotation[3];
+                      self.SetRotation(q);
+                    })
       .def_property("translation", &Pose3d::GetTranslation,
-                    &Pose3d::SetTranslation);
+                    [](Pose3d& self, const std::array<double, 3>& translation) {
+                      self.SetTranslation(Eigen::Vector3d(
+                          translation[0], translation[1], translation[2]));
+                    });
 
   // Loss function types.
   py::enum_<LossFunctionType>(m, "LossFunctionType")
