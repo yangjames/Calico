@@ -18,6 +18,19 @@ find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
+# Check if in a virtual environment
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -c
+          "import sysconfig; print(sysconfig.get_paths()['purelib'])"
+  OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+message(STATUS "Python executable: ${Python_EXECUTABLE}")
+message(STATUS "Python site-packages: ${PYTHON_SITE_PACKAGES}")
+message(STATUS "Python install dir: ${PYTHON_INSTALL_DIR}")
+
+
 # Add top level include directory.
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -312,19 +325,15 @@ install(
 )
 
 # Install python library.
-set(
-  PYTHON_INSTALL_DIR
-  /usr/local/lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/dist-packages/calico
-)
 install(
   TARGETS _calico
-  LIBRARY DESTINATION ${PYTHON_INSTALL_DIR}
+  LIBRARY DESTINATION "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/calico"
 )
 install(
   FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
-  DESTINATION ${PYTHON_INSTALL_DIR}
+  DESTINATION "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/calico"
 )
 
 if (BUILD_TESTING)

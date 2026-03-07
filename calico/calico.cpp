@@ -1,6 +1,8 @@
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
@@ -15,6 +17,21 @@
 #include "pybind11/numpy.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
+
+auto VecToEigen = [](const std::vector<double>& v) {
+  Eigen::VectorXd x(static_cast<int>(v.size()));
+  for (int i = 0; i < x.size(); ++i) x[i] = v[i];
+  return x;
+};
+
+auto Arr2ToEigen = [](const std::array<double, 2>& v) {
+  Eigen::Vector2d x(v[0], v[1]);
+  return x;
+};
+
+auto EigenToVec = [](const Eigen::VectorXd& x) {
+  return std::vector<double>(x.data(), x.data() + x.size());
+};
 
 PYBIND11_MODULE(_calico, m) {
   m.doc() = "Calico";
@@ -40,17 +57,27 @@ PYBIND11_MODULE(_calico, m) {
   py::class_<Pose3d>(m, "Pose3d")
       .def(py::init<>())
       .def(py::init<Pose3d const&>())
-      .def_property("rotation", &Pose3d::GetRotation,
-                    [](Pose3d& self, const std::array<double, 4>& rotation) {
-                      Eigen::Vector4d q;
-                      q << rotation[0], rotation[1], rotation[2], rotation[3];
-                      self.SetRotation(q);
-                    })
-      .def_property("translation", &Pose3d::GetTranslation,
-                    [](Pose3d& self, const std::array<double, 3>& translation) {
-                      self.SetTranslation(Eigen::Vector3d(
-                          translation[0], translation[1], translation[2]));
-                    });
+      .def_property(
+          "rotation",
+          [](const Pose3d& self) -> std::array<double, 4> {
+            const auto q = self.rotation();
+            return {q.w(), q.x(), q.y(), q.z()};
+          },
+          [](Pose3d& self, const std::array<double, 4>& q) {
+            Eigen::Quaterniond v(/*w=*/q[0], /*x=*/q[1], /*y=*/q[2],
+                                 /*z=*/q[3]);
+            self.rotation() = v;
+          })
+      .def_property(
+          "translation",
+          [](const Pose3d& self) -> std::array<double, 3> {
+            const auto t = self.GetTranslation();
+            return {t.x(), t.y(), t.z()};
+          },
+          [](Pose3d& self, const std::array<double, 3>& t) {
+            Eigen::Vector3d v(t[0], t[1], t[2]);
+            self.SetTranslation(v);
+          });
 
   // Loss function types.
   py::enum_<LossFunctionType>(m, "LossFunctionType")
@@ -214,7 +241,14 @@ PYBIND11_MODULE(_calico, m) {
 
   py::class_<CameraMeasurement>(m, "CameraMeasurement")
       .def(py::init<>())
-      .def_readwrite("pixel", &CameraMeasurement::pixel)
+      .def_property(
+          "pixel",
+          [](const CameraMeasurement& self) {
+            return std::array<double, 2>{self.pixel.x(), self.pixel.y()};
+          },
+          [](CameraMeasurement& self, const std::array<double, 2>& pixel) {
+            self.pixel = Arr2ToEigen(pixel);
+          })
       .def_readwrite("id", &CameraMeasurement::id);
 
   py::class_<Camera, std::shared_ptr<Camera>, Sensor>(m, "Camera")
@@ -222,16 +256,20 @@ PYBIND11_MODULE(_calico, m) {
       .def("SetName", &Camera::SetName)
       .def("GetName", &Camera::GetName)
       .def("SetExtrinsics", &Camera::SetExtrinsics)
-      .def("GetExtrinsics", &Camera::GetExtrinsics)
+      .def("GetExtrinsics", &Camera::GetExtrinsics,
+           py::return_value_policy::reference_internal)
       .def("SetIntrinsics",
-           [](Camera& self, const Eigen::VectorXd& intrinsics) {
-             const auto status = self.SetIntrinsics(intrinsics);
+           [VecToEigen](Camera& self, const std::vector<double>& intrinsics) {
+             const auto status = self.SetIntrinsics(VecToEigen(intrinsics));
              if (!status.ok()) {
                throw std::runtime_error(std::string("Error: ") +
                                         std::string(status.message()));
              }
            })
-      .def("GetIntrinsics", &Camera::GetIntrinsics)
+      .def("GetIntrinsics",
+           [EigenToVec](const Camera& self) {
+             return EigenToVec(self.GetIntrinsics());
+           })
       .def("SetLatency", &Camera::SetLatency)
       .def("GetLatency", &Camera::GetLatency)
       .def("EnableExtrinsicsEstimation", &Camera::EnableExtrinsicsEstimation)
@@ -573,6 +611,8 @@ PYBIND11_MODULE(_calico, m) {
       .def_readwrite("minimizer_type", &ceres::Solver::Options::minimizer_type)
       .def_readwrite("max_num_iterations",
                      &ceres::Solver::Options::max_num_iterations)
+      .def_readwrite("max_num_consecutive_invalid_steps",
+                     &ceres::Solver::Options::max_num_consecutive_invalid_steps)
       .def_readwrite("num_threads", &ceres::Solver::Options::num_threads)
       .def_readwrite("function_tolerance",
                      &ceres::Solver::Options::function_tolerance)
