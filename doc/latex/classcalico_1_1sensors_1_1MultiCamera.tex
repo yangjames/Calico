@@ -1,0 +1,240 @@
+\hypertarget{classcalico_1_1sensors_1_1MultiCamera}{}\doxysection{calico\+::sensors\+::Multi\+Camera Class Reference}
+\label{classcalico_1_1sensors_1_1MultiCamera}\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+
+
+{\ttfamily \#include $<$multi\+\_\+camera.\+h$>$}
+
+
+
+Inheritance diagram for calico\+::sensors\+::Multi\+Camera\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=220pt]{classcalico_1_1sensors_1_1MultiCamera__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for calico\+::sensors\+::Multi\+Camera\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=220pt]{classcalico_1_1sensors_1_1MultiCamera__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_accf2ccc15651d949d279a0fb7ccb1b69}\label{classcalico_1_1sensors_1_1MultiCamera_accf2ccc15651d949d279a0fb7ccb1b69}} 
+{\bfseries Multi\+Camera} (const absl\+::flat\+\_\+hash\+\_\+set$<$ std\+::string $>$ \&imagers)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_acf66bd86b05395f8264363b6032b3229}\label{classcalico_1_1sensors_1_1MultiCamera_acf66bd86b05395f8264363b6032b3229}} 
+{\bfseries Multi\+Camera} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera}{Multi\+Camera}} \&)=delete
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a2e090b86763b84174481d809513426f7}\label{classcalico_1_1sensors_1_1MultiCamera_a2e090b86763b84174481d809513426f7}} 
+\mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera}{Multi\+Camera}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera}{Multi\+Camera}} \&)=delete
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a5d5a55d9146f925d241815c45269e919}\label{classcalico_1_1sensors_1_1MultiCamera_a5d5a55d9146f925d241815c45269e919}} 
+void {\bfseries Set\+Name} (const std\+::string \&sensor\+\_\+name)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_aa148af16ff30009078bcc285fee14b17}\label{classcalico_1_1sensors_1_1MultiCamera_aa148af16ff30009078bcc285fee14b17}} 
+const std\+::string \& {\bfseries Get\+Name} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a635e4ba81a5c70effd67726d1627b71c}\label{classcalico_1_1sensors_1_1MultiCamera_a635e4ba81a5c70effd67726d1627b71c}} 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a635e4ba81a5c70effd67726d1627b71c}{Set\+Model}} (const std\+::string \&imager, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model)
+\begin{DoxyCompactList}\small\item\em Setter for the camera model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_aa71f28b08bc8c9e21bff0604b4a58ecc}\label{classcalico_1_1sensors_1_1MultiCamera_aa71f28b08bc8c9e21bff0604b4a58ecc}} 
+absl\+::\+Status\+Or$<$ \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_aa71f28b08bc8c9e21bff0604b4a58ecc}{Get\+Model}} (const std\+::string \&imager) const
+\begin{DoxyCompactList}\small\item\em Getter for the camera model. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_acb0d33b3f19f3545bb2491482713cb64}{Set\+Sensor\+Extrinsics}} (const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&pose\+\_\+sensorrig\+\_\+from\+\_\+sensor)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a93be1552ddc14b81e1e04a4acb0ebc82}\label{classcalico_1_1sensors_1_1MultiCamera_a93be1552ddc14b81e1e04a4acb0ebc82}} 
+const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \& {\bfseries Get\+Sensor\+Extrinsics} () const
+\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a4af400a8432aa0900d5cf41864af5db0}{Set\+Imager\+Extrinsics}} (const std\+::string \&imager, const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&pose\+\_\+sensor\+\_\+from\+\_\+imager)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a1b7b1467e28e290d0fccef848d169c4e}\label{classcalico_1_1sensors_1_1MultiCamera_a1b7b1467e28e290d0fccef848d169c4e}} 
+absl\+::\+Status\+Or$<$ \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} $>$ {\bfseries Get\+Imager\+Extrinsics} (const std\+::string \&imager) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a7a31c3d74f65954a80aa0da0016bba02}\label{classcalico_1_1sensors_1_1MultiCamera_a7a31c3d74f65954a80aa0da0016bba02}} 
+absl\+::\+Status {\bfseries Set\+Intrinsics} (const std\+::string \&imager, const Eigen\+::\+Vector\+Xd \&intrinsics)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a73f1b8949f902dd1af96a2c8cc002e54}\label{classcalico_1_1sensors_1_1MultiCamera_a73f1b8949f902dd1af96a2c8cc002e54}} 
+absl\+::\+Status\+Or$<$ Eigen\+::\+Vector\+Xd $>$ {\bfseries Get\+Intrinsics} (const std\+::string \&imager) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a81bc7ab4a17461f487731dab465da350}\label{classcalico_1_1sensors_1_1MultiCamera_a81bc7ab4a17461f487731dab465da350}} 
+absl\+::\+Status {\bfseries Set\+Latency} (const std\+::string \&imager, double latency)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_ac06a8146df6d654c82acc15b3bcfe102}\label{classcalico_1_1sensors_1_1MultiCamera_ac06a8146df6d654c82acc15b3bcfe102}} 
+absl\+::\+Status\+Or$<$ double $>$ {\bfseries Get\+Latency} (const std\+::string \&imager) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a3558a281b637e2157f9e54b76600b80e}\label{classcalico_1_1sensors_1_1MultiCamera_a3558a281b637e2157f9e54b76600b80e}} 
+void {\bfseries Enable\+Extrinsics\+Estimation} (bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_abf219cad7b5c9887c95e2c8c6c1d4441}\label{classcalico_1_1sensors_1_1MultiCamera_abf219cad7b5c9887c95e2c8c6c1d4441}} 
+absl\+::\+Status {\bfseries Enable\+Extrinsics\+Estimation} (const std\+::string \&imager, bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a92499c1b5989cde4f36ccd0e537fab79}\label{classcalico_1_1sensors_1_1MultiCamera_a92499c1b5989cde4f36ccd0e537fab79}} 
+absl\+::\+Status {\bfseries Enable\+Intrinsics\+Estimation} (const std\+::string \&imager, bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_ac55b9921848e39cb1d43eb1c2abe11fa}\label{classcalico_1_1sensors_1_1MultiCamera_ac55b9921848e39cb1d43eb1c2abe11fa}} 
+absl\+::\+Status {\bfseries Enable\+Latency\+Estimation} (const std\+::string \&imager, bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_ac063cb3d6b763a4456b137145e5cba6a}\label{classcalico_1_1sensors_1_1MultiCamera_ac063cb3d6b763a4456b137145e5cba6a}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_ac063cb3d6b763a4456b137145e5cba6a}{Set\+Loss\+Function}} (\mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{utils\+::\+Loss\+Function\+Type}} loss, double scale) final
+\begin{DoxyCompactList}\small\item\em Setter for loss function and scale. \end{DoxyCompactList}\item 
+absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a9dd1b4fa2171986da0fc92d8d46e4828}{Add\+Parameters\+To\+Problem}} (ceres\+::\+Problem \&problem) final
+\begin{DoxyCompactList}\small\item\em Add this sensor\textquotesingle{}s calibration parameters to the ceres problem. \end{DoxyCompactList}\item 
+absl\+::\+Status\+Or$<$ int $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a39330273b9f1c749ce293e8a16cb4544}{Add\+Residuals\+To\+Problem}} (ceres\+::\+Problem \&problem, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) final
+\begin{DoxyCompactList}\small\item\em Contribue this sensor\textquotesingle{}s residuals to the ceres problem. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_acc6a31d6d7b1df3e62bb67d7c15a3551}{Set\+Measurement\+Noise}} (double sigma) final
+\begin{DoxyCompactList}\small\item\em Set the measurement noise $\sigma$. \end{DoxyCompactList}\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_aab0200a10e36b0d111a2ac356cb59373}{Update\+Residuals}} (ceres\+::\+Problem \&problem) final
+\begin{DoxyCompactList}\small\item\em Update residuals for this sensor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_afcc117e850246e1b242c9733a754f30e}\label{classcalico_1_1sensors_1_1MultiCamera_afcc117e850246e1b242c9733a754f30e}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_afcc117e850246e1b242c9733a754f30e}{Clear\+Residual\+Info}} () final
+\begin{DoxyCompactList}\small\item\em Clear all stored info about residuals. \end{DoxyCompactList}\item 
+absl\+::\+Status\+Or$<$ absl\+::flat\+\_\+hash\+\_\+map$<$ std\+::string, std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} $>$ $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a13a245c45461b16322ace515abea2ffb}{Project}} (const std\+::vector$<$ double $>$ \&interp\+\_\+times, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sensorrig\+\_\+trajectory, const \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&world\+\_\+model) const
+\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a7681254ca38116ecd4d47e7aed8c3830}{Add\+Measurement}} (const std\+::string \&imager, const \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} \&measurement)
+\item 
+absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a560e03bd101f917b4879f02aaf72379b}{Add\+Measurements}} (const std\+::string \&imager, const std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} $>$ \&measurements)
+\item 
+const absl\+::flat\+\_\+hash\+\_\+map$<$ std\+::string, absl\+::flat\+\_\+hash\+\_\+map$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraObservationId}{Camera\+Observation\+Id}}, \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} $>$ $>$ \& \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a8c20e988cb4f4b43b2e75f18aa44d26d}{Get\+Measurement\+Id\+To\+Measurement}} () const
+\item 
+absl\+::\+Status\+Or$<$ absl\+::flat\+\_\+hash\+\_\+map$<$ std\+::string, std\+::vector$<$ std\+::pair$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}}, Eigen\+::\+Vector2d $>$ $>$ $>$ $>$ \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_aab307f2fc2ed6c555c7ef0b8167e680d}{Get\+Measurement\+Residual\+Pairs}} () const
+\begin{DoxyCompactList}\small\item\em Returns a vector of measurement-\/residual pairs. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a9b3d02ed8d3c0cb3f42be7bbbd06b35b}\label{classcalico_1_1sensors_1_1MultiCamera_a9b3d02ed8d3c0cb3f42be7bbbd06b35b}} 
+void \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_a9b3d02ed8d3c0cb3f42be7bbbd06b35b}{Clear\+Measurements}} ()
+\begin{DoxyCompactList}\small\item\em This will also clear any internally stored residuals and marked outliers. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_aaa9509a52560b151fbf9133f3fa5c27e}\label{classcalico_1_1sensors_1_1MultiCamera_aaa9509a52560b151fbf9133f3fa5c27e}} 
+int \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera_aaa9509a52560b151fbf9133f3fa5c27e}{Number\+Of\+Measurements}} (const std\+::string \&imager) const
+\begin{DoxyCompactList}\small\item\em Get current number of measurements stored for a given imager. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Multi-\/camera class. This class can be used to calibrate multiple imagers on a single module, for example, stereo cameras. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a7681254ca38116ecd4d47e7aed8c3830}\label{classcalico_1_1sensors_1_1MultiCamera_a7681254ca38116ecd4d47e7aed8c3830}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!AddMeasurement@{AddMeasurement}}
+\index{AddMeasurement@{AddMeasurement}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{AddMeasurement()}{AddMeasurement()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Multi\+Camera\+::\+Add\+Measurement (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{imager,  }\item[{const \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} \&}]{measurement }\end{DoxyParamCaption})}
+
+Add a single camera measurement to the measurement list. Returns an error if the measurement\textquotesingle{}s id is duplicated without adding. \mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a560e03bd101f917b4879f02aaf72379b}\label{classcalico_1_1sensors_1_1MultiCamera_a560e03bd101f917b4879f02aaf72379b}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!AddMeasurements@{AddMeasurements}}
+\index{AddMeasurements@{AddMeasurements}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{AddMeasurements()}{AddMeasurements()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Multi\+Camera\+::\+Add\+Measurements (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{imager,  }\item[{const std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} $>$ \&}]{measurements }\end{DoxyParamCaption})}
+
+Add multiple measurements to the measurement list. Returns an error status if any measurements are duplicates within its internally managed set of measurements.~\newline
+~\newline
+{\bfseries{Note\+: If this method encounters any duplicates, it will STILL attempt to add the entire vector. If it returns an error status, it means that all unique measurements have been added, but duplicates have been skipped.}} \mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a9dd1b4fa2171986da0fc92d8d46e4828}\label{classcalico_1_1sensors_1_1MultiCamera_a9dd1b4fa2171986da0fc92d8d46e4828}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!AddParametersToProblem@{AddParametersToProblem}}
+\index{AddParametersToProblem@{AddParametersToProblem}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{AddParametersToProblem()}{AddParametersToProblem()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ int $>$ calico\+::sensors\+::\+Multi\+Camera\+::\+Add\+Parameters\+To\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Add this sensor\textquotesingle{}s calibration parameters to the ceres problem. 
+
+Returns the number of parameters added to the problem, which should be intrinsics + extrinsics + latency. If the sensor\textquotesingle{}s model hasn\textquotesingle{}t been set yet, it will return an invalid argument error. 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_a54f63f5a3b982b444d3a77724ec0a4cd}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a39330273b9f1c749ce293e8a16cb4544}\label{classcalico_1_1sensors_1_1MultiCamera_a39330273b9f1c749ce293e8a16cb4544}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!AddResidualsToProblem@{AddResidualsToProblem}}
+\index{AddResidualsToProblem@{AddResidualsToProblem}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{AddResidualsToProblem()}{AddResidualsToProblem()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ int $>$ calico\+::sensors\+::\+Multi\+Camera\+::\+Add\+Residuals\+To\+Problem (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem,  }\item[{\mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&}]{sensorrig\+\_\+trajectory,  }\item[{\mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&}]{world\+\_\+model }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Contribue this sensor\textquotesingle{}s residuals to the ceres problem. 
+
+{\ttfamily sensorrig\+\_\+trajectory} is the world-\/from-\/sensorrig trajectory $\mathbf{T}^w_r(t)$. 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_a7b60ca0610c6caa6a3278f7da5a251d8}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a8c20e988cb4f4b43b2e75f18aa44d26d}\label{classcalico_1_1sensors_1_1MultiCamera_a8c20e988cb4f4b43b2e75f18aa44d26d}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!GetMeasurementIdToMeasurement@{GetMeasurementIdToMeasurement}}
+\index{GetMeasurementIdToMeasurement@{GetMeasurementIdToMeasurement}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{GetMeasurementIdToMeasurement()}{GetMeasurementIdToMeasurement()}}
+{\footnotesize\ttfamily const absl\+::flat\+\_\+hash\+\_\+map$<$ std\+::string, absl\+::flat\+\_\+hash\+\_\+map$<$\mbox{\hyperlink{structcalico_1_1sensors_1_1CameraObservationId}{Camera\+Observation\+Id}}, \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}}$>$ $>$\& calico\+::sensors\+::\+Multi\+Camera\+::\+Get\+Measurement\+Id\+To\+Measurement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Getter for all measurements. Returns a map of observation ids to measurements. Will be empty if there are no measurements. \mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_aab307f2fc2ed6c555c7ef0b8167e680d}\label{classcalico_1_1sensors_1_1MultiCamera_aab307f2fc2ed6c555c7ef0b8167e680d}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!GetMeasurementResidualPairs@{GetMeasurementResidualPairs}}
+\index{GetMeasurementResidualPairs@{GetMeasurementResidualPairs}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{GetMeasurementResidualPairs()}{GetMeasurementResidualPairs()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ absl\+::flat\+\_\+hash\+\_\+map$<$ std\+::string, std\+::vector$<$ std\+::pair$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}}, Eigen\+::\+Vector2d $>$ $>$ $>$ $>$ calico\+::sensors\+::\+Multi\+Camera\+::\+Get\+Measurement\+Residual\+Pairs (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Returns a vector of measurement-\/residual pairs. 
+
+Only returns for measurements that have residuals. Returns an error if there are more residuals than measurements, or if there are no measurements.~\newline
+~\newline
+{\bfseries{Note\+: This method will only return residuals for measurements that have NOT been marked as outliers.}} \mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a13a245c45461b16322ace515abea2ffb}\label{classcalico_1_1sensors_1_1MultiCamera_a13a245c45461b16322ace515abea2ffb}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!Project@{Project}}
+\index{Project@{Project}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{Project()}{Project()}}
+{\footnotesize\ttfamily absl\+::\+Status\+Or$<$ absl\+::flat\+\_\+hash\+\_\+map$<$ std\+::string, std\+::vector$<$ \mbox{\hyperlink{structcalico_1_1sensors_1_1CameraMeasurement}{Camera\+Measurement}} $>$ $>$ $>$ calico\+::sensors\+::\+Multi\+Camera\+::\+Project (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{interp\+\_\+times,  }\item[{const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&}]{sensorrig\+\_\+trajectory,  }\item[{const \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}} \&}]{world\+\_\+model }\end{DoxyParamCaption}) const}
+
+Compute synthetic camera measurements given a \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} and \mbox{\hyperlink{classcalico_1_1WorldModel}{World\+Model}}. This method projects the world model through the kinematic chain at given timestamps. This method returns only valid synthetic measurements as would be observed by the actual sensor, complying with physicality such as features being in front of the camera. Returns measurements in the order of the interpolation timestamps.~\newline
+~\newline
+{\ttfamily interp\+\_\+times} is a vector of timestamps in seconds at which {\ttfamily sensorrig\+\_\+trajectory} will be interpolated. No assumptions are made about timestamp uniqueness or order.~\newline
+~\newline
+{\ttfamily sensorrig\+\_\+trajectory} is the world-\/from-\/sensorrig trajectory $\mathbf{T}^w_r(t)$.~\newline
+~\newline
+ \mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_a4af400a8432aa0900d5cf41864af5db0}\label{classcalico_1_1sensors_1_1MultiCamera_a4af400a8432aa0900d5cf41864af5db0}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!SetImagerExtrinsics@{SetImagerExtrinsics}}
+\index{SetImagerExtrinsics@{SetImagerExtrinsics}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{SetImagerExtrinsics()}{SetImagerExtrinsics()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Multi\+Camera\+::\+Set\+Imager\+Extrinsics (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{imager,  }\item[{const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&}]{pose\+\_\+sensor\+\_\+from\+\_\+imager }\end{DoxyParamCaption})}
+
+Set the extrinsics for each internal sensor. This transform will be applied on top of pose\+\_\+sensorrig\+\_\+from\+\_\+sensor which is held constant during optimization. \mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_acc6a31d6d7b1df3e62bb67d7c15a3551}\label{classcalico_1_1sensors_1_1MultiCamera_acc6a31d6d7b1df3e62bb67d7c15a3551}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!SetMeasurementNoise@{SetMeasurementNoise}}
+\index{SetMeasurementNoise@{SetMeasurementNoise}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{SetMeasurementNoise()}{SetMeasurementNoise()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Multi\+Camera\+::\+Set\+Measurement\+Noise (\begin{DoxyParamCaption}\item[{double}]{sigma }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Set the measurement noise $\sigma$. 
+
+This value is used to weight the sensor\textquotesingle{}s residuals such that\+: \[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \] 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_afd3eac9105c7168c64212bfdf20f04fa}{calico\+::sensors\+::\+Sensor}}.
+
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_acb0d33b3f19f3545bb2491482713cb64}\label{classcalico_1_1sensors_1_1MultiCamera_acb0d33b3f19f3545bb2491482713cb64}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!SetSensorExtrinsics@{SetSensorExtrinsics}}
+\index{SetSensorExtrinsics@{SetSensorExtrinsics}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{SetSensorExtrinsics()}{SetSensorExtrinsics()}}
+{\footnotesize\ttfamily void calico\+::sensors\+::\+Multi\+Camera\+::\+Set\+Sensor\+Extrinsics (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&}]{pose\+\_\+sensorrig\+\_\+from\+\_\+sensor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Sets extrinsics for the camera module itself. Each sensor will internally have an additional extrinsics offset relative to this one. This can be set to a constant CAD value. \mbox{\Hypertarget{classcalico_1_1sensors_1_1MultiCamera_aab0200a10e36b0d111a2ac356cb59373}\label{classcalico_1_1sensors_1_1MultiCamera_aab0200a10e36b0d111a2ac356cb59373}} 
+\index{calico::sensors::MultiCamera@{calico::sensors::MultiCamera}!UpdateResiduals@{UpdateResiduals}}
+\index{UpdateResiduals@{UpdateResiduals}!calico::sensors::MultiCamera@{calico::sensors::MultiCamera}}
+\doxysubsubsection{\texorpdfstring{UpdateResiduals()}{UpdateResiduals()}}
+{\footnotesize\ttfamily absl\+::\+Status calico\+::sensors\+::\+Multi\+Camera\+::\+Update\+Residuals (\begin{DoxyParamCaption}\item[{ceres\+::\+Problem \&}]{problem }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [final]}, {\ttfamily [virtual]}}
+
+
+
+Update residuals for this sensor. 
+
+This will only apply to measurements not marked as outliers.~\newline
+~\newline
+{\bfseries{Note\+: This method is meant to be invoked by \mbox{\hyperlink{classcalico_1_1BatchOptimizer}{Batch\+Optimizer}} ONLY. It is not recommended that you invoke this method manually.}} 
+
+Implements \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor_af08e6476f0188cdb77cf912a9026709a}{calico\+::sensors\+::\+Sensor}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/multi\+\_\+camera.\+h\item 
+calico/sensors/multi\+\_\+camera.\+cpp\end{DoxyCompactItemize}

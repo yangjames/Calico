@@ -1,0 +1,29 @@
+\hypertarget{classcalico_1_1sensors_1_1ImagerCostFunctor}{}\doxysection{calico\+::sensors\+::Imager\+Cost\+Functor Class Reference}
+\label{classcalico_1_1sensors_1_1ImagerCostFunctor}\index{calico::sensors::ImagerCostFunctor@{calico::sensors::ImagerCostFunctor}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1ImagerCostFunctor_a2982096b5fae49abe3c18c65445cc01e}\label{classcalico_1_1sensors_1_1ImagerCostFunctor_a2982096b5fae49abe3c18c65445cc01e}} 
+{\bfseries Imager\+Cost\+Functor} (\mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model, const Eigen\+::\+Vector2d \&pixel, double sigma, double stamp, const \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&sp\+\_\+\+T\+\_\+world\+\_\+sensorrig)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1ImagerCostFunctor_a34d7aff8c04f9430b9abf44a64892d01}\label{classcalico_1_1sensors_1_1ImagerCostFunctor_a34d7aff8c04f9430b9abf44a64892d01}} 
+{\footnotesize template$<$typename T $>$ }\\bool {\bfseries operator()} (T const $\ast$const $\ast$parameters, T $\ast$residual)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1ImagerCostFunctor_afe5f8487fa67333c91be900188956e7e}\label{classcalico_1_1sensors_1_1ImagerCostFunctor_afe5f8487fa67333c91be900188956e7e}} 
+static ceres\+::\+Cost\+Function $\ast$ {\bfseries Create\+Cost\+Function} (const Eigen\+::\+Vector2d \&pixel, double sigma, \mbox{\hyperlink{namespacecalico_1_1sensors_a1eaf57959273c4ea8dc8899a2e724a2f}{Camera\+Intrinsics\+Model}} camera\+\_\+model, Eigen\+::\+Vector\+Xd \&intrinsics, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&imager\+\_\+extrinsics, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&sensor\+\_\+extrinsics, double \&latency, Eigen\+::\+Vector3d \&t\+\_\+model\+\_\+point, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&T\+\_\+world\+\_\+model, \mbox{\hyperlink{classcalico_1_1Trajectory}{Trajectory}} \&trajectory\+\_\+world\+\_\+sensorrig, double stamp, std\+::vector$<$ double $\ast$ $>$ \&parameters)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1ImagerCostFunctor_af6cc9f04a9b3e4fe4e796b860c1960c6}\label{classcalico_1_1sensors_1_1ImagerCostFunctor_af6cc9f04a9b3e4fe4e796b860c1960c6}} 
+static constexpr int {\bfseries k\+Camera\+Residual\+Size} = 2
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+calico/sensors/imager\+\_\+cost\+\_\+functor.\+h\item 
+calico/sensors/imager\+\_\+cost\+\_\+functor.\+cpp\end{DoxyCompactItemize}

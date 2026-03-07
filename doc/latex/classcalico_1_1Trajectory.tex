@@ -11,11 +11,23 @@ absl\+::\+Status \mbox{\hyperlink{classcalico_1_1Trajectory_a68f4f44651441e3d77b
 \item 
 int \mbox{\hyperlink{classcalico_1_1Trajectory_a7b3008b06c6bb5e9480a3131ad8a3f13}{Add\+Parameters\+To\+Problem}} (ceres\+::\+Problem \&problem)
 \item 
-\mbox{\Hypertarget{classcalico_1_1Trajectory_abce44ba657a445b2a73988c4788f0240}\label{classcalico_1_1Trajectory_abce44ba657a445b2a73988c4788f0240}} 
-const \mbox{\hyperlink{classcalico_1_1BSpline}{BSpline}}$<$ 6 $>$ \& \mbox{\hyperlink{classcalico_1_1Trajectory_abce44ba657a445b2a73988c4788f0240}{spline}} () const
-\begin{DoxyCompactList}\small\item\em Accessors for the spline. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1Trajectory_a9d1f75af0c4250fbbdeac8da6dce36f3}\label{classcalico_1_1Trajectory_a9d1f75af0c4250fbbdeac8da6dce36f3}} 
-\mbox{\hyperlink{classcalico_1_1BSpline}{BSpline}}$<$ 6 $>$ \& {\bfseries spline} ()
+\mbox{\Hypertarget{classcalico_1_1Trajectory_a4f24a2f0e0a68e1b7358f68b8e202844}\label{classcalico_1_1Trajectory_a4f24a2f0e0a68e1b7358f68b8e202844}} 
+void {\bfseries Enable\+Position\+Estimation} (bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1Trajectory_a5749a0788553737ddb1674c140228652}\label{classcalico_1_1Trajectory_a5749a0788553737ddb1674c140228652}} 
+void {\bfseries Enable\+Rotation\+Estimation} (bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1Trajectory_a6f7f4e46b1dbf8e95550df8d13efacce}\label{classcalico_1_1Trajectory_a6f7f4e46b1dbf8e95550df8d13efacce}} 
+const \mbox{\hyperlink{classcalico_1_1BSpline}{BSpline}}$<$ 3 $>$ \& \mbox{\hyperlink{classcalico_1_1Trajectory_a6f7f4e46b1dbf8e95550df8d13efacce}{rotation\+\_\+spline}} () const
+\begin{DoxyCompactList}\small\item\em Accessors for the rotation spline. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1Trajectory_af537f8188a946835940caf96452d6f90}\label{classcalico_1_1Trajectory_af537f8188a946835940caf96452d6f90}} 
+\mbox{\hyperlink{classcalico_1_1BSpline}{BSpline}}$<$ 3 $>$ \& {\bfseries rotation\+\_\+spline} ()
+\item 
+\mbox{\Hypertarget{classcalico_1_1Trajectory_afb4e7d6032d4d3959cf5051dcbe3357e}\label{classcalico_1_1Trajectory_afb4e7d6032d4d3959cf5051dcbe3357e}} 
+const \mbox{\hyperlink{classcalico_1_1BSpline}{BSpline}}$<$ 3 $>$ \& \mbox{\hyperlink{classcalico_1_1Trajectory_afb4e7d6032d4d3959cf5051dcbe3357e}{position\+\_\+spline}} () const
+\begin{DoxyCompactList}\small\item\em Accesors for the position spline. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1Trajectory_a549e600d217063a2eb6f12190f053dc0}\label{classcalico_1_1Trajectory_a549e600d217063a2eb6f12190f053dc0}} 
+\mbox{\hyperlink{classcalico_1_1BSpline}{BSpline}}$<$ 3 $>$ \& {\bfseries position\+\_\+spline} ()
 \item 
 absl\+::\+Status\+Or$<$ std\+::vector$<$ \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} $>$ $>$ \mbox{\hyperlink{classcalico_1_1Trajectory_ac20a0fc8fb0aabd138d34dd2935c8cf2}{Interpolate}} (const std\+::vector$<$ double $>$ \&interp\+\_\+times) const
 \item 
@@ -25,9 +37,12 @@ const absl\+::flat\+\_\+hash\+\_\+map$<$ double, \mbox{\hyperlink{classcalico_1_
 \mbox{\Hypertarget{classcalico_1_1Trajectory_a18b5725c67dc3eb84def878ab07dbcd4}\label{classcalico_1_1Trajectory_a18b5725c67dc3eb84def878ab07dbcd4}} 
 absl\+::flat\+\_\+hash\+\_\+map$<$ double, \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} $>$ \& {\bfseries trajectory} ()
 \item 
-\mbox{\Hypertarget{classcalico_1_1Trajectory_ad402e9a34842a3cf98e944415868a7e5}\label{classcalico_1_1Trajectory_ad402e9a34842a3cf98e944415868a7e5}} 
-\mbox{\hyperlink{structcalico_1_1TrajectoryEvaluationParams}{Trajectory\+Evaluation\+Params}} \mbox{\hyperlink{classcalico_1_1Trajectory_ad402e9a34842a3cf98e944415868a7e5}{Get\+Evaluation\+Params}} (double stamp) const
-\begin{DoxyCompactList}\small\item\em Get the parameters needed to evaluate the spline for a given timestamp. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\mbox{\Hypertarget{classcalico_1_1Trajectory_aab5b46e7350440b32bb1d44a0ed0e165}\label{classcalico_1_1Trajectory_aab5b46e7350440b32bb1d44a0ed0e165}} 
+\mbox{\hyperlink{structcalico_1_1TrajectoryEvaluationParams}{Trajectory\+Evaluation\+Params}} \mbox{\hyperlink{classcalico_1_1Trajectory_aab5b46e7350440b32bb1d44a0ed0e165}{Get\+Evaluation\+Params\+Position}} (double stamp) const
+\begin{DoxyCompactList}\small\item\em Get the parameters needed to evaluate the position spline for a given timestamp. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1Trajectory_ab58996bdae269fa60663e44e561736b6}\label{classcalico_1_1Trajectory_ab58996bdae269fa60663e44e561736b6}} 
+\mbox{\hyperlink{structcalico_1_1TrajectoryEvaluationParams}{Trajectory\+Evaluation\+Params}} \mbox{\hyperlink{classcalico_1_1Trajectory_ab58996bdae269fa60663e44e561736b6}{Get\+Evaluation\+Params\+Rotation}} (double stamp) const
+\begin{DoxyCompactList}\small\item\em Get the parameters needed to evaluate the rotation spline for a given timestamp. \end{DoxyCompactList}\end{DoxyCompactItemize}
 \doxysubsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 

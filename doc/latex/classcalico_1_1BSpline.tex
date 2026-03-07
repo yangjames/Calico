@@ -6,6 +6,9 @@
 \mbox{\Hypertarget{classcalico_1_1BSpline_adf2ab617ce0262fac054ee23c2e55345}\label{classcalico_1_1BSpline_adf2ab617ce0262fac054ee23c2e55345}} 
 int {\bfseries Add\+Parameters\+To\+Problem} (ceres\+::\+Problem \&problem)
 \item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_afaa5bb8462c6b995752130fd97521fc6}\label{classcalico_1_1BSpline_afaa5bb8462c6b995752130fd97521fc6}} 
+void {\bfseries Enable\+Control\+Points\+Estimation} (bool enable)
+\item 
 \mbox{\Hypertarget{classcalico_1_1BSpline_a97cf7e9a463202eb699d3ec4dd3e501c}\label{classcalico_1_1BSpline_a97cf7e9a463202eb699d3ec4dd3e501c}} 
 absl\+::\+Status {\bfseries Fit\+To\+Data} (const std\+::vector$<$ T $>$ \&time, const std\+::vector$<$ Eigen\+::\+Vector$<$ T, N $>$$>$ \&data, int spline\+\_\+order, T knot\+\_\+frequency)
 \item 
@@ -20,6 +23,9 @@ int {\bfseries Get\+Spline\+Order} () const
 \item 
 \mbox{\Hypertarget{classcalico_1_1BSpline_a361a02cdfa50b203d594e54cf94ace3d}\label{classcalico_1_1BSpline_a361a02cdfa50b203d594e54cf94ace3d}} 
 absl\+::\+Status\+Or$<$ std\+::vector$<$ Eigen\+::\+Vector$<$ T, N $>$ $>$ $>$ {\bfseries Interpolate} (const std\+::vector$<$ T $>$ \&times, int derivative=0) const
+\item 
+\mbox{\Hypertarget{classcalico_1_1BSpline_aafa8434c8dff7fcb7957d7124d6ea6dd}\label{classcalico_1_1BSpline_aafa8434c8dff7fcb7957d7124d6ea6dd}} 
+absl\+::\+Status\+Or$<$ Eigen\+::\+Vector$<$ T, N $>$ $>$ {\bfseries Interpolate} (T time, int derivative=0) const
 \item 
 \mbox{\Hypertarget{classcalico_1_1BSpline_a998ccec47c06d576b2a4f48ddb5ebc03}\label{classcalico_1_1BSpline_a998ccec47c06d576b2a4f48ddb5ebc03}} 
 Eigen\+::\+MatrixX$<$ T $>$ {\bfseries Get\+Spline\+Basis} (int spline\+\_\+idx, T stamp, int derivative) const

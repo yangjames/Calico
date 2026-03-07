@@ -112,50 +112,39 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3a53517bc5bf4c7686d9e00ff276d6a3"><td class="memItemLeft" align="right" valign="top"><a id="a3a53517bc5bf4c7686d9e00ff276d6a3"></a>
 <a class="el" href="classcalico_1_1sensors_1_1Camera.html">Camera</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classcalico_1_1sensors_1_1Camera.html">Camera</a> &amp;)=delete</td></tr>
 <tr class="separator:a3a53517bc5bf4c7686d9e00ff276d6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a446c4472199355503ca2b663ce581444"><td class="memItemLeft" align="right" valign="top"><a id="a446c4472199355503ca2b663ce581444"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a446c4472199355503ca2b663ce581444">SetName</a> (const std::string &amp;name) final</td></tr>
-<tr class="memdesc:a446c4472199355503ca2b663ce581444"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for name. <br /></td></tr>
-<tr class="separator:a446c4472199355503ca2b663ce581444"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02dbe718f246c469e6973d80f508ad50"><td class="memItemLeft" align="right" valign="top"><a id="a02dbe718f246c469e6973d80f508ad50"></a>
-const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a02dbe718f246c469e6973d80f508ad50">GetName</a> () const final</td></tr>
-<tr class="memdesc:a02dbe718f246c469e6973d80f508ad50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for name. <br /></td></tr>
-<tr class="separator:a02dbe718f246c469e6973d80f508ad50"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54e98ce1b88ddcfcc1853e7d6c95a2d9"><td class="memItemLeft" align="right" valign="top"><a id="a54e98ce1b88ddcfcc1853e7d6c95a2d9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a54e98ce1b88ddcfcc1853e7d6c95a2d9">SetExtrinsics</a> (const <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;T_sensorrig_sensor) final</td></tr>
-<tr class="memdesc:a54e98ce1b88ddcfcc1853e7d6c95a2d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for extrinsics parameters. <br /></td></tr>
-<tr class="separator:a54e98ce1b88ddcfcc1853e7d6c95a2d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8db09cca224532a6c4ad0bc61d3d8c1f"><td class="memItemLeft" align="right" valign="top"><a id="a8db09cca224532a6c4ad0bc61d3d8c1f"></a>
-const <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a8db09cca224532a6c4ad0bc61d3d8c1f">GetExtrinsics</a> () const final</td></tr>
-<tr class="memdesc:a8db09cca224532a6c4ad0bc61d3d8c1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for extrinsics parameters. <br /></td></tr>
-<tr class="separator:a8db09cca224532a6c4ad0bc61d3d8c1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab917354fc8b654b807f92cac6f635f48"><td class="memItemLeft" align="right" valign="top"><a id="ab917354fc8b654b807f92cac6f635f48"></a>
-absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#ab917354fc8b654b807f92cac6f635f48">SetIntrinsics</a> (const Eigen::VectorXd &amp;intrinsics) final</td></tr>
-<tr class="memdesc:ab917354fc8b654b807f92cac6f635f48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for intrinsics parameters. <br /></td></tr>
-<tr class="separator:ab917354fc8b654b807f92cac6f635f48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22485fdb870293142109023196de4189"><td class="memItemLeft" align="right" valign="top"><a id="a22485fdb870293142109023196de4189"></a>
-const Eigen::VectorXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a22485fdb870293142109023196de4189">GetIntrinsics</a> () const final</td></tr>
-<tr class="memdesc:a22485fdb870293142109023196de4189"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for intrinsics parameters. <br /></td></tr>
-<tr class="separator:a22485fdb870293142109023196de4189"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addccd575e2e85e846b6b5197d007d12a"><td class="memItemLeft" align="right" valign="top"><a id="addccd575e2e85e846b6b5197d007d12a"></a>
-absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#addccd575e2e85e846b6b5197d007d12a">SetLatency</a> (double latency) final</td></tr>
-<tr class="memdesc:addccd575e2e85e846b6b5197d007d12a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for sensor latency. <br /></td></tr>
-<tr class="separator:addccd575e2e85e846b6b5197d007d12a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8096777057130a9cc5f49459fd8b60a5"><td class="memItemLeft" align="right" valign="top"><a id="a8096777057130a9cc5f49459fd8b60a5"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a8096777057130a9cc5f49459fd8b60a5">GetLatency</a> () const final</td></tr>
-<tr class="memdesc:a8096777057130a9cc5f49459fd8b60a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for sensor latency. <br /></td></tr>
-<tr class="separator:a8096777057130a9cc5f49459fd8b60a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3eb0820967e0be7ca022d50702434a3a"><td class="memItemLeft" align="right" valign="top"><a id="a3eb0820967e0be7ca022d50702434a3a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a3eb0820967e0be7ca022d50702434a3a">EnableExtrinsicsEstimation</a> (bool enable) final</td></tr>
-<tr class="memdesc:a3eb0820967e0be7ca022d50702434a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable extrinsics estimation. <br /></td></tr>
-<tr class="separator:a3eb0820967e0be7ca022d50702434a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a474b22e15bb9abb686fb7ec2217c72df"><td class="memItemLeft" align="right" valign="top"><a id="a474b22e15bb9abb686fb7ec2217c72df"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a474b22e15bb9abb686fb7ec2217c72df">EnableIntrinsicsEstimation</a> (bool enable) final</td></tr>
-<tr class="memdesc:a474b22e15bb9abb686fb7ec2217c72df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable intrinsics estimation. <br /></td></tr>
-<tr class="separator:a474b22e15bb9abb686fb7ec2217c72df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11089f69528b17f77a53101c98d32b26"><td class="memItemLeft" align="right" valign="top"><a id="a11089f69528b17f77a53101c98d32b26"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a11089f69528b17f77a53101c98d32b26">EnableLatencyEstimation</a> (bool enable) final</td></tr>
-<tr class="memdesc:a11089f69528b17f77a53101c98d32b26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable latency estimation. <br /></td></tr>
-<tr class="separator:a11089f69528b17f77a53101c98d32b26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af27bb209288765155c54c842cad65678"><td class="memItemLeft" align="right" valign="top"><a id="af27bb209288765155c54c842cad65678"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetName</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:af27bb209288765155c54c842cad65678"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8db9aabcd33a54b9717238d2b0953ef2"><td class="memItemLeft" align="right" valign="top"><a id="a8db9aabcd33a54b9717238d2b0953ef2"></a>
+const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetName</b> () const</td></tr>
+<tr class="separator:a8db9aabcd33a54b9717238d2b0953ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd28beb7e7a695e6ca89b417970001c1"><td class="memItemLeft" align="right" valign="top"><a id="abd28beb7e7a695e6ca89b417970001c1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>SetExtrinsics</b> (const <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;T_sensorrig_sensor)</td></tr>
+<tr class="separator:abd28beb7e7a695e6ca89b417970001c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b3dea5a2aaad6fe4d547fd3ca13c39a"><td class="memItemLeft" align="right" valign="top"><a id="a3b3dea5a2aaad6fe4d547fd3ca13c39a"></a>
+const <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetExtrinsics</b> () const</td></tr>
+<tr class="separator:a3b3dea5a2aaad6fe4d547fd3ca13c39a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4609c04d47fd74f316b665e7834c415d"><td class="memItemLeft" align="right" valign="top"><a id="a4609c04d47fd74f316b665e7834c415d"></a>
+absl::Status&#160;</td><td class="memItemRight" valign="bottom"><b>SetIntrinsics</b> (const Eigen::VectorXd &amp;intrinsics)</td></tr>
+<tr class="separator:a4609c04d47fd74f316b665e7834c415d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf78d44fae48a8b9a29a29fdc5c9b943"><td class="memItemLeft" align="right" valign="top"><a id="abf78d44fae48a8b9a29a29fdc5c9b943"></a>
+const Eigen::VectorXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetIntrinsics</b> () const</td></tr>
+<tr class="separator:abf78d44fae48a8b9a29a29fdc5c9b943"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4223a82d7c574ca5073a6373b5ff496"><td class="memItemLeft" align="right" valign="top"><a id="ae4223a82d7c574ca5073a6373b5ff496"></a>
+absl::Status&#160;</td><td class="memItemRight" valign="bottom"><b>SetLatency</b> (double latency)</td></tr>
+<tr class="separator:ae4223a82d7c574ca5073a6373b5ff496"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae46d68c1bbc0dbcd70b5cd15cc2b4ea7"><td class="memItemLeft" align="right" valign="top"><a id="ae46d68c1bbc0dbcd70b5cd15cc2b4ea7"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>GetLatency</b> () const</td></tr>
+<tr class="separator:ae46d68c1bbc0dbcd70b5cd15cc2b4ea7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13295eb1e169f45e7e4d8699f6d88802"><td class="memItemLeft" align="right" valign="top"><a id="a13295eb1e169f45e7e4d8699f6d88802"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>EnableExtrinsicsEstimation</b> (bool enable)</td></tr>
+<tr class="separator:a13295eb1e169f45e7e4d8699f6d88802"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29d7ba4cb99b043de358e6dee55d66d6"><td class="memItemLeft" align="right" valign="top"><a id="a29d7ba4cb99b043de358e6dee55d66d6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>EnableIntrinsicsEstimation</b> (bool enable)</td></tr>
+<tr class="separator:a29d7ba4cb99b043de358e6dee55d66d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97e4dc0bcf749e6aa287cadc52e92b79"><td class="memItemLeft" align="right" valign="top"><a id="a97e4dc0bcf749e6aa287cadc52e92b79"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>EnableLatencyEstimation</b> (bool enable)</td></tr>
+<tr class="separator:a97e4dc0bcf749e6aa287cadc52e92b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c9b553f27cf9bec5bf7a246a880e22b"><td class="memItemLeft" align="right" valign="top"><a id="a9c9b553f27cf9bec5bf7a246a880e22b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Camera.html#a9c9b553f27cf9bec5bf7a246a880e22b">SetLossFunction</a> (<a class="el" href="namespacecalico_1_1utils.html#aacede3df540b75d2e131f113380f0ce9">utils::LossFunctionType</a> loss, double scale) final</td></tr>
 <tr class="memdesc:a9c9b553f27cf9bec5bf7a246a880e22b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for loss function and scale. <br /></td></tr>

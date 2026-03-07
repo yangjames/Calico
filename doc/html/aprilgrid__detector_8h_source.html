@@ -98,38 +98,39 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keywordtype">double</span> tagSpacing;  <span class="comment">// Ratio of space between tags to their size.</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                      <span class="comment">// For example:</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                      <span class="comment">//   space between tags=0.5m, tagSize=2m -&gt; tagSpacing=0.25</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">   24</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">AprilGridDetector</a> {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="comment">// Users have two options for constructing a detector. First is passing a</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="comment">// configuration filename directly to the constructor. Second is by passing</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="comment">// a hand-made configuration. The former invokes the latter.</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <a class="code" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">AprilGridDetector</a>(<span class="keyword">const</span> std::string&amp; config_filename);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <a class="code" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">AprilGridDetector</a>(<span class="keyword">const</span> <a class="code" href="structcalico_1_1chart__detectors_1_1AprilGridConfig.html">AprilGridConfig</a>&amp; config);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="comment">// Run detection on an image. Returns a map containing each corner id and their</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="comment">// corresponding pixel locations.</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  std::unordered_map&lt;int, Eigen::Vector2d&gt; Detect(<span class="keyword">const</span> cv::Mat&amp; image) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="comment">// Getter for this detector&#39;s rigid body definition.</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <a class="code" href="structcalico_1_1RigidBody.html">RigidBody</a> GetRigidBodyDefinition() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keywordtype">int</span> startId = 0;  <span class="comment">// The id of the first tag in the grid. Zero by default.</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">   25</a></span>&#160;<span class="keyword">class </span><a class="code" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">AprilGridDetector</a> {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="comment">// Users have two options for constructing a detector. First is passing a</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="comment">// configuration filename directly to the constructor. Second is by passing</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="comment">// a hand-made configuration. The former invokes the latter.</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <a class="code" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">AprilGridDetector</a>(<span class="keyword">const</span> std::string&amp; config_filename);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <a class="code" href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">AprilGridDetector</a>(<span class="keyword">const</span> <a class="code" href="structcalico_1_1chart__detectors_1_1AprilGridConfig.html">AprilGridConfig</a>&amp; config);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="comment">// Run detection on an image. Returns a map containing each corner id and their</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="comment">// corresponding pixel locations.</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  std::unordered_map&lt;int, Eigen::Vector2d&gt; Detect(<span class="keyword">const</span> cv::Mat&amp; image) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="comment">// Getter for this detector&#39;s rigid body definition.</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <a class="code" href="structcalico_1_1RigidBody.html">RigidBody</a> GetRigidBodyDefinition() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <a class="code" href="structcalico_1_1chart__detectors_1_1AprilGridConfig.html">AprilGridConfig</a> config_;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::unordered_map&lt;int, Eigen::Vector3d&gt; model_definition_;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::unique_ptr&lt;AprilTags::TagDetector&gt; detector_;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="comment">// Convenience function for setting up the apriltag detector.</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keywordtype">void</span> SetupDetector();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;} <span class="comment">// namespace calico::chart_detectors</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <a class="code" href="structcalico_1_1chart__detectors_1_1AprilGridConfig.html">AprilGridConfig</a> config_;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::unordered_map&lt;int, Eigen::Vector3d&gt; model_definition_;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  std::unique_ptr&lt;AprilTags::TagDetector&gt; detector_;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="comment">// Convenience function for setting up the apriltag detector.</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordtype">void</span> SetupDetector();</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;} <span class="comment">// namespace calico::chart_detectors</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// CALICO_CHART_DETECTORS_APRILGRID_DETECTOR_H_</span></div>
-<div class="ttc" id="aclasscalico_1_1chart__detectors_1_1AprilGridDetector_html"><div class="ttname"><a href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">calico::chart_detectors::AprilGridDetector</a></div><div class="ttdef"><b>Definition:</b> aprilgrid_detector.h:24</div></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// CALICO_CHART_DETECTORS_APRILGRID_DETECTOR_H_</span></div>
+<div class="ttc" id="aclasscalico_1_1chart__detectors_1_1AprilGridDetector_html"><div class="ttname"><a href="classcalico_1_1chart__detectors_1_1AprilGridDetector.html">calico::chart_detectors::AprilGridDetector</a></div><div class="ttdef"><b>Definition:</b> aprilgrid_detector.h:25</div></div>
 <div class="ttc" id="astructcalico_1_1RigidBody_html"><div class="ttname"><a href="structcalico_1_1RigidBody.html">calico::RigidBody</a></div><div class="ttdef"><b>Definition:</b> world_model.h:53</div></div>
 <div class="ttc" id="astructcalico_1_1chart__detectors_1_1AprilGridConfig_html"><div class="ttname"><a href="structcalico_1_1chart__detectors_1_1AprilGridConfig.html">calico::chart_detectors::AprilGridConfig</a></div><div class="ttdef"><b>Definition:</b> aprilgrid_detector.h:15</div></div>
 </div><!-- fragment --></div><!-- contents -->

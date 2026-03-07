@@ -38,39 +38,39 @@ Collaboration diagram for calico\+::sensors\+::Camera\+:
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a3a53517bc5bf4c7686d9e00ff276d6a3}\label{classcalico_1_1sensors_1_1Camera_a3a53517bc5bf4c7686d9e00ff276d6a3}} 
 \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera}{Camera}} \& {\bfseries operator=} (const \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera}{Camera}} \&)=delete
 \item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a446c4472199355503ca2b663ce581444}\label{classcalico_1_1sensors_1_1Camera_a446c4472199355503ca2b663ce581444}} 
-void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a446c4472199355503ca2b663ce581444}{Set\+Name}} (const std\+::string \&name) final
-\begin{DoxyCompactList}\small\item\em Setter for name. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a02dbe718f246c469e6973d80f508ad50}\label{classcalico_1_1sensors_1_1Camera_a02dbe718f246c469e6973d80f508ad50}} 
-const std\+::string \& \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a02dbe718f246c469e6973d80f508ad50}{Get\+Name}} () const final
-\begin{DoxyCompactList}\small\item\em Getter for name. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a54e98ce1b88ddcfcc1853e7d6c95a2d9}\label{classcalico_1_1sensors_1_1Camera_a54e98ce1b88ddcfcc1853e7d6c95a2d9}} 
-void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a54e98ce1b88ddcfcc1853e7d6c95a2d9}{Set\+Extrinsics}} (const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&T\+\_\+sensorrig\+\_\+sensor) final
-\begin{DoxyCompactList}\small\item\em Setter for extrinsics parameters. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a8db09cca224532a6c4ad0bc61d3d8c1f}\label{classcalico_1_1sensors_1_1Camera_a8db09cca224532a6c4ad0bc61d3d8c1f}} 
-const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \& \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a8db09cca224532a6c4ad0bc61d3d8c1f}{Get\+Extrinsics}} () const final
-\begin{DoxyCompactList}\small\item\em Getter for extrinsics parameters. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_ab917354fc8b654b807f92cac6f635f48}\label{classcalico_1_1sensors_1_1Camera_ab917354fc8b654b807f92cac6f635f48}} 
-absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_ab917354fc8b654b807f92cac6f635f48}{Set\+Intrinsics}} (const Eigen\+::\+Vector\+Xd \&intrinsics) final
-\begin{DoxyCompactList}\small\item\em Setter for intrinsics parameters. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a22485fdb870293142109023196de4189}\label{classcalico_1_1sensors_1_1Camera_a22485fdb870293142109023196de4189}} 
-const Eigen\+::\+Vector\+Xd \& \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a22485fdb870293142109023196de4189}{Get\+Intrinsics}} () const final
-\begin{DoxyCompactList}\small\item\em Getter for intrinsics parameters. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_addccd575e2e85e846b6b5197d007d12a}\label{classcalico_1_1sensors_1_1Camera_addccd575e2e85e846b6b5197d007d12a}} 
-absl\+::\+Status \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_addccd575e2e85e846b6b5197d007d12a}{Set\+Latency}} (double latency) final
-\begin{DoxyCompactList}\small\item\em Setter for sensor latency. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a8096777057130a9cc5f49459fd8b60a5}\label{classcalico_1_1sensors_1_1Camera_a8096777057130a9cc5f49459fd8b60a5}} 
-double \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a8096777057130a9cc5f49459fd8b60a5}{Get\+Latency}} () const final
-\begin{DoxyCompactList}\small\item\em Getter for sensor latency. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a3eb0820967e0be7ca022d50702434a3a}\label{classcalico_1_1sensors_1_1Camera_a3eb0820967e0be7ca022d50702434a3a}} 
-void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a3eb0820967e0be7ca022d50702434a3a}{Enable\+Extrinsics\+Estimation}} (bool enable) final
-\begin{DoxyCompactList}\small\item\em Enable or disable extrinsics estimation. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a474b22e15bb9abb686fb7ec2217c72df}\label{classcalico_1_1sensors_1_1Camera_a474b22e15bb9abb686fb7ec2217c72df}} 
-void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a474b22e15bb9abb686fb7ec2217c72df}{Enable\+Intrinsics\+Estimation}} (bool enable) final
-\begin{DoxyCompactList}\small\item\em Enable or disable intrinsics estimation. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a11089f69528b17f77a53101c98d32b26}\label{classcalico_1_1sensors_1_1Camera_a11089f69528b17f77a53101c98d32b26}} 
-void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a11089f69528b17f77a53101c98d32b26}{Enable\+Latency\+Estimation}} (bool enable) final
-\begin{DoxyCompactList}\small\item\em Enable or disable latency estimation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_af27bb209288765155c54c842cad65678}\label{classcalico_1_1sensors_1_1Camera_af27bb209288765155c54c842cad65678}} 
+void {\bfseries Set\+Name} (const std\+::string \&name)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a8db9aabcd33a54b9717238d2b0953ef2}\label{classcalico_1_1sensors_1_1Camera_a8db9aabcd33a54b9717238d2b0953ef2}} 
+const std\+::string \& {\bfseries Get\+Name} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_abd28beb7e7a695e6ca89b417970001c1}\label{classcalico_1_1sensors_1_1Camera_abd28beb7e7a695e6ca89b417970001c1}} 
+void {\bfseries Set\+Extrinsics} (const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \&T\+\_\+sensorrig\+\_\+sensor)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a3b3dea5a2aaad6fe4d547fd3ca13c39a}\label{classcalico_1_1sensors_1_1Camera_a3b3dea5a2aaad6fe4d547fd3ca13c39a}} 
+const \mbox{\hyperlink{classcalico_1_1Pose3}{Pose3d}} \& {\bfseries Get\+Extrinsics} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a4609c04d47fd74f316b665e7834c415d}\label{classcalico_1_1sensors_1_1Camera_a4609c04d47fd74f316b665e7834c415d}} 
+absl\+::\+Status {\bfseries Set\+Intrinsics} (const Eigen\+::\+Vector\+Xd \&intrinsics)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_abf78d44fae48a8b9a29a29fdc5c9b943}\label{classcalico_1_1sensors_1_1Camera_abf78d44fae48a8b9a29a29fdc5c9b943}} 
+const Eigen\+::\+Vector\+Xd \& {\bfseries Get\+Intrinsics} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_ae4223a82d7c574ca5073a6373b5ff496}\label{classcalico_1_1sensors_1_1Camera_ae4223a82d7c574ca5073a6373b5ff496}} 
+absl\+::\+Status {\bfseries Set\+Latency} (double latency)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_ae46d68c1bbc0dbcd70b5cd15cc2b4ea7}\label{classcalico_1_1sensors_1_1Camera_ae46d68c1bbc0dbcd70b5cd15cc2b4ea7}} 
+double {\bfseries Get\+Latency} () const
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a13295eb1e169f45e7e4d8699f6d88802}\label{classcalico_1_1sensors_1_1Camera_a13295eb1e169f45e7e4d8699f6d88802}} 
+void {\bfseries Enable\+Extrinsics\+Estimation} (bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a29d7ba4cb99b043de358e6dee55d66d6}\label{classcalico_1_1sensors_1_1Camera_a29d7ba4cb99b043de358e6dee55d66d6}} 
+void {\bfseries Enable\+Intrinsics\+Estimation} (bool enable)
+\item 
+\mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a97e4dc0bcf749e6aa287cadc52e92b79}\label{classcalico_1_1sensors_1_1Camera_a97e4dc0bcf749e6aa287cadc52e92b79}} 
+void {\bfseries Enable\+Latency\+Estimation} (bool enable)
+\item 
 \mbox{\Hypertarget{classcalico_1_1sensors_1_1Camera_a9c9b553f27cf9bec5bf7a246a880e22b}\label{classcalico_1_1sensors_1_1Camera_a9c9b553f27cf9bec5bf7a246a880e22b}} 
 void \mbox{\hyperlink{classcalico_1_1sensors_1_1Camera_a9c9b553f27cf9bec5bf7a246a880e22b}{Set\+Loss\+Function}} (\mbox{\hyperlink{namespacecalico_1_1utils_aacede3df540b75d2e131f113380f0ce9}{utils\+::\+Loss\+Function\+Type}} loss, double scale) final
 \begin{DoxyCompactList}\small\item\em Setter for loss function and scale. \end{DoxyCompactList}\item 

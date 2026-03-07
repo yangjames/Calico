@@ -64,6 +64,10 @@ class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeScaleAndBiasModel}{Gyr
 \item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1GyroscopeVectorNavModel}{Gyroscope\+Vector\+Nav\+Model}}
 \item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1ImagerCostFunctor}{Imager\+Cost\+Functor}}
+\item 
+class \mbox{\hyperlink{classcalico_1_1sensors_1_1MultiCamera}{Multi\+Camera}}
+\item 
 class \mbox{\hyperlink{classcalico_1_1sensors_1_1Sensor}{Sensor}}
 \end{DoxyCompactItemize}
 \doxysubsection*{Enumerations}
@@ -126,7 +130,23 @@ enum class \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130f
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22daebca3599d4b156ca2c552501c98cfd21}{k\+Gyroscope\+Scale\+And\+Bias}}
 , \mbox{\hyperlink{namespacecalico_1_1sensors_a3a17fd4af1cc53c28ec7130fdad5f22da81a678b12b8333c96667a1ef6af9c65c}{k\+Gyroscope\+Vector\+Nav}}
  \}
-\begin{DoxyCompactList}\small\item\em Gyroscope model types. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Gyroscope model types. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacecalico_1_1sensors_ae71688fc128fb4eaf57ce7f8c3f8102c}\label{namespacecalico_1_1sensors_ae71688fc128fb4eaf57ce7f8c3f8102c}} 
+enum class {\bfseries Imager\+Parameter\+Indices} \+: int \{ \newline
+{\bfseries k\+Intrinsics\+Index} = 0
+, {\bfseries k\+Imager\+Extrinsics\+Rotation\+Index} = 1
+, {\bfseries k\+Imager\+Extrinsics\+Translation\+Index} = 2
+, {\bfseries k\+Sensor\+Extrinsics\+Rotation\+Index} = 3
+, \newline
+{\bfseries k\+Sensor\+Extrinsics\+Translation\+Index} = 4
+, {\bfseries k\+Latency\+Index} = 5
+, {\bfseries k\+Model\+Point\+Index} = 6
+, {\bfseries k\+Model\+Rotation\+Index} = 7
+, \newline
+{\bfseries k\+Model\+Translation\+Index} = 8
+, {\bfseries k\+Sensor\+Rig\+Pose\+Spline\+Control\+Points\+Index} = 9
+ \}
+\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}

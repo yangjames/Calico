@@ -87,6 +87,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:adf2ab617ce0262fac054ee23c2e55345"><td class="memItemLeft" align="right" valign="top"><a id="adf2ab617ce0262fac054ee23c2e55345"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>AddParametersToProblem</b> (ceres::Problem &amp;problem)</td></tr>
 <tr class="separator:adf2ab617ce0262fac054ee23c2e55345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaa5bb8462c6b995752130fd97521fc6"><td class="memItemLeft" align="right" valign="top"><a id="afaa5bb8462c6b995752130fd97521fc6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>EnableControlPointsEstimation</b> (bool enable)</td></tr>
+<tr class="separator:afaa5bb8462c6b995752130fd97521fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97cf7e9a463202eb699d3ec4dd3e501c"><td class="memItemLeft" align="right" valign="top"><a id="a97cf7e9a463202eb699d3ec4dd3e501c"></a>
 absl::Status&#160;</td><td class="memItemRight" valign="bottom"><b>FitToData</b> (const std::vector&lt; T &gt; &amp;time, const std::vector&lt; Eigen::Vector&lt; T, N &gt;&gt; &amp;data, int spline_order, T knot_frequency)</td></tr>
 <tr class="separator:a97cf7e9a463202eb699d3ec4dd3e501c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,6 +105,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>GetSplineOrder</b> () 
 <tr class="memitem:a361a02cdfa50b203d594e54cf94ace3d"><td class="memItemLeft" align="right" valign="top"><a id="a361a02cdfa50b203d594e54cf94ace3d"></a>
 absl::StatusOr&lt; std::vector&lt; Eigen::Vector&lt; T, N &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Interpolate</b> (const std::vector&lt; T &gt; &amp;times, int derivative=0) const</td></tr>
 <tr class="separator:a361a02cdfa50b203d594e54cf94ace3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafa8434c8dff7fcb7957d7124d6ea6dd"><td class="memItemLeft" align="right" valign="top"><a id="aafa8434c8dff7fcb7957d7124d6ea6dd"></a>
+absl::StatusOr&lt; Eigen::Vector&lt; T, N &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Interpolate</b> (T time, int derivative=0) const</td></tr>
+<tr class="separator:aafa8434c8dff7fcb7957d7124d6ea6dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a998ccec47c06d576b2a4f48ddb5ebc03"><td class="memItemLeft" align="right" valign="top"><a id="a998ccec47c06d576b2a4f48ddb5ebc03"></a>
 Eigen::MatrixX&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetSplineBasis</b> (int spline_idx, T stamp, int derivative) const</td></tr>
 <tr class="separator:a998ccec47c06d576b2a4f48ddb5ebc03"><td class="memSeparator" colspan="2">&#160;</td></tr>

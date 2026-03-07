@@ -87,59 +87,16 @@ Inheritance diagram for calico::sensors::Sensor:</div>
 <div class="dyncontent">
 <div class="center"><img src="classcalico_1_1sensors_1_1Sensor__inherit__graph.png" border="0" usemap="#acalico_1_1sensors_1_1Sensor_inherit__map" alt="Inheritance graph"/></div>
 <map name="acalico_1_1sensors_1_1Sensor_inherit__map" id="acalico_1_1sensors_1_1Sensor_inherit__map">
-<area shape="rect" title=" " alt="" coords="230,5,385,32"/>
-<area shape="rect" href="classcalico_1_1sensors_1_1Accelerometer.html" title="Accelerometer class." alt="" coords="5,80,204,107"/>
-<area shape="rect" href="classcalico_1_1sensors_1_1Camera.html" title="Camera class." alt="" coords="228,80,387,107"/>
-<area shape="rect" href="classcalico_1_1sensors_1_1Gyroscope.html" title="Gyroscope class." alt="" coords="411,80,587,107"/>
+<area shape="rect" title=" " alt="" coords="5,81,160,108"/>
+<area shape="rect" href="classcalico_1_1sensors_1_1Accelerometer.html" title="Accelerometer class." alt="" coords="208,5,407,32"/>
+<area shape="rect" href="classcalico_1_1sensors_1_1Camera.html" title="Camera class." alt="" coords="228,56,387,83"/>
+<area shape="rect" href="classcalico_1_1sensors_1_1Gyroscope.html" title="Gyroscope class." alt="" coords="219,107,395,133"/>
+<area shape="rect" href="classcalico_1_1sensors_1_1MultiCamera.html" title=" " alt="" coords="214,157,401,184"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa9491c153bcd2dbba98627d5047cc66a"><td class="memItemLeft" align="right" valign="top"><a id="aa9491c153bcd2dbba98627d5047cc66a"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#aa9491c153bcd2dbba98627d5047cc66a">SetName</a> (const std::string &amp;name)=0</td></tr>
-<tr class="memdesc:aa9491c153bcd2dbba98627d5047cc66a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for name. <br /></td></tr>
-<tr class="separator:aa9491c153bcd2dbba98627d5047cc66a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7188f41932ea342932ccc4065281b623"><td class="memItemLeft" align="right" valign="top"><a id="a7188f41932ea342932ccc4065281b623"></a>
-virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#a7188f41932ea342932ccc4065281b623">GetName</a> () const =0</td></tr>
-<tr class="memdesc:a7188f41932ea342932ccc4065281b623"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for name. <br /></td></tr>
-<tr class="separator:a7188f41932ea342932ccc4065281b623"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0cdb2a4a36500b22c1c27b51955a6a8"><td class="memItemLeft" align="right" valign="top"><a id="ab0cdb2a4a36500b22c1c27b51955a6a8"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#ab0cdb2a4a36500b22c1c27b51955a6a8">SetExtrinsics</a> (const <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;T_sensorrig_sensor)=0</td></tr>
-<tr class="memdesc:ab0cdb2a4a36500b22c1c27b51955a6a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for extrinsics parameters. <br /></td></tr>
-<tr class="separator:ab0cdb2a4a36500b22c1c27b51955a6a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1aa9904a248e5d541be7f13d3447ace5"><td class="memItemLeft" align="right" valign="top"><a id="a1aa9904a248e5d541be7f13d3447ace5"></a>
-virtual const <a class="el" href="classcalico_1_1Pose3.html">Pose3d</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#a1aa9904a248e5d541be7f13d3447ace5">GetExtrinsics</a> () const =0</td></tr>
-<tr class="memdesc:a1aa9904a248e5d541be7f13d3447ace5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for extrinsics parameters. <br /></td></tr>
-<tr class="separator:a1aa9904a248e5d541be7f13d3447ace5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0f96e3a90e36a8797998ec02fab71fc"><td class="memItemLeft" align="right" valign="top"><a id="ad0f96e3a90e36a8797998ec02fab71fc"></a>
-virtual absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#ad0f96e3a90e36a8797998ec02fab71fc">SetIntrinsics</a> (const Eigen::VectorXd &amp;intrinsics)=0</td></tr>
-<tr class="memdesc:ad0f96e3a90e36a8797998ec02fab71fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for intrinsics parameters. <br /></td></tr>
-<tr class="separator:ad0f96e3a90e36a8797998ec02fab71fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46837cc3e6eb96518356e5362ca152da"><td class="memItemLeft" align="right" valign="top"><a id="a46837cc3e6eb96518356e5362ca152da"></a>
-virtual const Eigen::VectorXd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#a46837cc3e6eb96518356e5362ca152da">GetIntrinsics</a> () const =0</td></tr>
-<tr class="memdesc:a46837cc3e6eb96518356e5362ca152da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for intrinsics parameters. <br /></td></tr>
-<tr class="separator:a46837cc3e6eb96518356e5362ca152da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af932ab758f883f08ab564ebba781a6e3"><td class="memItemLeft" align="right" valign="top"><a id="af932ab758f883f08ab564ebba781a6e3"></a>
-virtual absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#af932ab758f883f08ab564ebba781a6e3">SetLatency</a> (double latency)=0</td></tr>
-<tr class="memdesc:af932ab758f883f08ab564ebba781a6e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setter for sensor latency. <br /></td></tr>
-<tr class="separator:af932ab758f883f08ab564ebba781a6e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16426cb65ee8e154b51bf86e82e0e793"><td class="memItemLeft" align="right" valign="top"><a id="a16426cb65ee8e154b51bf86e82e0e793"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#a16426cb65ee8e154b51bf86e82e0e793">GetLatency</a> () const =0</td></tr>
-<tr class="memdesc:a16426cb65ee8e154b51bf86e82e0e793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter for sensor latency. <br /></td></tr>
-<tr class="separator:a16426cb65ee8e154b51bf86e82e0e793"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4fba629e7267af511b70cbcd5727df3"><td class="memItemLeft" align="right" valign="top"><a id="aa4fba629e7267af511b70cbcd5727df3"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#aa4fba629e7267af511b70cbcd5727df3">EnableExtrinsicsEstimation</a> (bool enable)=0</td></tr>
-<tr class="memdesc:aa4fba629e7267af511b70cbcd5727df3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable extrinsics estimation. <br /></td></tr>
-<tr class="separator:aa4fba629e7267af511b70cbcd5727df3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace74aed01a0a9f152e26205aef3f49f5"><td class="memItemLeft" align="right" valign="top"><a id="ace74aed01a0a9f152e26205aef3f49f5"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#ace74aed01a0a9f152e26205aef3f49f5">EnableIntrinsicsEstimation</a> (bool enable)=0</td></tr>
-<tr class="memdesc:ace74aed01a0a9f152e26205aef3f49f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable intrinsics estimation. <br /></td></tr>
-<tr class="separator:ace74aed01a0a9f152e26205aef3f49f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a884df42081a0be6e09fe923478324680"><td class="memItemLeft" align="right" valign="top"><a id="a884df42081a0be6e09fe923478324680"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#a884df42081a0be6e09fe923478324680">EnableLatencyEstimation</a> (bool enable)=0</td></tr>
-<tr class="memdesc:a884df42081a0be6e09fe923478324680"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or disable latency estimation. <br /></td></tr>
-<tr class="separator:a884df42081a0be6e09fe923478324680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af08e6476f0188cdb77cf912a9026709a"><td class="memItemLeft" align="right" valign="top">virtual absl::Status&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalico_1_1sensors_1_1Sensor.html#af08e6476f0188cdb77cf912a9026709a">UpdateResiduals</a> (ceres::Problem &amp;problem)=0</td></tr>
 <tr class="memdesc:af08e6476f0188cdb77cf912a9026709a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update residuals for this sensor.  <a href="classcalico_1_1sensors_1_1Sensor.html#af08e6476f0188cdb77cf912a9026709a">More...</a><br /></td></tr>
 <tr class="separator:af08e6476f0188cdb77cf912a9026709a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,7 +148,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>Add this sensor's calibration parameters to the ceres problem. </p>
 <p>Returns the number of parameters added to the problem, which should be intrinsics + extrinsics + latency. If the sensor's model hasn't been set yet, it will return an invalid argument error. </p>
 
-<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#ac6a5c8408e1822a1b80d71cd86893505">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#a716548611fcd3de2fa5da2ae04c3d951">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#ad662a04d9dc1fa620d674260a10ef584">calico::sensors::Accelerometer</a>.</p>
+<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1MultiCamera.html#a9dd1b4fa2171986da0fc92d8d46e4828">calico::sensors::MultiCamera</a>, <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#ac6a5c8408e1822a1b80d71cd86893505">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#a716548611fcd3de2fa5da2ae04c3d951">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#ad662a04d9dc1fa620d674260a10ef584">calico::sensors::Accelerometer</a>.</p>
 
 </div>
 </div>
@@ -238,7 +195,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>Contribue this sensor's residuals to the ceres problem. </p>
 <p><code>sensorrig_trajectory</code> is the world-from-sensorrig trajectory \(\mathbf{T}^w_r(t)\). </p>
 
-<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#ae882341a2ea6aa26bee515ca45d5424f">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#ade8c66c0e1e8a1e18b8a42ebeec5b2f2">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#a18f345438e5d1c919e8a2842491552fd">calico::sensors::Accelerometer</a>.</p>
+<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1MultiCamera.html#a39330273b9f1c749ce293e8a16cb4544">calico::sensors::MultiCamera</a>, <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#ae882341a2ea6aa26bee515ca45d5424f">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#ade8c66c0e1e8a1e18b8a42ebeec5b2f2">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#a18f345438e5d1c919e8a2842491552fd">calico::sensors::Accelerometer</a>.</p>
 
 </div>
 </div>
@@ -271,7 +228,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 \[ \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\ \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\ \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\ \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon} \]
 </p>
  
-<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#aa9e8f2f9f740605af3230309ea1d2fb2">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#aa87667f9855c3777686456a94e7ca341">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#a1939986d8304f60a1ed2d67dfd6efd1e">calico::sensors::Accelerometer</a>.</p>
+<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1MultiCamera.html#acc6a31d6d7b1df3e62bb67d7c15a3551">calico::sensors::MultiCamera</a>, <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#aa9e8f2f9f740605af3230309ea1d2fb2">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#aa87667f9855c3777686456a94e7ca341">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#a1939986d8304f60a1ed2d67dfd6efd1e">calico::sensors::Accelerometer</a>.</p>
 
 </div>
 </div>
@@ -304,7 +261,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <br  />
 <b>Note: This method is meant to be invoked by <a class="el" href="classcalico_1_1BatchOptimizer.html">BatchOptimizer</a> ONLY. It is not recommended that you invoke this method manually.</b> </p>
 
-<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a7fa5504f378220271a8ffdfadc9e6fff">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#a9baffab8e9436f340279bababa7647eb">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#aa6bd00426c947a719e8889a8c9671447">calico::sensors::Accelerometer</a>.</p>
+<p>Implemented in <a class="el" href="classcalico_1_1sensors_1_1MultiCamera.html#aab0200a10e36b0d111a2ac356cb59373">calico::sensors::MultiCamera</a>, <a class="el" href="classcalico_1_1sensors_1_1Gyroscope.html#a7fa5504f378220271a8ffdfadc9e6fff">calico::sensors::Gyroscope</a>, <a class="el" href="classcalico_1_1sensors_1_1Camera.html#a9baffab8e9436f340279bababa7647eb">calico::sensors::Camera</a>, and <a class="el" href="classcalico_1_1sensors_1_1Accelerometer.html#aa6bd00426c947a719e8889a8c9671447">calico::sensors::Accelerometer</a>.</p>
 
 </div>
 </div>
