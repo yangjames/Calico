@@ -1,11 +1,10 @@
-#ifndef CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
-#define CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
+#ifndef CALICO_SENSORS_IMAGER_COST_FUNCTOR_H_
+#define CALICO_SENSORS_IMAGER_COST_FUNCTOR_H_
 
-#include <iostream>
 #include <memory>
-#include <string>
 #include <vector>
 
+#include "Eigen/Dense"
 #include "calico/sensors/camera_models.h"
 #include "calico/trajectory.h"
 #include "ceres/cost_function.h"
@@ -13,62 +12,70 @@
 namespace calico::sensors {
 
 // Enum listing the positions of parameters for a camera cost function.
-enum class CameraParameterIndices : int {
+enum class ImagerParameterIndices : int {
   // Camera intrinsics.
   kIntrinsicsIndex = 0,
-  // Extrinsic parameters of the camera relative to its sensor rig.
-  kExtrinsicsRotationIndex = 1,
-  kExtrinsicsTranslationIndex = 2,
+  // Extrinsic parameters of the imager relative to its sensor module.
+  kImagerExtrinsicsRotationIndex = 1,
+  kImagerExtrinsicsTranslationIndex = 2,
+  // Extrinsic parameters of the sensor module relative to the sensor rig.
+  kSensorExtrinsicsRotationIndex = 3,
+  kSensorExtrinsicsTranslationIndex = 4,
   // Sensor latency.
-  kLatencyIndex = 3,
+  kLatencyIndex = 5,
   // Parameters related to some detected "model" object in the world:
   //   1. The point resolved in the model frame.
   //   2. The rotation portion of the model pose resolved in the world
   //      frame.
   //   3. The translation portion of the model pose resolved in the world
   //      frame.
-  kModelPointIndex = 4,
-  kModelRotationIndex = 5,
-  kModelTranslationIndex = 6,
+  kModelPointIndex = 6,
+  kModelRotationIndex = 7,
+  kModelTranslationIndex = 8,
   // Rotation and position control points of the associated spline segment as
   // two Nx3 matrices (rotation then position) where N is the spline order.
-  kSensorRigPoseSplineControlPointsIndex = 7,
+  kSensorRigPoseSplineControlPointsIndex = 9,
 };
 
 // Generic auto-differentiation camera cost functor. Residuals will be based on
 // how the camera model is initialized.
-class CameraCostFunctor {
+class ImagerCostFunctor {
  public:
   static constexpr int kCameraResidualSize = 2;
-  explicit CameraCostFunctor(CameraIntrinsicsModel camera_model,
-                             const Eigen::Vector2d& pixel, double sigma,
-                             double stamp,
-                             const Trajectory& sp_T_world_sensorrig);
+  ImagerCostFunctor(CameraIntrinsicsModel camera_model,
+                    const Eigen::Vector2d& pixel, double sigma, double stamp,
+                    const Trajectory& sp_T_world_sensorrig);
 
   // Convenience function for creating a camera cost function.
   static ceres::CostFunction* CreateCostFunction(
       const Eigen::Vector2d& pixel, double sigma,
       CameraIntrinsicsModel camera_model, Eigen::VectorXd& intrinsics,
-      Pose3d& extrinsics, double& latency, Eigen::Vector3d& t_model_point,
-      Pose3d& T_world_model, Trajectory& trajectory_world_sensorrig,
-      double stamp, std::vector<double*>& parameters);
+      Pose3d& imager_extrinsics, Pose3d& sensor_extrinsics, double& latency,
+      Eigen::Vector3d& t_model_point, Pose3d& T_world_model,
+      Trajectory& trajectory_world_sensorrig, double stamp,
+      std::vector<double*>& parameters);
 
   // Parameters to the cost function:
   //   intrinsics:
   //     All parameters in the intrinsics model as an Eigen column vector.
   //     Order of the parameters will need to be in agreement with the model
   //     being used.
-  //   q_sensorrig_camera:
-  //     Rotation from sensorrig frame to camera frame as a quaternion.
-  //   t_sensorrig_camera:
-  //     Position of camera relative to sensorrig origin resolved in the
-  //     sensorrig frame.
+  //   q_sensor_imager:
+  //     Rotation from sensor frame to camera frame as a quaternion.
+  //   t_sensor_imager:
+  //     Position of camera relative to sensor origin resolved in the
+  //     sensor frame.
+  //   q_sensorrig_sensor:
+  //     Rotation from sensor rig frame to sensor frame as a quaternion.
+  //   t_sensorrig_sensor:
+  //     Position of sensor relative to sensor rig origin resolved in the
+  //     sensor rig frame.
   //   latency:
   //     Sensor latency in seconds.
   //   q_world_model:
   //     Rotation from world frame to model frame as a quaternion.
   //   t_model_point:
-  //     Position of the point in the model resolved int he model frame.
+  //     Position of the point in the model resolved in the model frame.
   //   t_world_model:
   //     Position of model relative to world origin resolved in the world frame.
   //   control_points:
@@ -77,31 +84,38 @@ class CameraCostFunctor {
   bool operator()(T const* const* parameters, T* residual) {
     // Parse intrinsics.
     const T* intrinsics_ptr = static_cast<const T*>(
-        &(parameters[static_cast<int>(CameraParameterIndices::kIntrinsicsIndex)]
+        &(parameters[static_cast<int>(ImagerParameterIndices::kIntrinsicsIndex)]
                     [0]));
     const int parameter_size = camera_model_->NumberOfParameters();
     const Eigen::VectorX<T> intrinsics =
         Eigen::Map<const Eigen::VectorX<T>>(intrinsics_ptr, parameter_size);
-    // Parse extrinsics.
-    const Eigen::Map<const Eigen::Quaternion<T>> q_sensorrig_camera(
+    // Parse imager extrinsics.
+    const Eigen::Map<const Eigen::Quaternion<T>> q_sensor_imager(
         &(parameters[static_cast<int>(
-            CameraParameterIndices::kExtrinsicsRotationIndex)][0]));
-    const Eigen::Map<const Eigen::Vector3<T>> t_sensorrig_camera(
+            ImagerParameterIndices::kImagerExtrinsicsRotationIndex)][0]));
+    const Eigen::Map<const Eigen::Vector3<T>> t_sensor_imager(
         &(parameters[static_cast<int>(
-            CameraParameterIndices::kExtrinsicsTranslationIndex)][0]));
+            ImagerParameterIndices::kImagerExtrinsicsTranslationIndex)][0]));
+    // Parse sensor extrinsics.
+    const Eigen::Map<const Eigen::Quaternion<T>> q_sensorrig_sensor(
+        &(parameters[static_cast<int>(
+            ImagerParameterIndices::kSensorExtrinsicsRotationIndex)][0]));
+    const Eigen::Map<const Eigen::Vector3<T>> t_sensorrig_sensor(
+        &(parameters[static_cast<int>(
+            ImagerParameterIndices::kSensorExtrinsicsTranslationIndex)][0]));
     // Parse latency.
     const T latency =
-        parameters[static_cast<int>(CameraParameterIndices::kLatencyIndex)][0];
+        parameters[static_cast<int>(ImagerParameterIndices::kLatencyIndex)][0];
     // Parse model point and model pose resolved in the world frame.
     const Eigen::Map<const Eigen::Vector3<T>> t_model_point(
-        &(parameters[static_cast<int>(CameraParameterIndices::kModelPointIndex)]
+        &(parameters[static_cast<int>(ImagerParameterIndices::kModelPointIndex)]
                     [0]));
     const Eigen::Map<const Eigen::Quaternion<T>> q_world_model(
         &(parameters[static_cast<int>(
-            CameraParameterIndices::kModelRotationIndex)][0]));
+            ImagerParameterIndices::kModelRotationIndex)][0]));
     const Eigen::Map<const Eigen::Vector3<T>> t_world_model(
         &(parameters[static_cast<int>(
-            CameraParameterIndices::kModelTranslationIndex)][0]));
+            ImagerParameterIndices::kModelTranslationIndex)][0]));
     // Parse sensor rig spline resolved in the world frame.
     const int num_rotation_control_points =
         rotation_trajectory_evaluation_params_.num_control_points;
@@ -109,7 +123,7 @@ class CameraCostFunctor {
     for (int i = 0; i < num_rotation_control_points; ++i) {
       rotation_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
           &(parameters[static_cast<int>(
-                           CameraParameterIndices::
+                           ImagerParameterIndices::
                                kSensorRigPoseSplineControlPointsIndex) +
                        i][0]));
     }
@@ -119,7 +133,7 @@ class CameraCostFunctor {
     for (int i = 0; i < num_position_control_points; ++i) {
       position_control_points.row(i) = Eigen::Map<const Eigen::Vector3<T>>(
           &(parameters[static_cast<int>(
-                           CameraParameterIndices::
+                           ImagerParameterIndices::
                                kSensorRigPoseSplineControlPointsIndex) +
                        i + num_rotation_control_points][0]));
     }
@@ -156,30 +170,28 @@ class CameraCostFunctor {
         position_basis_matrix, position_stamp, 0);
 
     // Resolve the model point in the camera frame.
-    const Eigen::Quaternion<T> q_camera_model =
-        q_sensorrig_camera.inverse() * q_sensorrig_world * q_world_model;
-    const Eigen::Vector3<T> t_world_camera =
-        t_world_sensorrig + q_sensorrig_world.inverse() * t_sensorrig_camera;
-    const Eigen::Vector3<T> t_model_camera =
-        q_world_model.inverse() * (t_world_camera - t_world_model);
+    const Eigen::Quaternion<T> q_sensorrig_imager =
+        q_sensorrig_sensor * q_sensor_imager;
+    const Eigen::Vector3<T> t_sensorrig_imager =
+        t_sensorrig_sensor + q_sensorrig_sensor * t_sensor_imager;
+    const Eigen::Quaternion<T> q_imager_model =
+        q_sensorrig_imager.inverse() * q_sensorrig_world * q_world_model;
+    const Eigen::Vector3<T> t_world_imager =
+        t_world_sensorrig + q_sensorrig_world.inverse() * t_sensorrig_imager;
+    const Eigen::Vector3<T> t_model_imager =
+        q_world_model.inverse() * (t_world_imager - t_world_model);
     const Eigen::Vector3<T> t_camera_point =
-        q_camera_model * (t_model_point - t_model_camera);
+        q_imager_model * (t_model_point - t_model_imager);
+    // Project the point through the camera model.
     const absl::StatusOr<Eigen::Vector2<T>> projection =
         camera_model_->ProjectPoint(intrinsics, t_camera_point);
-    // Assign the residual. If projection fails, it means the point is behind
-    // the camera or at infinity. In this case, set the residual to zero so that
-    // the optimizer can effectively ignore it. We do this because this point
-    // might come back into the field of view.
-    Eigen::Map<Eigen::Vector2<T>> error(residual);
+    // Assign the residual, or return boolean indicating success/failure.
     if (projection.ok()) {
+      Eigen::Map<Eigen::Vector2<T>> error(residual);
       const Eigen::Vector2<T> pixel = pixel_.template cast<T>();
       error = (pixel - *projection) * static_cast<T>(information_);
       return true;
     }
-    std::cerr << "projection failed inside cost functor: "
-              << projection.status().message()
-              << " stamp=" << rotation_trajectory_evaluation_params_.stamp
-              << " t_camera_point=" << t_camera_point.transpose() << std::endl;
     return false;
   }
 
@@ -192,4 +204,4 @@ class CameraCostFunctor {
 };
 }  // namespace calico::sensors
 
-#endif  // CALICO_SENSORS_CAMERA_COST_FUNCTOR_H_
+#endif  // CALICO_SENSORS_IMAGER_COST_FUNCTOR_H_

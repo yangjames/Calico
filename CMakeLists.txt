@@ -14,9 +14,22 @@ find_package(GTest REQUIRED)
 find_package(absl REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(pybind11 REQUIRED)
-find_package(Python REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(yaml-cpp REQUIRED)
+
+# Check if in a virtual environment
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -c
+          "import sysconfig; print(sysconfig.get_paths()['purelib'])"
+  OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+message(STATUS "Python executable: ${Python_EXECUTABLE}")
+message(STATUS "Python site-packages: ${PYTHON_SITE_PACKAGES}")
+message(STATUS "Python install dir: ${PYTHON_INSTALL_DIR}")
+
 
 # Add top level include directory.
 include_directories(
@@ -151,6 +164,31 @@ target_link_libraries(
   world_model
 )
 
+# Multi-camera library.
+add_library(
+  multi_camera
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/multi_camera.cpp
+)
+target_link_libraries(
+  multi_camera
+  camera_models
+  imager_cost_functor
+  trajectory
+  world_model
+)
+
+add_library(
+  imager_cost_functor
+  ${CMAKE_CURRENT_SOURCE_DIR}/calico/sensors/imager_cost_functor.cpp
+)
+target_link_libraries(
+  imager_cost_functor
+  absl::flat_hash_map
+  camera_models
+  trajectory
+  world_model
+)
+
 # Batch optimizer.
 add_library(
   batch_optimizer
@@ -161,6 +199,7 @@ target_link_libraries(
   accelerometer
   camera
   gyroscope
+  multi_camera
   world_model
 )
 
@@ -215,20 +254,11 @@ target_link_libraries(
   aprilgrid_detector
   batch_optimizer
   camera
+  multi_camera
   gyroscope
   trajectory
   world_model
   Eigen3::Eigen
-)
-set_target_properties(
-  _calico PROPERTIES
-  LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/calico
-)
-file(
-  COPY
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
-  DESTINATION ${PROJECT_BINARY_DIR}/calico
 )
 
 # Install cpp library.
@@ -240,7 +270,9 @@ install(
   apriltags
   batch_optimizer
   camera
+  multi_camera
   camera_cost_functor
+  imager_cost_functor
   camera_models
   gyroscope
   gyroscope_cost_functor
@@ -291,16 +323,17 @@ install(
   FILES ${sensor_headers}
   DESTINATION include/calico/sensors/
 )
+
 # Install python library.
 install(
   TARGETS _calico
-  DESTINATION ${Python_SITELIB}/calico
+  LIBRARY DESTINATION "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/calico"
 )
 install(
   FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/utils.py
   ${CMAKE_CURRENT_SOURCE_DIR}/calico/__init__.py
-  DESTINATION ${Python_SITELIB}/calico
+  DESTINATION "lib/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages/calico"
 )
 
 if (BUILD_TESTING)
@@ -475,6 +508,30 @@ if (BUILD_TESTING)
     gmock
     )
   add_test(CameraLibTest camera_test)
+  # Imager cost functor test.
+  add_executable(
+    imager_cost_functor_test
+    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/imager_cost_functor_test.cpp
+    )
+  target_link_libraries(
+    imager_cost_functor_test
+    imager_cost_functor
+    GTest::Main
+    gmock
+  )
+  add_test(ImagerCostFunctorTest imager_cost_functor_test)
+  # Multi-camera test.
+  add_executable(
+    multi_camera_test
+    ${CMAKE_CURRENT_SOURCE_DIR}/calico/test/multi_camera_test.cpp
+  )
+  target_link_libraries(
+    multi_camera_test
+    multi_camera
+    GTest::Main
+    gmock
+  )
+  add_test(MultiCameraLibTest multi_camera_test)
   # Batch optimizer test.
   add_executable(
     batch_optimizer_test

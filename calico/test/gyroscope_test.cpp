@@ -128,17 +128,20 @@ TEST_P(GyroscopeTest, AnalyticallyVsNumericallyDiffedKinematicsMatch) {
   for (int i = 0; i < stamps.size() - 2; ++i) {
     const double stamp_i = stamps.at(i);
     const double stamp_ii = stamp_i + dt;
-    const Eigen::Vector<double, 6> pose_vector_i =
-        trajectory_world_sensorrig.spline().Interpolate(
-            {stamp_i}, /*derivative=*/0).value()[0];
-    const Eigen::Vector<double, 6> pose_vector_ii =
-        trajectory_world_sensorrig.spline().Interpolate(
-            {stamp_ii}, /*derivative=*/0).value()[0];
-    const Eigen::Vector<double, 6> pose_dot_vector_i =
-        trajectory_world_sensorrig.spline().Interpolate(
-            {stamp_i}, /*derivative=*/1).value()[0];
-    const Eigen::Vector3d phi_sensorrig_world_i = -pose_vector_i.head(3);
-    const Eigen::Vector3d phi_sensorrig_world_ii = -pose_vector_ii.head(3);
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d phi_world_sensorrig_i,
+      trajectory_world_sensorrig.rotation_spline().Interpolate(
+        stamp_i, /*derivative=*/0));
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d phi_world_sensorrig_ii,
+      trajectory_world_sensorrig.rotation_spline().Interpolate(
+        stamp_ii, /*derivative=*/0));
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d phi_dot_world_sensorrig_i,
+      trajectory_world_sensorrig.rotation_spline().Interpolate(
+        stamp_i, /*derivative=*/1));
+    const Eigen::Vector3d phi_sensorrig_world_i = -phi_world_sensorrig_i;
+    const Eigen::Vector3d phi_sensorrig_world_ii = -phi_world_sensorrig_ii;
 
     const Eigen::Matrix3d R_sensorrig_world_i = ExpSO3(phi_sensorrig_world_i);
     const Eigen::Matrix3d R_sensorrig_world_ii = ExpSO3(phi_sensorrig_world_ii);

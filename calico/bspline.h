@@ -16,12 +16,13 @@ namespace calico {
 template <int N, typename T = double>
 class BSpline {
  public:
-
   ~BSpline() = default;
 
   // Add this spline's control points to a ceres problem. Returns the number of
   // parameters added, which should be N * number of control points.
   int AddParametersToProblem(ceres::Problem& problem);
+
+  void EnableControlPointsEstimation(bool enable);
 
   // Fits an N-DOF uniform B-spline fitted to given timestamps
   // and N-dimensional data. User also specifies the spline order and the knot
@@ -43,8 +44,19 @@ class BSpline {
 
   // Interpolate the spline at given times for the given derivative. If no
   // derivative is specified, it defaults to direct interpolation.
-  absl::StatusOr<std::vector<Eigen::Vector<T,N>>>
+  absl::StatusOr<std::vector<Eigen::Vector<T, N>>>
   Interpolate(const std::vector<T>& times, int derivative = 0) const;
+
+  // Interpolate the spline at single time for the given derivative.
+  absl::StatusOr<Eigen::Vector<T, N>>
+  Interpolate(T time, int derivative = 0) const {
+    const absl::StatusOr<std::vector<Eigen::Vector<T, N>>> statusor =
+        Interpolate(std::vector{time}, derivative);
+    if (!statusor.ok()) {
+      return statusor.status();
+    }
+    return statusor->front();
+  }
 
   // TODO(yangjames): Description
   Eigen::MatrixX<T>
@@ -91,6 +103,8 @@ class BSpline {
   std::vector<Eigen::MatrixXd> Mi_;
   std::vector<Eigen::Vector<T,N>> control_points_;
 
+  // Flag for estimating control points in optimization.
+  bool control_points_enabled_;
 
   // Convenience function for computing a knot vector.
   void ComputeKnotVector();

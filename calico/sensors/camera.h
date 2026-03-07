@@ -4,17 +4,16 @@
 #include <string>
 #include <vector>
 
+#include "Eigen/Dense"
 #include "absl/container/flat_hash_map.h"
 #include "absl/container/flat_hash_set.h"
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
-#include "calico/sensors/sensor_base.h"
 #include "calico/sensors/camera_models.h"
+#include "calico/sensors/sensor_base.h"
 #include "calico/trajectory.h"
 #include "calico/typedefs.h"
 #include "ceres/problem.h"
-#include "Eigen/Dense"
-
 
 namespace calico::sensors {
 
@@ -42,10 +41,8 @@ struct CameraObservationId {
   }
   friend bool operator==(const CameraObservationId& lhs,
                          const CameraObservationId& rhs) {
-    return (lhs.stamp == rhs.stamp &&
-            lhs.image_id == rhs.image_id &&
-            lhs.model_id == rhs.model_id &&
-            lhs.feature_id == rhs.feature_id);
+    return (lhs.stamp == rhs.stamp && lhs.image_id == rhs.image_id &&
+            lhs.model_id == rhs.model_id && lhs.feature_id == rhs.feature_id);
   }
 };
 
@@ -57,8 +54,7 @@ struct CameraMeasurement {
   CameraObservationId id;
 };
 
-
-/// Camera class. 
+/// Camera class.
 class Camera : public Sensor {
  public:
   explicit Camera() = default;
@@ -66,23 +62,22 @@ class Camera : public Sensor {
   Camera& operator=(const Camera&) = delete;
   ~Camera() = default;
 
-  void SetName(const std::string& name) final;
-  const std::string& GetName() const final;
-  void SetExtrinsics(const Pose3d& T_sensorrig_sensor) final;
-  const Pose3d& GetExtrinsics() const final;
-  absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
-  const Eigen::VectorXd& GetIntrinsics() const final;
-  absl::Status SetLatency(double latency) final;
-  double GetLatency() const final;
-  void EnableExtrinsicsEstimation(bool enable) final;
-  void EnableIntrinsicsEstimation(bool enable) final;
-  void EnableLatencyEstimation(bool enable) final;
+  void SetName(const std::string& name);
+  const std::string& GetName() const;
+  void SetExtrinsics(const Pose3d& T_sensorrig_sensor);
+  const Pose3d& GetExtrinsics() const;
+  absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics);
+  const Eigen::VectorXd& GetIntrinsics() const;
+  absl::Status SetLatency(double latency);
+  double GetLatency() const;
+  void EnableExtrinsicsEstimation(bool enable);
+  void EnableIntrinsicsEstimation(bool enable);
+  void EnableLatencyEstimation(bool enable);
   void SetLossFunction(utils::LossFunctionType loss, double scale) final;
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
-  absl::StatusOr<int> AddResidualsToProblem(
-      ceres::Problem & problem,
-      Trajectory& sensorrig_trajectory,
-      WorldModel& world_model) final;
+  absl::StatusOr<int> AddResidualsToProblem(ceres::Problem& problem,
+                                            Trajectory& sensorrig_trajectory,
+                                            WorldModel& world_model) final;
   absl::Status SetMeasurementNoise(double sigma) final;
   absl::Status UpdateResiduals(ceres::Problem& problem) final;
   void ClearResidualInfo() final;
@@ -139,7 +134,7 @@ class Camera : public Sensor {
   /// NOT been marked as outliers.**
   absl::StatusOr<std::vector<std::pair<CameraMeasurement, Eigen::Vector2d>>>
   GetMeasurementResidualPairs() const;
-  
+
   /// Tag a single measurement as an outlier by its measurement ID.
 
   /// Camera class keeps track of an outliers list internally. If passed a
@@ -185,6 +180,6 @@ class Camera : public Sensor {
   absl::flat_hash_set<CameraObservationId> outlier_ids_;
 };
 
-} // namespace calico::sensors
+}  // namespace calico::sensors
 
-#endif // CALICO_SENSORS_CAMERA_H_
+#endif  // CALICO_SENSORS_CAMERA_H_

@@ -1,3 +1,5 @@
+#ifndef CALICO_BSPLINE_HPP_
+#define CALICO_BSPLINE_HPP_
 #include <algorithm>
 
 #include "calico/statusor_macros.h"
@@ -13,7 +15,17 @@ int BSpline<N, T>::AddParametersToProblem(ceres::Problem& problem) {
     problem.AddParameterBlock(control_point.data(), control_point.size());
     num_parameters_added += control_point.size();
   }
+  if (!control_points_enabled_) {
+    for (Eigen::Vector<T, N>& control_point : control_points_) {
+        problem.SetParameterBlockConstant(control_point.data());
+    }
+  }
   return num_parameters_added;
+}
+
+template <int N, typename T>
+void BSpline<N, T>::EnableControlPointsEstimation(bool enable) {
+  control_points_enabled_ = enable;
 }
 
 template <int N, typename T>
@@ -329,3 +341,4 @@ absl::Status BSpline<N, T>::CheckDataForSplineFit(
 }
 
 } // namespace calico
+#endif // CALICO_BSPLINE_HPP_

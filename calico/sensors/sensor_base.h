@@ -1,6 +1,7 @@
 #ifndef CALICO_SENSORS_SENSOR_BASE_H_
 #define CALICO_SENSORS_SENSOR_BASE_H_
 
+#include "Eigen/Dense"
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
@@ -9,12 +10,9 @@
 #include "calico/typedefs.h"
 #include "calico/world_model.h"
 #include "ceres/problem.h"
-#include "Eigen/Dense"
-
 
 /// Sensors namespace
 namespace calico::sensors {
-
 
 /// Base class for sensors. For the sake of readability, we make this a purely
 /// virtual class, so setters and getters must be implemented at the derived
@@ -22,39 +20,6 @@ namespace calico::sensors {
 class Sensor {
  public:
   virtual ~Sensor() = default;
-
-  /// Setter for name.
-  virtual void SetName(const std::string& name) = 0;
-
-  /// Getter for name.
-  virtual const std::string& GetName() const = 0;
-
-  /// Setter for extrinsics parameters.
-  virtual void SetExtrinsics(const Pose3d& T_sensorrig_sensor) = 0;
-
-  /// Getter for extrinsics parameters.
-  virtual const Pose3d& GetExtrinsics() const = 0;
-
-  /// Setter for intrinsics parameters.
-  virtual absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) = 0;
-
-  /// Getter for intrinsics parameters.
-  virtual const Eigen::VectorXd& GetIntrinsics() const = 0;
-
-  /// Setter for sensor latency.
-  virtual absl::Status SetLatency(double latency) = 0;
-
-  /// Getter for sensor latency.
-  virtual double GetLatency() const = 0;
-
-  /// Enable or disable extrinsics estimation.
-  virtual void EnableExtrinsicsEstimation(bool enable) = 0;
-
-  /// Enable or disable intrinsics estimation.
-  virtual void EnableIntrinsicsEstimation(bool enable) = 0;
-
-  /// Enable or disable latency estimation.
-  virtual void EnableLatencyEstimation(bool enable) = 0;
 
   /// Update residuals for this sensor.
 
@@ -67,8 +32,8 @@ class Sensor {
   virtual void ClearResidualInfo() = 0;
 
   /// Setter for loss function and scale.
-  virtual void SetLossFunction(
-      utils::LossFunctionType loss, double scale = 1.0) = 0;
+  virtual void SetLossFunction(utils::LossFunctionType loss,
+                               double scale = 1.0) = 0;
 
   /// Add this sensor's calibration parameters to the ceres problem.
 
@@ -83,10 +48,8 @@ class Sensor {
   /// `sensorrig_trajectory` is the world-from-sensorrig trajectory
   /// \f$\mathbf{T}^w_r(t)\f$.
   virtual absl::StatusOr<int> AddResidualsToProblem(
-      ceres::Problem& problem,
-      Trajectory& sensorrig_trajectory,
+      ceres::Problem& problem, Trajectory& sensorrig_trajectory,
       WorldModel& world_model) = 0;
-
 
   /// Set the measurement noise \f$\sigma\f$.
 
@@ -94,12 +57,15 @@ class Sensor {
   /// sensor's residuals such that:
   /// \f\[
   ///   \boldsymbol{\Sigma} = \sigma^2\mathbf{I}\\
-  ///   \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} - \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\
-  ///   \mathbf{J} = \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\
-  ///   \delta\boldsymbol{\beta} = \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon}
+  ///   \boldsymbol{\epsilon} = \boldsymbol{\Sigma}^{-1/2}\left(\mathbf{y} -
+  ///   \mathbf{\hat{y}}\left(\mathbf{x}, \boldsymbol{\beta}\right)\right)\\
+  ///   \mathbf{J} =
+  ///   \frac{\partial\boldsymbol{\epsilon}}{\partial\delta\boldsymbol{\beta}}\\
+  ///   \delta\boldsymbol{\beta} =
+  ///   \left(\mathbf{J}^T\mathbf{J}\right)^{-1}\mathbf{J}^T\boldsymbol{\epsilon}
   /// \f\]
   virtual absl::Status SetMeasurementNoise(double sigma) = 0;
 };
-} // namespace calico::sensors
+}  // namespace calico::sensors
 
-#endif // CALICO_SENSORS_SENSOR_BASE_H_
+#endif  // CALICO_SENSORS_SENSOR_BASE_H_

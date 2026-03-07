@@ -131,21 +131,24 @@ TEST_P(AccelerometerTest, AnalyticallyVsNumericallyDiffedKinematicsMatch) {
     const double stamp_i = stamps.at(i);
     const double stamp_ii = stamp_i + dt;
     const double stamp_iii = stamp_ii + dt;
-    const Eigen::Vector<double, 6> pose_vector_i =
-        trajectory_world_sensorrig.spline().Interpolate(
-            {stamp_i}, /*derivative=*/0).value()[0];
-    const Eigen::Vector<double, 6> pose_vector_ii =
-        trajectory_world_sensorrig.spline().Interpolate(
-            {stamp_ii}, /*derivative=*/0).value()[0];
-    const Eigen::Vector<double, 6> pose_vector_iii =
-        trajectory_world_sensorrig.spline().Interpolate(
-            {stamp_iii}, /*derivative=*/0).value()[0];
-    const Eigen::Vector3d phi_world_sensorrig_i = pose_vector_i.head(3);
-    const Eigen::Vector3d phi_world_sensorrig_ii = pose_vector_ii.head(3);
-    const Eigen::Vector3d phi_world_sensorrig_iii = pose_vector_iii.head(3);
-    const Eigen::Vector3d t_world_sensorrig_i = pose_vector_i.tail(3);
-    const Eigen::Vector3d t_world_sensorrig_ii = pose_vector_ii.tail(3);
-    const Eigen::Vector3d t_world_sensorrig_iii = pose_vector_iii.tail(3);
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d phi_world_sensorrig_i,
+      trajectory_world_sensorrig.rotation_spline().Interpolate(stamp_i, 0));
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d phi_world_sensorrig_ii,
+      trajectory_world_sensorrig.rotation_spline().Interpolate(stamp_ii, 0));
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d phi_world_sensorrig_iii,
+      trajectory_world_sensorrig.rotation_spline().Interpolate(stamp_iii, 0));
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d t_world_sensorrig_i,
+      trajectory_world_sensorrig.position_spline().Interpolate(stamp_i, 0));
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d t_world_sensorrig_ii,
+      trajectory_world_sensorrig.position_spline().Interpolate(stamp_ii, 0));
+    ASSERT_OK_AND_ASSIGN(
+      Eigen::Vector3d t_world_sensorrig_iii,
+      trajectory_world_sensorrig.position_spline().Interpolate(stamp_iii, 0));
 
     const Eigen::Matrix3d R_world_sensorrig_i = ExpSO3(phi_world_sensorrig_i);
     const Eigen::Matrix3d R_world_sensorrig_ii = ExpSO3(phi_world_sensorrig_ii);

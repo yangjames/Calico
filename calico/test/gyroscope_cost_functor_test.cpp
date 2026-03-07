@@ -38,8 +38,6 @@ TEST_P(GyroscopeCostFunctionCreationTest, Instantiation) {
   GyroscopeCostFunctionCreationTestCase test_case = GetParam();
   std::vector<double*> parameters;
   for (const auto& stamp : timestamps) {
-    TrajectoryEvaluationParams segment =
-        trajectory_world_sensorrig.GetEvaluationParams(stamp);
     auto* cost_function =
         GyroscopeCostFunctor::CreateCostFunction(
             test_case.measurement, test_case.sigma, test_case.gyroscope_model,

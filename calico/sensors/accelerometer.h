@@ -4,16 +4,15 @@
 #include <string>
 #include <vector>
 
+#include "Eigen/Dense"
 #include "absl/container/flat_hash_map.h"
 #include "absl/status/status.h"
 #include "absl/strings/string_view.h"
-#include "calico/sensors/sensor_base.h"
 #include "calico/sensors/accelerometer_models.h"
+#include "calico/sensors/sensor_base.h"
 #include "calico/trajectory.h"
 #include "calico/typedefs.h"
 #include "ceres/problem.h"
-#include "Eigen/Dense"
-
 
 namespace calico::sensors {
 
@@ -32,8 +31,7 @@ struct AccelerometerObservationId {
   }
   friend bool operator==(const AccelerometerObservationId& lhs,
                          const AccelerometerObservationId& rhs) {
-    return (lhs.stamp == rhs.stamp &&
-            lhs.sequence == rhs.sequence);
+    return (lhs.stamp == rhs.stamp && lhs.sequence == rhs.sequence);
   }
 };
 
@@ -45,7 +43,6 @@ struct AccelerometerMeasurement {
   AccelerometerObservationId id;
 };
 
-
 /// Accelerometer class.
 class Accelerometer : public Sensor {
  public:
@@ -54,23 +51,22 @@ class Accelerometer : public Sensor {
   Accelerometer& operator=(const Accelerometer&) = delete;
   ~Accelerometer() = default;
 
-  void SetName(const std::string& name) final;
-  const std::string& GetName() const final;
-  void SetExtrinsics(const Pose3d& T_sensorrig_sensor) final;
-  const Pose3d& GetExtrinsics() const final;
-  absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics) final;
-  const Eigen::VectorXd& GetIntrinsics() const final;
-  absl::Status SetLatency(double latency) final;
-  double GetLatency() const final;
-  void EnableExtrinsicsEstimation(bool enable) final;
-  void EnableIntrinsicsEstimation(bool enable) final;
-  void EnableLatencyEstimation(bool enable) final;
-  void SetLossFunction(utils::LossFunctionType loss, double scale) final;
+  void SetName(const std::string& name);
+  const std::string& GetName() const;
+  void SetExtrinsics(const Pose3d& T_sensorrig_sensor);
+  const Pose3d& GetExtrinsics() const;
+  absl::Status SetIntrinsics(const Eigen::VectorXd& intrinsics);
+  const Eigen::VectorXd& GetIntrinsics() const;
+  absl::Status SetLatency(double latency);
+  double GetLatency() const;
+  void EnableExtrinsicsEstimation(bool enable);
+  void EnableIntrinsicsEstimation(bool enable);
+  void EnableLatencyEstimation(bool enable);
+  void SetLossFunction(utils::LossFunctionType loss, double scale);
   absl::StatusOr<int> AddParametersToProblem(ceres::Problem& problem) final;
-  absl::StatusOr<int> AddResidualsToProblem(
-      ceres::Problem & problem,
-      Trajectory& sensorrig_trajectory,
-      WorldModel& world_model) final;
+  absl::StatusOr<int> AddResidualsToProblem(ceres::Problem& problem,
+                                            Trajectory& sensorrig_trajectory,
+                                            WorldModel& world_model) final;
   absl::Status SetMeasurementNoise(double sigma) final;
   absl::Status UpdateResiduals(ceres::Problem& problem) final;
   void ClearResidualInfo() final;
@@ -79,8 +75,8 @@ class Accelerometer : public Sensor {
   /// trajectory.
 
   /// This method interpolates the sensorrig trajectory at given
-  /// timestamps and generates synthetic measurements as would be observed by the
-  /// actual sensor at those timestamps. Gravity points in the direction as
+  /// timestamps and generates synthetic measurements as would be observed by
+  /// the actual sensor at those timestamps. Gravity points in the direction as
   /// defined by WorldModel.\n\n
   /// `interp_times` is a vector of timestamps in seconds at which
   /// `sensorrig_trajectory` will be interpolated. No assumptions are made about
@@ -133,11 +129,12 @@ class Accelerometer : public Sensor {
   double loss_scale_ = 1.0;
   absl::flat_hash_map<AccelerometerObservationId, AccelerometerMeasurement>
       id_to_measurement_;
-  absl::flat_hash_map<AccelerometerObservationId, Eigen::Vector3d> id_to_residual_;
+  absl::flat_hash_map<AccelerometerObservationId, Eigen::Vector3d>
+      id_to_residual_;
   absl::flat_hash_map<AccelerometerObservationId, ceres::ResidualBlockId>
       id_to_residual_id_;
 };
 
-} // namespace calico::sensors
+}  // namespace calico::sensors
 
-#endif // CALICO_SENSORS_ACCELEROMETER_H_
+#endif  // CALICO_SENSORS_ACCELEROMETER_H_
